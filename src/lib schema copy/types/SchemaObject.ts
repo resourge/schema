@@ -21,83 +21,71 @@ type FilterInvalidTypes<T> = Omit<
 		Function | Set<any> | Map<any, any>
 	>
 >; 
-
-export type ObjectShape<
-	Q extends Record<string, any>, 
-	Final,
-	T = FilterInvalidTypes<Q>,
+export type ObjectShape2<
+	T extends Record<string, any>,
+	Final
 > = {
 	[K in keyof T]?: Shape<T[K], Final>
 }
 
+export type ObjectShape<
+	T extends Record<string, any>,
+	Final
+> = ObjectShape2<FilterInvalidTypes<T>, Final>
+
 type IsExactlyAny<T> = boolean extends (T extends never ? true : false) ? true : false;
 
-export type Shape<T, Final = any> = 
+export type Shape<T, Final = T> = 
 IsExactlyAny<T> extends true ?
-	Schema<T, Final> :
-	[T] extends [any[]] ? 
-		ArraySchema<T, Final> :
+	Schema<any, Final> :
+	[T] extends [Array<infer E>] ? 
+		ArraySchema<Shape<E, Final>> :
 		[T] extends [Date] ? 
 			DateSchema<T, Final> :
 			[T] extends [object] ?
-				ObjectSchema<T, Final> :
+				ObjectSchema<ObjectShape<T, Final>, Final> :
 				[number] extends [T] ? 
 					NumberSchema<T extends number ? T : number, Final> :
 					[string] extends [T] ? 
 						StringSchema<T extends string ? T : string, Final> : 
 						[boolean] extends [T] ? 
-							BooleanSchema<T, Final> : 
+							BooleanSchema<T extends boolean ? T : boolean, Final> : 
 							Schema<T, Final>
 
-export type ArrayShape<T extends any[], Final> = Shape<T[number], Final>
+export type ZodTypeAny = Schema<any, any, any>
 
-const arrSchema = array<
-	Array<{
+export declare type ZodRawShape = ObjectShape<any, any>;
+
+type A = Array<{
+	test: number
+	test2: Array<{
 		test: number
-		test2: Array<{
-			test: number
-			test1: string
-		}>
+		test1: string
 	}>
->(
-	object({
-		test: number(),
-		test2: array(
-			object(
-				{
-					test: number((schema) => 
-						schema.min(1)
-						.equals(10)
-						.max(10)
-						.test(
-							'',
-							(a, c) => {
-								return true;
-							},
-							''
-						)
-					),
-					test1: string()
-				},
-				(schema) => schema.test(
-					'',
-					(a, c) => {
-						return true;
-					},
-					''
-				)
-			),
-			(schema) => schema.min(1)
-		)
-	})
-)
-/*
+}>
 
-test(
-				'',
-				(v, k, f) => {
-					return true;
-				},
-				''
+const compile = <T = any>(
+	i: Shape<T>
+) => {
+
+}
+
+const arrSchema = compile<A>(
+	array(
+		object({
+			test: number(),
+			test2: array(
+				object({
+					test: number(),
+					test1: string()
+				})
 			)
-			*/
+		})
+	)
+);
+
+type TypeSchema = (typeof arrSchema)
+
+type Input = TypeSchema['_input']
+
+type Final = TypeSchema['_final']

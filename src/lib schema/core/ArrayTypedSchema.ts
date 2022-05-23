@@ -1,16 +1,24 @@
-import { ArrayShape } from '../types/SchemaObject';
+import { ZodTypeAny } from '../types/SchemaObject';
 
 import { PrivateSchema } from './ObjectTypedSchema';
-import { CompileSchemaConfig, Schema } from './schema';
+import { CompileSchemaConfig, Schema, SchemaTypes } from './schema';
 
-export abstract class ArrayTypedSchema<
-	Input extends any[],
-	Final = Input
-> extends Schema<Input, Final> {
-	protected readonly _shape!: ArrayShape<Input, Final>;
+export class ArrayTypedSchema<
+	T extends ZodTypeAny,
+	Final = Array<T['_input']>
+> extends Schema<
+	Array<T['_output']>,
+	Array<T['_input']>, 
+	Final
+> {
+	readonly _shape!: T;
 	protected schema: PrivateSchema
 
-	constructor(schema: ArrayShape<Input, Final>) {
+	public type: SchemaTypes = SchemaTypes.ARRAY
+	public message: string = `{{key}} is not ${this.type}`
+	protected rule = (value: Array<T['_input']>) => Array.isArray(value)
+
+	constructor(schema: T) {
 		super();
 		this.schema = schema as unknown as PrivateSchema
 	}
@@ -29,7 +37,7 @@ export abstract class ArrayTypedSchema<
 		const schemaRules = this.schema.compileSchema({
 			context, 
 			key: `${key ?? ''}[${iKey}]`, 
-			path: `${path ?? ''}[\${${iKey}}]`
+			path: `${path ?? ''}['+ ${iKey} +']`
 		});
 
 		const arraySchemaRules = [

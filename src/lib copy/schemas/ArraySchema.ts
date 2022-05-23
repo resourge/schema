@@ -4,14 +4,13 @@ import { RuleFn, SchemaTypes } from '../core/schema';
 import { ArrayShape } from '../types/SchemaObject';
 
 export class ArraySchema<
-	Input extends any[],
-	Final = Input
-> extends ArrayTypedSchema<Input, Final> {
-	protected type: SchemaTypes = SchemaTypes.ARRAY
-	protected message: string = `{{key}} is not ${this.type}`
-	protected rule: RuleFn<Input, Final> = (value: any[]) => Array.isArray(value)
+	Input extends any[]
+> extends ArrayTypedSchema<Input> {
+	public type: SchemaTypes = SchemaTypes.ARRAY
+	public message: string = `{{key}} is not ${this.type}`
+	protected rule: RuleFn<any[], '', any[]> = (value: any[]) => Array.isArray(value)
 
-	constructor(schema: ArrayShape<Input, Final>, message?: string) {
+	constructor(schema: ArrayShape<Input>, message?: string) {
 		super(schema);
 
 		this.message = message ?? this.message;
@@ -67,7 +66,7 @@ export class ArraySchema<
 	public length(length: number, message?: string) {
 		return this.test(
 			'lengthArray',
-			(value) => value.length === length,
+			(value: string) => value.length === length,
 			message ?? `{{key}} doens\t have a ${length} elements`
 		)
 	}
@@ -116,13 +115,12 @@ const uniqueBy = (arr: any[], key: any): boolean => {
 */
 
 export const array = <
-	Input extends any[],
-	Final = Input
+	Input extends any[]
 >(
-	schemas: ArrayShape<Input, Final>,
-	cb?: (schema: ArraySchema<Input, Final>) => void
+	schemas: ArrayShape<Input>,
+	cb?: (schema: ArraySchema<Input>) => void
 ) => {
-	const schema = new ArraySchema<Input, Final>(schemas);
+	const schema = new ArraySchema<Input>(schemas, '');
 
 	cb && cb(schema);
 

@@ -12,10 +12,10 @@ const BASIC_PATTERN = /^\S+@\S+\.\S+$/;
 export class StringSchema<
 	Input extends string = string,
 	Final = Input
-> extends Schema<Input, Final> {
-	protected type: SchemaTypes = SchemaTypes.STRING
-	protected message: string = `{{key}} is not ${this.type}`
-	protected rule = (value: string) => typeof value === 'string'
+> extends Schema<Input, Input, Final> {
+	public type: SchemaTypes = SchemaTypes.STRING
+	public message: string = `{{key}} is not ${this.type}`
+	public rule = (value: Input) => typeof value === 'string'
 
 	constructor(message?: string) {
 		super();
@@ -216,14 +216,8 @@ export class StringSchema<
 }
 
 export const string = <
-	Input extends string,
+	Input extends string = string,
 	Final = Input
->(
-	cb?: (schema: StringSchema<Input, Final>) => void
-) => {
-	const schema = new StringSchema<Input, Final>();
-
-	cb && cb(schema);
-
-	return schema;
+>() => {
+	return new StringSchema<Input, Final>();
 }

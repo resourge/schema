@@ -24,32 +24,31 @@ type FilterInvalidTypes<T> = Omit<
 
 export type ObjectShape<
 	Q extends Record<string, any>, 
-	Final,
-	T = FilterInvalidTypes<Q>,
+	T = FilterInvalidTypes<Q>
 > = {
-	[K in keyof T]?: Shape<T[K], Final>
+	[K in keyof T]?: Shape<T[K]>
 }
 
 type IsExactlyAny<T> = boolean extends (T extends never ? true : false) ? true : false;
 
-export type Shape<T, Final = any> = 
+export type Shape<T> = 
 IsExactlyAny<T> extends true ?
-	Schema<T, Final> :
+	Schema<T> :
 	[T] extends [any[]] ? 
-		ArraySchema<T, Final> :
+		ArraySchema<T> :
 		[T] extends [Date] ? 
-			DateSchema<T, Final> :
+			DateSchema<T> :
 			[T] extends [object] ?
-				ObjectSchema<T, Final> :
+				ObjectSchema<T> :
 				[number] extends [T] ? 
-					NumberSchema<T extends number ? T : number, Final> :
+					NumberSchema<T> :
 					[string] extends [T] ? 
-						StringSchema<T extends string ? T : string, Final> : 
+						StringSchema<T> : 
 						[boolean] extends [T] ? 
-							BooleanSchema<T, Final> : 
-							Schema<T, Final>
+							BooleanSchema<T> : 
+							Schema<T>
 
-export type ArrayShape<T extends any[], Final> = Shape<T[number], Final>
+export type ArrayShape<T extends any[]> = Shape<T[number]>
 
 const arrSchema = array<
 	Array<{
@@ -65,23 +64,12 @@ const arrSchema = array<
 		test2: array(
 			object(
 				{
-					test: number((schema) => 
-						schema.min(1)
-						.equals(10)
-						.max(10)
-						.test(
-							'',
-							(a, c) => {
-								return true;
-							},
-							''
-						)
-					),
+					test: number(),
 					test1: string()
 				},
 				(schema) => schema.test(
 					'',
-					(a, c) => {
+					(a, b, c) => {
 						return true;
 					},
 					''

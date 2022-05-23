@@ -9,13 +9,10 @@ const BASE64_PATTERN = /^(?:[A-Za-z0-9+\\/]{4})*(?:[A-Za-z0-9+\\/]{2}==|[A-Za-z0
 const PRECISE_PATTERN = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 const BASIC_PATTERN = /^\S+@\S+\.\S+$/;
 
-export class StringSchema<
-	Input extends string = string,
-	Final = Input
-> extends Schema<Input, Final> {
-	protected type: SchemaTypes = SchemaTypes.STRING
-	protected message: string = `{{key}} is not ${this.type}`
-	protected rule = (value: string) => typeof value === 'string'
+export class StringSchema<Input = string> extends Schema<Input> {
+	public type: SchemaTypes = SchemaTypes.STRING
+	public message: string = `{{key}} is not ${this.type}`
+	public rule = (value: string) => typeof value === 'string'
 
 	constructor(message?: string) {
 		super();
@@ -216,12 +213,11 @@ export class StringSchema<
 }
 
 export const string = <
-	Input extends string,
-	Final = Input
+	Input extends string
 >(
-	cb?: (schema: StringSchema<Input, Final>) => void
+	cb?: (schema: StringSchema<Input>) => void
 ) => {
-	const schema = new StringSchema<Input, Final>();
+	const schema = new StringSchema<Input>();
 
 	cb && cb(schema);
 

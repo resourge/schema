@@ -1,40 +1,76 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-new-func */
 /* eslint-disable @typescript-eslint/no-implied-eval */
 
-import { CompileSchemaConfig, Context, Parameters, RuleFn, Schema, SchemaTypes } from './lib/core/schema';
+// import { CompileSchemaConfig, Context, Parameters, RuleFn, Schema, SchemaTypes } from './core/schema';
+import { Touches } from './lib/core/schema';
 import { array } from './lib/schemas/ArraySchema';
 import { number } from './lib/schemas/NumberSchema';
 import { object } from './lib/schemas/ObjectSchema';
+import { string } from './lib/schemas/StringSchema';
+// import { ObjectShape, Shape } from './lib/types/SchemaObject';
 
-type A = Array<{
-	test: number
-	test2: Array<{
-		test: number
+const schema = array<
+	Array<{
+		deliveryId: number
+		products: Array<{
+			product: number
+			productName: string
+		}>
 	}>
-}>
-
-const arrSchema = array(
+>(
 	object({
-		test: number(),
-		test2: array(
-			object({
-				test: number()
-			})
+		deliveryId: number(),
+		products: array(
+			object(
+				{
+					product: number((schema) => 
+						schema.min(1)
+						.equals(10)
+						.max(10)
+						.test(
+							'Custom function for the number',
+							(a, c) => {
+								return true;
+							},
+							'Custom message for the number'
+						)
+					),
+					productName: string()
+				},
+				(schema) => schema
+				.test(
+					'Custom function for the object',
+					(a, c) => {
+						return true;
+					},
+					'Custom message for the object'
+				)
+			),
+			(schema) => schema.min(1)
 		)
 	})
+).compile({ onlyOnTouch: true });
+console.log(
+	'valid', 
+	schema.validate(
+		[{
+			deliveryId: 10,
+			products: [
+				{
+					product: 10,
+					productName: 'test'
+				}
+			]
+		}],
+		{
+			'[0].deliveryId': true,
+			'[0].products': true
+		}
+	)
 )
 
-const validate = arrSchema.compile();
-// console.log('min invalid', validate(2))
-// console.log('max invalid', validate(5))
-console.log('valid', validate([{
-	test: 10,
-	test2: [
-		{
-			test: '0'
-		}
-	]
-}]))
+type A = Touches<Array<{ test: number }>>
 /*
 import { number } from './schemas/NumberSchema';
 import { object } from './schemas/ObjectSchema';

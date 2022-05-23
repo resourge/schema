@@ -1,12 +1,9 @@
 import { Schema, SchemaTypes } from '../core/schema';
 
-export class NumberSchema<
-	Input extends number = number,
-	Final = Input
-> extends Schema<Input, Final> {
-	protected type: SchemaTypes = SchemaTypes.NUMBER
-	protected message: string = `{{key}} is not ${this.type}`
-	protected rule = (value: number) => typeof value === 'number'
+export class NumberSchema<Input> extends Schema<Input> {
+	public type: SchemaTypes = SchemaTypes.NUMBER
+	public message: string = `{{key}} is not ${this.type}`
+	public rule = (value: number) => typeof value === 'number'
 
 	/**
 	 * Checks if is bigger than minValue.
@@ -91,14 +88,7 @@ export class NumberSchema<
 }
 
 export const number = <
-	Input extends number,
-	Final = Input
->(
-	cb?: (schema: NumberSchema<Input, Final>) => void
-) => {
-	const schema = new NumberSchema<Input, Final>();
-
-	cb && cb(schema);
-
-	return schema;
+	Input
+>() => {
+	return new NumberSchema<Input>();
 }

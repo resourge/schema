@@ -1,8 +1,5 @@
 /* eslint-disable no-new-func */
 /* eslint-disable @typescript-eslint/no-implied-eval */
-
-import { FormKey } from '../types/FormKey'
-
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 export enum SchemaTypes {
 	STRING = 'string',
@@ -16,25 +13,17 @@ export enum SchemaTypes {
 
 export type Context = {
 	index: number
-	onlyOnTouch?: boolean
 	rules: {
 		[key: string]: Function
 	}
 }
 
-export type Touches<T extends Record<string, any>> = {
-	/**
-	 * Paths for the keys touched
-	 */
-	[K in FormKey<T>]?: boolean
-}
+export type RuleFn<Value = any, Key = any, T = any> = (value: Value, key: Key, obj: T) => boolean
 
-export type RuleFn<Value = any, T = any> = (value: Value, obj: T) => boolean
-
-export type Rule<Value = any, T = any> = {
+export type Rule<Value = any, Key = any, T = any> = {
 	type: SchemaTypes
 	name: string
-	isValid: RuleFn<Value, T>
+	isValid: RuleFn<Value, Key, T>
 	message: string
 }
 
@@ -48,7 +37,6 @@ export type CompileSchemaConfig = {
 export enum Parameters {
 	ERRORS_KEY = 'errors',
 	CONTEXT_KEY = 'context',
-	ONLY_ON_TOUCH = 'onlyOnTouch',
 	OBJECT_KEY = 'object',
 
 	VALUE = 'value',
@@ -60,18 +48,23 @@ export type SchemaError = {
 	error: string
 }
 
+type IfEquals<T, U, Y=unknown, N=never> =
+  (<G>() => G extends T ? 1 : 2) extends
+  (<G>() => G extends U ? 1 : 2) ? Y : N;
+
 export abstract class Schema<
-	Input, 
+	Output = any,
+	Input = Output, 
 	Final = Input
 > {
-	protected readonly _input!: Input;
-	protected readonly _final!: Final;
-	protected _onlyOnTouch: boolean = false;
-	protected abstract type: SchemaTypes
+	readonly _output!: Output;
+	readonly _input!: Input;
+	readonly _final!: Final;
+	public abstract type: SchemaTypes
 	protected abstract message: string
-	protected abstract rule: RuleFn<any, any>
+	protected abstract rule: RuleFn<Input, '', Final>
 
-	private _validate: ((value: Input, onlyOnTouch?: string[]) => SchemaError[]) | undefined
+	private _validate: ((value: any) => SchemaError[]) | undefined
 
 	/**
 	 * Path for current value
@@ -81,7 +74,7 @@ export abstract class Schema<
 	protected srcCode: string[] = []
 
 	protected getMessage(message: string): string {
-		return `\`${message.replace('{{key}}', this.path)}\``
+		return message.replace('{{key}}', this.path)
 	}
 
 	protected getValueKey(key?: string) {
@@ -114,34 +107,29 @@ export abstract class Schema<
 		context: Context, 
 		valueKey: string
 	) {
-		const ruleFnName = this.addRule(rule.type, `${rule.name || 'custom_rule'}`, rule.isValid, context)
+		const ruleFnName = this.addRule(rule.type, rule.name, rule.isValid, context)
 
 		const parameters: string[] = [
 			valueKey, 
+			`'${this.path}'`,
 			Parameters.OBJECT_KEY
 		]
 
 		return [
 			`const ${ruleFnName}_isValid = ${Parameters.CONTEXT_KEY}.rules.${ruleFnName}(${parameters.join(',')});`,
 			`if ( !${ruleFnName}_isValid ) {`,
-			...this.getErrorSyntax(),
+			`	${Parameters.ERRORS_KEY}.push({`,
+			`		key: '${this.path}',`,
+			`		error: '${this.getMessage(rule.message)}'`,
+			'	});',
 			'}'
 		]
 	}
 
-	protected compileRules(context: Context, valueKey: string) {
-		return this.rules.flatMap((rule) => {
-			return this.transformRules(rule, context, valueKey);
+	protected compileRules(context: Context) {
+		return this.rules.flatMap((rule, indexRule) => {
+			return this.transformRules(rule, context, `${indexRule}`);
 		})
-	}
-
-	protected getErrorSyntax() {
-		return [
-			`${Parameters.ERRORS_KEY}.push({`,
-			`	key: \`${this.path}\`,`,
-			`	error: ${this.getMessage(this.message)}`,
-			'});'
-		]
 	}
 
 	protected compileSchema({
@@ -150,57 +138,54 @@ export abstract class Schema<
 		srcCode = [],
 		path
 	}: CompileSchemaConfig) {
-		const onlyOnTouch = context.onlyOnTouch ?? this._onlyOnTouch;
 		this.path = path ?? key ?? '';
 
 		const valueKey = this.getValueKey(key)
 
-		const ruleFnName = this.addRule(this.type, `schema_is_${this.type}`, this.rule, context)
+		const ruleFnName = this.addRule(this.type, `schema_${this.type}`, this.rule, context)
 
 		const parameters: string[] = [
 			valueKey, 
+			`'${this.path}'`,
 			Parameters.OBJECT_KEY
 		]
 
-		const rulesSrcCode = this.compileRules(context, valueKey);
+		const rulesSrcCode = this.compileRules(context);
 
-		const fnName = `${Parameters.CONTEXT_KEY}.rules.${ruleFnName}(${parameters.join(',')})`;
-
-		const errorsSyntax = this.getErrorSyntax();
-
-		const _fnSrcCode = rulesSrcCode.length > 0 || srcCode.length > 0 ? [
-			`if ( ${fnName} ) {`,
-			...rulesSrcCode,
-			...srcCode,
-			'}',
-			'else {',
-			...errorsSyntax,
-			'}'
-		] : [
-			`if ( !${fnName} ) {`,
-			...errorsSyntax,
-			'}'
-		]
-
-		if ( onlyOnTouch && this.path ) {
+		if ( rulesSrcCode.length > 0 || srcCode.length > 0 ) {
 			return [
-				`if ( ${Parameters.ONLY_ON_TOUCH}.some((key) => key.includes(\`${this.path}\`) || \`${this.path}\`.includes(key)) ){`,
-				..._fnSrcCode,
+				`if ( ${Parameters.CONTEXT_KEY}.rules.${ruleFnName}(${parameters.join(',')}) ) {`,
+				...rulesSrcCode,
+				...srcCode,
+				'}',
+				'else {',
+				`	${Parameters.ERRORS_KEY}.push({`,
+				`		key: '${this.path}',`,
+				`		error: '${this.getMessage(this.message)}'`,
+				'	});',
 				'}'
 			]
 		}
-
-		return _fnSrcCode
+		else {
+			return [
+				`if ( !${Parameters.CONTEXT_KEY}.rules.${ruleFnName}(${parameters.join(',')}) ) {`,
+				`	${Parameters.ERRORS_KEY}.push({`,
+				`		key: '${this.path}',`,
+				`		error: '${this.getMessage(this.message)}'`,
+				'	});',
+				'}'
+			]
+		}
 	}
 
 	public test(
 		name: string,
-		isValid: RuleFn<Input, Final>,
+		isValid: RuleFn<Input, any, Final>,
 		message: string
-	) {
+	): this {
 		this.rules.push({
 			type: this.type,
-			name: name.replace(/\s+/g, '_'),
+			name,
 			isValid,
 			message
 		})
@@ -208,7 +193,7 @@ export abstract class Schema<
 		return this;
 	} 
 
-	protected beautifyFunction(funcArr: string[]): string {
+	public beautifyFunction(funcArr: string[]): string {
 		const normalize: string[] = []
 		const identTab = '\t'
 		let countScope = 0
@@ -216,27 +201,22 @@ export abstract class Schema<
 		funcArr
 		.map((a) => a.replace(/\t/g, ''))
 		.forEach((line) => {
-			if ( line.includes(' {') ) {
+			if (line.includes('{')) {
 				normalize.push(`${identTab.repeat(countScope)}${line}`)
 				countScope += 1
 				return;
 			} 
-			else if ( line.includes(' }') ) {
+			else if (line.includes('}')) {
 				countScope -= 1
 			} 
 			normalize.push(`${identTab.repeat(countScope)}${line}`)
 		})
-		return normalize.join('\n')
+		return normalize.join('\n').replace(',', '')
 	}
 
-	public onlyOnTouch() {
-		this._onlyOnTouch = true;
-	}
-
-	public compile({ beautifyFunction = true, onlyOnTouch = false }: { beautifyFunction?: boolean, onlyOnTouch?: boolean } = { beautifyFunction: true }) {
+	public compile<T extends this['_input']>({ beautifyFunction = true }: { beautifyFunction?: boolean } = { beautifyFunction: true }) {
 		const context: Context = {
 			index: 0,
-			onlyOnTouch,
 			rules: {
 		
 			}
@@ -258,26 +238,21 @@ export abstract class Schema<
 			Parameters.VALUE,
 			Parameters.CONTEXT_KEY,
 			Parameters.OBJECT_KEY,
-			Parameters.ONLY_ON_TOUCH,
 			srcCode.join('\t')
 		)
 
-		this._validate = (value: Input, onlyOnTouch?: string[]): SchemaError[] => {
-			return validate(value, context, value, onlyOnTouch)
+		this._validate = (value: string): SchemaError[] => {
+			return validate(value, context)
 		}
 
 		return this;
 	}
 
-	public validate(value: Input, onlyOnTouch: Touches<Input> = {}) {
+	public validate(value: Input) {
 		if ( !this._validate ) {
 			this.compile();
 		}
 
-		const _onlyOnTouch: string[] = Object.keys(onlyOnTouch)
-		.filter((key) => onlyOnTouch[key as FormKey<Input>])
-		.map(([key]) => key);
-
-		return this._validate!(value, _onlyOnTouch)
+		return this._validate!(value)
 	}
 }

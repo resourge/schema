@@ -1,17 +1,17 @@
 
 import { ArrayTypedSchema } from '../core/ArrayTypedSchema';
-import { RuleFn, SchemaTypes } from '../core/schema';
-import { ArrayShape } from '../types/SchemaObject';
+import { SchemaTypes } from '../core/schema';
+import { ZodTypeAny } from '../types/SchemaObject';
 
 export class ArraySchema<
-	Input extends any[],
-	Final = Input
-> extends ArrayTypedSchema<Input, Final> {
-	protected type: SchemaTypes = SchemaTypes.ARRAY
-	protected message: string = `{{key}} is not ${this.type}`
-	protected rule: RuleFn<Input, Final> = (value: any[]) => Array.isArray(value)
+	T extends ZodTypeAny,
+	Final = Array<T['_input']>
+> extends ArrayTypedSchema<T, Final> {
+	public type: SchemaTypes = SchemaTypes.ARRAY
+	public message: string = `{{key}} is not ${this.type}`
+	protected rule = (value: Array<T['_input']>) => Array.isArray(value)
 
-	constructor(schema: ArrayShape<Input, Final>, message?: string) {
+	constructor(schema: T, message?: string) {
 		super(schema);
 
 		this.message = message ?? this.message;
@@ -116,15 +116,8 @@ const uniqueBy = (arr: any[], key: any): boolean => {
 */
 
 export const array = <
-	Input extends any[],
-	Final = Input
->(
-	schemas: ArrayShape<Input, Final>,
-	cb?: (schema: ArraySchema<Input, Final>) => void
-) => {
-	const schema = new ArraySchema<Input, Final>(schemas);
-
-	cb && cb(schema);
-
-	return schema;
+	T extends ZodTypeAny,
+	Final = Array<T['_input']>
+>(schemas: T, message?: string) => {
+	return new ArraySchema<T, Final>(schemas, message);
 }

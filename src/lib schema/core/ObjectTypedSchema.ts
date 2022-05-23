@@ -1,14 +1,17 @@
-import { ObjectShape } from '../types/SchemaObject';
+import { ObjectShape, ZodRawShape, ZodTypeAny } from '../types/SchemaObject';
+import { objectInputType, objectOutputType } from '../types/types';
 
 import { CompileSchemaConfig, Schema } from './schema';
 
-export type PrivateSchema = Schema<any, any> & { compileSchema: Schema<any, any>['compileSchema'] }
+export type PrivateSchema = Schema<any> & { compileSchema: Schema<any>['compileSchema'] }
 
 export abstract class ObjectTypedSchema<
-	Input extends Record<string, any>,
+	T extends ZodRawShape, 
+	Output = objectOutputType<T, ZodTypeAny>, 
+	Input = objectInputType<T, ZodTypeAny>,
 	Final = Input
-> extends Schema<Input, Final> {
-	protected readonly _shape!: ObjectShape<Input, Final>;
+> extends Schema<Output, Input, Final> {
+	readonly _shape!: ObjectShape<Input, Final>;
 	protected schemas: Array<[string, PrivateSchema]> = []
 
 	constructor(schemas: ObjectShape<Input, Final>) {

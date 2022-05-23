@@ -1,16 +1,19 @@
 import { ArrayShape } from '../types/SchemaObject';
 
 import { PrivateSchema } from './ObjectTypedSchema';
-import { CompileSchemaConfig, Schema } from './schema';
+import { CompileSchemaConfig, RuleFn, Schema, SchemaTypes } from './schema';
 
-export abstract class ArrayTypedSchema<
+export class ArrayTypedSchema<
 	Input extends any[],
-	Final = Input
-> extends Schema<Input, Final> {
-	protected readonly _shape!: ArrayShape<Input, Final>;
+	S extends ArrayShape<any> = ArrayShape<any> 
+> extends Schema<Input> {
 	protected schema: PrivateSchema
 
-	constructor(schema: ArrayShape<Input, Final>) {
+	public type: SchemaTypes = SchemaTypes.ARRAY
+	public message: string = `{{key}} is not ${this.type}`
+	protected rule: RuleFn<any[], '', any[]> = (value: any[]) => Array.isArray(value)
+
+	constructor(schema: S) {
 		super();
 		this.schema = schema as unknown as PrivateSchema
 	}
@@ -29,7 +32,7 @@ export abstract class ArrayTypedSchema<
 		const schemaRules = this.schema.compileSchema({
 			context, 
 			key: `${key ?? ''}[${iKey}]`, 
-			path: `${path ?? ''}[\${${iKey}}]`
+			path: `${path ?? ''}['+ ${iKey} +']`
 		});
 
 		const arraySchemaRules = [

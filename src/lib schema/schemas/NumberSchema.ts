@@ -3,10 +3,10 @@ import { Schema, SchemaTypes } from '../core/schema';
 export class NumberSchema<
 	Input extends number = number,
 	Final = Input
-> extends Schema<Input, Final> {
-	protected type: SchemaTypes = SchemaTypes.NUMBER
-	protected message: string = `{{key}} is not ${this.type}`
-	protected rule = (value: number) => typeof value === 'number'
+> extends Schema<Input, Input, Final> {
+	public type: SchemaTypes = SchemaTypes.NUMBER
+	public message: string = `{{key}} is not ${this.type}`
+	public rule = (value: Input) => typeof value === 'number'
 
 	/**
 	 * Checks if is bigger than minValue.
@@ -17,7 +17,7 @@ export class NumberSchema<
 	public min(minValue: number, message?: string) {
 		return this.test(
 			'minNumber',
-			(value: number) => value >= minValue,
+			(value) => value >= minValue,
 			message ?? '{{key}} doesn\'t have min length'
 		)
 	}
@@ -31,7 +31,7 @@ export class NumberSchema<
 	public max(maxValue: number, message?: string) {
 		return this.test(
 			'maxNumber',
-			(value: number) => value <= maxValue,
+			(value) => value <= maxValue,
 			message ?? '{{key}} doesn\'t have max length'
 		)
 	}
@@ -45,7 +45,7 @@ export class NumberSchema<
 	public equals(value: number, message?: string) {
 		return this.test(
 			'equalsNumber',
-			(val: number) => val === value,
+			(val) => val === value,
 			message ?? `{{key}} isn't equal to ${value}`
 		)
 	}
@@ -58,7 +58,7 @@ export class NumberSchema<
 	public integer(message?: string) {
 		return this.test(
 			'integer',
-			(val: number) => val % 1 !== 0,
+			(val) => val % 1 !== 0,
 			message ?? '{{key}} isn\'t an integer'
 		)
 	}
@@ -71,7 +71,7 @@ export class NumberSchema<
 	public positive(message?: string) {
 		return this.test(
 			'positive',
-			(val: number) => val <= 0,
+			(val) => val <= 0,
 			message ?? '{{key}} isn\'t an integer'
 		)
 	}
@@ -84,21 +84,15 @@ export class NumberSchema<
 	public negative(message?: string) {
 		return this.test(
 			'negative',
-			(val: number) => val >= 0,
+			(val) => val >= 0,
 			message ?? '{{key}} isn\'t an integer'
 		)
 	}
 }
 
 export const number = <
-	Input extends number,
+	Input extends number = number,
 	Final = Input
->(
-	cb?: (schema: NumberSchema<Input, Final>) => void
-) => {
-	const schema = new NumberSchema<Input, Final>();
-
-	cb && cb(schema);
-
-	return schema;
+>() => {
+	return new NumberSchema<Input, Final>();
 }

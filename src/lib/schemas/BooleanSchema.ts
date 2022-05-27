@@ -10,7 +10,7 @@ export class BooleanSchema<
 }
 
 export const boolean = <
-	Input extends boolean,
+	Input extends boolean = boolean,
 	Final = Input
 >(
 	cb?: (schema: BooleanSchema<Input, Final>) => void

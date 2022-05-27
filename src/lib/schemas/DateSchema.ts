@@ -13,7 +13,7 @@ export class DateSchema<
 > extends Schema<Input, Final> {
 	protected type: SchemaTypes = SchemaTypes.DATE
 	protected message: string = `{{key}} is not ${this.type}`
-	protected rule = (value: Date) => (value instanceof Date) || isNaN((value as unknown as Date).getTime())
+	protected rule = (value: Date) => (value instanceof Date) && !isNaN((value as unknown as Date).getTime())
 
 	/**
 	 * Checks if is today
@@ -22,15 +22,15 @@ export class DateSchema<
 	 */
 	public today(message?: string) {
 		return this.test(
-			'today',
 			(value: Date) => isToday(value),
-			message ?? '{{key}} is not today'
+			message ?? ((messages) => messages.date.today),
+			'today'
 		)
 	}
 }
 
 export const date = <
-	Input extends Date,
+	Input extends Date = Date,
 	Final = Input
 >(
 	cb?: (schema: DateSchema<Input, Final>) => void

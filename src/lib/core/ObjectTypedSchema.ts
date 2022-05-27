@@ -9,12 +9,12 @@ export abstract class ObjectTypedSchema<
 	Final = Input
 > extends Schema<Input, Final> {
 	protected readonly _shape!: ObjectShape<Input, Final>;
-	protected schemas: Array<[string, PrivateSchema]> = []
+	protected shape: Array<[string, PrivateSchema]> = []
 
 	constructor(schemas: ObjectShape<Input, Final>) {
 		super();
 
-		this.schemas = Object.keys(schemas)
+		this.shape = Object.keys(schemas)
 		// @ts-expect-error
 		.map((key) => [key, schemas[key] as unknown as PrivateSchema])
 	}
@@ -24,7 +24,7 @@ export abstract class ObjectTypedSchema<
 		key, 
 		path
 	}: CompileSchemaConfig) {
-		const schemaRules = this.schemas.flatMap(([childKey, schema]) => {
+		const schemaRules = this.shape.flatMap(([childKey, schema]) => {
 			return schema.compileSchema({
 				context, 
 				key: `${key ? `${key}.` : ''}${childKey}`, 

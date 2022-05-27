@@ -1,12 +1,16 @@
+/* eslint-disable no-useless-escape */
 import { Schema, SchemaTypes } from '../core/schema';
 
-const NUMERIC_PATTERN = /^-?[0-9]\d*(\.\d+)?$/;
+const NUMERIC_PATTERN = /^[-]?([1-9]\d*|0)(\.\d+)?$/;
 const ALPHA_PATTERN = /^[a-zA-Z]+$/;
 const ALPHANUM_PATTERN = /^[a-zA-Z0-9]+$/;
 const ALPHADASH_PATTERN = /^[a-zA-Z0-9_-]+$/;
 const HEX_PATTERN = /^[0-9a-fA-F]+$/;
+const URL_PATTERN = /^(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$/
 const BASE64_PATTERN = /^(?:[A-Za-z0-9+\\/]{4})*(?:[A-Za-z0-9+\\/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
-const PRECISE_PATTERN = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+const PRECISE_PATTERN = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+const CUID_PATTERN = /^c[^\s-]{8,}$/i;
+const UUID_PATTERN = /^([a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[a-f0-9]{4}-[a-f0-9]{12}|00000000-0000-0000-0000-000000000000)$/i;
 const BASIC_PATTERN = /^\S+@\S+\.\S+$/;
 
 export class StringSchema<
@@ -31,9 +35,9 @@ export class StringSchema<
 	 */
 	public min(minValue: number, message?: string) {
 		return this.test(
-			'minLength',
 			(value: string) => value.length >= minValue,
-			message ?? '{{key}} doens\'t have min length'
+			message ?? ((messages) => messages.string.min(minValue)),
+			'minLength'
 		)
 	}
 
@@ -45,9 +49,9 @@ export class StringSchema<
 	 */
 	public max(maxValue: number, message?: string) {
 		return this.test(
-			'maxLength',
 			(value: string) => value.length <= maxValue,
-			message ?? '{{key}} doens\'t have max length'
+			message ?? ((messages) => messages.string.max(maxValue)),
+			'maxLength'
 		)
 	}
 
@@ -59,9 +63,9 @@ export class StringSchema<
 	 */
 	public length(length: number, message?: string) {
 		return this.test(
-			'length',
 			(value: string) => value.length === length,
-			message ?? `{{key}} doens't have ${length} length`
+			message ?? ((messages) => messages.string.length(length)),
+			'length'
 		)
 	}
 
@@ -73,10 +77,9 @@ export class StringSchema<
 	 */
 	public pattern(reg: RegExp, message?: string) {
 		return this.test(
-			'pattern',
 			(value: string) => reg.test(value),
-			// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-			message ?? `{{key}} doesn't match ${reg.toString()}`
+			message ?? ((messages) => messages.string.pattern(reg)),
+			'pattern'
 		)
 	}
 
@@ -87,9 +90,9 @@ export class StringSchema<
 	 */
 	public empty(message?: string) {
 		return this.test(
-			'empty',
 			(value: string) => value.length === 0,
-			message ?? '{{key}} is not a empty string'
+			message ?? ((messages) => messages.string.empty),
+			'empty'
 		)
 	}
 
@@ -101,9 +104,9 @@ export class StringSchema<
 	 */
 	public contains(value: string, message?: string) {
 		return this.test(
-			'contains',
 			(val: string) => val.includes(value),
-			message ?? `{{key}} doesn't contains ${value}`
+			message ?? ((messages) => messages.string.contains(value)),
+			'contains'
 		)
 	}
 
@@ -114,9 +117,9 @@ export class StringSchema<
 	 */
 	public numeric(message?: string) {
 		return this.test(
-			'numeric',
 			(value: string) => NUMERIC_PATTERN.test(value),
-			message ?? '{{key}} is not numeric'
+			message ?? ((messages) => messages.string.numeric),
+			'numeric'
 		)
 	}
 
@@ -127,9 +130,9 @@ export class StringSchema<
 	 */
 	public alpha(message?: string) {
 		return this.test(
-			'alpha',
 			(value: string) => ALPHA_PATTERN.test(value),
-			message ?? '{{key}} does not contain alpha characters.'
+			message ?? ((messages) => messages.string.alpha),
+			'alpha'
 		)
 	}
 
@@ -140,9 +143,9 @@ export class StringSchema<
 	 */
 	public alphanum(message?: string) {
 		return this.test(
-			'alphanum',
 			(value: string) => ALPHANUM_PATTERN.test(value),
-			message ?? '{{key}} does not contain alpha-numeric characters'
+			message ?? ((messages) => messages.string.alphanum),
+			'alphanum'
 		)
 	}
 
@@ -153,9 +156,9 @@ export class StringSchema<
 	 */
 	public alphadash(message?: string) {
 		return this.test(
-			'alphadash',
 			(value: string) => ALPHADASH_PATTERN.test(value),
-			message ?? '{{key}} does not contain alpha-numeric characters, as well as dashes and underscores.'
+			message ?? ((messages) => messages.string.alphadash),
+			'alphadash'
 		)
 	}
 
@@ -166,9 +169,9 @@ export class StringSchema<
 	 */
 	public hex(message?: string) {
 		return this.test(
-			'hex',
 			(value: string) => value.length % 2 === 0 && HEX_PATTERN.test(value),
-			message ?? '{{key}} is not hexadecimal.'
+			message ?? ((messages) => messages.string.hex),
+			'hex'
 		)
 	}
 
@@ -179,22 +182,48 @@ export class StringSchema<
 	 */
 	public base64(message?: string) {
 		return this.test(
-			'base64',
 			(value: string) => BASE64_PATTERN.test(value),
-			message ?? '{{key}} is not base64.'
+			message ?? ((messages) => messages.string.base64),
+			'base64'
 		)
 	}
 
 	/**
-	 * Checks if string is a single line.
+	 * Checks if string is format uuid.
 	 * @param message @option Overrides default message
 	 * {{key}} will be replace with current key
 	 */
-	public singleLine(message?: string) {
+	public uuid(message?: string) {
 		return this.test(
-			'singleLine',
-			(value: string) => !value.includes('\\n'),
-			message ?? '{{key}} is a single line.'
+			(value: string) => UUID_PATTERN.test(value),
+			message ?? ((messages) => messages.string.uuid),
+			'uuid'
+		)
+	}
+
+	/**
+	 * Checks if string is URL accepted
+	 * @param message @option Overrides default message
+	 * {{key}} will be replace with current key
+	 */
+	public url(message?: string) {
+		return this.test(
+			(value: string) => URL_PATTERN.test(value),
+			message ?? ((messages) => messages.string.url),
+			'url'
+		)
+	}
+
+	/**
+	 * Checks if string is format cuid.
+	 * @param message @option Overrides default message
+	 * {{key}} will be replace with current key
+	 */
+	public cuid(message?: string) {
+		return this.test(
+			(value: string) => CUID_PATTERN.test(value),
+			message ?? ((messages) => messages.string.cuid),
+			'cuid'
 		)
 	}
 
@@ -208,15 +237,15 @@ export class StringSchema<
 		const pattern = mode === 'precise' ? PRECISE_PATTERN : BASIC_PATTERN;
 
 		return this.test(
-			'email',
 			(value: string) => pattern.test(value),
-			message ?? '{{key}} is a single line.'
+			message ?? ((messages) => messages.string.email),
+			'email'
 		)
 	}
 }
 
 export const string = <
-	Input extends string,
+	Input extends string = string,
 	Final = Input
 >(
 	cb?: (schema: StringSchema<Input, Final>) => void

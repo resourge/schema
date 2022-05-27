@@ -9,7 +9,7 @@ export class ObjectSchema<
 > extends ObjectTypedSchema<Input, Final> {
 	protected type: SchemaTypes = SchemaTypes.OBJECT
 	protected message: string = `{{key}} is not ${this.type}`
-	protected rule: RuleFn<Input, Final> = (value: Input) => typeof value === 'object'
+	protected rule: RuleFn<Input, Final> = (value) => typeof value === 'object'
 
 	constructor(schemas: ObjectShape<Input, Final>, message?: string) {
 		super(schemas);

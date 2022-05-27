@@ -9,7 +9,7 @@ export class ArraySchema<
 > extends ArrayTypedSchema<Input, Final> {
 	protected type: SchemaTypes = SchemaTypes.ARRAY
 	protected message: string = `{{key}} is not ${this.type}`
-	protected rule: RuleFn<Input, Final> = (value: any[]) => Array.isArray(value)
+	protected rule: RuleFn<Input, Final> = (value) => Array.isArray(value)
 
 	constructor(schema: ArrayShape<Input, Final>, message?: string) {
 		super(schema);
@@ -24,9 +24,9 @@ export class ArraySchema<
 	 */
 	public empty(message?: string) {
 		return this.test(
-			'empty',
-			(value: any[]) => value.length === 0,
-			message ?? '{{key}} is not an empty array'
+			(value) => value.length === 0,
+			message ?? ((messages) => messages.array.empty),
+			'empty'
 		)
 	}
 
@@ -38,9 +38,9 @@ export class ArraySchema<
 	 */
 	public min(minValue: number, message?: string) {
 		return this.test(
-			'minArray',
-			(value: any[]) => minValue < value.length,
-			message ?? `{{key}} doens\t have a minimal of ${minValue} elements`
+			(value) => minValue <= value.length,
+			message ?? ((messages) => messages.array.min(minValue)),
+			'minArray'
 		)
 	}
 
@@ -52,9 +52,9 @@ export class ArraySchema<
 	 */
 	public max(maxValue: number, message?: string) {
 		return this.test(
-			'maxArray',
-			(value: any[]) => value.length < maxValue,
-			message ?? `{{key}} doens\t have a maximal of ${maxValue} elements`
+			(value) => value.length <= maxValue,
+			message ?? ((messages) => messages.array.max(maxValue)),
+			'maxArray'
 		)
 	}
 
@@ -66,57 +66,48 @@ export class ArraySchema<
 	 */
 	public length(length: number, message?: string) {
 		return this.test(
-			'lengthArray',
 			(value) => value.length === length,
-			message ?? `{{key}} doens\t have a ${length} elements`
+			message ?? ((messages) => messages.array.length(length)),
+			'lengthArray'
 		)
 	}
 
 	/**
 	 * Checks if has only unique elements
+	 * 
+	 * Note: This only check basic values, like numbers, string, boolean.
+	 * For object arrays and more complex values use {@link ArraySchema#uniqueBy}
 	 * @param message @option Overrides default message
 	 * {{key}} will be replace with current key
 	 */
 	public unique(message?: string) {
 		return this.test(
-			'uniqueArray',
-			(value: any[]) => value.length === (new Set(value)).size,
-			message ?? '{{key}} doens\t have a unique elements'
+			(value) => value.length === (new Set(value)).size,
+			message ?? ((messages) => messages.array.unique),
+			'uniqueArray'
 		)
 	}
 
-	/*
 	/**
 	 * Checks if has only unique by key elements
 	 * @param message @option Overrides default message
 	 * {{key}} will be replace with current key
-	public uniqueBy(key: keyof Input[0], message?: string) {
-		return this.test(
-			'uniqueArray',
-			(value: any[]) => uniqueBy(value, key),
-			message ?? '{{key}} doens\t have unique elements'
+	 */
+	public uniqueBy(key: keyof Input[number] | ((val: Input[number]) => any), message?: string) {
+		const mapCb: (val: Input[number]) => any = (
+			typeof key === 'string' ? (val: Input[number]) => val[key] : key as (val: Input[number]) => any
 		)
-	} */
-}
-/*
-const uniqueBy = (arr: any[], key: any): boolean => {
-	const len = arr.length;
-	const obj: any = {};
-	for (let i = 0; i < len; i++) {
-		const element = arr[i][key];
-		
-		if ( element in obj ) {
-			return false
-		}
 
-		obj[element] = true;
+		return this.test(
+			(value) => value.length === (new Set(value.map(mapCb))).size,
+			message ?? ((messages) => messages.array.uniqueBy),
+			'uniqueByArray'
+		)
 	}
-	return true
 }
-*/
 
 export const array = <
-	Input extends any[],
+	Input extends any[] = any[],
 	Final = Input
 >(
 	schemas: ArrayShape<Input, Final>,

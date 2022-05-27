@@ -16,9 +16,9 @@ export class NumberSchema<
 	 */
 	public min(minValue: number, message?: string) {
 		return this.test(
-			'minNumber',
 			(value: number) => value >= minValue,
-			message ?? '{{key}} doesn\'t have min length'
+			message ?? ((messages) => messages.number.min(minValue)),
+			'minNumber'
 		)
 	}
 
@@ -30,9 +30,9 @@ export class NumberSchema<
 	 */
 	public max(maxValue: number, message?: string) {
 		return this.test(
-			'maxNumber',
 			(value: number) => value <= maxValue,
-			message ?? '{{key}} doesn\'t have max length'
+			message ?? ((messages) => messages.number.max(maxValue)),
+			'maxNumber'
 		)
 	}
 
@@ -44,9 +44,9 @@ export class NumberSchema<
 	 */
 	public equals(value: number, message?: string) {
 		return this.test(
-			'equalsNumber',
 			(val: number) => val === value,
-			message ?? `{{key}} isn't equal to ${value}`
+			message ?? ((messages) => messages.number.equals(value)),
+			'equalsNumber'
 		)
 	}
 
@@ -57,9 +57,22 @@ export class NumberSchema<
 	 */
 	public integer(message?: string) {
 		return this.test(
-			'integer',
-			(val: number) => val % 1 !== 0,
-			message ?? '{{key}} isn\'t an integer'
+			(val: number) => val % 1 === 0,
+			message ?? ((messages) => messages.number.integer),
+			'integer'
+		)
+	}
+
+	/**
+	 * Checks if is decimal.
+	 * @param message @option Overrides default message
+	 * {{key}} will be replace with current key
+	 */
+	public decimal(decimal: number, message?: string) {
+		return this.test(
+			(val: number) => val.toFixed(decimal) === val.toString(),
+			message ?? ((messages) => messages.number.decimal(decimal)),
+			'decimal'
 		)
 	}
 
@@ -70,9 +83,9 @@ export class NumberSchema<
 	 */
 	public positive(message?: string) {
 		return this.test(
-			'positive',
-			(val: number) => val <= 0,
-			message ?? '{{key}} isn\'t an integer'
+			(val: number) => val >= 0,
+			message ?? ((messages) => messages.number.positive),
+			'positive'
 		)
 	}
 
@@ -83,15 +96,15 @@ export class NumberSchema<
 	 */
 	public negative(message?: string) {
 		return this.test(
-			'negative',
-			(val: number) => val >= 0,
-			message ?? '{{key}} isn\'t an integer'
+			(val: number) => val < 0,
+			message ?? ((messages) => messages.number.negative),
+			'negative'
 		)
 	}
 }
 
 export const number = <
-	Input extends number,
+	Input extends number = number,
 	Final = Input
 >(
 	cb?: (schema: NumberSchema<Input, Final>) => void

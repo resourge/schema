@@ -1,10 +1,10 @@
 import { Schema } from '../core/schema';
-import { array, ArraySchema } from '../schemas/ArraySchema';
+import { ArraySchema } from '../schemas/ArraySchema';
 import { BooleanSchema } from '../schemas/BooleanSchema';
 import { DateSchema } from '../schemas/DateSchema';
-import { number, NumberSchema } from '../schemas/NumberSchema';
-import { object, ObjectSchema } from '../schemas/ObjectSchema';
-import { string, StringSchema } from '../schemas/StringSchema';
+import { NumberSchema } from '../schemas/NumberSchema';
+import { ObjectSchema } from '../schemas/ObjectSchema';
+import { StringSchema } from '../schemas/StringSchema';
 
 /**
  * TODO: Fix types in chains
@@ -50,54 +50,3 @@ IsExactlyAny<T> extends true ?
 							Schema<T, Final>
 
 export type ArrayShape<T extends any[], Final> = Shape<T[number], Final>
-
-const arrSchema = array<
-	Array<{
-		test: number
-		test2: Array<{
-			test: number
-			test1: string
-		}>
-	}>
->(
-	object({
-		test: number(),
-		test2: array(
-			object(
-				{
-					test: number((schema) => 
-						schema.min(1)
-						.equals(10)
-						.max(10)
-						.test(
-							'',
-							(a, c) => {
-								return true;
-							},
-							''
-						)
-					),
-					test1: string()
-				},
-				(schema) => schema.test(
-					'',
-					(a, c) => {
-						return true;
-					},
-					''
-				)
-			),
-			(schema) => schema.min(1)
-		)
-	})
-)
-/*
-
-test(
-				'',
-				(v, k, f) => {
-					return true;
-				},
-				''
-			)
-			*/

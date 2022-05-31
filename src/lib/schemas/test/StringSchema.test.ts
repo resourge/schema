@@ -133,7 +133,7 @@ describe('string', () => {
 	})
 
 	it('should be url', () => {
-		const schema = string((schema) => schema.url()).compile();
+		const schema = string().url().compile();
 
 		expect(schema.isValid('aaaa')).toBeFalsy()
 		expect(schema.isValid('/index.html')).toBeFalsy()

@@ -1,13 +1,21 @@
-import { Schema, SchemaTypes } from '../core/schema';
+import { Schema } from '../core/schema';
+import { NullableType } from '../types/_types';
+import { SchemaTypes } from '../utils/Utils';
 
 export class NumberSchema<
-	Input extends number = number,
-	Final = Input
+	Input extends NullableType<number> = number,
+	Final = any
 > extends Schema<Input, Final> {
 	protected type: SchemaTypes = SchemaTypes.NUMBER
 	protected message: string = `{{key}} is not ${this.type}`
 	protected rule = (value: number) => typeof value === 'number'
 
+	constructor(message?: string) {
+		super();
+
+		this.message = message ?? this.message;
+	}
+	
 	/**
 	 * Checks if is bigger than minValue.
 	 * @param minValue min number value
@@ -15,11 +23,11 @@ export class NumberSchema<
 	 * {{key}} will be replace with current key
 	 */
 	public min(minValue: number, message?: string) {
-		return this.test(
-			(value: number) => value >= minValue,
-			message ?? ((messages) => messages.number.min(minValue)),
-			'minNumber'
-		)
+		return this.test({
+			test: (value) => value >= minValue,
+			message: message ?? ((messages) => messages.number.min(minValue)),
+			name: 'minNumber'
+		})
 	}
 
 	/**
@@ -29,11 +37,11 @@ export class NumberSchema<
 	 * {{key}} will be replace with current key
 	 */
 	public max(maxValue: number, message?: string) {
-		return this.test(
-			(value: number) => value <= maxValue,
-			message ?? ((messages) => messages.number.max(maxValue)),
-			'maxNumber'
-		)
+		return this.test({
+			test: (value) => value <= maxValue,
+			message: message ?? ((messages) => messages.number.max(maxValue)),
+			name: 'maxNumber'
+		})
 	}
 
 	/**
@@ -43,11 +51,11 @@ export class NumberSchema<
 	 * {{key}} will be replace with current key
 	 */
 	public equals(value: number, message?: string) {
-		return this.test(
-			(val: number) => val === value,
-			message ?? ((messages) => messages.number.equals(value)),
-			'equalsNumber'
-		)
+		return this.test({
+			test: (val) => val === value,
+			message: message ?? ((messages) => messages.number.equals(value)),
+			name: 'equalsNumber'
+		})
 	}
 
 	/**
@@ -56,11 +64,11 @@ export class NumberSchema<
 	 * {{key}} will be replace with current key
 	 */
 	public integer(message?: string) {
-		return this.test(
-			(val: number) => val % 1 === 0,
-			message ?? ((messages) => messages.number.integer),
-			'integer'
-		)
+		return this.test({
+			test: (val) => val % 1 === 0,
+			message: message ?? ((messages) => messages.number.integer),
+			name: 'integer'
+		})
 	}
 
 	/**
@@ -69,11 +77,11 @@ export class NumberSchema<
 	 * {{key}} will be replace with current key
 	 */
 	public decimal(decimal: number, message?: string) {
-		return this.test(
-			(val: number) => val.toFixed(decimal) === val.toString(),
-			message ?? ((messages) => messages.number.decimal(decimal)),
-			'decimal'
-		)
+		return this.test({
+			test: (val) => val.toFixed(decimal) === val.toString(),
+			message: message ?? ((messages) => messages.number.decimal(decimal)),
+			name: 'decimal'
+		})
 	}
 
 	/**
@@ -82,11 +90,11 @@ export class NumberSchema<
 	 * {{key}} will be replace with current key
 	 */
 	public positive(message?: string) {
-		return this.test(
-			(val: number) => val >= 0,
-			message ?? ((messages) => messages.number.positive),
-			'positive'
-		)
+		return this.test({
+			test: (val) => val >= 0,
+			message: message ?? ((messages) => messages.number.positive),
+			name: 'positive'
+		})
 	}
 
 	/**
@@ -95,23 +103,17 @@ export class NumberSchema<
 	 * {{key}} will be replace with current key
 	 */
 	public negative(message?: string) {
-		return this.test(
-			(val: number) => val < 0,
-			message ?? ((messages) => messages.number.negative),
-			'negative'
-		)
+		return this.test({
+			test: (val) => val < 0,
+			message: message ?? ((messages) => messages.number.negative),
+			name: 'negative'
+		})
 	}
 }
 
 export const number = <
 	Input extends number = number,
-	Final = Input
->(
-	cb?: (schema: NumberSchema<Input, Final>) => void
-) => {
-	const schema = new NumberSchema<Input, Final>();
-
-	cb && cb(schema);
-
-	return schema;
+	Final = any
+>() => {
+	return new NumberSchema<Input, Final>();
 }

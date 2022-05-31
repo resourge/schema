@@ -6,7 +6,7 @@ test('object', () => {
 	const schema = object({
 		productId: number(),
 		productName: string()
-	}, (schema) => schema.optional()).compile();
+	}).optional().compile();
 
 	// @ts-expect-error
 	expect(schema.isValid(undefined)).toBeTruthy()
@@ -23,11 +23,13 @@ test('object', () => {
 	// @ts-expect-error
 	expect(schema2.isValid(undefined)).toBeFalsy()
 	expect(schema2.isValid({
+		// @ts-expect-error
 		productId: '1',
 		productName: 'Product Name'
 	})).toBeFalsy()
 	expect(schema2.isValid({
 		productId: 1,
+		// @ts-expect-error
 		productName: 1
 	})).toBeFalsy()
 	expect(schema2.isValid({

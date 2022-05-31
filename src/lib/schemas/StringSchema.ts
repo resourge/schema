@@ -1,5 +1,7 @@
 /* eslint-disable no-useless-escape */
-import { Schema, SchemaTypes } from '../core/schema';
+import { Schema } from '../core/schema';
+import { NullableType } from '../types/_types';
+import { SchemaTypes } from '../utils/Utils';
 
 const NUMERIC_PATTERN = /^[-]?([1-9]\d*|0)(\.\d+)?$/;
 const ALPHA_PATTERN = /^[a-zA-Z]+$/;
@@ -14,12 +16,12 @@ const UUID_PATTERN = /^([a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[a-f0-9]{4}-[a-
 const BASIC_PATTERN = /^\S+@\S+\.\S+$/;
 
 export class StringSchema<
-	Input extends string = string,
-	Final = Input
+	Input extends NullableType<string> = string,
+	Final = any
 > extends Schema<Input, Final> {
 	protected type: SchemaTypes = SchemaTypes.STRING
-	protected message: string = `{{key}} is not ${this.type}`
-	protected rule = (value: string) => typeof value === 'string'
+	protected override message: string = `{{key}} is not ${this.type}`
+	protected rule = (value: any) => typeof value === 'string'
 
 	constructor(message?: string) {
 		super();
@@ -34,11 +36,11 @@ export class StringSchema<
 	 * {{key}} will be replace with current key
 	 */
 	public min(minValue: number, message?: string) {
-		return this.test(
-			(value: string) => value.length >= minValue,
-			message ?? ((messages) => messages.string.min(minValue)),
-			'minLength'
-		)
+		return this.test({
+			test: (value: any) => value.length >= minValue,
+			message: message ?? ((messages) => messages.string.min(minValue)),
+			name: 'minLength'
+		})
 	}
 
 	/**
@@ -48,11 +50,11 @@ export class StringSchema<
 	 * {{key}} will be replace with current key
 	 */
 	public max(maxValue: number, message?: string) {
-		return this.test(
-			(value: string) => value.length <= maxValue,
-			message ?? ((messages) => messages.string.max(maxValue)),
-			'maxLength'
-		)
+		return this.test({
+			test: (value: any) => value.length <= maxValue,
+			message: message ?? ((messages) => messages.string.max(maxValue)),
+			name: 'maxLength'
+		})
 	}
 
 	/**
@@ -62,11 +64,11 @@ export class StringSchema<
 	 * {{key}} will be replace with current key
 	 */
 	public length(length: number, message?: string) {
-		return this.test(
-			(value: string) => value.length === length,
-			message ?? ((messages) => messages.string.length(length)),
-			'length'
-		)
+		return this.test({
+			test: (value: any) => value.length === length,
+			message: message ?? ((messages) => messages.string.length(length)),
+			name: 'length'
+		})
 	}
 
 	/**
@@ -76,11 +78,11 @@ export class StringSchema<
 	 * {{key}} will be replace with current key
 	 */
 	public pattern(reg: RegExp, message?: string) {
-		return this.test(
-			(value: string) => reg.test(value),
-			message ?? ((messages) => messages.string.pattern(reg)),
-			'pattern'
-		)
+		return this.test({
+			test: (value: any) => reg.test(value),
+			message: message ?? ((messages) => messages.string.pattern(reg)),
+			name: 'pattern'
+		})
 	}
 
 	/**
@@ -89,11 +91,11 @@ export class StringSchema<
 	 * {{key}} will be replace with current key
 	 */
 	public empty(message?: string) {
-		return this.test(
-			(value: string) => value.length === 0,
-			message ?? ((messages) => messages.string.empty),
-			'empty'
-		)
+		return this.test({
+			test: (value: any) => value.length === 0,
+			message: message ?? ((messages) => messages.string.empty),
+			name: 'empty'
+		})
 	}
 
 	/**
@@ -102,12 +104,12 @@ export class StringSchema<
 	 * @param message @option Overrides default message
 	 * {{key}} will be replace with current key
 	 */
-	public contains(value: string, message?: string) {
-		return this.test(
-			(val: string) => val.includes(value),
-			message ?? ((messages) => messages.string.contains(value)),
-			'contains'
-		)
+	public contains(value: any, message?: string) {
+		return this.test({
+			test: (val: any) => val.includes(value),
+			message: message ?? ((messages) => messages.string.contains(value)),
+			name: 'contains'
+		})
 	}
 
 	/**
@@ -116,11 +118,11 @@ export class StringSchema<
 	 * {{key}} will be replace with current key
 	 */
 	public numeric(message?: string) {
-		return this.test(
-			(value: string) => NUMERIC_PATTERN.test(value),
-			message ?? ((messages) => messages.string.numeric),
-			'numeric'
-		)
+		return this.test({
+			test: (value: any) => NUMERIC_PATTERN.test(value),
+			message: message ?? ((messages) => messages.string.numeric),
+			name: 'numeric'
+		})
 	}
 
 	/**
@@ -129,11 +131,11 @@ export class StringSchema<
 	 * {{key}} will be replace with current key
 	 */
 	public alpha(message?: string) {
-		return this.test(
-			(value: string) => ALPHA_PATTERN.test(value),
-			message ?? ((messages) => messages.string.alpha),
-			'alpha'
-		)
+		return this.test({
+			test: (value: any) => ALPHA_PATTERN.test(value),
+			message: message ?? ((messages) => messages.string.alpha),
+			name: 'alpha'
+		})
 	}
 
 	/**
@@ -142,11 +144,11 @@ export class StringSchema<
 	 * {{key}} will be replace with current key
 	 */
 	public alphanum(message?: string) {
-		return this.test(
-			(value: string) => ALPHANUM_PATTERN.test(value),
-			message ?? ((messages) => messages.string.alphanum),
-			'alphanum'
-		)
+		return this.test({
+			test: (value: any) => ALPHANUM_PATTERN.test(value),
+			message: message ?? ((messages) => messages.string.alphanum),
+			name: 'alphanum'
+		})
 	}
 
 	/**
@@ -155,11 +157,11 @@ export class StringSchema<
 	 * {{key}} will be replace with current key
 	 */
 	public alphadash(message?: string) {
-		return this.test(
-			(value: string) => ALPHADASH_PATTERN.test(value),
-			message ?? ((messages) => messages.string.alphadash),
-			'alphadash'
-		)
+		return this.test({
+			test: (value: any) => ALPHADASH_PATTERN.test(value),
+			message: message ?? ((messages) => messages.string.alphadash),
+			name: 'alphadash'
+		})
 	}
 
 	/**
@@ -168,11 +170,11 @@ export class StringSchema<
 	 * {{key}} will be replace with current key
 	 */
 	public hex(message?: string) {
-		return this.test(
-			(value: string) => value.length % 2 === 0 && HEX_PATTERN.test(value),
-			message ?? ((messages) => messages.string.hex),
-			'hex'
-		)
+		return this.test({
+			test: (value: any) => value.length % 2 === 0 && HEX_PATTERN.test(value),
+			message: message ?? ((messages) => messages.string.hex),
+			name: 'hex'
+		})
 	}
 
 	/**
@@ -181,11 +183,11 @@ export class StringSchema<
 	 * {{key}} will be replace with current key
 	 */
 	public base64(message?: string) {
-		return this.test(
-			(value: string) => BASE64_PATTERN.test(value),
-			message ?? ((messages) => messages.string.base64),
-			'base64'
-		)
+		return this.test({
+			test: (value: any) => BASE64_PATTERN.test(value),
+			message: message ?? ((messages) => messages.string.base64),
+			name: 'base64'
+		})
 	}
 
 	/**
@@ -194,11 +196,11 @@ export class StringSchema<
 	 * {{key}} will be replace with current key
 	 */
 	public uuid(message?: string) {
-		return this.test(
-			(value: string) => UUID_PATTERN.test(value),
-			message ?? ((messages) => messages.string.uuid),
-			'uuid'
-		)
+		return this.test({
+			test: (value: any) => UUID_PATTERN.test(value),
+			message: message ?? ((messages) => messages.string.uuid),
+			name: 'uuid'
+		})
 	}
 
 	/**
@@ -207,11 +209,11 @@ export class StringSchema<
 	 * {{key}} will be replace with current key
 	 */
 	public url(message?: string) {
-		return this.test(
-			(value: string) => URL_PATTERN.test(value),
-			message ?? ((messages) => messages.string.url),
-			'url'
-		)
+		return this.test({
+			test: (value: any) => URL_PATTERN.test(value),
+			message: message ?? ((messages) => messages.string.url),
+			name: 'url'
+		})
 	}
 
 	/**
@@ -220,11 +222,11 @@ export class StringSchema<
 	 * {{key}} will be replace with current key
 	 */
 	public cuid(message?: string) {
-		return this.test(
-			(value: string) => CUID_PATTERN.test(value),
-			message ?? ((messages) => messages.string.cuid),
-			'cuid'
-		)
+		return this.test({
+			test: (value: any) => CUID_PATTERN.test(value),
+			message: message ?? ((messages) => messages.string.cuid),
+			name: 'cuid'
+		})
 	}
 
 	/**
@@ -236,23 +238,17 @@ export class StringSchema<
 	public email(mode?: 'basic' | 'precise', message?: string) {
 		const pattern = mode === 'precise' ? PRECISE_PATTERN : BASIC_PATTERN;
 
-		return this.test(
-			(value: string) => pattern.test(value),
-			message ?? ((messages) => messages.string.email),
-			'email'
-		)
+		return this.test({
+			test: (value: any) => pattern.test(value),
+			message: message ?? ((messages) => messages.string.email),
+			name: 'email'
+		})
 	}
 }
 
 export const string = <
 	Input extends string = string,
-	Final = Input
->(
-	cb?: (schema: StringSchema<Input, Final>) => void
-) => {
-	const schema = new StringSchema<Input, Final>();
-
-	cb && cb(schema);
-
-	return schema;
+	Final = any
+>() => {
+	return new StringSchema<Input, Final>(); ;
 }

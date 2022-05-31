@@ -1,17 +1,17 @@
-import { ObjectShape } from '../types/SchemaObject';
+import { SchemaMap } from '../types/_types';
+import { CompileSchemaConfig } from '../types/types';
 
-import { CompileSchemaConfig, Schema } from './schema';
+import { Schema } from './schema';
 
-export type PrivateSchema = Schema<any, any> & { compileSchema: Schema<any, any>['compileSchema'] }
+export type PrivateSchema = Schema<any> & { compileSchema: Schema<any>['compileSchema'] }
 
 export abstract class ObjectTypedSchema<
-	Input extends Record<string, any>,
-	Final = Input
+	Input = any,
+	Final = any
 > extends Schema<Input, Final> {
-	protected readonly _shape!: ObjectShape<Input, Final>;
 	protected shape: Array<[string, PrivateSchema]> = []
 
-	constructor(schemas: ObjectShape<Input, Final>) {
+	constructor(schemas: SchemaMap<Input>) {
 		super();
 
 		this.shape = Object.keys(schemas)

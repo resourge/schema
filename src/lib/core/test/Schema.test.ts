@@ -21,14 +21,15 @@ describe('Schema', () => {
 
 	it('async', async () => {
 		const schema = number()
-		.asyncTest(
-			() => Promise.resolve(true),
-			'Async message',
-			'Async test2'
-		).asyncTest(
-			() => Promise.resolve(true),
-			'Async message'
-		)
+		.asyncTest({
+			test: () => Promise.resolve(true),
+			message: 'Async message',
+			name: 'Async test2'
+		})
+		.asyncTest({
+			test: () => Promise.resolve(true),
+			message: 'Async message'
+		})
 		.compile();
 
 		const validate = async (value: any) => await schema.isValid(value);
@@ -62,15 +63,12 @@ describe('Schema', () => {
 		schema.required();
 		expect(schema.isRequired).toBeTruthy();
 
-		schema.test(
-			() => true,
-			'Custom Text Message'
-		).test({
-			isValid: () => true,
+		schema.test({
+			test: () => true,
 			message: 'Custom Text Message'
 		})
 		.asyncTest({
-			isValid: () => Promise.resolve(true),
+			test: () => Promise.resolve(true),
 			message: 'Async message'
 		})
 		.compile();

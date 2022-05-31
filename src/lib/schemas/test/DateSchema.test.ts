@@ -1,9 +1,10 @@
-import { SchemaError } from '../../core/schema';
+import { SchemaError } from 'src/lib/types/types';
+
 import { date, DateSchema } from '../DateSchema'
 
 describe('date', () => {
 	it('should be today', () => {
-		const schema = date((schema) => schema.today()).compile();
+		const schema = date().today().compile();
 
 		expect(schema.isValid(new Date('2001-01-01'))).toBeFalsy()
 		expect(schema.isValid(new Date())).toBeTruthy()

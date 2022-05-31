@@ -10,7 +10,7 @@ describe('array', () => {
 	})
 
 	it('should be length', () => {
-		const schema = array(number(), (schema) => schema.length(2)).compile();
+		const schema = array(number()).length(2).compile();
 
 		expect(schema.isValid([])).toBeFalsy()
 		expect(schema.isValid([1])).toBeFalsy()
@@ -43,7 +43,7 @@ describe('array', () => {
 	})
 	
 	it('should be unique', () => {
-		const schemaNumber = array(number(), (schema) => schema.unique()).compile();
+		const schemaNumber = array(number()).unique().compile();
 
 		expect(schemaNumber.isValid([])).toBeTruthy()
 		expect(schemaNumber.isValid([1, 2])).toBeTruthy()
@@ -53,9 +53,8 @@ describe('array', () => {
 			object({
 				product: number(),
 				productName: string()
-			}), 
-			(schema) => schema.unique()
-		).compile();
+			})
+		).unique().compile();
 
 		expect(schemaObject.isValid([])).toBeTruthy()
 		expect(schemaObject.isValid([
@@ -95,9 +94,8 @@ describe('array', () => {
 				object({
 					product: number(),
 					productName: string()
-				}), 
-				(schema) => schema.uniqueBy('product')
-			).compile();
+				})
+			).uniqueBy('product').compile();
 	
 			expect(schemaObject.isValid([])).toBeTruthy()
 			expect(schemaObject.isValid([
@@ -136,9 +134,8 @@ describe('array', () => {
 				object({
 					product: number(),
 					productName: string()
-				}), 
-				(schema) => schema.uniqueBy((value) => value.productName)
-			).compile();
+				})
+			).uniqueBy((value) => value.productName).compile();
 	
 			expect(schemaObject.isValid([])).toBeTruthy()
 			expect(schemaObject.isValid([

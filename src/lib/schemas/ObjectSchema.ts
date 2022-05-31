@@ -1,17 +1,17 @@
 
 import { ObjectTypedSchema } from '../core/ObjectTypedSchema';
-import { RuleFn, SchemaTypes } from '../core/schema';
-import { ObjectShape } from '../types/SchemaObject';
+import { SchemaMap } from '../types/_types';
+import { SchemaTypes } from '../utils/Utils';
 
 export class ObjectSchema<
-	Input extends Record<string, any>,
-	Final = Input
+	Input extends object = object,
+	Final = any
 > extends ObjectTypedSchema<Input, Final> {
 	protected type: SchemaTypes = SchemaTypes.OBJECT
 	protected message: string = `{{key}} is not ${this.type}`
-	protected rule: RuleFn<Input, Final> = (value) => typeof value === 'object'
+	protected rule = (value: any) => typeof value === 'object'
 
-	constructor(schemas: ObjectShape<Input, Final>, message?: string) {
+	constructor(schemas: SchemaMap<Input>, message?: string) {
 		super(schemas);
 
 		this.message = message ?? this.message;
@@ -19,15 +19,9 @@ export class ObjectSchema<
 }
 
 export const object = <
-	Input extends Record<string, any>,
-	Final = Input
+	Input extends object = object,
 >(
-	schemas: ObjectShape<Input, Final>, 
-	cb?: (schema: ObjectSchema<Input, Final>) => void
+	schemas: SchemaMap<Input>
 ) => {
-	const schema = new ObjectSchema<Input, Final>(schemas);
-
-	cb && cb(schema);
-
-	return schema;
+	return new ObjectSchema<Input>(schemas);
 }

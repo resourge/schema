@@ -1,16 +1,17 @@
-import { ArrayShape } from '../types/SchemaObject';
+import { ObjectPropertiesSchema } from '../types/_types';
+import { CompileSchemaConfig } from '../types/types';
 
 import { PrivateSchema } from './ObjectTypedSchema';
-import { CompileSchemaConfig, Schema } from './schema';
+import { Schema } from './schema';
 
 export abstract class ArrayTypedSchema<
-	Input extends any[],
-	Final = Input
+	Input extends any[] = any[],
+	Final = any,
+	S extends ObjectPropertiesSchema<Input[number], Final> = ObjectPropertiesSchema<Input[number], Final>
 > extends Schema<Input, Final> {
-	protected readonly _shape!: ArrayShape<Input, Final>;
 	protected schema: PrivateSchema
 
-	constructor(schema: ArrayShape<Input, Final>) {
+	constructor(schema: S) {
 		super();
 		this.schema = schema as unknown as PrivateSchema
 	}

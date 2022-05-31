@@ -116,7 +116,7 @@ describe('number', () => {
 		expect(validate('10')).toBeTruthy()
 		expect(validate(undefined)).toBeTruthy()
 
-		const validate2 = (value: any) => schema.isValid(value, { '': true });
+		const validate2 = (value: any) => schema.isValid(value, ['']);
 		
 		expect(validate2(10)).toBeTruthy()
 		expect(validate2(null)).toBeFalsy()
@@ -145,7 +145,7 @@ describe('number', () => {
 	})
 
 	it('should be required', () => {
-		const schema = number((schema) => schema.required()).compile();
+		const schema = number().required().compile();
 	
 		const validate = (value: any) => schema.isValid(value);
 		
@@ -175,11 +175,11 @@ describe('number', () => {
 	})
 
 	it('should test custom test', () => {
-		const schema = number().test(
-			(value) => value !== 10,
-			'Requires to be 10',
-			''
-		).compile();
+		const schema = number().test({
+			test: (value) => value !== 10,
+			message: 'Requires to be 10',
+			name: ''
+		}).compile();
 	
 		const validate = (value: any) => schema.isValid(value);
 		

@@ -1,104 +1,28 @@
 /* eslint-disable no-new-func */
 /* eslint-disable @typescript-eslint/no-implied-eval */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
+import { shallowClone } from '@resourge/shallow-clone'
 
-import { DeepReadonly } from '../types/DeepReadonly'
+import { AsyncRule, AsyncRuleBooleanMethod, AsyncRuleMethodSchemaError } from '../rules/AsyncRule'
+import { addRule, BaseRule } from '../rules/BaseRule'
+import { Rule, RuleBooleanMethod, RuleMethodSchemaError } from '../rules/Rule'
 import { FormKey } from '../types/FormKey'
+import { ObjectPropertiesSchema } from '../types/_types'
+import { CompileConfig, CompileSchemaConfig, Context, SchemaError } from '../types/types'
+import { Parameters, SchemaTypes } from '../utils/Utils'
 import { beautifyFunction } from '../utils/beautifyFunction'
 import { defaultMessages, MessageType } from '../utils/messages'
-import { shallowClone } from '../utils/shallowClone'
 
 declare global {
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	export const __DEV__: boolean
 }
 
-export enum SchemaTypes {
-	STRING = 'string',
-	BOOLEAN = 'boolean',
-	NUMBER = 'number',
-	ANY = 'any',
-	ARRAY = 'array',
-	OBJECT = 'object',
-	DATE = 'date'
-}
-
-export type Context = {
-	index: number
-	onlyOnTouch?: boolean
-	optional?: boolean
-	nullable?: boolean
-	messages: MessageType
-	async?: boolean
-	rules: {
-		[key: string]: Function
-	}
-}
-
-export type Touches<T extends Record<string, any>> = {
-	/**
-	 * Paths for the keys touched
-	 */
-	[K in FormKey<T> | string]?: boolean
-}
-
-export type AsyncRuleFn<Value = any, T = any> = (value: DeepReadonly<Value>, obj: DeepReadonly<T>) => Promise<boolean>
-export type SyncRuleFn<Value = any, T = any> = (value: DeepReadonly<Value>, obj: DeepReadonly<T>) => boolean
-
-export type RuleFn<Value = any, T = any> = AsyncRuleFn<Value, T> | SyncRuleFn<Value, T>
-
 export type WhenRule<Value = any, T = any> = {
 	name: string
-	isValid: RuleFn<Value, T>
-	then: Schema<any, any>
-	otherwise?: Schema<any, any>
-}
-
-export type NormalRule<Value = any, T = any> = {
-	type: 'NORMAL'
-	name: string
-	isValid: RuleFn<Value, T>
-	message: string | ((messages: MessageType) => string)
-}
-
-export type AsyncRule<Value = any, T = any> = {
-	type: 'ASYNC'
-	name: string
-	isValid: AsyncRuleFn<Value, T>
-	message: string | ((messages: MessageType) => string)
-}
-
-export type Rule<Value = any, T = any> = NormalRule<Value, T> | AsyncRule<Value, T>
-
-export type CompileSchemaConfig = {
-	context: Context
-	key?: string
-	srcCode?: string[]
-	path?: string
-}
-
-export type CompileConfig = { 
-	debug?: boolean
-	onlyOnTouch?: boolean
-	defaultOptional?: boolean
-	defaultNullable?: boolean
-	messages?: MessageType
-}
-
-enum Parameters {
-	ERRORS_KEY = 'errors',
-	PROMISE_KEY = 'promises',
-	CONTEXT_KEY = 'context',
-	ONLY_ON_TOUCH = 'onlyOnTouch',
-	OBJECT_KEY = 'object',
-
-	VALUE = 'value',
-	RECURSIVE_KEY = 'recursiveKey',
-}
-
-export type SchemaError = {
-	key: string
-	error: string
+	method: RuleBooleanMethod<Value, T>
+	then: Schema<any>
+	otherwise?: Schema<any>
 }
 
 type WhenConfig<
@@ -106,28 +30,22 @@ type WhenConfig<
 	Input, 
 	Final = Input,
 > = {
-	is: RuleFn<Input, Final>
+	is: RuleBooleanMethod<Input, Final>
 	then: (schema: T) => T
 	otherwise?: (schema: T) => T
 }
 
-type TestFunction<Input, Final> = {
-	isValid: RuleFn<Input, Final>
+type TestMethodConfig<Method extends Function> = {
+	test: Method
 	message: string | ((messages: MessageType) => string)
 	name?: string
 }
 
-type AsyncTestFunction<Input, Final> = {
-	isValid: AsyncRuleFn<Input, Final>
-	message: string | ((messages: MessageType) => string)
-	name?: string
-}
-export abstract class Schema<
-	Input, 
-	Final = Input
-> {
-	protected readonly _input!: Input;
-	protected readonly _final!: Final;
+type OnlyOnTouch<Input> = Array<Input extends any[] | Record<string, any> ? FormKey<Input> : string>
+
+export abstract class Schema<Input = any, Final = any> {
+	public Input!: Input;
+	public final!: Final;
 	public async: boolean = false;
 	protected _isOnlyOnTouch?: boolean;
 	public get isOnlyOnTouch(): boolean {
@@ -151,17 +69,16 @@ export abstract class Schema<
 
 	protected abstract type: SchemaTypes
 	protected abstract message: string
-	protected abstract rule: RuleFn<any, any>
+	protected abstract rule: RuleBooleanMethod<any, any>
 
-	private _validate: ((value: Input, onlyOnTouch?: string[]) => Promise<SchemaError[]> | SchemaError[]) | undefined
+	protected _validate: ((value: any, onlyOnTouch?: OnlyOnTouch<Input>) => Promise<SchemaError[]> | SchemaError[]) | undefined
 
 	/**
 	 * Path for current value
 	 */
 	protected path: string = '';
-	protected normalRules: Rule[] = []
+	protected normalRules: Array<BaseRule<any, any, Function>> = []
 	protected whenRules: WhenRule[] = []
-	protected srcCode: string[] = []
 
 	protected getValueKey(key?: string) {
 		return `${Parameters.VALUE}${key ? `${key.indexOf('[') === 0 ? '' : '.'}${key}` : ''}`
@@ -180,79 +97,35 @@ export abstract class Schema<
 		]
 	}
 
-	protected addRule(
-		name: string,
-		isValid: RuleFn,
-		context: Context
-	) {
-		const index = context.index = context.index + 1;
-		const ruleFnName = `${this.type}_${name}_${index}`;
-
-		context.rules[ruleFnName] = isValid;
-
-		return ruleFnName;
-	}
-
 	// #region Normal Rules
-	/**
-	 * Transform rule into string
-	 * @param rule Rule
-	 * @param context 
-	 * @param valueKey 
-	 * @returns 
-	 */
-	protected transformNormalRules(
-		rule: Rule, 
-		context: Context, 
-		valueKey: string
-	): string[] {
-		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-		context.async = context.async || (rule.type === 'ASYNC')
-		const ruleFnName = this.addRule(`${rule.name || 'custom_rule'}`, rule.isValid, context)
-
-		const parameters: string[] = [
-			valueKey, 
-			Parameters.OBJECT_KEY
-		]
-
-		const message = typeof rule.message === 'string' ? rule.message : rule.message(context.messages)
-
-		const validationSrcCode = [
-			`if ( !${ruleFnName}_isValid ) {`,
-			...this.getErrorSyntax(message),
-			'}'
-		]
-
-		if ( rule.type === 'NORMAL' ) {
-			return [
-				`const ${ruleFnName}_isValid = ${Parameters.CONTEXT_KEY}.rules.${ruleFnName}(${parameters.join(',')});`,
-				...validationSrcCode
-			]
-		}
-
-		return [
-			`${Parameters.PROMISE_KEY}.push(`,
-			`${Parameters.CONTEXT_KEY}.rules.${ruleFnName}(${parameters.join(',')})`,
-			`.then((${ruleFnName}_isValid) => {`,
-			...validationSrcCode,
-			'})',
-			');'
-		]
-	}
-
-	protected compileNormalRules(rules: Rule[], context: Context, valueKey: string): string[] {
-		return rules.flatMap((rule) => this.transformNormalRules(rule, context, valueKey))
+	protected compileNormalRules(rules: Array<BaseRule<any, any, Function>>, context: Context, valueKey: string): string[] {
+		return rules.flatMap((rule) => rule.getRule(
+			context, 
+			this.type,
+			valueKey,
+			this.path,
+			Boolean(this._isOnlyOnTouch ?? context.onlyOnTouch)
+		))
 	}
 	// #endregion Normal Rules
 
 	// #region When Rules
 	protected transformWhenRules(
 		rule: WhenRule, 
-		context: Context, 
-		valueKey: string, 
-		srcCode: string[]
+		{
+			context, 
+			key,
+			path,
+			srcCode
+		}: CompileSchemaConfig
 	): string[] {
-		const ruleFnName = this.addRule(`${rule.name}`, rule.isValid, context)
+		const valueKey = this.getValueKey(key)
+		const ruleFnName = addRule(
+			this.type, 
+			rule.name,
+			rule.method,
+			context
+		)
 
 		const parameters: string[] = [
 			valueKey, 
@@ -261,14 +134,16 @@ export abstract class Schema<
 
 		const thenSrcCode = rule.then.compileSchema({
 			context,
-			path: this.path,
+			key,
+			path,
 			srcCode
 		});
 
 		const otherwiseSrcCode = rule.otherwise ? rule.otherwise.compileSchema({
 			context,
-			path: this.path,
-			srcCode
+			srcCode,
+			key,
+			path
 		}) : undefined;
 
 		const whenSrcCode = [
@@ -290,13 +165,9 @@ export abstract class Schema<
 		return whenSrcCode;
 	}
 
-	protected compileWhenSchema(
-		context: Context,
-		valueKey: string,
-		srcCode: string[]
-	) {
+	protected compileWhenSchema(config: CompileSchemaConfig) {
 		return this.whenRules.flatMap((rule) => (
-			this.transformWhenRules(rule, context, valueKey, srcCode)
+			this.transformWhenRules(rule, config)
 		))
 	}
 	// #endregion When Rules
@@ -306,18 +177,28 @@ export abstract class Schema<
 		context: Context, 
 		srcCode: string[]
 	) {
-		const fnName = this.addRule(`schema_is_${this.type}`, this.rule, context)
+		const rule = new Rule(
+			'MESSAGE',
+			this.rule,
+			this.message,
+			`schema_is_${this.type}`
+		)
 
-		const parameters: string[] = [
-			valueKey, 
-			Parameters.OBJECT_KEY
-		]
+		const {
+			methodName,
+			parameters,
+			srcCode: errorsSyntax
+		} = rule.getRuleSrcCode(
+			context,
+			this.type,
+			valueKey,
+			this.path,
+			false
+		)
 
 		const rulesSrcCode = this.compileNormalRules(this.normalRules, context, valueKey);
 
-		const fn = `${Parameters.CONTEXT_KEY}.rules.${fnName}(${parameters.join(',')})`;
-
-		const errorsSyntax = this.getErrorSyntax(this.message);
+		const fn = `${Parameters.CONTEXT_KEY}.rules.${methodName}(${parameters.join(',')})`;
 
 		const fnSrcCode = rulesSrcCode.length > 0 || srcCode.length > 0 ? [
 			`if (${fn}) {`,
@@ -338,7 +219,7 @@ export abstract class Schema<
 		.reduce((fnSrcCode, rule) => rule(fnSrcCode, valueKey), fnSrcCode)
 	}
 
-	protected getMandatoryRules(schema: Schema<any, any>, context: Context) {
+	protected getMandatoryRules(schema: Schema<any>, context: Context) {
 		const mandatoryRules: Array<(fnSrcCode: string[], valueKey: string) => string[]> = []
 
 		const isOptional = schema._isOptional ?? context.optional;
@@ -393,7 +274,7 @@ export abstract class Schema<
 				schema.required();
 			
 				mandatoryRules.push((fnSrcCode: string[], valueKey: string) => [
-					`if ( ${valueKey} === null && ${valueKey} === undefined ){`,
+					`if ( ${valueKey} === null || ${valueKey} === undefined ){`,
 					...schema.getErrorSyntax(context.messages.required),
 					'}',
 					'else {',
@@ -418,6 +299,10 @@ export abstract class Schema<
 			mandatoryRules.push((fnSrcCode: string[]) => [
 				`if ( ${Parameters.ONLY_ON_TOUCH}.some((key) => key.includes(\`${schema.path}\`) || \`${schema.path}\`.includes(key)) ){`,
 				...fnSrcCode,
+				`context.onlyOnTouchErrors[\`${schema.path}\`] = errors.filter((error) => error.key === \`${schema.path}\`);`,
+				'}',
+				`else if ( context.onlyOnTouchErrors[\`${schema.path}\`] ){`,
+				`context.onlyOnTouchErrors[\`${schema.path}\`].forEach((error) => errors.push(error))`,
 				'}'
 			])
 		}
@@ -435,88 +320,86 @@ export abstract class Schema<
 		this.path = path ?? key ?? '';
 
 		if ( this.whenRules && this.whenRules.length ) {
-			return this.compileWhenSchema(context, valueKey, srcCode)
+			return this.compileWhenSchema({
+				context, 
+				key, 
+				srcCode,
+				path
+			})
 		}
 
 		return this.compileNormalSchema(valueKey, context, srcCode);
 	}
 
-	public test(
-		isValid: TestFunction<Input, Final>['isValid'],
-		message: string | ((messages: MessageType) => string),
-		name?: string
+	public test<Form = this['final']>(
+		method: RuleMethodSchemaError<Input, Form>,
+	): ObjectPropertiesSchema<Input, Form>
+	public test<Form = this['final']>(
+		method: TestMethodConfig<RuleBooleanMethod<Input, Form>>
+	): ObjectPropertiesSchema<Input, Form>
+	public test<Form = this['final']>(
+		method: RuleMethodSchemaError<Input, Form> | TestMethodConfig<RuleBooleanMethod<Input, Form>>
+	): ObjectPropertiesSchema<Input, Form> {
+		if ( typeof method === 'object' ) {
+			this.normalRules.push(
+				new Rule(
+					'MESSAGE',
+					method.test,
+					method.message,
+					method.name
+				)
+			)
+
+			return this as any;
+		}
+
+		this.normalRules.push(
+			new Rule(
+				'METHOD_ERROR',
+				method
+			)
+		)
+
+		return this as any;
+	}
+
+	public asyncTest<Form = this['final']>(
+		method: AsyncRuleMethodSchemaError<Input, Form>,
 	): this
-	public test(config: TestFunction<Input, Final>): this
-	public test(
-		config: TestFunction<Input, Final>['isValid'] | TestFunction<Input, Final>,
-		message?: string | ((messages: MessageType) => string),
-		name?: string
+	public asyncTest<Form = this['final']>(
+		method: TestMethodConfig<AsyncRuleBooleanMethod<Input, Form>>
+	): this
+	public asyncTest<Form = this['final']>(
+		method: AsyncRuleMethodSchemaError<Input, Form> | TestMethodConfig<AsyncRuleBooleanMethod<Input, Form>>
 	) {
-		if ( typeof config === 'object' ) {
-			this.normalRules.push({
-				type: 'NORMAL',
-				name: (config.name ?? '').replace(/\s+/g, '_'),
-				isValid: config.isValid,
-				message: config.message
-			})
+		if ( typeof method === 'object' ) {
+			this.normalRules.push(
+				new AsyncRule(
+					'MESSAGE',
+					method.test,
+					method.message,
+					method.name
+				)
+			)
 
 			return this;
 		}
 
-		this.normalRules.push({
-			type: 'NORMAL',
-			name: (name ?? '').replace(/\s+/g, '_'),
-			isValid: config,
-			/* c8 ignore start */ 
-			// This is satisfy the coverage 
-			// but this if will never be called
-			message: message ?? ''
-			/* c8 ignore stop */
-		})
+		this.normalRules.push(
+			new AsyncRule(
+				'METHOD_ERROR',
+				method
+			)
+		)
 
 		return this;
 	}
 
-	public asyncTest(
-		isValid: AsyncTestFunction<Input, Final>['isValid'],
-		message: string | ((messages: MessageType) => string),
-		name?: string
-	): this
-	public asyncTest(config: AsyncTestFunction<Input, Final>): this
-	public asyncTest(
-		config: AsyncTestFunction<Input, Final>['isValid'] | AsyncTestFunction<Input, Final>,
-		message?: string | ((messages: MessageType) => string),
-		name?: string
-	) {
-		if ( typeof config === 'object' ) {
-			this.normalRules.push({
-				type: 'ASYNC',
-				name: (config.name ?? '').replace(/\s+/g, '_'),
-				isValid: config.isValid,
-				message: config.message
-			})
-
-			return this;
-		}
-		this.normalRules.push({
-			type: 'ASYNC',
-			name: (name ?? '').replace(/\s+/g, '_'),
-			isValid: config,
-			/* c8 ignore start */ 
-			// This is satisfy the coverage 
-			// but this if will never be called
-			message: message ?? ''
-			/* c8 ignore stop */
-		})
-
-		return this;
-	}
-
-	public when<S extends Schema<any, any> = this>({
+	public when<S extends Schema<any> = this, Form = any>({
 		is,
 		then,
 		otherwise
-	}: WhenConfig<S, Input, Final>) {
+	}: WhenConfig<S, Input, Form>) {
 		const thenThis = shallowClone(this) as unknown as S;
 		thenThis.whenRules = [...thenThis.whenRules];
 		thenThis.normalRules = [...thenThis.normalRules];
@@ -534,7 +417,7 @@ export abstract class Schema<
 
 		this.whenRules.push({
 			name: 'custom_when',
-			isValid: is,
+			method: is,
 			then: thenSchema,
 			otherwise: otherwiseSchema
 		})
@@ -609,7 +492,8 @@ export abstract class Schema<
 			messages: messages ?? defaultMessages,
 			rules: {
 		
-			}
+			},
+			onlyOnTouchErrors: {}
 		}
 
 		const schemasSrcCode = this.compileSchema({
@@ -650,26 +534,22 @@ export abstract class Schema<
 			srcCode.join('\t')
 		)
 
-		this._validate = (value: Input, onlyOnTouch?: string[]): typeof this.async extends true ? Promise<SchemaError[]> : SchemaError[] => {
+		this._validate = (value: any, onlyOnTouch?: OnlyOnTouch<Input>): typeof this.async extends true ? Promise<SchemaError[]> : SchemaError[] => {
 			return validate(value, context, value, onlyOnTouch)
 		}
 
 		return this;
 	}
 
-	public validate(value: Input, onlyOnTouch: Touches<Input> = {}) {
+	public validate(value: Input, onlyOnTouch: OnlyOnTouch<Input> = []) {
 		if ( !this._validate ) {
 			this.compile();
 		}
 
-		const _onlyOnTouch: string[] = Object.keys(onlyOnTouch)
-		.filter((key) => onlyOnTouch[key as FormKey<Input>])
-		.map((key) => key);
-
-		return this._validate!(value, _onlyOnTouch)
+		return this._validate!(value, onlyOnTouch)
 	}
 
-	public isValid(value: Input, onlyOnTouch: Touches<Input> = {}): Promise<boolean> | boolean {
+	public isValid(value: Input, onlyOnTouch: OnlyOnTouch<Input> = []): Promise<boolean> | boolean {
 		if ( this.async ) {
 			return (this.validate(value, onlyOnTouch) as Promise<SchemaError[]>).then((res) => res.length === 0)
 		}

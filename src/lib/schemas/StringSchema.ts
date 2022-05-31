@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-escape */
 import { Schema } from '../core/schema';
-import { NullableType } from '../types/_types';
+import { NullableType } from '../types/SchemaMap';
 import { SchemaTypes } from '../utils/Utils';
 
 const NUMERIC_PATTERN = /^[-]?([1-9]\d*|0)(\.\d+)?$/;

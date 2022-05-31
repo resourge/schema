@@ -7,7 +7,7 @@ import { AsyncRule, AsyncRuleBooleanMethod, AsyncRuleMethodSchemaError } from '.
 import { addRule, BaseRule } from '../rules/BaseRule'
 import { Rule, RuleBooleanMethod, RuleMethodSchemaError } from '../rules/Rule'
 import { FormKey } from '../types/FormKey'
-import { ObjectPropertiesSchema } from '../types/_types'
+import { ObjectPropertiesSchema } from '../types/SchemaMap'
 import { CompileConfig, CompileSchemaConfig, Context, SchemaError } from '../types/types'
 import { Parameters, SchemaTypes } from '../utils/Utils'
 import { beautifyFunction } from '../utils/beautifyFunction'

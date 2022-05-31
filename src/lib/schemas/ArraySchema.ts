@@ -1,6 +1,6 @@
 
 import { ArrayTypedSchema } from '../core/ArrayTypedSchema';
-import { ObjectPropertiesSchema } from '../types/_types';
+import { ObjectPropertiesSchema } from '../types/SchemaMap';
 import { SchemaTypes } from '../utils/Utils';
 
 export class ArraySchema<

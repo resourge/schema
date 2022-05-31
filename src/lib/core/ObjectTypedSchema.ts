@@ -1,4 +1,4 @@
-import { SchemaMap } from '../types/_types';
+import { SchemaMap } from '../types/SchemaMap';
 import { CompileSchemaConfig } from '../types/types';
 
 import { Schema } from './schema';

@@ -1,5 +1,5 @@
 import { Schema } from '../core/schema';
-import { NullableType } from '../types/_types';
+import { NullableType } from '../types/SchemaMap';
 import { SchemaTypes } from '../utils/Utils';
 
 export class NumberSchema<

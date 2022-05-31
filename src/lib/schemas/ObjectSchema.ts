@@ -1,10 +1,10 @@
 
 import { ObjectTypedSchema } from '../core/ObjectTypedSchema';
-import { SchemaMap } from '../types/_types';
+import { NullableType, SchemaMap } from '../types/SchemaMap';
 import { SchemaTypes } from '../utils/Utils';
 
 export class ObjectSchema<
-	Input extends object = object,
+	Input extends NullableType<object> = object,
 	Final = any
 > extends ObjectTypedSchema<Input, Final> {
 	protected type: SchemaTypes = SchemaTypes.OBJECT

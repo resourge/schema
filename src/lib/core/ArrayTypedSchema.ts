@@ -1,4 +1,4 @@
-import { ObjectPropertiesSchema } from '../types/_types';
+import { ObjectPropertiesSchema } from '../types/SchemaMap';
 import { CompileSchemaConfig } from '../types/types';
 
 import { PrivateSchema } from './ObjectTypedSchema';

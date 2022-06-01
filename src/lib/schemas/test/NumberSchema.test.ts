@@ -39,13 +39,26 @@ describe('number', () => {
 		expect(validate(10.123)).toBeFalsy()
 	})
 
-	it('should be equal', () => {
-		const schema = number().equals(10).compile();
+	describe('equal', () => {
+		it('should be equal to 1 number', () => {
+			const schema = number().equals(10).compile();
 	
-		const validate = (value: any) => schema.isValid(value);
+			const validate = (value: any) => schema.isValid(value);
 		
-		expect(validate(10)).toBeTruthy()
-		expect(validate(10.12)).toBeFalsy()
+			expect(validate(10)).toBeTruthy()
+			expect(validate(10.12)).toBeFalsy()
+		})
+
+		it('should be equal to multiple numbers', () => {
+			const schema = number().equals([10, 11]).compile();
+	
+			const validate = (value: any) => schema.isValid(value);
+		
+			expect(validate(10)).toBeTruthy()
+			expect(validate(11)).toBeTruthy()
+			expect(validate(12)).toBeFalsy()
+			expect(validate(10.12)).toBeFalsy()
+		})
 	})
 
 	it('should be integer', () => {

@@ -45,14 +45,33 @@ export class NumberSchema<
 	}
 
 	/**
+	 * Checks if is between minValue and maxValue.
+	 * @param maxValue max number value
+	 * @param message @option Overrides default message
+	 * {{key}} will be replace with current key
+	 */
+	public between(minValue: number, maxValue: number, message?: string) {
+		return this.test({
+			test: (value) => value >= minValue && value <= maxValue,
+			message: message ?? ((messages) => messages.number.between(minValue, maxValue)),
+			name: 'betweenNumber'
+		})
+	}
+
+	/**
 	 * Checks if is equal to value.
 	 * @param value to equal
 	 * @param message @option Overrides default message
 	 * {{key}} will be replace with current key
 	 */
-	public equals(value: number, message?: string) {
+	public equals(value: number | number[], message?: string) {
+		let test = (val: number) => val === value
+		if ( Array.isArray(value) ) {
+			test = (val: number) => value.includes(val)
+		}
+		
 		return this.test({
-			test: (val) => val === value,
+			test: test,
 			message: message ?? ((messages) => messages.number.equals(value)),
 			name: 'equalsNumber'
 		})

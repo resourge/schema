@@ -46,7 +46,7 @@ type OnlyOnTouch<Input> = Array<Input extends any[] | Record<string, any> ? Form
 export abstract class Schema<Input = any, Final = any> {
 	public Input!: Input;
 	public final!: Final;
-	public async: boolean = false;
+	protected async: boolean = false;
 	protected _isOnlyOnTouch?: boolean;
 	public get isOnlyOnTouch(): boolean {
 		return this._isOnlyOnTouch ?? false;
@@ -331,6 +331,9 @@ export abstract class Schema<Input = any, Final = any> {
 		return this.compileNormalSchema(valueKey, context, srcCode);
 	}
 
+	/**
+	 * Method for custom validation
+	 */
 	public test<Form = this['final']>(
 		method: RuleMethodSchemaError<Input, Form>,
 	): ObjectPropertiesSchema<Input, Form>
@@ -363,6 +366,9 @@ export abstract class Schema<Input = any, Final = any> {
 		return this as any;
 	}
 
+	/**
+	 * Method for async custom validation
+	 */
 	public asyncTest<Form = this['final']>(
 		method: AsyncRuleMethodSchemaError<Input, Form>,
 	): this
@@ -395,6 +401,22 @@ export abstract class Schema<Input = any, Final = any> {
 		return this;
 	}
 
+	/**
+	 * Makes schema conditional. Meaning when `is` is true 
+	 * it will validate with `then schema` otherwise will 
+	 * validate with `otherwise schema`.
+	 * @param {WhenConfig} 
+	 * @example
+	 * ```Typescript
+	 * number()
+	 * .optional() // Validation will be included in `then` and `otherwise`
+	 * .when({
+	 * 	is: (value, form) => value === 10,
+	 *  then: (schema) => schema.required() ,
+	 *  otherwise: (schema) => schema.notOptional()
+	 * })
+	 * ```
+	 */
 	public when<S extends Schema<any> = this, Form = any>({
 		is,
 		then,
@@ -425,12 +447,20 @@ export abstract class Schema<Input = any, Final = any> {
 		return this;
 	} 
 
+	/**
+	 * Makes schema validation only on touch 
+	 * (meaning value will only be validated if key 
+	 * is present in onlyOnTouch: OnlyOnTouch<Input>).
+	 */
 	public onlyOnTouch() {
 		this._isOnlyOnTouch = true;
 
 		return this;
 	}
-
+	
+	/**
+	 * Makes schema validation required (meaning value can not be undefined and null).
+	 */
 	public required() {
 		this._isOptional = undefined;
 		this._isNullable = undefined;
@@ -439,6 +469,9 @@ export abstract class Schema<Input = any, Final = any> {
 		return this;
 	}
 
+	/**
+	 * Makes schema validation not required (meaning value can be undefined and null).
+	 */
 	public notRequired(message?: string) {
 		this._isOptional = undefined;
 		this._isNullable = undefined;
@@ -449,6 +482,9 @@ export abstract class Schema<Input = any, Final = any> {
 		return this;
 	}
 
+	/**
+	 * Makes schema validation optional (meaning value can be undefined).
+	 */
 	public optional() {
 		this._isOptional = true;
 		this._isRequired = undefined;
@@ -456,6 +492,9 @@ export abstract class Schema<Input = any, Final = any> {
 		return this;
 	}
 
+	/**
+	 * Makes schema validation not optional (meaning value can not be undefined).
+	 */
 	public notOptional() {
 		this._isOptional = false;
 		this._isRequired = undefined;
@@ -463,6 +502,9 @@ export abstract class Schema<Input = any, Final = any> {
 		return this;
 	}
 
+	/**
+	 * Makes schema validation nullable (meaning value can be null).
+	 */
 	public nullable() {
 		this._isNullable = true;
 		this._isRequired = undefined;
@@ -470,6 +512,9 @@ export abstract class Schema<Input = any, Final = any> {
 		return this;
 	}
 
+	/**
+	 * Makes schema validation not nullable (meaning value can not be null).
+	 */
 	public notNullable() {
 		this._isNullable = false;
 		this._isRequired = undefined;
@@ -477,13 +522,17 @@ export abstract class Schema<Input = any, Final = any> {
 		return this;
 	}
 
+	/**
+	 * Creates validation method. 
+	 * @param config - {@link CompileConfig} 
+	 */
 	public compile({ 
 		debug, 
 		messages,
 		onlyOnTouch = false,
 		defaultNullable,
 		defaultOptional
-	}: CompileConfig = {}) {
+	}: CompileConfig = {}): this {
 		const context: Context = {
 			index: 0,
 			onlyOnTouch,
@@ -521,7 +570,7 @@ export abstract class Schema<Input = any, Final = any> {
 		/* c8 ignore start */ // this is for better debugging no need to test coverage
 		if ( __DEV__ ) {
 			if ( debug ) {
-				console.log('srcCode', beautifyFunction(srcCode))
+				console.log('method', beautifyFunction(srcCode))
 			}
 		}
 		/* c8 ignore stop */ // this is for better debugging no need to test coverage
@@ -541,7 +590,14 @@ export abstract class Schema<Input = any, Final = any> {
 		return this;
 	}
 
-	public validate(value: Input, onlyOnTouch: OnlyOnTouch<Input> = []) {
+	/**
+	 * Validates form and returns an array of errors {@link SchemaError}
+	 * @param value - form input
+	 * @param onlyOnTouch - array of keys that inform the schema if a value
+	 * was touched. Works with only with {@link Schema#onlyOnTouch} 
+	 * @returns {SchemaError}
+	 */
+	public validate(value: Input, onlyOnTouch: OnlyOnTouch<Input> = []): SchemaError[] | Promise<SchemaError[]> {
 		if ( !this._validate ) {
 			this.compile();
 		}
@@ -549,6 +605,13 @@ export abstract class Schema<Input = any, Final = any> {
 		return this._validate!(value, onlyOnTouch)
 	}
 
+	/**
+	 * Validates form and returns a boolean.
+	 * @param value - form input
+	 * @param onlyOnTouch - array of keys that inform the schema if a value
+	 * was touched. Works with only with {@link Schema#onlyOnTouch} 
+	 * @returns {boolean}
+	 */
 	public isValid(value: Input, onlyOnTouch: OnlyOnTouch<Input> = []): Promise<boolean> | boolean {
 		if ( this.async ) {
 			return (this.validate(value, onlyOnTouch) as Promise<SchemaError[]>).then((res) => res.length === 0)

@@ -110,7 +110,14 @@ export class ArraySchema<
 export const array = <
 	Input extends any[] = any[],
 	Final = any,
-	S extends ObjectPropertiesSchema<Input[number], Final> = ObjectPropertiesSchema<Input[number], Final>,
+	S extends ObjectPropertiesSchema<
+		Input[number], 
+		Final
+	> = 
+	ObjectPropertiesSchema<
+		Input[number], 
+		Final
+	>,
 >(
 	schemas: S,
 	message?: string

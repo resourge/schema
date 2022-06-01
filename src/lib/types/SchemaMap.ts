@@ -9,19 +9,31 @@ import { StringSchema } from '../schemas/StringSchema';
 export type NullableType<T> = undefined | null | T
 
 export type ObjectPropertiesSchema<T = any, Final = any> = 
-T extends NullableType<string>
-	? StringSchema<T, Final>
-	: T extends NullableType<number>
-		? NumberSchema<T, Final>
-		: T extends NullableType<boolean>
-			? BooleanSchema<T, Final>
-			: T extends NullableType<Date>
-				? DateSchema<T, Final>
-				: T extends NullableType<any[]>
-					? ArraySchema<T extends any[] ? T : any[], Final>
-					: T extends NullableType<object>
-						? ObjectSchema<T, Final>
-						: AnySchema    
+	T extends NullableType<string>
+		? (
+			string extends T
+				? StringSchema<T, Final>
+				: StringSchema<NullableType<string>, Final>
+		) : T extends NullableType<number>
+			? (
+				number extends T  
+					? NumberSchema<T, Final>
+					: NumberSchema<NullableType<number>, Final>
+			) : T extends NullableType<boolean>
+				? (
+					boolean extends T  
+						? BooleanSchema<T, Final>
+						: BooleanSchema<NullableType<boolean>, Final>
+				) : T extends NullableType<Date>
+					? (
+						Date extends T  
+							? DateSchema<T, Final>
+							: DateSchema<NullableType<Date>, Final>
+					) : T extends NullableType<any[]>
+						? ArraySchema<T extends any[] ? T : any[], Final>
+						: T extends NullableType<object>
+							? ObjectSchema<T, Final>
+							: AnySchema    
 					
 type PartialSchemaMap<TSchema = any> = {
 	[key in keyof TSchema]?: ObjectPropertiesSchema<TSchema[key]>;

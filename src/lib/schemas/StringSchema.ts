@@ -72,6 +72,25 @@ export class StringSchema<
 	}
 
 	/**
+	 * Checks if is equal to value.
+	 * @param value to equal
+	 * @param message @option Overrides default message
+	 * {{key}} will be replace with current key
+	 */
+	public equals(value: string | string[], message?: string) {
+		let test = (val: string) => val === value
+		if ( Array.isArray(value) ) {
+			test = (val: string) => value.includes(val)
+		}
+		
+		return this.test({
+			test: test,
+			message: message ?? ((messages) => messages.string.equals(value)),
+			name: 'equalsString'
+		})
+	}
+
+	/**
 	 * Matches regular expression
 	 * @param reg Regular expression
 	 * @param message @option Overrides default message
@@ -104,7 +123,7 @@ export class StringSchema<
 	 * @param message @option Overrides default message
 	 * {{key}} will be replace with current key
 	 */
-	public contains(value: any, message?: string) {
+	public contains(value: string, message?: string) {
 		return this.test({
 			test: (val: any) => val.includes(value),
 			message: message ?? ((messages) => messages.string.contains(value)),

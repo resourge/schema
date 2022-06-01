@@ -122,14 +122,26 @@ describe('string', () => {
 		expect(schema.isValid('//')).toBeFalsy()
 	})
 
-	it('should be pattern', () => {
-		const schema = string().pattern(/\D/).compile();
+	describe('pattern', () => {
+		it('should be pattern', () => {
+			const schema = string().pattern(/\D/).compile();
+	
+			expect(schema.isValid('0')).toBeFalsy()
+			expect(schema.isValid('001')).toBeFalsy()
+			expect(schema.isValid('000000')).toBeFalsy()
+			expect(schema.isValid('//')).toBeTruthy()
+			expect(schema.isValid('aaa')).toBeTruthy()
+		})
 
-		expect(schema.isValid('0')).toBeFalsy()
-		expect(schema.isValid('001')).toBeFalsy()
-		expect(schema.isValid('000000')).toBeFalsy()
-		expect(schema.isValid('//')).toBeTruthy()
-		expect(schema.isValid('aaa')).toBeTruthy()
+		it('should be postal code pattern', () => {
+			// eslint-disable-next-line prefer-regex-literals
+			const schema = string().pattern(RegExp('\\d{4}([-]\\d{3})?')).compile();
+	
+			expect(schema.isValid('0')).toBeFalsy()
+			expect(schema.isValid('001')).toBeFalsy()
+			expect(schema.isValid('4999333')).toBeTruthy()
+			expect(schema.isValid('4999-333')).toBeTruthy()
+		})
 	})
 
 	it('should be url', () => {

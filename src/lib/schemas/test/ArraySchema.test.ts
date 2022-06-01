@@ -42,50 +42,62 @@ describe('array', () => {
 		expect(array(number()).min(1).isValid([1, 2, 3])).toBeTruthy()
 	})
 	
-	it('should be unique', () => {
-		const schemaNumber = array(number()).unique().compile();
-
-		expect(schemaNumber.isValid([])).toBeTruthy()
-		expect(schemaNumber.isValid([1, 2])).toBeTruthy()
-		expect(schemaNumber.isValid([2, 2])).toBeFalsy()
-
-		const schemaObject = array(
-			object({
-				product: number(),
-				productName: string()
-			})
-		).unique().compile();
-
-		expect(schemaObject.isValid([])).toBeTruthy()
-		expect(schemaObject.isValid([
-			{
-				product: 1,
-				productName: 'Name'
-			}
-		])).toBeTruthy()
-		expect(schemaObject.isValid([
-			{
-				product: 1,
-				productName: 'Name'
-			},
-			{
-				product: 2,
-				productName: 'Name'
-			}
-		])).toBeTruthy()
-
-		expect(
-			schemaObject.isValid([
+	describe('unique', () => {
+		it('should be unique number', () => {
+			const schemaNumber = array(number()).unique().compile();
+	
+			expect(schemaNumber.isValid([])).toBeTruthy()
+			expect(schemaNumber.isValid([1, 2])).toBeTruthy()
+			expect(schemaNumber.isValid([2, 2])).toBeFalsy()
+	
+			const schemaObject = array(
+				object({
+					product: number(),
+					productName: string()
+				})
+			).unique().compile();
+	
+			expect(schemaObject.isValid([])).toBeTruthy()
+			expect(schemaObject.isValid([
+				{
+					product: 1,
+					productName: 'Name'
+				}
+			])).toBeTruthy()
+			expect(schemaObject.isValid([
 				{
 					product: 1,
 					productName: 'Name'
 				},
 				{
-					product: 1,
+					product: 2,
 					productName: 'Name'
 				}
-			])
-		).toBeTruthy()
+			])).toBeTruthy()
+	
+			expect(
+				schemaObject.isValid([
+					{
+						product: 1,
+						productName: 'Name'
+					},
+					{
+						product: 1,
+						productName: 'Name'
+					}
+				])
+			).toBeTruthy()
+		})
+
+		it('should be unique 2 types', () => {
+			const schemaNumber = array<Array<1 | 2>>(
+				number().equals([1, 2])
+			).compile();
+	
+			expect(schemaNumber.isValid([])).toBeTruthy()
+			expect(schemaNumber.isValid([1])).toBeTruthy()
+			expect(schemaNumber.isValid([2, 4])).toBeFalsy()
+		})
 	})
 
 	describe('should be uniqueby', () => {

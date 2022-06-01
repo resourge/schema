@@ -5,4 +5,39 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  padding: 2rem;
 }
+
+
+.formControl {
+  margin: 0.5rem 0rem;
+}
+
+.formLabel {
+  margin-bottom: 0.2rem;
+  font-weight: 600;
+}
+
+.formLabelSelect {
+  margin: 0rem 0.5rem;
+}
+
+
+.formErrorMessage {
+  margin: 0.5rem;
+  color: red
+}
+
+.formState {
+  color: blue;
+}
+
+.formSubmit {
+  margin: 1rem 0;
+}
+
+.formSubmitBtn {
+  width: 8rem;
+  height: 2rem;
+}
+

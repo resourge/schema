@@ -266,8 +266,8 @@ export class StringSchema<
 	}
 
 	/**
-	 * Checks if is email.
-	 * @param mode @option Defines if is basic or precise email
+	 * Checks if is a valid email.
+	 * @param mode @option Defines if is basic or precise validation
 	 * @param message @option Overrides default message
 	 * {{key}} will be replace with current key
 	 */
@@ -281,6 +281,12 @@ export class StringSchema<
 		})
 	}
 
+	/**
+	 * Checks if is a valid postalCode.
+	 * @param postalCode @option Defines custom format validation or a function witch we can return the custom validation
+	 * @param message @option Overrides default message
+	 * {{key}} will be replace with current key
+	 */
 	public postalCode(
 		postalCode: PostalCodeInfo | ((value: DeepReadonly<NonNullable<Input>>, form: DeepReadonly<this['final']>) => PostalCodeInfo), 
 		message?: string
@@ -291,7 +297,7 @@ export class StringSchema<
 
 		return this.test({
 			test: test,
-			message: message ?? ((messages) => messages.string.email),
+			message: message ?? ((messages) => messages.string.postalCode),
 			name: 'postalCode'
 		})
 	}

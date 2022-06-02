@@ -11,6 +11,7 @@ enum FormatInvalidTypeEnum {
 	'url' = 'url',
 	'singleLine' = 'single line',
 	'email' = 'email',
+	'postalCode' = 'postal code', // TODO remove from this
 }
 
 const getInvalidFormatMessage = (type: keyof typeof FormatInvalidTypeEnum) => {
@@ -57,7 +58,8 @@ export const defaultMessages = {
 		cuid: getInvalidFormatMessage('cuid'),
 		url: getInvalidFormatMessage('url'),
 		singleLine: getInvalidFormatMessage('singleLine'),
-		email: getInvalidFormatMessage('email')
+		email: getInvalidFormatMessage('email'),
+		postalCode: getInvalidFormatMessage('postalCode') // TODO change this to receive (format) => `Invalid format needs to be like ${format}`
 	},
 	notOptional: 'Not optional item',
 	notNullable: 'Not optional item',

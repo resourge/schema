@@ -158,6 +158,74 @@ string().hex()
 string().hex('Custom hex error message')
 ```
 
+### uuid
+
+Checks if string is format uuid.
+
+```Typescript
+string().uuid()
+// with custom message
+string().uuid('Custom uuid error message')
+```
+
+### url
+
+Checks if string is URL accepted.
+
+```Typescript
+string().url()
+// with custom message
+string().url('Custom url error message')
+```
+
+### cuid
+
+Checks if string is format cuid.
+
+```Typescript
+string().cuid()
+// with custom message
+string().cuid('Custom cuid error message')
+```
+
+### email
+
+Checks if is a valid email.
+
+@mode 
+  - basic -> Validation of basic email template.
+  - precise -> Validation of a more restricted email template.
+
+
+```Typescript
+string().email()
+// or
+string().email('basic', 'Custom email error message') // 'basic' | 'precise'
+// with custom message
+string().email('Custom email error message')
+```
+
+### postalCode
+
+Checks if is a valid postalCode.
+Postal Codes regex validations are included.
+
+```Typescript
+import { PostalCodes } from '@resourge/schemas/postalCodes';
+
+string().postalCode(PostalCodes.PT) // adding validation for Portugal
+// or
+string().postalCode((_, form) => {
+  if(form.country === 'Espanha') {
+    return PostalCodes.ES
+  }
+  return PostalCodes.PT
+}, 'Custom email error message')
+// with custom message
+string().postalCode(PostalCodes.PT, 'Custom email error message')
+```
+
+
 ## Contribution
 
 In case you have more different validations that you use please tell us so we improve the library.

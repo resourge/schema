@@ -1,8 +1,9 @@
 import { number, NumberSchema } from '../NumberSchema';
+import { S } from '../index';
 
 describe('number', () => {
 	it('should be number', () => {
-		const schema = number().compile();
+		const schema = S.number().compile();
 	
 		const validate = (value: any) => schema.isValid(value);
 		

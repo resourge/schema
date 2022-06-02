@@ -1,812 +1,1130 @@
 export type PostalCodeInfo = {
+	country: string
 	format: string
 	regex: RegExp
 };
-export const AD: PostalCodeInfo = {
-	format: 'AD###',
-	regex: /^(?:AD)*(\d{3})$/i
-};
-export const AL: PostalCodeInfo = {
+export const AF: PostalCodeInfo = {
+	country: 'Afghanistan',
 	format: '####',
-	regex: /^(\d{4})$/i
-};
-export const AM: PostalCodeInfo = {
-	format: '######',
-	regex: /^(\d{6})$/i
-};
-export const AR: PostalCodeInfo = {
-	format: '@####@@@',
-	regex: /^[A-Z]?\d{4}[A-Z]{0,3}$/i
-};
-export const AS: PostalCodeInfo = {
-	format: '#####-####',
-	regex: /96799/i
-};
-export const AT: PostalCodeInfo = {
-	format: '####',
-	regex: /^(\d{4})$/i
-};
-export const AU: PostalCodeInfo = {
-	format: '####',
-	regex: /^(\d{4})$/i
+	regex: /^[0-9]{4}$/i
 };
 export const AX: PostalCodeInfo = {
-	format: '#####',
-	regex: /^(?:FI)*(\d{5})$/i
+	country: 'Aland Islands',
+	format: '#####, AX-#####',
+	regex: /^(AX)?[0-9]{5}$/i
 };
-export const AZ: PostalCodeInfo = {
-	format: 'AZ ####',
-	regex: /^(?:AZ)*(\d{4})$/i
-};
-export const BA: PostalCodeInfo = {
-	format: '#####',
-	regex: /^(\d{5})$/i
-};
-export const BB: PostalCodeInfo = {
-	format: 'BB#####',
-	regex: /^(?:BB)*(\d{5})$/i
-};
-export const BD: PostalCodeInfo = {
+export const AL: PostalCodeInfo = {
+	country: 'Albania',
 	format: '####',
-	regex: /^(\d{4})$/i
-};
-export const BE: PostalCodeInfo = {
-	format: '####',
-	regex: /^(\d{4})$/i
-};
-export const BG: PostalCodeInfo = {
-	format: '####',
-	regex: /^(\d{4})$/i
-};
-export const BH: PostalCodeInfo = {
-	format: '####|###',
-	regex: /^(\d{3}\d?)$/i
-};
-export const BL: PostalCodeInfo = {
-	format: '#####',
-	regex: /^(\d{5})$/i
-};
-export const BM: PostalCodeInfo = {
-	format: '@@ ##',
-	regex: /^([A-Z]{2}\d{2})$/i
-};
-export const BN: PostalCodeInfo = {
-	format: '@@####',
-	regex: /^([A-Z]{2}\d{4})$/i
-};
-export const BR: PostalCodeInfo = {
-	format: '#####-###',
-	regex: /^\d{5}-\d{3}$/i
-};
-export const BY: PostalCodeInfo = {
-	format: '######',
-	regex: /^(\d{6})$/i
-};
-export const CA: PostalCodeInfo = {
-	format: '@#@ #@#',
-	regex: /^([ABCEGHJKLMNPRSTVXY]\d[ABCEGHJKLMNPRSTVWXYZ]) ?(\d[ABCEGHJKLMNPRSTVWXYZ]\d)$/i
-};
-export const CH: PostalCodeInfo = {
-	format: '####',
-	regex: /^(\d{4})$/i
-};
-export const CL: PostalCodeInfo = {
-	format: '#######',
-	regex: /^(\d{7})$/i
-};
-export const CN: PostalCodeInfo = {
-	format: '######',
-	regex: /^(\d{6})$/i
-};
-export const CO: PostalCodeInfo = {
-	format: '######',
-	regex: /^(\d{6})$/i
-};
-export const CR: PostalCodeInfo = {
-	format: '#####',
-	regex: /^(\d{5})$/i
-};
-export const CS: PostalCodeInfo = {
-	format: '#####',
-	regex: /^(\d{5})$/i
-};
-export const CU: PostalCodeInfo = {
-	format: 'CP #####',
-	regex: /^(?:CP)*(\d{5})$/i
-};
-export const CV: PostalCodeInfo = {
-	format: '####',
-	regex: /^(\d{4})$/i
-};
-export const CX: PostalCodeInfo = {
-	format: '####',
-	regex: /^(\d{4})$/i
-};
-export const CY: PostalCodeInfo = {
-	format: '####',
-	regex: /^(\d{4})$/i
-};
-export const CZ: PostalCodeInfo = {
-	format: '### ##',
-	regex: /^\d{3}\s?\d{2}$/i
-};
-export const DE: PostalCodeInfo = {
-	format: '#####',
-	regex: /^(\d{5})$/i
-};
-export const DK: PostalCodeInfo = {
-	format: '####',
-	regex: /^(\d{4})$/i
-};
-export const DO: PostalCodeInfo = {
-	format: '#####',
-	regex: /^(\d{5})$/i
+	regex: /^[0-9]{4}$/i
 };
 export const DZ: PostalCodeInfo = {
+	country: 'Algeria',
 	format: '#####',
-	regex: /^(\d{5})$/i
+	regex: /^[0-9]{5}$/i
 };
-export const EC: PostalCodeInfo = {
-	format: '@####@',
-	regex: /^([a-zA-Z]\d{4}[a-zA-Z])$/i
-};
-export const EE: PostalCodeInfo = {
+export const AS: PostalCodeInfo = {
+	country: 'American Samoa',
 	format: '#####',
-	regex: /^(\d{5})$/i
+	regex: /^[0-9]{5}$/i
 };
-export const EG: PostalCodeInfo = {
-	format: '#####',
-	regex: /^(\d{5})$/i
+export const AD: PostalCodeInfo = {
+	country: 'Andorra',
+	format: 'AD###',
+	regex: /^AD[0-9]{3}$/i
 };
-export const ES: PostalCodeInfo = {
-	format: '#####',
-	regex: /^(\d{5})$/i
+export const AI: PostalCodeInfo = {
+	country: 'Anguilla',
+	format: 'AI2640',
+	regex: /^AI2640$/i
 };
-export const ET: PostalCodeInfo = {
+export const AQ: PostalCodeInfo = {
+	country: 'Antarctica',
+	format: 'BIQQ 1ZZ',
+	regex: /^BIQQ1ZZ$/i
+};
+export const AR: PostalCodeInfo = {
+	country: 'Argentina',
 	format: '####',
-	regex: /^(\d{4})$/i
+	regex: /^[0-9]{4}$/i
 };
-export const FI: PostalCodeInfo = {
-	format: '#####',
-	regex: /^(?:FI)*(\d{5})$/i
-};
-export const FM: PostalCodeInfo = {
-	format: '#####',
-	regex: /^(\d{5})$/i
-};
-export const FO: PostalCodeInfo = {
-	format: '###',
-	regex: /^(?:FO)*(\d{3})$/i
-};
-export const FR: PostalCodeInfo = {
-	format: '#####',
-	regex: /^(\d{5})$/i
-};
-export const GB: PostalCodeInfo = {
-	format: '@# #@@|@## #@@|@@# #@@|@@## #@@|@#@ #@@|@@#@ #@@|GIR0AA',
-	regex: /^([Gg][Ii][Rr]\\s?0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))\\s?[0-9][A-Za-z]{2})$/i
-};
-export const GE: PostalCodeInfo = {
+export const AM: PostalCodeInfo = {
+	country: 'Armenia',
 	format: '####',
-	regex: /^(\d{4})$/i
+	regex: /^[0-9]{4}$/i
 };
-export const GF: PostalCodeInfo = {
-	format: '#####',
-	regex: /^((97|98)3\d{2})$/i
-};
-export const GG: PostalCodeInfo = {
-	format: '@# #@@|@## #@@|@@# #@@|@@## #@@|@#@ #@@|@@#@ #@@|GIR0AA',
-	regex: /^((?:(?:[A-PR-UWYZ][A-HK-Y]\\d[ABEHMNPRV-Y0-9]|[A-PR-UWYZ]\\d[A-HJKPS-UW0-9])\\s\\d[ABD-HJLNP-UW-Z]{2})|GIR\\s?0AA)$/i
-};
-export const GL: PostalCodeInfo = {
+export const AU: PostalCodeInfo = {
+	country: 'Australia',
 	format: '####',
-	regex: /^(\d{4})$/i
+	regex: /^[0-9]{4}$/i
 };
-export const GP: PostalCodeInfo = {
-	format: '#####',
-	regex: /^((97|98)\d{3})$/i
-};
-export const GR: PostalCodeInfo = {
-	format: '### ##',
-	regex: /^(\d{5})$/i
-};
-export const GT: PostalCodeInfo = {
-	format: '#####',
-	regex: /^(\d{5})$/i
-};
-export const GU: PostalCodeInfo = {
-	format: '969##',
-	regex: /^(969\d{2})$/i
-};
-export const GW: PostalCodeInfo = {
+export const AT: PostalCodeInfo = {
+	country: 'Austria',
 	format: '####',
-	regex: /^(\d{4})$/i
+	regex: /^[0-9]{4}$/i
 };
-export const HN: PostalCodeInfo = {
-	format: '@@####',
-	regex: /^([A-Z]{2}\d{4})$/i
+export const AZ: PostalCodeInfo = {
+	country: 'Azerbaijan',
+	format: 'AZ#####',
+	regex: /^AZ[0-9]{4}$/i
 };
-export const HR: PostalCodeInfo = {
-	format: '#####',
-	regex: /^(?:HR)*(\d{5})$/i
+export const BH: PostalCodeInfo = {
+	country: 'Bahrain',
+	format: '###, ####',
+	regex: /^[0-9]{3,4}$/i
 };
-export const HT: PostalCodeInfo = {
-	format: 'HT####',
-	regex: /^(?:HT)*(\d{4})$/i
-};
-export const HU: PostalCodeInfo = {
+export const BD: PostalCodeInfo = {
+	country: 'Bangladesh',
 	format: '####',
-	regex: /^(\d{4})$/i
+	regex: /^[0-9]{4}$/i
 };
-export const ID: PostalCodeInfo = {
-	format: '#####',
-	regex: /^(\d{5})$/i
+export const BB: PostalCodeInfo = {
+	country: 'Barbados',
+	format: 'BB#####',
+	regex: /^(BB)?[0-9]{5}$/i
 };
-export const IE: PostalCodeInfo = {
-	format: '@@@ @@@@',
-	regex: /^(D6W|[AC-FHKNPRTV-Y][0-9]{2})\s?([AC-FHKNPRTV-Y0-9]{4})/i
-};
-export const IL: PostalCodeInfo = {
-	format: '#######',
-	regex: /^(\d{7}|\d{5})$/i
-};
-export const IM: PostalCodeInfo = {
-	format: '@# #@@|@## #@@|@@# #@@|@@## #@@|@#@ #@@|@@#@ #@@|GIR0AA',
-	regex: /^((?:(?:[A-PR-UWYZ][A-HK-Y]\\d[ABEHMNPRV-Y0-9]|[A-PR-UWYZ]\\d[A-HJKPS-UW0-9])\\s\\d[ABD-HJLNP-UW-Z]{2})|GIR\\s?0AA)$/i
-};
-export const IN: PostalCodeInfo = {
+export const BY: PostalCodeInfo = {
+	country: 'Belarus',
 	format: '######',
-	regex: /^(\d{6})$/i
+	regex: /^[0-9]{6}$/i
 };
-export const IQ: PostalCodeInfo = {
+export const BE: PostalCodeInfo = {
+	country: 'Belgium',
+	format: '####',
+	regex: /^[0-9]{4}$/i
+};
+export const BT: PostalCodeInfo = {
+	country: 'Bhutan',
 	format: '#####',
-	regex: /^(\d{5})$/i
+	regex: /^[0-9]{5}$/i
 };
-export const IR: PostalCodeInfo = {
-	format: '##########',
-	regex: /^(\d{10})$/i
+export const BO: PostalCodeInfo = {
+	country: 'Bolivia',
+	format: '####',
+	regex: /^[0-9]{4}$/i
 };
-export const IS: PostalCodeInfo = {
-	format: '###',
-	regex: /^(\d{3})$/i
-};
-export const IT: PostalCodeInfo = {
+export const BA: PostalCodeInfo = {
+	country: 'Bosnia and Herzegovina',
 	format: '#####',
-	regex: /^(\d{5})$/i
+	regex: /^[0-9]{5}$/i
 };
-export const JE: PostalCodeInfo = {
-	format: '@# #@@|@## #@@|@@# #@@|@@## #@@|@#@ #@@|@@#@ #@@|GIR0AA',
-	regex: /^((?:(?:[A-PR-UWYZ][A-HK-Y]\\d[ABEHMNPRV-Y0-9]|[A-PR-UWYZ]\\d[A-HJKPS-UW0-9])\\s\\d[ABD-HJLNP-UW-Z]{2})|GIR\\s?0AA)$/i
+export const BR: PostalCodeInfo = {
+	country: 'Brazil',
+	format: '########',
+	regex: /^[0-9]{8}$/i
 };
-export const JO: PostalCodeInfo = {
-	format: '#####',
-	regex: /^(\d{5})$/i
+export const VG: PostalCodeInfo = {
+	country: 'British Virgin Islands',
+	format: 'VG####',
+	regex: /^(VG)?[0-9]{4}$/i
 };
-export const JP: PostalCodeInfo = {
-	format: '###-####',
-	regex: /^\d{3}-\d{4}$/i
+export const IO: PostalCodeInfo = {
+	country: 'British Indian Ocean Territory',
+	format: 'BB#D 1ZZ',
+	regex: /^BBND1ZZ$/i
 };
-export const KE: PostalCodeInfo = {
-	format: '#####',
-	regex: /^(\d{5})$/i
+export const BN: PostalCodeInfo = {
+	country: 'Brunei Darussalam',
+	format: 'LL####',
+	regex: /^[a-zA-Z]{2}[0-9]{4}$/i
 };
-export const KG: PostalCodeInfo = {
-	format: '######',
-	regex: /^(\d{6})$/i
+export const BG: PostalCodeInfo = {
+	country: 'Bulgaria',
+	format: '####',
+	regex: /^[0-9]{4}$/i
 };
 export const KH: PostalCodeInfo = {
+	country: 'Cambodia',
 	format: '#####',
-	regex: /^(\d{5})$/i
+	regex: /^[0-9]{5}$/i
 };
-export const KP: PostalCodeInfo = {
-	format: '###-###',
-	regex: /^(\d{6})$/i
+export const CA: PostalCodeInfo = {
+	country: 'Canada',
+	format: 'A0A 0A0',
+	regex: /^[ABCEGHJKLMNPRSTVXY]\d[ABCEGHJ-NPRSTV-Z][\s\-]?\d[ABCEGHJ-NPRSTV-Z]\d$/i
 };
-export const KR: PostalCodeInfo = {
+export const CV: PostalCodeInfo = {
+	country: 'Cape Verde',
+	format: '####',
+	regex: /^[0-9]{4}$/i
+};
+export const KY: PostalCodeInfo = {
+	country: 'Cayman Islands',
+	format: 'KY#-####',
+	regex: /^KY[0-9]{5}$/i
+};
+export const TD: PostalCodeInfo = {
+	country: 'Chad',
 	format: '#####',
-	regex: /^(\d{5})$/i
+	regex: /^[0-9]{5}$/i
 };
-export const KW: PostalCodeInfo = {
-	format: '#####',
-	regex: /^(\d{5})$/i
+export const CL: PostalCodeInfo = {
+	country: 'Chile',
+	format: '#######',
+	regex: /^[0-9]{7}$/i
 };
-export const KZ: PostalCodeInfo = {
+export const CN: PostalCodeInfo = {
+	country: 'China',
 	format: '######',
-	regex: /^(\d{6})$/i
+	regex: /^[0-9]{6}$/i
 };
-export const LA: PostalCodeInfo = {
-	format: '#####',
-	regex: /^(\d{5})$/i
-};
-export const LB: PostalCodeInfo = {
-	format: '#### ####|####',
-	regex: /^(\d{4}(\d{4})?)$/i
-};
-export const LI: PostalCodeInfo = {
+export const CX: PostalCodeInfo = {
+	country: 'Christmas Island',
 	format: '####',
-	regex: /^(\d{4})$/i
+	regex: /^[0-9]{4}$/i
 };
-export const LK: PostalCodeInfo = {
-	format: '#####',
-	regex: /^(\d{5})$/i
-};
-export const LR: PostalCodeInfo = {
+export const CC: PostalCodeInfo = {
+	country: 'Cocos (Keeling) Islands',
 	format: '####',
-	regex: /^(\d{4})$/i
+	regex: /^[0-9]{4}$/i
 };
-export const LS: PostalCodeInfo = {
-	format: '###',
-	regex: /^(\d{3})$/i
-};
-export const LT: PostalCodeInfo = {
-	format: 'LT-#####',
-	regex: /^(?:LT)*(\d{5})$/i
-};
-export const LU: PostalCodeInfo = {
-	format: 'L-####',
-	regex: /^(?:L-)?\d{4}$/i
-};
-export const LV: PostalCodeInfo = {
-	format: 'LV-####',
-	regex: /^(?:LV)*(\d{4})$/i
-};
-export const MA: PostalCodeInfo = {
-	format: '#####',
-	regex: /^(\d{5})$/i
-};
-export const MC: PostalCodeInfo = {
-	format: '#####',
-	regex: /^(\d{5})$/i
-};
-export const MD: PostalCodeInfo = {
-	format: 'MD-####',
-	regex: /^MD-\d{4}$/i
-};
-export const ME: PostalCodeInfo = {
-	format: '#####',
-	regex: /^(\d{5})$/i
-};
-export const MF: PostalCodeInfo = {
-	format: '#####',
-	regex: /^(\d{5})$/i
-};
-export const MG: PostalCodeInfo = {
-	format: '###',
-	regex: /^(\d{3})$/i
-};
-export const MH: PostalCodeInfo = {
-	format: '#####-####',
-	regex: /^969\d{2}(-\d{4})$/i
-};
-export const MK: PostalCodeInfo = {
-	format: '####',
-	regex: /^(\d{4})$/i
-};
-export const MM: PostalCodeInfo = {
-	format: '#####',
-	regex: /^(\d{5})$/i
-};
-export const MN: PostalCodeInfo = {
+export const CO: PostalCodeInfo = {
+	country: 'Colombia',
 	format: '######',
-	regex: /^(\d{6})$/i
+	regex: /^[0-9]{6}$/i
 };
-export const MP: PostalCodeInfo = {
+export const CR: PostalCodeInfo = {
+	country: 'Costa Rica',
 	format: '#####',
-	regex: /^9695\d{1}$/i
+	regex: /^[0-9]{5}$/i
 };
-export const MQ: PostalCodeInfo = {
+export const HR: PostalCodeInfo = {
+	country: 'Croatia',
 	format: '#####',
-	regex: /^(\d{5})$/i
+	regex: /^[0-9]{5}$/i
 };
-export const MT: PostalCodeInfo = {
-	format: '@@@ ####',
-	regex: /^[A-Z]{3}\s?\d{4}$/i
-};
-export const MV: PostalCodeInfo = {
+export const CU: PostalCodeInfo = {
+	country: 'Cuba',
 	format: '#####',
-	regex: /^(\d{5})$/i
+	regex: /^[0-9]{5}$/i
 };
-export const MW: PostalCodeInfo = {
+export const CY: PostalCodeInfo = {
+	country: 'Cyprus',
+	format: '####',
+	regex: /^[0-9]{4}$/i
+};
+export const CZ: PostalCodeInfo = {
+	country: 'Czech Republic',
+	format: '#####',
+	regex: /^[0-9]{5}$/i
+};
+export const DK: PostalCodeInfo = {
+	country: 'Denmark',
+	format: 'DK####',
+	regex: /^(DK){0,1}\d{4}$/i
+};
+export const DO: PostalCodeInfo = {
+	country: 'Dominican Republic',
+	format: '#####',
+	regex: /^[0-9]{5}$/i
+};
+export const EC: PostalCodeInfo = {
+	country: 'Ecuador',
 	format: '######',
-	regex: /^(\d{6})$/i
+	regex: /^[0-9]{6}$/i
 };
-export const MX: PostalCodeInfo = {
+export const EG: PostalCodeInfo = {
+	country: 'Egypt',
 	format: '#####',
-	regex: /^(\d{5})$/i
-};
-export const MY: PostalCodeInfo = {
-	format: '#####',
-	regex: /^(\d{5})$/i
-};
-export const MZ: PostalCodeInfo = {
-	format: '####',
-	regex: /^(\d{4})$/i
-};
-export const NC: PostalCodeInfo = {
-	format: '#####',
-	regex: /^(\d{5})$/i
-};
-export const NE: PostalCodeInfo = {
-	format: '####',
-	regex: /^(\d{4})$/i
-};
-export const NF: PostalCodeInfo = {
-	format: '####',
-	regex: /^(\d{4})$/i
-};
-export const NG: PostalCodeInfo = {
-	format: '######',
-	regex: /^(\d{6})$/i
-};
-export const NI: PostalCodeInfo = {
-	format: '###-###-#',
-	regex: /^(\d{7})$/i
-};
-export const NL: PostalCodeInfo = {
-	format: '#### @@',
-	regex: /^(\d{4}\s?[a-zA-Z]{2})$/i
-};
-export const NO: PostalCodeInfo = {
-	format: '####',
-	regex: /^(\d{4})$/i
-};
-export const NP: PostalCodeInfo = {
-	format: '#####',
-	regex: /^(\d{5})$/i
-};
-export const NZ: PostalCodeInfo = {
-	format: '####',
-	regex: /^(\d{4})$/i
-};
-export const OM: PostalCodeInfo = {
-	format: '###',
-	regex: /^(\d{3})$/i
-};
-export const PF: PostalCodeInfo = {
-	format: '#####',
-	regex: /^((97|98)7\d{2})$/i
-};
-export const PG: PostalCodeInfo = {
-	format: '###',
-	regex: /^(\d{3})$/i
-};
-export const PH: PostalCodeInfo = {
-	format: '####',
-	regex: /^(\d{4})$/i
-};
-export const PK: PostalCodeInfo = {
-	format: '#####',
-	regex: /^(\d{5})$/i
-};
-export const PL: PostalCodeInfo = {
-	format: '##-###',
-	regex: /^\d{2}-\d{3}$/i
-};
-export const PM: PostalCodeInfo = {
-	format: '#####',
-	regex: /^(97500)$/i
-};
-export const PR: PostalCodeInfo = {
-	format: '#####-####',
-	regex: /^00[679]\d{2}(?:-\d{4})?$/i
-};
-export const PT: PostalCodeInfo = {
-	format: '####-###',
-	regex: /^\d{4}-\d{3}\s?[a-zA-Z]{0,25}$/i
-};
-export const PW: PostalCodeInfo = {
-	format: '96940',
-	regex: /^(96940)$/i
-};
-export const PY: PostalCodeInfo = {
-	format: '####',
-	regex: /^(\d{4})$/i
-};
-export const RE: PostalCodeInfo = {
-	format: '#####',
-	regex: /^((97|98)(4|7|8)\d{2})$/i
-};
-export const RO: PostalCodeInfo = {
-	format: '######',
-	regex: /^(\d{6})$/i
-};
-export const RS: PostalCodeInfo = {
-	format: '######',
-	regex: /^(\d{6})$/i
-};
-export const RU: PostalCodeInfo = {
-	format: '######',
-	regex: /^(\d{6})$/i
-};
-export const SA: PostalCodeInfo = {
-	format: '#####',
-	regex: /^(\d{5})$/i
-};
-export const SD: PostalCodeInfo = {
-	format: '#####',
-	regex: /^(\d{5})$/i
-};
-export const SE: PostalCodeInfo = {
-	format: '### ##',
-	regex: /^(?:SE)?\d{3}\s\d{2}$/i
-};
-export const SG: PostalCodeInfo = {
-	format: '######',
-	regex: /^(\d{6})$/i
-};
-export const SH: PostalCodeInfo = {
-	format: 'STHL 1ZZ',
-	regex: /^(STHL1ZZ)$/i
-};
-export const SI: PostalCodeInfo = {
-	format: '####',
-	regex: /^(?:SI)*(\d{4})$/i
-};
-export const SJ: PostalCodeInfo = {
-	format: '####',
-	regex: /^(\d{4})$/i
-};
-export const SK: PostalCodeInfo = {
-	format: '### ##',
-	regex: /^\d{3}\s?\d{2}$/i
-};
-export const SM: PostalCodeInfo = {
-	format: '4789#',
-	regex: /^(4789\d)$/i
-};
-export const SN: PostalCodeInfo = {
-	format: '#####',
-	regex: /^(\d{5})$/i
-};
-export const SO: PostalCodeInfo = {
-	format: '@@  #####',
-	regex: /^([A-Z]{2}\d{5})$/i
+	regex: /^[0-9]{5}$/i
 };
 export const SV: PostalCodeInfo = {
-	format: 'CP ####',
-	regex: /^(?:CP)*(\d{4})$/i
-};
-export const SZ: PostalCodeInfo = {
-	format: '@###',
-	regex: /^([A-Z]\d{3})$/i
-};
-export const TC: PostalCodeInfo = {
-	format: 'TKCA 1ZZ',
-	regex: /^(TKCA 1ZZ)$/i
-};
-export const TH: PostalCodeInfo = {
-	format: '#####',
-	regex: /^(\d{5})$/i
-};
-export const TJ: PostalCodeInfo = {
-	format: '######',
-	regex: /^(\d{6})$/i
-};
-export const TM: PostalCodeInfo = {
-	format: '######',
-	regex: /^(\d{6})$/i
-};
-export const TN: PostalCodeInfo = {
+	country: 'El Salvador',
 	format: '####',
-	regex: /^(\d{4})$/i
+	regex: /^[0-9]{4}$/i
 };
-export const TR: PostalCodeInfo = {
+export const EE: PostalCodeInfo = {
+	country: 'Estonia',
 	format: '#####',
-	regex: /^(\d{5})$/i
+	regex: /^[0-9]{5}$/i
 };
-export const TW: PostalCodeInfo = {
+export const ET: PostalCodeInfo = {
+	country: 'Ethiopia',
+	format: '####',
+	regex: /^[0-9]{4}$/i
+};
+export const FK: PostalCodeInfo = {
+	country: 'Falkland Islands (Malvinas)',
+	format: 'FIQQ 1ZZ',
+	regex: /^FIQQ1ZZ$/i
+};
+export const FO: PostalCodeInfo = {
+	country: 'Faroe Islands',
+	format: '###',
+	regex: /^[0-9]{3}$/i
+};
+export const FI: PostalCodeInfo = {
+	country: 'Finland',
 	format: '#####',
-	regex: /^(\d{5})$/i
+	regex: /^[0-9]{5}$/i
 };
-export const UA: PostalCodeInfo = {
+export const FR: PostalCodeInfo = {
+	country: 'France',
 	format: '#####',
-	regex: /^(\d{5})$/i
+	regex: /^[0-9]{5}$/i
 };
-export const US: PostalCodeInfo = {
-	format: '#####-####',
-	regex: /^\d{5}(-\d{4})?$/i
+export const GF: PostalCodeInfo = {
+	country: 'French Guiana',
+	format: '973##',
+	regex: /^973[0-9]{2}$/i
 };
-export const UY: PostalCodeInfo = {
+export const PF: PostalCodeInfo = {
+	country: 'French Polynesia',
+	format: '987##',
+	regex: /^987[0-9]{2}$/i
+};
+export const GE: PostalCodeInfo = {
+	country: 'Georgia',
+	format: '####',
+	regex: /^[0-9]{4}$/i
+};
+export const DE: PostalCodeInfo = {
+	country: 'Germany',
 	format: '#####',
-	regex: /^(\d{5})$/i
+	regex: /^[0-9]{5}$/i
 };
-export const UZ: PostalCodeInfo = {
-	format: '######',
-	regex: /^(\d{6})$/i
+export const GI: PostalCodeInfo = {
+	country: 'Gibraltar',
+	format: 'GX11 1AA',
+	regex: /^GX111AA$/i
+};
+export const GR: PostalCodeInfo = {
+	country: 'Greece',
+	format: '#####',
+	regex: /^[0-9]{5}$/i
+};
+export const GL: PostalCodeInfo = {
+	country: 'Greenland',
+	format: '####',
+	regex: /^[0-9]{4}$/i
+};
+export const GP: PostalCodeInfo = {
+	country: 'Guadeloupe',
+	format: '971##',
+	regex: /^971[0-9]{2}$/i
+};
+export const GU: PostalCodeInfo = {
+	country: 'Guam',
+	format: '#####[-####]',
+	regex: /^[0-9]{5}([0-9]{4})?$/i
+};
+export const GT: PostalCodeInfo = {
+	country: 'Guatemala',
+	format: '#####',
+	regex: /^[0-9]{5}$/i
+};
+export const GG: PostalCodeInfo = {
+	country: 'Guernsey',
+	format: 'GY#####',
+	regex: /^GY[0-9]{2,3}[A-Za-z]{2}$/i
+};
+export const GN: PostalCodeInfo = {
+	country: 'Guinea',
+	format: '###',
+	regex: /^[0-9]{3}$/i
+};
+export const GW: PostalCodeInfo = {
+	country: 'Guinea-Bissau',
+	format: '####',
+	regex: /^[0-9]{4}$/i
+};
+export const HT: PostalCodeInfo = {
+	country: 'Haiti',
+	format: '####',
+	regex: /^[0-9]{4}$/i
+};
+export const HM: PostalCodeInfo = {
+	country: 'Heard Island and Mcdonald Islands',
+	format: '####',
+	regex: /^[0-9]{4}$/i
 };
 export const VA: PostalCodeInfo = {
-	format: '#####',
-	regex: /^(\d{5})$/i
+	country: 'Holy See (Vatican City State)',
+	format: '00120',
+	regex: /^00120$/i
 };
-export const VE: PostalCodeInfo = {
+export const HN: PostalCodeInfo = {
+	country: 'Honduras',
+	format: 'HN#####',
+	regex: /^(HN)?[0-9]{5}$/i
+};
+export const HU: PostalCodeInfo = {
+	country: 'Hungary',
 	format: '####',
-	regex: /^(\d{4})$/i
+	regex: /^[0-9]{4}$/i
 };
-export const VI: PostalCodeInfo = {
-	format: '#####-####',
-	regex: /^008\d{2}(?:-\d{4})?$/i
+export const IS: PostalCodeInfo = {
+	country: 'Iceland',
+	format: '###',
+	regex: /^[0-9]{3}$/i
 };
-export const VN: PostalCodeInfo = {
+export const IN: PostalCodeInfo = {
+	country: 'India',
 	format: '######',
-	regex: /^(\d{6})$/i
+	regex: /^[0-9]{6}$/i
 };
-export const WF: PostalCodeInfo = {
+export const IC: PostalCodeInfo = {
+	country: 'Canary Islands',
 	format: '#####',
-	regex: /^(986\d{2})$/i
+	regex: /^[0-9]{5}$/i
+};
+export const ID: PostalCodeInfo = {
+	country: 'Indonesia',
+	format: '#####',
+	regex: /^[0-9]{5}$/i
+};
+export const IR: PostalCodeInfo = {
+	country: 'Iran, Islamic Republic of',
+	format: '##########',
+	regex: /^[0-9]{10}$/i
+};
+export const IQ: PostalCodeInfo = {
+	country: 'Iraq',
+	format: '#####',
+	regex: /^[0-9]{5}$/i
+};
+export const IE: PostalCodeInfo = {
+	country: 'Ireland',
+	format: '### ####, #######, ###-####',
+	regex: /^[AaC-Fc-fHhKkNnPpRrTtV-Yv-y]\d[0-9Ww][ -]?[0-9AaC-Fc-fHhKkNnPpRrTtV-Yv-y]{4}$/i
+};
+export const IM: PostalCodeInfo = {
+	country: 'Isle of Man',
+	format: 'IM# ###, IM#####',
+	regex: /^IM[0-9]{2,3}[A-Za-z]{2}$/i
+};
+export const IL: PostalCodeInfo = {
+	country: 'Israel',
+	format: '#######',
+	regex: /^[0-9]{7}$/i
+};
+export const IT: PostalCodeInfo = {
+	country: 'Italy',
+	format: '#####',
+	regex: /^[0-9]{5}$/i
+};
+export const JM: PostalCodeInfo = {
+	country: 'Jamaica',
+	format: '##',
+	regex: /^[0-9]{2}$/i
+};
+export const JP: PostalCodeInfo = {
+	country: 'Japan',
+	format: '#######',
+	regex: /^[0-9]{7}$/i
+};
+export const JE: PostalCodeInfo = {
+	country: 'Jersey',
+	format: 'JE# ###, JE#####',
+	regex: /^JE[0-9]{2,3}[A-Za-z]{2}$/i
+};
+export const JO: PostalCodeInfo = {
+	country: 'Jordan',
+	format: '#####',
+	regex: /^[0-9]{5}$/i
+};
+export const KZ: PostalCodeInfo = {
+	country: 'Kazakhstan',
+	format: '######',
+	regex: /^[0-9]{6}$/i
+};
+export const KE: PostalCodeInfo = {
+	country: 'Kenya',
+	format: '#####',
+	regex: /^[0-9]{5}$/i
+};
+export const KR: PostalCodeInfo = {
+	country: 'Korea, Republic of',
+	format: '#####',
+	regex: /^[0-9]{5}$/i
+};
+export const KW: PostalCodeInfo = {
+	country: 'Kuwait',
+	format: '#####',
+	regex: /^[0-9]{5}$/i
+};
+export const KG: PostalCodeInfo = {
+	country: 'Kyrgyzstan',
+	format: '######',
+	regex: /^[0-9]{6}$/i
+};
+export const LA: PostalCodeInfo = {
+	country: 'Lao PDR',
+	format: '#####',
+	regex: /^[0-9]{5}$/i
+};
+export const LV: PostalCodeInfo = {
+	country: 'Latvia',
+	format: '#####, LV-#####',
+	regex: /^(LV)?[0-9]{4}$/i
+};
+export const LB: PostalCodeInfo = {
+	country: 'Lebanon',
+	format: '#####, #### ####',
+	regex: /^[0-9]{4}(?:[0-9]{4})?$/i
+};
+export const LS: PostalCodeInfo = {
+	country: 'Lesotho',
+	format: '###',
+	regex: /^[0-9]{3}$/i
+};
+export const LR: PostalCodeInfo = {
+	country: 'Liberia',
+	format: '####',
+	regex: /^[0-9]{4}$/i
+};
+export const LY: PostalCodeInfo = {
+	country: 'Libya',
+	format: '#####',
+	regex: /^[0-9]{5}$/i
+};
+export const LI: PostalCodeInfo = {
+	country: 'Liechtenstein',
+	format: '####',
+	regex: /^[0-9]{4}$/i
+};
+export const LT: PostalCodeInfo = {
+	country: 'Lithuania',
+	format: 'LT-#####',
+	regex: /^(LT)?[0-9]{5}$/i
+};
+export const LU: PostalCodeInfo = {
+	country: 'Luxembourg',
+	format: 'L####',
+	regex: /^(L){0,1}\d{4}$/i
+};
+export const MK: PostalCodeInfo = {
+	country: 'Macedonia, Republic of',
+	format: '####',
+	regex: /^[0-9]{4}$/i
+};
+export const MG: PostalCodeInfo = {
+	country: 'Madagascar',
+	format: '###',
+	regex: /^[0-9]{3}$/i
+};
+export const MY: PostalCodeInfo = {
+	country: 'Malaysia',
+	format: '#####',
+	regex: /^[0-9]{5}$/i
+};
+export const MV: PostalCodeInfo = {
+	country: 'Maldives',
+	format: '#####',
+	regex: /^[0-9]{5}$/i
+};
+export const MT: PostalCodeInfo = {
+	country: 'Malta',
+	format: 'LLL ####',
+	regex: /^[A-Z]{3}[0-9]{4}$/i
+};
+export const MH: PostalCodeInfo = {
+	country: 'Marshall Islands',
+	format: '#####[-####]',
+	regex: /^[0-9]{5}([0-9]{4})?$/i
+};
+export const MQ: PostalCodeInfo = {
+	country: 'Martinique',
+	format: '#####',
+	regex: /^[0-9]{5}$/i
+};
+export const MU: PostalCodeInfo = {
+	country: 'Mauritius',
+	format: '#####',
+	regex: /^[0-9]{5}$/i
 };
 export const YT: PostalCodeInfo = {
+	country: 'Mayotte',
 	format: '#####',
-	regex: /^(\d{5})$/i
+	regex: /^[0-9]{5}$/i
+};
+export const MX: PostalCodeInfo = {
+	country: 'Mexico',
+	format: '#####',
+	regex: /^[0-9]{5}$/i
+};
+export const FM: PostalCodeInfo = {
+	country: 'Micronesia, Federated States of',
+	format: '#####[-####]',
+	regex: /^[0-9]{5}([0-9]{4})?$/i
+};
+export const MD: PostalCodeInfo = {
+	country: 'Moldova',
+	format: 'MD####, MD-####',
+	regex: /^(MD)?[0-9]{4}$/i
+};
+export const MC: PostalCodeInfo = {
+	country: 'Monaco',
+	format: '980##',
+	regex: /^980[0-9]{2}$/i
+};
+export const MN: PostalCodeInfo = {
+	country: 'Mongolia',
+	format: '#####',
+	regex: /^[0-9]{5}$/i
+};
+export const ME: PostalCodeInfo = {
+	country: 'Montenegro',
+	format: '#####',
+	regex: /^[0-9]{5}$/i
+};
+export const MS: PostalCodeInfo = {
+	country: 'Montserrat',
+	format: 'MSR ####',
+	regex: /^(MSR)?[0-9]{4}$/i
+};
+export const MA: PostalCodeInfo = {
+	country: 'Morocco',
+	format: '#####',
+	regex: /^[0-9]{5}$/i
+};
+export const MZ: PostalCodeInfo = {
+	country: 'Mozambique',
+	format: '####',
+	regex: /^[0-9]{4}$/i
+};
+export const MM: PostalCodeInfo = {
+	country: 'Myanmar',
+	format: '#####',
+	regex: /^[0-9]{5}$/i
+};
+export const NA: PostalCodeInfo = {
+	country: 'Namibia',
+	format: '#####',
+	regex: /^[0-9]{5}$/i
+};
+export const NP: PostalCodeInfo = {
+	country: 'Nepal',
+	format: '#####',
+	regex: /^[0-9]{5}$/i
+};
+export const NL: PostalCodeInfo = {
+	country: 'Netherlands',
+	format: '#### LL',
+	regex: /^[1-9][0-9]{3}(?!SA|SD|SS)[A-Z]{2}$/i
+};
+export const NC: PostalCodeInfo = {
+	country: 'New Caledonia',
+	format: '988##',
+	regex: /^988[0-9]{2}$/i
+};
+export const NZ: PostalCodeInfo = {
+	country: 'New Zealand',
+	format: '####',
+	regex: /^[0-9]{4}$/i
+};
+export const NI: PostalCodeInfo = {
+	country: 'Nicaragua',
+	format: '#####',
+	regex: /^[0-9]{5}$/i
+};
+export const NE: PostalCodeInfo = {
+	country: 'Niger',
+	format: '####',
+	regex: /^[0-9]{4}$/i
+};
+export const NG: PostalCodeInfo = {
+	country: 'Nigeria',
+	format: '######',
+	regex: /^[0-9]{6}$/i
+};
+export const NF: PostalCodeInfo = {
+	country: 'Norfolk Island',
+	format: '####',
+	regex: /^[0-9]{4}$/i
+};
+export const MP: PostalCodeInfo = {
+	country: 'Northern Mariana Islands',
+	format: '#####[-####]',
+	regex: /^[0-9]{5}([0-9]{4})?$/i
+};
+export const NO: PostalCodeInfo = {
+	country: 'Norway',
+	format: '####',
+	regex: /^[0-9]{4}$/i
+};
+export const OM: PostalCodeInfo = {
+	country: 'Oman',
+	format: '###',
+	regex: /^[0-9]{3}$/i
+};
+export const PK: PostalCodeInfo = {
+	country: 'Pakistan',
+	format: '#####',
+	regex: /^[0-9]{5}$/i
+};
+export const PW: PostalCodeInfo = {
+	country: 'Palau',
+	format: '#####[-####]',
+	regex: /^[0-9]{5}([0-9]{4})?$/i
+};
+export const PS: PostalCodeInfo = {
+	country: 'Palestinian Territory, Occupied',
+	format: '###',
+	regex: /^[0-9]{3}$/i
+};
+export const PA: PostalCodeInfo = {
+	country: 'Panama',
+	format: '####',
+	regex: /^[0-9]{4}$/i
+};
+export const PG: PostalCodeInfo = {
+	country: 'Papua New Guinea',
+	format: '###',
+	regex: /^[0-9]{3}$/i
+};
+export const PY: PostalCodeInfo = {
+	country: 'Paraguay',
+	format: '####',
+	regex: /^[0-9]{4}$/i
+};
+export const PE: PostalCodeInfo = {
+	country: 'Peru',
+	format: '#####',
+	regex: /^[0-9]{5}$/i
+};
+export const PH: PostalCodeInfo = {
+	country: 'Philippines',
+	format: '####',
+	regex: /^[0-9]{4}$/i
+};
+export const PN: PostalCodeInfo = {
+	country: 'Pitcairn',
+	format: 'PCR# 1ZZ',
+	regex: /^PCRN1ZZ$/i
+};
+export const PL: PostalCodeInfo = {
+	country: 'Poland',
+	format: '99-999',
+	regex: /^[0-9]{2}-[0-9]{3}$/i
+};
+export const PT: PostalCodeInfo = {
+	country: 'Portugal',
+	format: '####-###',
+	regex: /^[0-9]{4}-[0-9]{3}$/i
+};
+export const PR: PostalCodeInfo = {
+	country: 'Puerto Rico',
+	format: '#####[-####]',
+	regex: /^[0-9]{5}([0-9]{4})?$/i
+};
+export const RE: PostalCodeInfo = {
+	country: 'Réunion',
+	format: '974##',
+	regex: /^974[0-9]{2}$/i
+};
+export const RO: PostalCodeInfo = {
+	country: 'Romania',
+	format: '######',
+	regex: /^[0-9]{6}$/i
+};
+export const RU: PostalCodeInfo = {
+	country: 'Russian Federation',
+	format: '###[-###]',
+	regex: /^[0-9]{3}([0-9]{3})?$/i
+};
+export const BL: PostalCodeInfo = {
+	country: 'Saint-Barthélemy',
+	format: '97133',
+	regex: /^97133$/i
+};
+export const SH: PostalCodeInfo = {
+	country: 'Saint Helena',
+	format: 'STHL 1ZZ',
+	regex: /^STHL1ZZ$/i
+};
+export const LC: PostalCodeInfo = {
+	country: 'Saint Lucia',
+	format: 'LC## ###',
+	regex: /^LC[0-9]{5}$/i
+};
+export const MF: PostalCodeInfo = {
+	country: 'Saint-Martin (French part)',
+	format: '97150',
+	regex: /^97150$/i
+};
+export const PM: PostalCodeInfo = {
+	country: 'Saint Pierre and Miquelon',
+	format: '97500',
+	regex: /^97500$/i
+};
+export const VC: PostalCodeInfo = {
+	country: 'Saint Vincent and Grenadines',
+	format: 'VC#####',
+	regex: /^(VC)?[0-9]{4}$/i
+};
+export const WS: PostalCodeInfo = {
+	country: 'Samoa',
+	format: 'WS#####',
+	regex: /^(WS)?[0-9]{4}$/i
+};
+export const SM: PostalCodeInfo = {
+	country: 'San Marino',
+	format: '4789#',
+	regex: /^4789[0-9]{1}$/i
+};
+export const SA: PostalCodeInfo = {
+	country: 'Saudi Arabia',
+	format: '#####[-####]',
+	regex: /^[0-9]{5}([0-9]{4})?$/i
+};
+export const SN: PostalCodeInfo = {
+	country: 'Senegal',
+	format: '#####',
+	regex: /^[0-9]{5}$/i
+};
+export const RS: PostalCodeInfo = {
+	country: 'Serbia',
+	format: '#####',
+	regex: /^[0-9]{5}$/i
+};
+export const SG: PostalCodeInfo = {
+	country: 'Singapore',
+	format: '######',
+	regex: /^[0-9]{6}$/i
+};
+export const SK: PostalCodeInfo = {
+	country: 'Slovakia',
+	format: '#####',
+	regex: /^[0-9]{5}$/i
+};
+export const SI: PostalCodeInfo = {
+	country: 'Slovenia',
+	format: '####',
+	regex: /^[0-9]{4}$/i
+};
+export const SO: PostalCodeInfo = {
+	country: 'Somalia',
+	format: 'AA #####',
+	regex: /^[a-zA-Z]{2}[0-9]{5}$/i
 };
 export const ZA: PostalCodeInfo = {
+	country: 'South Africa',
 	format: '####',
-	regex: /^(\d{4})$/i
+	regex: /^[0-9]{4}$/i
+};
+export const GS: PostalCodeInfo = {
+	country: 'South Georgia and the South Sandwich Islands',
+	format: 'SIQQ 1ZZ',
+	regex: /^SIQQ1ZZ$/i
+};
+export const ES: PostalCodeInfo = {
+	country: 'Spain',
+	format: '#####',
+	regex: /^[0-9]{5}$/i
+};
+export const LK: PostalCodeInfo = {
+	country: 'Sri Lanka',
+	format: '#####',
+	regex: /^[0-9]{5}$/i
+};
+export const SD: PostalCodeInfo = {
+	country: 'Sudan',
+	format: '#####',
+	regex: /^[0-9]{5}$/i
+};
+export const SJ: PostalCodeInfo = {
+	country: 'Svalbard and Jan Mayen Islands',
+	format: '####',
+	regex: /^[0-9]{4}$/i
+};
+export const SZ: PostalCodeInfo = {
+	country: 'Swaziland',
+	format: 'A###',
+	regex: /^[a-zA-Z]{1}[0-9]{3}$/i
+};
+export const SE: PostalCodeInfo = {
+	country: 'Sweden',
+	format: '#####',
+	regex: /^[0-9]{5}$/i
+};
+export const CH: PostalCodeInfo = {
+	country: 'Switzerland',
+	format: '####',
+	regex: /^[0-9]{4}$/i
+};
+export const TW: PostalCodeInfo = {
+	country: 'Taiwan, Republic of China',
+	format: '###[-##]',
+	regex: /^[0-9]{3}([0-9]{2})?$/i
+};
+export const TJ: PostalCodeInfo = {
+	country: 'Tajikistan',
+	format: '######',
+	regex: /^[0-9]{6}$/i
+};
+export const TZ: PostalCodeInfo = {
+	country: 'Tanzania *, United Republic of',
+	format: '#####',
+	regex: /^[0-9]{5}$/i
+};
+export const TH: PostalCodeInfo = {
+	country: 'Thailand',
+	format: '#####',
+	regex: /^[0-9]{5}$/i
+};
+export const TT: PostalCodeInfo = {
+	country: 'Trinidad and Tobago',
+	format: '######',
+	regex: /^[0-9]{6}$/i
+};
+export const TN: PostalCodeInfo = {
+	country: 'Tunisia',
+	format: '####',
+	regex: /^[0-9]{4}$/i
+};
+export const TR: PostalCodeInfo = {
+	country: 'Turkey',
+	format: '#####',
+	regex: /^[0-9]{5}$/i
+};
+export const TM: PostalCodeInfo = {
+	country: 'Turkmenistan',
+	format: '######',
+	regex: /^[0-9]{6}$/i
+};
+export const TC: PostalCodeInfo = {
+	country: 'Turks and Caicos Islands',
+	format: 'TKCA 1ZZ',
+	regex: /^TKCA1ZZ$/i
+};
+export const UA: PostalCodeInfo = {
+	country: 'Ukraine',
+	format: '#####',
+	regex: /^[0-9]{5}$/i
+};
+export const GB: PostalCodeInfo = {
+	country: 'United Kingdom',
+	format: '#####, ######, #######, ### ###, ## ###, ######, #### ###',
+	regex: /((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([AZa-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))[0-9][A-Za-z]{2})|GIR0AA/i
+};
+export const US: PostalCodeInfo = {
+	country: 'United States of America',
+	format: '#####[-####]',
+	regex: /^[0-9]{5}([0-9]{4})?$/i
+};
+export const UY: PostalCodeInfo = {
+	country: 'Uruguay',
+	format: '#####',
+	regex: /^[0-9]{5}$/i
+};
+export const UZ: PostalCodeInfo = {
+	country: 'Uzbekistan',
+	format: '######',
+	regex: /^[0-9]{6}$/i
+};
+export const VE: PostalCodeInfo = {
+	country: 'Venezuela (Bolivarian Republic of)',
+	format: '####, ####-A',
+	regex: /^[0-9]{4}[a-zA-Z]?$/i
+};
+export const VN: PostalCodeInfo = {
+	country: 'Viet Nam',
+	format: '######',
+	regex: /^[0-9]{6}$/i
+};
+export const VI: PostalCodeInfo = {
+	country: 'Virgin Islands, US',
+	format: '#####[-####]',
+	regex: /^[0-9]{5}([0-9]{4})?$/i
+};
+export const WF: PostalCodeInfo = {
+	country: 'Wallis and Futuna Islands',
+	format: '986##',
+	regex: /^986[0-9]{2}$/i
 };
 export const ZM: PostalCodeInfo = {
+	country: 'Zambia',
 	format: '#####',
-	regex: /^(\d{5})$/i
+	regex: /^[0-9]{5}$/i
 };
 export const PostalCodes = {
-	AD: AD,
-	AL: AL,
-	AM: AM,
-	AR: AR,
-	AS: AS,
-	AT: AT,
-	AU: AU,
+	AF: AF,
 	AX: AX,
+	AL: AL,
+	DZ: DZ,
+	AS: AS,
+	AD: AD,
+	AI: AI,
+	AQ: AQ,
+	AR: AR,
+	AM: AM,
+	AU: AU,
+	AT: AT,
 	AZ: AZ,
-	BA: BA,
-	BB: BB,
-	BD: BD,
-	BE: BE,
-	BG: BG,
 	BH: BH,
-	BL: BL,
-	BM: BM,
-	BN: BN,
-	BR: BR,
+	BD: BD,
+	BB: BB,
 	BY: BY,
+	BE: BE,
+	BT: BT,
+	BO: BO,
+	BA: BA,
+	BR: BR,
+	VG: VG,
+	IO: IO,
+	BN: BN,
+	BG: BG,
+	KH: KH,
 	CA: CA,
-	CH: CH,
+	CV: CV,
+	KY: KY,
+	TD: TD,
 	CL: CL,
 	CN: CN,
+	CX: CX,
+	CC: CC,
 	CO: CO,
 	CR: CR,
-	CS: CS,
+	HR: HR,
 	CU: CU,
-	CV: CV,
-	CX: CX,
 	CY: CY,
 	CZ: CZ,
-	DE: DE,
 	DK: DK,
 	DO: DO,
-	DZ: DZ,
 	EC: EC,
-	EE: EE,
 	EG: EG,
-	ES: ES,
+	SV: SV,
+	EE: EE,
 	ET: ET,
-	FI: FI,
-	FM: FM,
+	FK: FK,
 	FO: FO,
+	FI: FI,
 	FR: FR,
-	GB: GB,
-	GE: GE,
 	GF: GF,
-	GG: GG,
+	PF: PF,
+	GE: GE,
+	DE: DE,
+	GI: GI,
+	GR: GR,
 	GL: GL,
 	GP: GP,
-	GR: GR,
-	GT: GT,
 	GU: GU,
+	GT: GT,
+	GG: GG,
+	GN: GN,
 	GW: GW,
-	HN: HN,
-	HR: HR,
 	HT: HT,
+	HM: HM,
+	VA: VA,
+	HN: HN,
 	HU: HU,
-	ID: ID,
-	IE: IE,
-	IL: IL,
-	IM: IM,
-	IN: IN,
-	IQ: IQ,
-	IR: IR,
 	IS: IS,
+	IN: IN,
+	IC: IC,
+	ID: ID,
+	IR: IR,
+	IQ: IQ,
+	IE: IE,
+	IM: IM,
+	IL: IL,
 	IT: IT,
+	JM: JM,
+	JP: JP,
 	JE: JE,
 	JO: JO,
-	JP: JP,
+	KZ: KZ,
 	KE: KE,
-	KG: KG,
-	KH: KH,
-	KP: KP,
 	KR: KR,
 	KW: KW,
-	KZ: KZ,
+	KG: KG,
 	LA: LA,
+	LV: LV,
 	LB: LB,
-	LI: LI,
-	LK: LK,
-	LR: LR,
 	LS: LS,
+	LR: LR,
+	LY: LY,
+	LI: LI,
 	LT: LT,
 	LU: LU,
-	LV: LV,
-	MA: MA,
-	MC: MC,
-	MD: MD,
-	ME: ME,
-	MF: MF,
-	MG: MG,
-	MH: MH,
 	MK: MK,
-	MM: MM,
-	MN: MN,
-	MP: MP,
-	MQ: MQ,
-	MT: MT,
-	MV: MV,
-	MW: MW,
-	MX: MX,
+	MG: MG,
 	MY: MY,
+	MV: MV,
+	MT: MT,
+	MH: MH,
+	MQ: MQ,
+	MU: MU,
+	YT: YT,
+	MX: MX,
+	FM: FM,
+	MD: MD,
+	MC: MC,
+	MN: MN,
+	ME: ME,
+	MS: MS,
+	MA: MA,
 	MZ: MZ,
-	NC: NC,
-	NE: NE,
-	NF: NF,
-	NG: NG,
-	NI: NI,
-	NL: NL,
-	NO: NO,
+	MM: MM,
+	NA: NA,
 	NP: NP,
+	NL: NL,
+	NC: NC,
 	NZ: NZ,
+	NI: NI,
+	NE: NE,
+	NG: NG,
+	NF: NF,
+	MP: MP,
+	NO: NO,
 	OM: OM,
-	PF: PF,
-	PG: PG,
-	PH: PH,
 	PK: PK,
-	PL: PL,
-	PM: PM,
-	PR: PR,
-	PT: PT,
 	PW: PW,
+	PS: PS,
+	PA: PA,
+	PG: PG,
 	PY: PY,
+	PE: PE,
+	PH: PH,
+	PN: PN,
+	PL: PL,
+	PT: PT,
+	PR: PR,
 	RE: RE,
 	RO: RO,
-	RS: RS,
 	RU: RU,
-	SA: SA,
-	SD: SD,
-	SE: SE,
-	SG: SG,
+	BL: BL,
 	SH: SH,
-	SI: SI,
-	SJ: SJ,
-	SK: SK,
+	LC: LC,
+	MF: MF,
+	PM: PM,
+	VC: VC,
+	WS: WS,
 	SM: SM,
+	SA: SA,
 	SN: SN,
+	RS: RS,
+	SG: SG,
+	SK: SK,
+	SI: SI,
 	SO: SO,
-	SV: SV,
+	ZA: ZA,
+	GS: GS,
+	ES: ES,
+	LK: LK,
+	SD: SD,
+	SJ: SJ,
 	SZ: SZ,
-	TC: TC,
-	TH: TH,
+	SE: SE,
+	CH: CH,
+	TW: TW,
 	TJ: TJ,
-	TM: TM,
+	TZ: TZ,
+	TH: TH,
+	TT: TT,
 	TN: TN,
 	TR: TR,
-	TW: TW,
+	TM: TM,
+	TC: TC,
 	UA: UA,
+	GB: GB,
 	US: US,
 	UY: UY,
 	UZ: UZ,
-	VA: VA,
 	VE: VE,
-	VI: VI,
 	VN: VN,
+	VI: VI,
 	WF: WF,
-	YT: YT,
-	ZA: ZA,
 	ZM: ZM
 } as const;
 

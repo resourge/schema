@@ -6,12 +6,14 @@ import { BaseRule } from './BaseRule';
 
 export type AsyncRuleBooleanMethod<Value, T = any> = (
 	value: DeepReadonly<NonNullable<Value>>, 
-	obj: DeepReadonly<T>
+	obj: DeepReadonly<T>, 
+	context: Context
 ) => Promise<boolean>
 
 export type AsyncRuleMethodSchemaError<Value, T = any> = (
 	value: DeepReadonly<NonNullable<Value>>, 
-	obj: DeepReadonly<T>
+	form: DeepReadonly<T>, 
+	context: Context
 ) => Promise<SchemaError[] | false>
 
 export type AsyncRuleMethod<Value, T = any> = AsyncRuleBooleanMethod<Value, T> | AsyncRuleMethodSchemaError<Value, T>

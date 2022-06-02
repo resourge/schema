@@ -6,12 +6,14 @@ import { BaseRule } from './BaseRule'
 
 export type RuleBooleanMethod<Value, T = any> = (
 	value: DeepReadonly<NonNullable<Value>>, 
-	obj: DeepReadonly<T>
+	obj: DeepReadonly<T>, 
+	context: Context
 ) => boolean
 
 export type RuleMethodSchemaError<Value, T = any> = (
 	value: DeepReadonly<NonNullable<Value>>, 
-	obj: DeepReadonly<T>
+	obj: DeepReadonly<T>, 
+	context: Context
 ) => SchemaError[] | false
 
 export type RuleMethod<Value, T = any> = RuleBooleanMethod<Value, T> | RuleMethodSchemaError<Value, T>

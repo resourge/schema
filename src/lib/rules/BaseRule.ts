@@ -54,7 +54,10 @@ export abstract class BaseRule<Value, T = any, Method extends Function = RuleMet
 			) => {
 				return [
 					`${methodName}_isValid.forEach((error) => {`,
-					`${Parameters.ERRORS_KEY}.push(error);`,
+					`${Parameters.ERRORS_KEY}.push({`,
+					`	key: error.key ? error.key : \`${path}\`,`,
+					'	error: error.error',
+					'});',
 					onlyOnTouch ? `${Parameters.CONTEXT_KEY}.onlyOnTouchErrors[\`${path}\`].push(error);` : '',
 					'})'
 				]
@@ -93,7 +96,8 @@ export abstract class BaseRule<Value, T = any, Method extends Function = RuleMet
 
 		const parameters: string[] = [
 			valueKey, 
-			Parameters.OBJECT_KEY
+			Parameters.OBJECT_KEY, 
+			Parameters.CONTEXT_KEY
 		]
 		// eslint-disable-next-line @typescript-eslint/no-this-alias
 		const ruleThis = this;

@@ -1,8 +1,30 @@
 import { PostalCodes } from 'src/lib/postalCodes';
 
-import { string } from '../StringSchema';
+import { string, StringSchema } from '../StringSchema';
 
 describe('string', () => {
+	it('should be between', () => {
+		const schema = new StringSchema().between(2, 3).compile();
+
+		expect(schema.isValid('11')).toBeTruthy()
+		expect(schema.isValid('_a')).toBeTruthy()
+		expect(schema.isValid('aaa')).toBeTruthy()
+		expect(schema.isValid('aaa3')).toBeFalsy()
+	})
+
+	it('should be equals', () => {
+		const schema = string().equals('Name').compile();
+
+		expect(schema.isValid('Name')).toBeTruthy();
+		expect(schema.isValid('_Name')).toBeFalsy();
+
+		const schema1 = string().equals(['Name', 'Age']).compile();
+
+		expect(schema1.isValid('Name')).toBeTruthy()
+		expect(schema1.isValid('Age')).toBeTruthy()
+		expect(schema1.isValid('aaa3')).toBeFalsy()
+	})
+
 	it('should be alpha', () => {
 		const schema = string().alpha().compile();
 
@@ -163,5 +185,12 @@ describe('string', () => {
 		expect(schema.isValid('001')).toBeFalsy()
 		expect(schema.isValid('4999333')).toBeFalsy()
 		expect(schema.isValid('4999-333')).toBeTruthy()
+
+		const schema1 = string().postalCode(() => PostalCodes.PT).compile();
+
+		expect(schema1.isValid('0')).toBeFalsy()
+		expect(schema1.isValid('001')).toBeFalsy()
+		expect(schema1.isValid('4999333')).toBeFalsy()
+		expect(schema1.isValid('4999-333')).toBeTruthy()
 	})
 })

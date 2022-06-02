@@ -69,7 +69,7 @@ const schema = object<typeof test>({
 
 const suite = new Benchmark.Suite();
 suite
-.add('schema', function () {
+.add('@resourge/schema', function () {
 	schema.validate(test);
 })
 .add('Fast Validator', function () {

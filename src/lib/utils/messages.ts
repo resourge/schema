@@ -1,3 +1,5 @@
+import { PostalCodeInfo } from '../postalCodes'
+
 enum FormatInvalidTypeEnum {
 	'numeric' = 'number',
 	'alpha' = 'text',
@@ -59,7 +61,7 @@ export const defaultMessages = {
 		url: getInvalidFormatMessage('url'),
 		singleLine: getInvalidFormatMessage('singleLine'),
 		email: getInvalidFormatMessage('email'),
-		postalCode: getInvalidFormatMessage('postalCode') // TODO change this to receive (format) => `Invalid format needs to be like ${format}`
+		postalCode: ({ format }: PostalCodeInfo) => `Invalid format needs to be like ${format}`
 	},
 	notOptional: 'Not optional item',
 	notNullable: 'Not optional item',

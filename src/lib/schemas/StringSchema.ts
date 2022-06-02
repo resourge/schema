@@ -3,6 +3,7 @@ import { Schema } from '../core/schema';
 import { PostalCodeInfo } from '../postalCodes';
 import { DeepReadonly } from '../types/DeepReadonly';
 import { NullableType } from '../types/SchemaMap';
+import { Context } from '../types/types';
 import { SchemaTypes } from '../utils/Utils';
 
 const NUMERIC_PATTERN = /^[-]?([1-9]\d*|0)(\.\d+)?$/;
@@ -283,7 +284,7 @@ export class StringSchema<
 
 	/**
 	 * Checks if is a valid postalCode.
-	 * @param postalCode @option Defines custom format validation or a function witch we can return the custom validation
+	 * @param postalCode postal code to validate or a function which we can return desired postal code
 	 * @param message @option Overrides default message
 	 * {{key}} will be replace with current key
 	 */
@@ -291,13 +292,24 @@ export class StringSchema<
 		postalCode: PostalCodeInfo | ((value: DeepReadonly<NonNullable<Input>>, form: DeepReadonly<this['final']>) => PostalCodeInfo), 
 		message?: string
 	) {
-		const test = typeof postalCode === 'function' 
-			? (value: any, form: any) => postalCode(value, form).regex.test(value)
-			: (value: any) => postalCode.regex.test(value)
+		if ( typeof postalCode === 'function' ) {
+			return this.test((value, form, context: Context) => {
+				const _postalCode = postalCode(value, form);
+				if ( postalCode(value, form).regex.test(value) ) {
+					return false;
+				}
+				return [
+					{
+						key: '',
+						error: message ?? context.messages.string.postalCode(_postalCode)
+					}
+				]
+			})
+		}
 
 		return this.test({
-			test: test,
-			message: message ?? ((messages) => messages.string.postalCode),
+			test: (value: any) => postalCode.regex.test(value),
+			message: message ?? ((messages) => messages.string.postalCode(postalCode)),
 			name: 'postalCode'
 		})
 	}

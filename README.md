@@ -3,23 +3,23 @@
 `schema` is a schema validator in typescript with all the validations needed for complex forms. 
 Includes postal codes for all countries available.
 
-BenchMark comparing other schemas validators:
+BenchMark comparing with other schemas validators:
 ```sh
-schema x 21,201,314 ops/sec ±1.02% (88 runs sampled)
-Fast Validator x 1,751,056 ops/sec ±1.26% (90 runs sampled)
-joi x 329,450 ops/sec ±1.32% (88 runs sampled)
-zod x 33,499 ops/sec ±1.30% (88 runs sampled)
-Yup x 4,066 ops/sec ±1.39% (70 runs sampled)
-Fastest is  [ 'schema' ]
+@resourge/schema x  21,201,314 ops/sec ±1.02% (88 runs sampled)
+Fast Validator   x  1,751,056 ops/sec ±1.26%  (90 runs sampled)
+joi 			 x  329,450 ops/sec ±1.32%    (88 runs sampled)
+zod 			 x  33,499 ops/sec ±1.30%     (88 runs sampled)
+Yup 			 x  4,066 ops/sec ±1.39%      (70 runs sampled)
+Fastest is  [ '@resourge/schema' ]
 ```
 
 ## Features
 
-- Schema validator is completely independent is not necessary to use in forms.
+- Schema validator is completely independent is not necessary to use only forms.
 - Build with typescript.
-- Easy to use in react and react-native.
+- Easy to use everywhere in javascript.
 - Very fast.
-- Validation on OnlyOnTouch for specific attributes.
+- OnlyOnTouch to validate values "only on touch"(value that where changed).
 - Offers a very complete collection of validations (email, postalCode, etc...).
 
 
@@ -54,26 +54,29 @@ type User = {
   hobbies: string[]
 }
 
+// TODO add example with values
+
 const schema = object<User>({
   name: string().min(5).required(),
   age: number().min(18).required(),
   location: object({
-		city: string().required(),
-		address: string().required(),
-		postalCode: string().postalCode().required(),
-		country: string().min(3).required(),
-	}).required(),
+    city: string().required(),
+    address: string().required(),
+    postalCode: string().postalCode().required(),
+    country: string().min(3).required(),
+  }).required(),
   hobbies: array(string()).min(1).required(),
 }).compile();
 
 
-const isValidUser = schema.validate()
+const schemaErrors = schema.validate(...)
+const isValidUser = schema.isValid(...)
 
 ```
 
-`compile` is the function necessary to generate the schema and is required to call .compile() at the end of the schema.
-
 ## Compile
+
+`compile` is a method necessary to generate the schema and is required to call .compile() at the end of the schema.
 
 ```jsx
 import { array, object, string } from '@resourge/schemas';
@@ -83,9 +86,9 @@ const isValid = schema.isValid();
 
 ```
 
-`validate` is the function necessary to validate the schema and will return the errors.
+## validate
 
-## Validate
+`validate` is the method necessary to validate the schema and will return the errors.
 
 ```jsx
 import { array, object, string } from '@resourge/schemas';
@@ -106,7 +109,7 @@ const errors = schema.validate({ age: 10 })
 
 ```
 
-`isValid` is the function to check if is valid without returning the errors.
+`isValid` is the method to check if is valid without returning the errors.
 
 ## isValid
 
@@ -122,8 +125,14 @@ schema.isValid({ age: 25 }) // true
 
 ```
 
+// TODO: Add examples with "S"
+// TODO: Mandatory Rules
+// TODO: When
+// TODO: Custom Test
+// TODO: Custom Async Test
+// TODO: Review English
 
-## Available custom validations
+## Available validations
 
 - [String](docs/STRING.md)
 - [Number](docs/ARRAY.md)

@@ -1,6 +1,6 @@
 {
   "name": "@resourge/schema",
-  "version": "1.4.2",
+  "version": "0.0.0",
   "main": "./dist/main.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -10,14 +10,15 @@
     "access": "public"
   },
   "keywords": [
-    "react",
-    "hooks",
-    "form",
-    "forms",
-    "form-validation",
+    "javascript",
+    "schema",
+    "validation",
+    "validations",
+    "javascript validations",
+    "schema benchmark",
     "validation",
     "typescript",
-    "react-hooks"
+    "typescript validation"
   ],
   "files": [
     "dist"
@@ -32,6 +33,7 @@
     "commit": "git pull && git add . && git-cz",
     "lint": "eslint \"./src/**/*.{ts,tsx}\"",
     "lint:prod": "cross-env NODE_ENV=production npm run lint",
+    "generate_postal_codes": "node ./scripts/codPostal/GenerateCountryPostalCodes.js",
     "fix-types": "node ./scripts/FixTypes.js",
     "dev": "vite",
     "build": "rollup -c && npm run fix-types",
@@ -39,9 +41,6 @@
     "test:watch": "vitest",
     "coverage": "vitest run --coverage",
     "semantic-release": "semantic-release"
-  },
-  "peerDependencies": {
-    "react": "^16.8.0 || ^17 || ^18"
   },
   "devDependencies": {
     "@babel/core": "^7.17.10",

@@ -10,7 +10,7 @@ module.exports = {
 		'standard-with-typescript',
 		'react-app'
 	],
-	ignorePatterns: ['**/dist/*', './main.js'],
+	ignorePatterns: ['**/dist/*', './main.js', 'src/examples/**/*'],
 	parser: '@typescript-eslint/parser',
 	parserOptions: {
 		ecmaFeatures: {

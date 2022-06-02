@@ -28,6 +28,15 @@ describe('number', () => {
 		expect(validate(21)).toBeFalsy()
 	})
 
+	it('should be between', () => {
+		const schema = number().between(10, 15).compile();
+	
+		const validate = (value: any) => schema.isValid(value);
+		
+		expect(validate(10)).toBeTruthy()
+		expect(validate(21)).toBeFalsy()
+	})
+
 	it('should be decimal', () => {
 		const schema = number().decimal(2).compile();
 	

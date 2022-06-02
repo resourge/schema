@@ -13,9 +13,9 @@ setDefaultOnError((errors: any) => {
 function App() {
 	const { form, field, formState, handleSubmit } = useUserModel()
 
-	const onSubmit = (form: UserModel) => {
+	const onSubmit = handleSubmit((form: UserModel) => {
 		console.log('onSubmit', form)
-	}
+	})
 	console.log('form', form)
 
 	return (
@@ -61,7 +61,7 @@ function App() {
 				{JSON.stringify(form, null, '\t')}
 			</div>
 			<div className='formSubmit'>
-				<button className='formSubmitBtn' type='button' onClick={handleSubmit(onSubmit)}>Submit</button>
+				<button className='formSubmitBtn' type='button' onClick={onSubmit}>Submit</button>
 			</div>
 		</div>
 	)

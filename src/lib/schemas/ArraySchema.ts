@@ -32,7 +32,7 @@ export class ArraySchema<
 	}
 
 	/**
-	 * Checks if min number of elements
+	 * Checks if has a minimal number of items in array
 	 * @param minValue
 	 * @param message @option Overrides default message
 	 * {{key}} will be replace with current key
@@ -46,7 +46,7 @@ export class ArraySchema<
 	}
 
 	/**
-	 * Checks if max number of elements
+	 * Checks if has a maximal number of elements
 	 * @param maxValue 
 	 * @param message @option Overrides default message
 	 * {{key}} will be replace with current key
@@ -58,7 +58,7 @@ export class ArraySchema<
 			name: 'maxArray'
 		})
 	}
-
+	
 	/**
 	 * Checks if array has "length" number of elements
 	 * @param length
@@ -94,9 +94,9 @@ export class ArraySchema<
 	 * @param message @option Overrides default message
 	 * {{key}} will be replace with current key
 	 */
-	public uniqueBy(key: keyof any | ((val: any) => any), message?: string) {
-		const mapCb: (val: any) => any = (
-			typeof key === 'string' ? (val: any) => val[key] : key as (val: any) => any
+	public uniqueBy(key: keyof Input[number] | ((val: Input[number]) => any), message?: string) {
+		const mapCb: (val: Input[number]) => any = (
+			typeof key === 'string' ? (val: any) => val[key] : key as (val: Input[number]) => any
 		)
 
 		return this.test({

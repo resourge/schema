@@ -1,5 +1,7 @@
 /* eslint-disable no-useless-escape */
 import { Schema } from '../core/schema';
+import { PostalCodeInfo } from '../postalCodes';
+import { DeepReadonly } from '../types/DeepReadonly';
 import { NullableType } from '../types/SchemaMap';
 import { SchemaTypes } from '../utils/Utils';
 
@@ -54,6 +56,21 @@ export class StringSchema<
 			test: (value: any) => value.length <= maxValue,
 			message: message ?? ((messages) => messages.string.max(maxValue)),
 			name: 'maxLength'
+		})
+	}
+
+	/**
+	 * Checks if is between minValue and maxValue.
+	 * @param minValue min number value
+	 * @param maxValue max number value
+	 * @param message @option Overrides default message
+	 * {{key}} will be replace with current key
+	 */
+	public between(minValue: number, maxValue: number, message?: string) {
+		return this.test({
+			test: (value) => value.length >= minValue && value.length <= maxValue,
+			message: message ?? ((messages) => messages.number.between(minValue, maxValue)),
+			name: 'betweenNumber'
 		})
 	}
 
@@ -261,6 +278,21 @@ export class StringSchema<
 			test: (value: any) => pattern.test(value),
 			message: message ?? ((messages) => messages.string.email),
 			name: 'email'
+		})
+	}
+
+	public postalCode(
+		postalCode: PostalCodeInfo | ((value: DeepReadonly<NonNullable<Input>>, form: DeepReadonly<this['final']>) => PostalCodeInfo), 
+		message?: string
+	) {
+		const test = typeof postalCode === 'function' 
+			? (value: any, form: any) => postalCode(value, form).regex.test(value)
+			: (value: any) => postalCode.regex.test(value)
+
+		return this.test({
+			test: test,
+			message: message ?? ((messages) => messages.string.email),
+			name: 'postalCode'
 		})
 	}
 }

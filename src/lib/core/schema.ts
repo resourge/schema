@@ -53,16 +53,19 @@ export abstract class Schema<Input = any, Final = any> {
 	}
 
 	protected _isOptional?: boolean;
+	protected messageOptional?: string;
 	public get isOptional(): boolean {
 		return this._isOptional ?? false;
 	}
 
 	protected _isNullable?: boolean;
+	protected messageNullable?: string;
 	public get isNullable(): boolean {
 		return this._isNullable ?? false;
 	}
 
 	protected _isRequired?: boolean;
+	protected messageRequired?: string;
 	public get isRequired(): boolean {
 		return this._isRequired ?? false;
 	}
@@ -77,7 +80,7 @@ export abstract class Schema<Input = any, Final = any> {
 	 * Path for current value
 	 */
 	protected path: string = '';
-	protected normalRules: Array<BaseRule<any, any, Function>> = []
+	protected normalRules: Array<BaseRule<Input, Final, Function>> = []
 	protected whenRules: WhenRule[] = []
 
 	protected getValueKey(key?: string) {
@@ -236,7 +239,7 @@ export abstract class Schema<Input = any, Final = any> {
 				schema.notOptional();
 				mandatoryRules.push((fnSrcCode: string[], valueKey: string) => [
 					`if ( ${valueKey} === undefined ){`,
-					...schema.getErrorSyntax(context.messages.notOptional),
+					...schema.getErrorSyntax(this.messageOptional ?? context.messages.notOptional),
 					'}',
 					'else {',
 					...fnSrcCode,
@@ -259,7 +262,7 @@ export abstract class Schema<Input = any, Final = any> {
 				schema.notNullable();
 				mandatoryRules.push((fnSrcCode: string[], valueKey: string) => [
 					`if ( ${valueKey} === null ){`,
-					...schema.getErrorSyntax(context.messages.notNullable),
+					...schema.getErrorSyntax(this.messageNullable ?? context.messages.notNullable),
 					'}',
 					'else {',
 					...fnSrcCode,
@@ -275,7 +278,7 @@ export abstract class Schema<Input = any, Final = any> {
 			
 				mandatoryRules.push((fnSrcCode: string[], valueKey: string) => [
 					`if ( ${valueKey} === null || ${valueKey} === undefined ){`,
-					...schema.getErrorSyntax(context.messages.required),
+					...schema.getErrorSyntax(this.messageRequired ?? context.messages.required),
 					'}',
 					'else {',
 					...fnSrcCode,
@@ -461,10 +464,11 @@ export abstract class Schema<Input = any, Final = any> {
 	/**
 	 * Makes schema validation required (meaning value can not be undefined and null).
 	 */
-	public required() {
+	public required(message?: string) {
 		this._isOptional = undefined;
 		this._isNullable = undefined;
 		this._isRequired = true;
+		this.messageRequired = message;
 
 		return this;
 	}
@@ -472,12 +476,10 @@ export abstract class Schema<Input = any, Final = any> {
 	/**
 	 * Makes schema validation not required (meaning value can be undefined and null).
 	 */
-	public notRequired(message?: string) {
+	public notRequired() {
 		this._isOptional = undefined;
 		this._isNullable = undefined;
 		this._isRequired = false;
-
-		this.message = message ?? this.message;
 
 		return this;
 	}
@@ -495,9 +497,10 @@ export abstract class Schema<Input = any, Final = any> {
 	/**
 	 * Makes schema validation not optional (meaning value can not be undefined).
 	 */
-	public notOptional() {
+	public notOptional(message?: string) {
 		this._isOptional = false;
 		this._isRequired = undefined;
+		this.messageOptional = message;
 
 		return this;
 	}
@@ -515,9 +518,10 @@ export abstract class Schema<Input = any, Final = any> {
 	/**
 	 * Makes schema validation not nullable (meaning value can not be null).
 	 */
-	public notNullable() {
+	public notNullable(message?: string) {
 		this._isNullable = false;
 		this._isRequired = undefined;
+		this.messageNullable = message;
 
 		return this;
 	}
@@ -528,7 +532,7 @@ export abstract class Schema<Input = any, Final = any> {
 	 */
 	public compile({ 
 		debug, 
-		messages,
+		messages = {},
 		onlyOnTouch = false,
 		defaultNullable,
 		defaultOptional
@@ -538,10 +542,11 @@ export abstract class Schema<Input = any, Final = any> {
 			onlyOnTouch,
 			optional: defaultOptional,
 			nullable: defaultNullable,
-			messages: messages ?? defaultMessages,
-			rules: {
-		
+			messages: {
+				...defaultMessages,
+				...messages
 			},
+			rules: {},
 			onlyOnTouchErrors: {}
 		}
 

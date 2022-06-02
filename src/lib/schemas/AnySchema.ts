@@ -8,7 +8,7 @@ export class AnySchema<
 > extends Schema<Input, Final> {
 	protected type: SchemaTypes = SchemaTypes.ARRAY
 	protected message: string = `{{key}} is not ${this.type}`
-	protected rule = (value: any[]) => Array.isArray(value)
+	protected rule = () => true
 	
 	constructor(message?: string) {
 		super();

@@ -6,6 +6,16 @@ import { number } from './NumberSchema';
 import { object } from './ObjectSchema';
 import { string } from './StringSchema';
 
+export const S = {
+	any,
+	array,
+	boolean,
+	date,
+	number,
+	object,
+	string
+}
+
 export {
 	any,
 	array,

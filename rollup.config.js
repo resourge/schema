@@ -1,4 +1,5 @@
 import { babel } from '@rollup/plugin-babel';
+import json from '@rollup/plugin-json';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
 import dts from 'rollup-plugin-dts';
@@ -28,7 +29,12 @@ const babelPresetEnv = ['@babel/preset-env', {
 	bugfixes: true
 }]
 
+const jsonPlugin = json({
+	preferConst: true
+})
+
 const defaultExtPlugin = [
+	jsonPlugin,
 	filsesize({
 		showBeforeSizes: 'build'
 	}),
@@ -86,12 +92,17 @@ const getPackage = (
 	const banner = createBanner(PROJECT_NAME, VERSION, AUTHOR_NAME, LICENSE);
 	const umdName = PROJECT_NAME.split('-').map(capitalizeFirstLetter).join('')
 
+	const POSTAL_CODE_INDEX = `${SOURCE_FOLDER}/postalCodes/index.ts`
+
 	// JS modules for bundlers
 	const modules = [
 		{
-			input: SOURCE_INDEX_FILE,
+			input: {
+				index: SOURCE_INDEX_FILE,
+				'postalCodes/index': POSTAL_CODE_INDEX
+			},
 			output: {
-				file: `${OUTPUT_DIR}/index.js`,
+				dir: OUTPUT_DIR,
 				format: 'esm',
 				sourcemap,
 				banner: banner
@@ -113,13 +124,17 @@ const getPackage = (
 			]
 		},
 		{
-			input: SOURCE_INDEX_FILE,
+			input: {
+				index: SOURCE_INDEX_FILE,
+				'postalCodes/index': POSTAL_CODE_INDEX
+			},
 			output: [{
-				file: `${OUTPUT_DIR}/index.d.ts`,
+				dir: OUTPUT_DIR,
 				format: 'esm',
 				banner: banner
 			}],
 			plugins: [
+				jsonPlugin,
 				dts()
 			]
 		}
@@ -156,6 +171,7 @@ const getPackage = (
 			]
 		},
 		{
+			
 			input: SOURCE_INDEX_FILE,
 			output: {
 				file: `${CJS_DIR}/${PROJECT_NAME}.production.min.js`,

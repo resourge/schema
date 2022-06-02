@@ -32,5 +32,5 @@ export type CompileConfig = {
 	onlyOnTouch?: boolean
 	defaultOptional?: boolean
 	defaultNullable?: boolean
-	messages?: MessageType
+	messages?: Partial<MessageType>
 }

@@ -3,7 +3,7 @@ import { CompileSchemaConfig } from '../types/types';
 
 import { Schema } from './schema';
 
-export type PrivateSchema = Schema<any> & { compileSchema: Schema<any>['compileSchema'] }
+export type PrivateSchema = Schema<any, any> & { compileSchema: Schema<any, any>['compileSchema'] }
 
 export abstract class ObjectTypedSchema<
 	Input = any,
@@ -15,8 +15,8 @@ export abstract class ObjectTypedSchema<
 		super();
 
 		this.shape = Object.keys(schemas)
-		// @ts-expect-error
-		.map((key) => [key, schemas[key] as unknown as PrivateSchema])
+		// @ts-expect-error // this will never be undefined but typescript can't comprehend that
+		.map((key) => [key, schemas[key]])
 	}
 
 	protected override compileSchema({

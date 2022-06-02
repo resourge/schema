@@ -1,4 +1,6 @@
-import { string, StringSchema } from '../StringSchema';
+import { PostalCodes } from 'src/lib/postalCodes';
+
+import { string } from '../StringSchema';
 
 describe('string', () => {
 	it('should be alpha', () => {
@@ -122,28 +124,16 @@ describe('string', () => {
 		expect(schema.isValid('//')).toBeFalsy()
 	})
 
-	describe('pattern', () => {
-		it('should be pattern', () => {
-			const schema = string().pattern(/\D/).compile();
+	it('should be pattern', () => {
+		const schema = string().pattern(/\D/).compile();
 	
-			expect(schema.isValid('0')).toBeFalsy()
-			expect(schema.isValid('001')).toBeFalsy()
-			expect(schema.isValid('000000')).toBeFalsy()
-			expect(schema.isValid('//')).toBeTruthy()
-			expect(schema.isValid('aaa')).toBeTruthy()
-		})
-
-		it('should be postal code pattern', () => {
-			// eslint-disable-next-line prefer-regex-literals
-			const schema = string().pattern(RegExp('\\d{4}([-]\\d{3})?')).compile();
-	
-			expect(schema.isValid('0')).toBeFalsy()
-			expect(schema.isValid('001')).toBeFalsy()
-			expect(schema.isValid('4999333')).toBeTruthy()
-			expect(schema.isValid('4999-333')).toBeTruthy()
-		})
+		expect(schema.isValid('0')).toBeFalsy()
+		expect(schema.isValid('001')).toBeFalsy()
+		expect(schema.isValid('000000')).toBeFalsy()
+		expect(schema.isValid('//')).toBeTruthy()
+		expect(schema.isValid('aaa')).toBeTruthy()
 	})
-
+	
 	it('should be url', () => {
 		const schema = string().url().compile();
 
@@ -158,11 +148,20 @@ describe('string', () => {
 	})
 
 	it('should be uuid', () => {
-		const schema = new StringSchema().uuid().compile();
+		const schema = string().uuid().compile();
 
 		expect(schema.isValid('0')).toBeFalsy()
 		expect(schema.isValid('000000')).toBeFalsy()
 		expect(schema.isValid('00000000-0000-0000-0000-000000000000')).toBeTruthy()
 		expect(schema.isValid('123e4567-e89b-12d3-a456-426614174000')).toBeTruthy()
+	})
+
+	it('should be postal code', () => {
+		const schema = string().postalCode(PostalCodes.PT).compile();
+
+		expect(schema.isValid('0')).toBeFalsy()
+		expect(schema.isValid('001')).toBeFalsy()
+		expect(schema.isValid('4999333')).toBeFalsy()
+		expect(schema.isValid('4999-333')).toBeTruthy()
 	})
 })

@@ -34,7 +34,8 @@
 	],
 	"exclude": [
 		"dist",
-		"./main.js"
+		"./main.js",
+		"src/examples/**/*"
 	],
 	"references": [
 		{

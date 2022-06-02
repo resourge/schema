@@ -46,6 +46,7 @@ export class NumberSchema<
 
 	/**
 	 * Checks if is between minValue and maxValue.
+	 * @param minValue min number value
 	 * @param maxValue max number value
 	 * @param message @option Overrides default message
 	 * {{key}} will be replace with current key

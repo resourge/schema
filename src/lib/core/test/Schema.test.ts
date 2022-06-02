@@ -67,10 +67,18 @@ describe('Schema', () => {
 			test: () => true,
 			message: 'Custom Text Message'
 		})
+		.test(() => [{
+			key: '',
+			error: 'Custom Text Message'
+		}])
 		.asyncTest({
 			test: () => Promise.resolve(true),
 			message: 'Async message'
 		})
+		.asyncTest(() => Promise.resolve([{
+			key: '',
+			error: 'Custom Text Message'
+		}]))
 		.compile();
 	})
 })

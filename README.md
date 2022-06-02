@@ -131,6 +131,7 @@ schema.isValid({ age: 25 }) // true
 // TODO: Custom Test
 // TODO: Custom Async Test
 // TODO: Review English
+// TODO: Add unitary testing for method PostalCode
 
 ## Available validations
 

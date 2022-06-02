@@ -6,6 +6,13 @@
 import { object } from '@resourge/schema';
 
 object()
+
+// or specification of the object it self
+object({
+  name: string().required(),
+  age: number().min(18).required()
+}, 'Custom string error message')
+
 // or
 object('Custom object error message')
 ```

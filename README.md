@@ -75,8 +75,6 @@ const isValidUser = schema.validate()
 
 ## Compile
 
-See more at [Errors](#errors)
-
 ```jsx
 import { array, object, string } from '@resourge/schemas';
 
@@ -88,8 +86,6 @@ const isValid = schema.isValid();
 `validate` is the function necessary to validate the schema and will return the errors.
 
 ## Validate
-
-See more at [Errors](#errors)
 
 ```jsx
 import { array, object, string } from '@resourge/schemas';
@@ -112,9 +108,7 @@ const errors = schema.validate({ age: 10 })
 
 `isValid` is the function to check if is valid without returning the errors.
 
-## Validate
-
-See more at [Errors](#errors)
+## isValid
 
 ```jsx
 import { array, object, string } from '@resourge/schemas';

@@ -1,22 +1,22 @@
 # Schema Validation
 
-`@resourge/schema` is a schema validator to validate simple or complex forms.
-Includes validation for countries postal codes.
+`@resourge/schema` is a schema validator to validate simple and complex forms.
+
 
 ## Features
 
-- Schema validator is completely independent is not necessary to use only forms.
 - Build with typescript.
 - Easy to use in both javascript, node and deno.
-- Extremely fast and versatilely.
-- `OnlyOnTouch` to validate values "only on touch" (values that where changed between last validation and new).
+- Extremely fast and versatile.
+- `OnlyOnTouch` to validate values "only on touch" (values that were changed between last and new validation).
 - Offers a complete collection of validations (email, postalCode, etc...).
-- Custom methods(test and asyncTest) easy to implement and use.
+- Custom methods (test and asyncTest) easy to implement and use.
 - 100% coverage.
+- Includes validation for countries postal codes.
 
 ## How it was done
 
-Under the hood `@resourge/schema` creates the validations structure(only) using the Function constructor. No user input is involved in the creation.
+Under the hood `@resourge/schema` creates the validation structure(only) using the Function constructor. No user input is involved in the creation.
 
 It's important to distinguish this from the dangers of a user input generated Function, as in this case user input is not involved.
 
@@ -24,7 +24,7 @@ It's important to distinguish this from the dangers of a user input generated Fu
 
 ## Benchmark
 
-Benchmarks comparing with other schemas validators (more or less, as it can variate slightly depending on the machine).
+Benchmarks to compare with other schemas validators (the performance can variate slightly depending on the machine).
 
 [Benchmark](./benchmark/benchmark.ts) 
 ```sh
@@ -113,10 +113,8 @@ const schema = object<User>({
   hobbies: array(string()).min(1).required(),
 }).compile();
 
-
 const schemaErrors = schema.validate(user)
 const isValidUser = schema.isValid(user)
-
 ```
 
 ## Rule
@@ -133,24 +131,26 @@ Exists 3 types of rules, [Normal Rule](#normalRule), [Mandatory Rule](#mandatory
 
 `When rule` are rules that come before [Mandatory Rule](#mandatoryRule).
 
-`When rule` adjust the schema based in the validation `is` providing then `then` schema changes or `otherwise` schema changes.
+`When rule` adjust the schema based in the validation `is` providing the `then` schema changes or `otherwise` schema changes.
 
-`When rule` are additive, meaning they take the previous validations and add `then` or `otherwise`.
+`When rule` are additive, meaning they take the previous validations and add it with `then` or `otherwise`.
 
 ```Typescript
 number()
 .optional()
 .when({
 	is: (value) => value < 10 || value === null,
+	// required() will cancel optional()
+	// but in otherwise optional() will still be used
 	then: (schema) => schema.negative().required()
 });
 ```
 
 ### Normal Rule
 
-`Normal rule` consist in 2 types of rules, [test](#test) and [asyncTest](#asyncTest).
+`Normal rule` consist of 2 types of rules, [test](#test) and [asyncTest](#asyncTest).
 
-Some of the existing predefined normal rules: 
+Also exists some predefined normal rules: 
 - [Any](docs/ANY.md)
 - [Array](docs/ARRAY.md)
 - [Boolean](docs/BOOLEAN.md)
@@ -159,26 +159,26 @@ Some of the existing predefined normal rules:
 - [Object](docs/OBJECT.md)
 - [String](docs/STRING.md)
 
-_NOTE: If you have rules that you normally use, tell us._
+_NOTE: If you have rules that you normally use, please tell us so we can improve the package._
 
 #### test
 
-`test` is a normal sync rule.
+`test` is a normal sync validation.
 
 ```typescript
 string()
 // value is the string value
 // form is the original value
-// In this case, test is expected to return true or an array of errors
+// In this case, test is expected to return either true or an array of errors
 .test((value, form) => [{
 	// key can be a empty string or a key
-	// In case key is a empty string the system will replace it with original key
+	// In the case key is a empty string the system will replace it with original key
 	key: '', 
 	error: 'Custom error Message'
 }])
 // or
 .test({
-	// In this case, test is mandatory a boolean
+	// In this case, test is a mandatory a boolean
 	test: (value, form) => true,
 	message: 'Custom error Message'
 })
@@ -186,17 +186,17 @@ string()
 
 #### asyncTest
 
-`asyncTest` is a normal async rule.
+`asyncTest` is a normal async validation.
 
 ```typescript
 string()
 // value is the string value
 // form is the original value
-// In this case, test is expected to return a promise containing true or an array of errors
+// In this case, test is expected to return a promise containing either true or an array of errors
 .asyncTest(
 	(value, form) => Promise.resolve([{
 		// key can be a empty string or a key
-		// In case key is a empty string the system will replace it with original key
+		// In the case key is a empty string the system will replace it with original key
 		// NOTE: It does not handle the catch, it expect to always resolve the promise
 		key: '', 
 		error: 'Custom error Message'
@@ -204,7 +204,7 @@ string()
 )
 // or
 .asyncTest({
-	// In this case, test is mandatory a boolean
+	// In this case, test is a mandatory a boolean
 	// NOTE: It does not handle the catch, it expect to always resolve the promise
 	test: (value, form) => Promise.resolve(true),
 	message: 'Custom error Message'
@@ -213,7 +213,7 @@ string()
 
 ## Compile
 
-`compile` is a method to generate the schema (it's recommended to use in every schema. In case of missing, `isValid` and `validate` will still call it).
+`compile` is a method to generate the schema (it's recommended to use in every schema, otherwise `isValid` and `validate` will still call it).
 
 ```jsx
 import { array, object, string } from '@resourge/schemas';
@@ -262,7 +262,7 @@ schema.isValid({ age: 25 }) // true
 
 ```
 
-## Using abbreviation of S as shortname
+## S as shortname
 
 Example using `S` shortname from schema.
 
@@ -286,46 +286,6 @@ const schema = S.object({
 schema.isValid(user)
 
 ```
-
-## Custom Test
-
-Example of a unit testing.
-
-```Typescript
-import { PostalCodes } from '@resourge/schema/postalCodes';
-
-import { string, StringSchema } from '@resourge/schema';
-
-describe('Postal code', () => { 
-  it('should be a valid user', () => {
-    
-    const user = {
-      name: 'Himaru',
-      age: 18,
-      postalCode: '1000-100'
-    }
-
-    const userInvalid = {
-      name: '',
-      age: -1,
-      postalCode: '1000'
-    }
-
-    const schema = object({
-      name: string().required(),
-      age: number().min(16).required(),
-      postalCode: string().postalCode(PostalCodes.PT)
-    }).compile();
-    
-    expect(schema.isValid(user)).toBeTruthy()
-    expect(schema.isValid(userInvalid)).toBeFalsy()
-  })
-})
-
-```
-
-- // TODO: Review English
-
 
 ## Contribution
 

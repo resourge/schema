@@ -45,7 +45,7 @@ string().between(1, 10, 'Custom error message')
 
 ### length
 
-Checks if string has `length` number of characters
+Checks if string has length number of characters
 
 ```Typescript
 string().length(10)

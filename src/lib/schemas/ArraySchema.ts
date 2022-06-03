@@ -90,7 +90,7 @@ export class ArraySchema<
 	}
 
 	/**
-	 * Checks if has only unique by key elements
+	 * Checks if has only unique elements by key
 	 * @param message @option Overrides default message
 	 * {{key}} will be replace with current key
 	 */

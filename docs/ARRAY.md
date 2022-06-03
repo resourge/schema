@@ -68,7 +68,7 @@ array(number()).unique('Custom error message')
 
 ### uniqueBy
 
-Checks if array has only unique by key elements
+Checks if array has only unique elements by key
 
 ```Typescript
 array(

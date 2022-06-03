@@ -132,7 +132,8 @@ export abstract class Schema<Input = any, Final = any> {
 
 		const parameters: string[] = [
 			valueKey, 
-			Parameters.OBJECT_KEY
+			Parameters.OBJECT_KEY,
+			Parameters.CONTEXT_KEY
 		]
 
 		const thenSrcCode = rule.then.compileSchema({

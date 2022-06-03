@@ -14,7 +14,7 @@ export type RuleMethodSchemaError<Value, T = any> = (
 	value: DeepReadonly<NonNullable<Value>>, 
 	obj: DeepReadonly<T>, 
 	context: Context
-) => SchemaError[] | false
+) => SchemaError[] | true
 
 export type RuleMethod<Value, T = any> = RuleBooleanMethod<Value, T> | RuleMethodSchemaError<Value, T>
 
@@ -38,9 +38,11 @@ export class Rule<Value, T = any> extends BaseRule<Value, T, RuleMethod<Value, T
 			onlyOnTouch
 		)
 
+		// false or [...]
+
 		return [
 			`const ${methodName}_isValid = ${Parameters.CONTEXT_KEY}.rules.${methodName}(${parameters.join(',')});`,
-			`if ( !${methodName}_isValid ) {`,
+			(this.isMethodError ? `if ( ${methodName}_isValid.length ) {` : `if ( !${methodName}_isValid ) {`),
 			...srcCode,
 			'}'
 		]

@@ -1,13 +1,13 @@
-# Boolean
+# Any
 
 ## Example
 
 ```Typescript
-import { boolean } from '@resourge/schema';
+import { any } from '@resourge/schema';
 
-boolean()
+any()
 // or
-boolean('Custom error message')
+any('Custom error message')
 ```
 
 ## Contribution

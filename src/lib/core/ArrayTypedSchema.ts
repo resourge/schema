@@ -34,7 +34,8 @@ export abstract class ArrayTypedSchema<
 		});
 
 		const arraySchemaRules = [
-			`for (let ${iKey} = 0; ${iKey} < ${valueKey}.length; ${iKey}++) {`,
+			`const l = ${valueKey}.length;`,
+			`for (var ${iKey} = 0; ${iKey} < l; ${iKey}++) {`,
 			...schemaRules,
 			'}'
 		]

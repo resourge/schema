@@ -10,16 +10,21 @@ const v = new Validator();
 // @ts-expect-error
 globalThis.__DEV__ = true;
 
-const delivery = {
-	deliveryName: 'te',
-	products: [
-		{
-			productName: 'testObject 1'
-		}
-	]
+const test = {
+	deliveryName: 'tes',
+	products: Array.from({ length: 10000 }).map((_, index) => ({
+		productName: index
+	}))
 };
 
-const schemaValidator: ValidationSchema<typeof delivery> = {
+type Test = {
+	deliveryName: string
+	products: Array<{
+		productName: string
+	}>
+}
+
+const schemaValidator: ValidationSchema<typeof test> = {
 	deliveryName: { type: 'string', min: 3 },
 	products: {
 		type: 'array',
@@ -52,7 +57,7 @@ const zodSchema = z.object({
 	)
 });
 
-const joiSchema = joi.object<typeof delivery>({
+const joiSchema = joi.object<Test>({
 	deliveryName: joi.string().min(3),
 	products: joi.array().items(
 		joi.object({
@@ -61,7 +66,7 @@ const joiSchema = joi.object<typeof delivery>({
 	)
 });
 
-const schema = object<typeof delivery>({
+const schema = object<Test>({
 	deliveryName: string().min(3).required(),
 	products: array(
 		object({
@@ -73,35 +78,35 @@ const schema = object<typeof delivery>({
 const suite = new Benchmark.Suite();
 suite
 .add('@resourge/schema', function () {
-	schema.validate(delivery);
+	schema.validate(test as any);
 })
 .add('Fast Validator', function () {
-	check(delivery);
+	check(test);
 })
 .add('joi', function () {
 	try {
-		joiSchema.validate(delivery, { abortEarly: false });
+		joiSchema.validate(test, { abortEarly: false });
 	}
 	catch {}
 })
 .add('zod', function () {
 	try {
-		zodSchema.parse(delivery);
+		zodSchema.parse(test);
 	}
 	catch {}
 })
 .add('Yup', function () {
 	try {
-		yupSchema.validateSync(delivery, { abortEarly: false });
+		yupSchema.validateSync(test, { abortEarly: false });
 	}
 	catch {}
 })
 .on('cycle', function (event: any) {
-	console.table(String(event.target).split('x'));
+	console.log(String(event.target));
 })
 .on('complete', function () {
 	// @ts-expect-error
 	console.log('Fastest is ', this.filter('fastest').map('name'));
 })
 // run async
-.run({ async: false, minSamples: 1000 });
+.run({ async: false });

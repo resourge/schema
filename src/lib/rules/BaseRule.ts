@@ -33,19 +33,35 @@ export function addRule(
 }
 
 export abstract class BaseRule<Value, T = any, Method extends Function = RuleMethod<Value, T>> {
+	public type: 'METHOD_ERROR' | 'MESSAGE'
 	public name: string
 	public method: Method
 	protected getErrorMessage: (methodName: string, path: string, onlyOnTouch: boolean, context: Context) => string[]
 
+	public get isMethodError(): boolean {
+		return this.type === 'METHOD_ERROR'  
+	}
+
+	constructor(
+		type: 'METHOD_ERROR',
+		method: Method
+	)
+	constructor(
+		type: 'MESSAGE',
+		method: Method,
+		message: string | ((messages: MessageType) => string),
+		name?: string
+	)
 	constructor(
 		type: 'METHOD_ERROR' | 'MESSAGE',
 		method: Method,
 		message?: string | ((messages: MessageType) => string),
 		name?: string
 	) {
+		this.type = type;
 		this.name = (name ?? '').replace(/\s+/g, '_');
 		this.method = method;
-		this.getErrorMessage = type === 'METHOD_ERROR' 
+		this.getErrorMessage = this.isMethodError
 			? (
 				methodName: string, 
 				path: string, 
@@ -67,7 +83,7 @@ export abstract class BaseRule<Value, T = any, Method extends Function = RuleMet
 				onlyOnTouch: boolean,
 				context: Context
 			) => {
-				const _message: string | ((messages: MessageType) => string) = typeof message === 'string' ? message : (message ? message(context.messages) : '')
+				const _message: string | ((messages: MessageType) => string) = typeof message === 'string' ? message : (message as ((messages: MessageType) => string))(context.messages)
 				return [
 					`${Parameters.ERRORS_KEY}.push({`,
 					`	key: \`${path}\`,`,

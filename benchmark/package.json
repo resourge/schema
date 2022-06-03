@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "main": "benchmark.ts",
   "scripts": {
-    "benchmark": "ts-node benchmark.ts"
+    "benchmark": "ts-node benchmark.ts",
+    "heavy:benchmark": "ts-node heavyBenchmark.ts"
   },
   "author": "resourge",
   "license": "MIT",

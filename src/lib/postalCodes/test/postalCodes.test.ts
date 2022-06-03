@@ -1,4 +1,5 @@
 import { PostalCodes } from '../index';
+import * as PostalCodesRest from '../index';
 
 const postalCodesExamples = {
 	AF: { valid: '1234', invalid: '12345' },
@@ -114,7 +115,7 @@ const postalCodesExamples = {
 	MC: { valid: '98000', invalid: '98100' },
 	MN: { valid: '12345', invalid: '123456' },
 	ME: { valid: '12345', invalid: '123456' },
-	MS: { valid: 'MSR 1110', invalid: 'MS1110' },
+	MS: { valid: 'MSR1110', invalid: 'MS1110' },
 	MA: { valid: '12345', invalid: '123456' },
 	MZ: { valid: '1234', invalid: '12345' },
 	MM: { valid: '12345', invalid: '123456' },
@@ -138,8 +139,8 @@ const postalCodesExamples = {
 	PY: { valid: '1234', invalid: '12345' },
 	PE: { valid: '12345', invalid: '123456' },
 	PH: { valid: '1234', invalid: '12345' },
-	PN: { valid: 'PCRN 1ZZ', invalid: 'PCRN01ZZ' },
-	PL: { valid: '44-100 ', invalid: '44100' },
+	PN: { valid: 'PCR9 1ZZ', invalid: 'PCRN01ZZ' },
+	PL: { valid: '44-100', invalid: '44100' },
 	PT: { valid: '1234-123', invalid: '1255' },
 	PR: { valid: '12345', invalid: 'x1231s' },
 	RE: { valid: '97400', invalid: '9742' },
@@ -190,12 +191,22 @@ const postalCodesExamples = {
 	ZM: { valid: '12345', invalid: '123456' }
 } as const
 
-test('postalCodes', () => {
+test('postalCodes object', () => {
 	Object.entries(PostalCodes)
 	.forEach(([key, data]) => {
 		const postalCode = postalCodesExamples[key as keyof typeof PostalCodes]
 
 		expect(data.regex.test(postalCode.valid)).toBeTruthy()
 		expect(data.regex.test(postalCode.invalid)).toBeFalsy()
+	})
+})
+
+test('postalCodes singular const\'s', () => {
+	Object.entries(postalCodesExamples)
+	.forEach(([key, { valid, invalid }]) => {
+		const postalCode = PostalCodesRest[key as keyof typeof PostalCodes]
+
+		expect(postalCode.regex.test(valid)).toBeTruthy()
+		expect(postalCode.regex.test(invalid)).toBeFalsy()
 	})
 })

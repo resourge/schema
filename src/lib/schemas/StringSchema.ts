@@ -295,9 +295,10 @@ export class StringSchema<
 		if ( typeof postalCode === 'function' ) {
 			return this.test((value, form, context: Context) => {
 				const _postalCode = postalCode(value, form);
-				if ( postalCode(value, form).regex.test(value) ) {
-					return false;
+				if ( _postalCode.regex.test(value) ) {
+					return true;
 				}
+
 				return [
 					{
 						key: '',

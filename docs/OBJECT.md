@@ -11,12 +11,12 @@ object()
 object({
   name: string().required(),
   age: number().min(18).required()
-}, 'Custom string error message')
+}, 'Custom error message')
 
 // or
-object('Custom object error message')
+object('Custom error message')
 ```
 
 ## Contribution
 
-In case you have more different validations that you use please tell us so we improve the library.
+In case you have different validations that you use, please tell us so we improve the library.

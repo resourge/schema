@@ -44,7 +44,7 @@ export class AsyncRule<Value, T = any> extends BaseRule<Value, T, AsyncRuleMetho
 			`${Parameters.PROMISE_KEY}.push(`,
 			`${Parameters.CONTEXT_KEY}.rules.${methodName}(${parameters.join(',')})`,
 			`.then((${methodName}_isValid) => {`,
-			`if ( !${methodName}_isValid ) {`,
+			(this.isMethodError ? `if ( ${methodName}_isValid.length ) {` : `if ( !${methodName}_isValid ) {`),
 			...srcCode,
 			'}',
 			'})',

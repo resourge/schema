@@ -46,6 +46,15 @@ Yup              x    15.65 ops/sec ±2.47% (43 runs sampled)
 Fastest is  [ '@resourge/schema' ]
 ```
 
+Would you like to try?
+
+```sh
+git clone https://github.com/resourge/schema.git
+cd schema
+npm install
+npm run bench
+```
+
 ## Installation
 
 Install using [Yarn](https://yarnpkg.com):

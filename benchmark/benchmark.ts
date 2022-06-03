@@ -97,7 +97,7 @@ suite
 	catch {}
 })
 .on('cycle', function (event: any) {
-	console.table(String(event.target).split('x'));
+	console.log(String(event.target));
 })
 .on('complete', function () {
 	// @ts-expect-error

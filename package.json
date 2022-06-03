@@ -30,6 +30,7 @@
     "url": "https://github.com/resourge/schema.git"
   },
   "scripts": {
+	  "bench": "npm --prefix ./benchmark run benchmark",
     "commit": "git pull && git add . && git-cz",
     "lint": "eslint \"./src/**/*.{ts,tsx}\"",
     "lint:prod": "cross-env NODE_ENV=production npm run lint",

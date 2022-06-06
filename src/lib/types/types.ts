@@ -1,7 +1,7 @@
 import { MessageType } from '../utils/messages'
 
 export type SchemaError = {
-	key: string
+	path: string
 	error: string
 }
 

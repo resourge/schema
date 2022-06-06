@@ -94,7 +94,7 @@ export abstract class Schema<Input = any, Final = any> {
 	protected getErrorSyntax(message: string) {
 		return [
 			`${Parameters.ERRORS_KEY}.push({`,
-			`	key: \`${this.path}\`,`,
+			`	path: \`${this.path}\`,`,
 			`	error: ${this.getMessage(message)}`,
 			'});'
 		]

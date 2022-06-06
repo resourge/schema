@@ -1,7 +1,6 @@
 /* eslint-disable no-useless-escape */
 import { Schema } from '../core/schema';
 import { PostalCodeInfo } from '../postalCodes';
-import { DeepReadonly } from '../types/DeepReadonly';
 import { NullableType } from '../types/SchemaMap';
 import { Context } from '../types/types';
 import { SchemaTypes } from '../utils/Utils';
@@ -289,7 +288,7 @@ export class StringSchema<
 	 * {{key}} will be replace with current key
 	 */
 	public postalCode(
-		postalCode: PostalCodeInfo | ((value: DeepReadonly<NonNullable<Input>>, form: DeepReadonly<this['final']>) => PostalCodeInfo), 
+		postalCode: PostalCodeInfo | ((value: NonNullable<Input>, form: this['final']) => PostalCodeInfo), 
 		message?: string
 	) {
 		if ( typeof postalCode === 'function' ) {
@@ -301,7 +300,7 @@ export class StringSchema<
 
 				return [
 					{
-						key: '',
+						path: '',
 						error: message ?? context.messages.string.postalCode(_postalCode)
 					}
 				]

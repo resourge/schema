@@ -1,18 +1,17 @@
-import { DeepReadonly } from '../types/DeepReadonly'
 import { Context, SchemaError } from '../types/types'
 import { Parameters } from '../utils/Utils'
 
 import { BaseRule } from './BaseRule'
 
 export type RuleBooleanMethod<Value, T = any> = (
-	value: DeepReadonly<NonNullable<Value>>, 
-	obj: DeepReadonly<T>, 
+	value: NonNullable<Value>, 
+	obj: T, 
 	context: Context
 ) => boolean
 
 export type RuleMethodSchemaError<Value, T = any> = (
-	value: DeepReadonly<NonNullable<Value>>, 
-	obj: DeepReadonly<T>, 
+	value: NonNullable<Value>, 
+	obj: T, 
 	context: Context
 ) => SchemaError[] | true
 

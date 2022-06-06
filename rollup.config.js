@@ -40,6 +40,7 @@ const defaultExtPlugin = [
 	}),
 	nodeResolve({
 		extensions: ['.tsx', '.ts']
+
 	})
 ]
 
@@ -109,6 +110,13 @@ const getPackage = (
 			},
 			external,
 			plugins: [
+				replace({
+					preventAssignment: true,
+					delimiters: ['\\b', '\\b(?!\\.)'],
+					values: {
+						postalCodes: 'schemas'
+					}
+				}),
 				...defaultExtPlugin,
 				babel({
 					exclude: /node_modules/,
@@ -128,11 +136,11 @@ const getPackage = (
 				index: SOURCE_INDEX_FILE,
 				'postalCodes/index': POSTAL_CODE_INDEX
 			},
-			output: [{
+			output: {
 				dir: OUTPUT_DIR,
 				format: 'esm',
 				banner: banner
-			}],
+			},
 			plugins: [
 				jsonPlugin,
 				dts()

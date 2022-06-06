@@ -1,10 +1,9 @@
-import { DeepReadonly } from '../types/DeepReadonly'
 import { Context, SchemaError } from '../types/types'
 import { MessageType } from '../utils/messages'
 
 export type RuleMethod<Value, T = any> = (
-	value: DeepReadonly<Value>, 
-	obj: DeepReadonly<T>
+	value: Value, 
+	obj: T
 ) => SchemaError[] | false
 
 enum Parameters {
@@ -71,7 +70,7 @@ export abstract class BaseRule<Value, T = any, Method extends Function = RuleMet
 				return [
 					`${methodName}_isValid.forEach((error) => {`,
 					`${Parameters.ERRORS_KEY}.push({`,
-					`	key: error.key ? error.key : \`${path}\`,`,
+					`	path: error.path ? error.path : \`${path}\`,`,
 					'	error: error.error',
 					'});',
 					onlyOnTouch ? `${Parameters.CONTEXT_KEY}.onlyOnTouchErrors[\`${path}\`].push(error);` : '',
@@ -86,7 +85,7 @@ export abstract class BaseRule<Value, T = any, Method extends Function = RuleMet
 				const _message: string | ((messages: MessageType) => string) = typeof message === 'string' ? message : (message as ((messages: MessageType) => string))(context.messages)
 				return [
 					`${Parameters.ERRORS_KEY}.push({`,
-					`	key: \`${path}\`,`,
+					`	path: \`${path}\`,`,
 					`	error: \`${_message.replace('{{key}}', path)}\``,
 					'});',
 					onlyOnTouch ? `${Parameters.CONTEXT_KEY}.onlyOnTouchErrors[\`${path}\`].push(${Parameters.ERRORS_KEY}[${Parameters.ERRORS_KEY}.length - 1]);` : ''

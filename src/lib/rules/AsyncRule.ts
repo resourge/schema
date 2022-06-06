@@ -1,18 +1,17 @@
-import { DeepReadonly } from '../types/DeepReadonly'
 import { Context, SchemaError } from '../types/types'
 import { Parameters } from '../utils/Utils';
 
 import { BaseRule } from './BaseRule';
 
 export type AsyncRuleBooleanMethod<Value, T = any> = (
-	value: DeepReadonly<NonNullable<Value>>, 
-	obj: DeepReadonly<T>, 
+	value: NonNullable<Value>, 
+	obj: T, 
 	context: Context
 ) => Promise<boolean>
 
 export type AsyncRuleMethodSchemaError<Value, T = any> = (
-	value: DeepReadonly<NonNullable<Value>>, 
-	form: DeepReadonly<T>, 
+	value: NonNullable<Value>, 
+	form: T, 
 	context: Context
 ) => Promise<SchemaError[] | false>
 

@@ -4,17 +4,19 @@ export const beautifyFunction = (funcArr: string[]): string => {
 	let countScope = 0
 
 	funcArr
-	.map((a) => a.replace(/\t/g, ''))
+	.filter((a) => a)
+	.map((a) => a.replace(/\t/g, '').trim())
 	.forEach((line) => {
-		if ( line.includes('{') ) {
-			normalize.push(`${identTab.repeat(countScope)}${line}`)
+		if ( /{$/g.test(line) || line.includes('promises.push(') ) {
+			normalize.push(`${identTab.repeat(countScope > 0 ? countScope : 0)}${line}`)
 			countScope += 1
 			return;
 		} 
-		else if ( line.includes('}') ) {
+		else if ( /}$|}\)/.test(line) || /^\);$/g.test(line) ) {
 			countScope -= 1
 		} 
-		normalize.push(`${identTab.repeat(countScope)}${line}`)
+		normalize.push(`${identTab.repeat(countScope > 0 ? countScope : 0)}${line}`)
 	})
+
 	return normalize.join('\n')
 }

@@ -432,12 +432,12 @@ export abstract class Schema<Input = any, Final = any> {
 
 		const thenSchema = then(thenThis);
 
-		let otherwiseSchema: S | undefined;
+		const otherwiseThis = shallowClone(this) as unknown as S;
+		otherwiseThis.whenRules = [...otherwiseThis.whenRules];
+		otherwiseThis.normalRules = [...otherwiseThis.normalRules];
+		let otherwiseSchema: S | undefined = otherwiseThis;
+		
 		if ( otherwise ) {
-			const otherwiseThis = shallowClone(this) as unknown as S;
-			otherwiseThis.whenRules = [...otherwiseThis.whenRules];
-			otherwiseThis.normalRules = [...otherwiseThis.normalRules];
-
 			otherwiseSchema = otherwise(otherwiseThis);
 		}
 

@@ -461,6 +461,17 @@ export abstract class Schema<Input = any, Final = any> {
 
 		return this;
 	}
+
+	/**
+	 * Makes schema validation validation regardless of "touches" 
+	 * (meaning value will be validated even if key 
+	 * is present in onlyOnTouch: OnlyOnTouch<Input>).
+	 */
+	public notOnlyOnTouch() {
+		this._isOnlyOnTouch = false;
+
+		return this;
+	}
 	
 	/**
 	 * Makes schema validation required (meaning value can not be undefined and null).

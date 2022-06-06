@@ -220,8 +220,16 @@ import { array, object, string } from '@resourge/schemas';
 
 const schema = number().min(20).compile(); // calling compile
 const isValid = schema.isValid();
-
 ```
+
+### Compile Options
+| Name | Type | Required | Description |
+| ---- | ---- | -------- | ----------- |
+| **debug** | `boolean` | false | Shows validation structure in a log. (only works in dev) |
+| **onlyOnTouch** | `boolean` | false | Set's default onlyOnTouch in every schema. (default false) |
+| **defaultOptional** | `boolean` | false | Set's default optional in every schema. |
+| **defaultNullable** | `boolean` | false | Set's default nullable in every schema. |
+| **messages** | `object` | false | Object containing all default messages (expect the specific message for the schema). |
 
 ## validate
 

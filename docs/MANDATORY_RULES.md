@@ -4,10 +4,28 @@
 
 ## onlyOnTouch
 
-Makes validation only in case data was `touched`
+Makes validation only in case data was `touched`.
 
 ```Typescript
 string().onlyOnTouch()
+```
+
+Requires an array of strings `keys` to validate camp. Only keys present will validate.
+
+```Typescript
+object({
+  name: string().required().onlyOnTouch(),
+  age: number().min(18).required().onlyOnTouch(),
+  address: object({
+	city: string().onlyOnTouch(),
+	street: string().onlyOnTouch()
+  })
+}).validate(objectVariable, [
+	'name',
+	'age',
+	'address.city',
+	'address.street'
+])
 ```
 
 ## required
@@ -26,6 +44,7 @@ Makes validation required (meaning it can be null and undefined)
 string().notRequired()
 ```
 ## optional
+
 ### optional
 
 Makes validation optional (meaning it can be undefined)

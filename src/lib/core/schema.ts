@@ -576,6 +576,7 @@ export abstract class Schema<Input = any, Final = any> {
 		/* c8 ignore start */ // this is for better debugging no need to test coverage
 		if ( __DEV__ ) {
 			if ( debug ) {
+				/* eslint-disable no-console */
 				console.log('method', beautifyFunction(srcCode))
 			}
 		}

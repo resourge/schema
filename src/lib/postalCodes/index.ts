@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 export type PostalCodeInfo = {
 	country: string
 	format: string

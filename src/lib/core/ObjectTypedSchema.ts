@@ -1,9 +1,7 @@
 import { SchemaMap } from '../types/SchemaMap';
-import { CompileSchemaConfig } from '../types/types';
+import { CompileSchemaConfig, PrivateSchema } from '../types/types';
 
 import { Schema } from './schema';
-
-export type PrivateSchema = Schema<any, any> & { compileSchema: Schema<any, any>['compileSchema'] }
 
 export abstract class ObjectTypedSchema<
 	Input = any,

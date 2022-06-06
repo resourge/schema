@@ -1,4 +1,4 @@
-import { Context, SchemaError } from '../types/types'
+import { CompileSchemaConfig, Context, SchemaError } from '../types/types'
 import { Parameters } from '../utils/Utils';
 
 import { BaseRule } from './BaseRule';
@@ -19,11 +19,11 @@ export type AsyncRuleMethod<Value, T = any> = AsyncRuleBooleanMethod<Value, T> |
 
 export class AsyncRule<Value, T = any> extends BaseRule<Value, T, AsyncRuleMethod<Value, T>> {
 	public override getRule(
-		context: Context,
-		type: string,
-		valueKey: string,
-		path: string,
-		onlyOnTouch: boolean
+		{
+			context,
+			path
+		}: Required<CompileSchemaConfig>,
+		type: string, valueKey: string, onlyOnTouch: boolean
 	) {
 		context.async = true;
 
@@ -32,10 +32,12 @@ export class AsyncRule<Value, T = any> extends BaseRule<Value, T, AsyncRuleMetho
 			parameters,
 			srcCode
 		} = this.getRuleSrcCode(
-			context,
+			{
+				context,
+				path
+			},
 			type,
 			valueKey,
-			path,
 			onlyOnTouch
 		)
 

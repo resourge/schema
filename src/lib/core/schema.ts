@@ -4,8 +4,9 @@
 import { shallowClone } from '@resourge/shallow-clone'
 
 import { AsyncRule, AsyncRuleBooleanMethod, AsyncRuleMethodSchemaError } from '../rules/AsyncRule'
-import { addRule, BaseRule } from '../rules/BaseRule'
+import { BaseRule } from '../rules/BaseRule'
 import { Rule, RuleBooleanMethod, RuleMethodSchemaError } from '../rules/Rule'
+import { WhenConfig, WhenRule } from '../rules/WhenRule'
 import { FormKey } from '../types/FormKey'
 import { ObjectPropertiesSchema } from '../types/SchemaMap'
 import { CompileConfig, CompileSchemaConfig, Context, SchemaError } from '../types/types'
@@ -16,23 +17,6 @@ import { defaultMessages, MessageType } from '../utils/messages'
 declare global {
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	export const __DEV__: boolean
-}
-
-export type WhenRule<Value = any, T = any> = {
-	name: string
-	method: RuleBooleanMethod<Value, T>
-	then: Schema<any>
-	otherwise?: Schema<any>
-}
-
-type WhenConfig<
-	T,
-	Input, 
-	Final = Input,
-> = {
-	is: RuleBooleanMethod<Input, Final>
-	then: (schema: T) => T
-	otherwise?: (schema: T) => T
 }
 
 type TestMethodConfig<Method extends Function> = {
@@ -80,7 +64,7 @@ export abstract class Schema<Input = any, Final = any> {
 	 * Path for current value
 	 */
 	protected path: string = '';
-	protected normalRules: Array<BaseRule<Input, Final, Function>> = []
+	protected normalRules: Map<string, BaseRule<Input, Final, Function>> = new Map();
 	protected whenRules: WhenRule[] = []
 
 	protected getValueKey(key?: string) {
@@ -101,78 +85,38 @@ export abstract class Schema<Input = any, Final = any> {
 	}
 
 	// #region Normal Rules
-	protected compileNormalRules(rules: Array<BaseRule<any, any, Function>>, context: Context, valueKey: string): string[] {
-		return rules.flatMap((rule) => rule.getRule(
-			context, 
-			this.type,
-			valueKey,
-			this.path,
-			Boolean(this._isOnlyOnTouch ?? context.onlyOnTouch)
-		))
+	protected compileNormalRules(context: Context, valueKey: string): string[] {
+		const srcCode: string[] = [];
+		this.normalRules.forEach((rule) => {
+			srcCode.push(
+				...rule.getRule(
+					{
+						context, 
+						path: this.path,
+						key: '',
+						srcCode: []
+					},
+					this.type,
+					valueKey,
+					Boolean(this._isOnlyOnTouch ?? context.onlyOnTouch)
+				)
+			)
+		})
+		return srcCode
 	}
 	// #endregion Normal Rules
 
 	// #region When Rules
-	protected transformWhenRules(
-		rule: WhenRule, 
-		{
-			context, 
-			key,
-			path,
-			srcCode
-		}: CompileSchemaConfig
-	): string[] {
-		const valueKey = this.getValueKey(key)
-		const ruleFnName = addRule(
-			this.type, 
-			rule.name,
-			rule.method,
-			context
-		)
-
-		const parameters: string[] = [
-			valueKey, 
-			Parameters.OBJECT_KEY,
-			Parameters.CONTEXT_KEY
-		]
-
-		const thenSrcCode = rule.then.compileSchema({
-			context,
-			key,
-			path,
-			srcCode
-		});
-
-		const otherwiseSrcCode = rule.otherwise ? rule.otherwise.compileSchema({
-			context,
-			srcCode,
-			key,
-			path
-		}) : undefined;
-
-		const whenSrcCode = [
-			`const ${ruleFnName}_isValid = ${Parameters.CONTEXT_KEY}.rules.${ruleFnName}(${parameters.join(',')});`,
-			`if ( ${ruleFnName}_isValid ) {`,
-			...thenSrcCode,
-			'}'
-		]
-
-		if ( otherwiseSrcCode && otherwiseSrcCode.length ) {
-			return [
-				...whenSrcCode,
-				'else {',
-				...otherwiseSrcCode,
-				'}'
-			]
-		}
-
-		return whenSrcCode;
-	}
-
 	protected compileWhenSchema(config: CompileSchemaConfig) {
-		return this.whenRules.flatMap((rule) => (
-			this.transformWhenRules(rule, config)
-		))
+		const srcCode: string[] = [];
+		this.whenRules.forEach((rule) => {
+			const valueKey = this.getValueKey(config.key)
+
+			srcCode.push(
+				...rule.getWhenRule(valueKey, config)
+			)
+		})
+		return srcCode
 	}
 	// #endregion When Rules
 
@@ -193,14 +137,16 @@ export abstract class Schema<Input = any, Final = any> {
 			parameters,
 			srcCode: errorsSyntax
 		} = rule.getRuleSrcCode(
-			context,
+			{
+				context,
+				path: this.path
+			},
 			this.type,
 			valueKey,
-			this.path,
 			false
 		)
 
-		const rulesSrcCode = this.compileNormalRules(this.normalRules, context, valueKey);
+		const rulesSrcCode = this.compileNormalRules(context, valueKey);
 
 		const fn = `${Parameters.CONTEXT_KEY}.rules.${methodName}(${parameters.join(',')})`;
 
@@ -353,7 +299,8 @@ export abstract class Schema<Input = any, Final = any> {
 		method: RuleMethodSchemaError<Input, Form> | TestMethodConfig<RuleBooleanMethod<Input, Form>>
 	): ObjectPropertiesSchema<Input, Form> {
 		if ( typeof method === 'object' ) {
-			this.normalRules.push(
+			this.normalRules.set(
+				method.name ?? `test_${this.normalRules.size}`,
 				new Rule(
 					'MESSAGE',
 					method.test,
@@ -362,17 +309,18 @@ export abstract class Schema<Input = any, Final = any> {
 				)
 			)
 
-			return this as any;
+			return shallowClone(this) as any;
 		}
 
-		this.normalRules.push(
+		this.normalRules.set(
+			method.name ?? `test_${this.normalRules.size}`,
 			new Rule(
 				'METHOD_ERROR',
 				method
 			)
 		)
 
-		return this as any;
+		return shallowClone(this) as any;
 	}
 
 	/**
@@ -388,7 +336,8 @@ export abstract class Schema<Input = any, Final = any> {
 		method: AsyncRuleMethodSchemaError<Input, Form> | TestMethodConfig<AsyncRuleBooleanMethod<Input, Form>>
 	) {
 		if ( typeof method === 'object' ) {
-			this.normalRules.push(
+			this.normalRules.set(
+				method.name ?? `asyncTest${this.normalRules.size}`,
 				new AsyncRule(
 					'MESSAGE',
 					method.test,
@@ -397,17 +346,18 @@ export abstract class Schema<Input = any, Final = any> {
 				)
 			)
 
-			return this;
+			return shallowClone(this);
 		}
 
-		this.normalRules.push(
+		this.normalRules.set(
+			method.name ?? `asyncTest${this.normalRules.size}`,
 			new AsyncRule(
 				'METHOD_ERROR',
 				method
 			)
 		)
 
-		return this;
+		return shallowClone(this);
 	}
 
 	/**
@@ -433,25 +383,28 @@ export abstract class Schema<Input = any, Final = any> {
 	}: WhenConfig<S, Input, Form>) {
 		const thenThis = shallowClone(this) as unknown as S;
 		thenThis.whenRules = [...thenThis.whenRules];
-		thenThis.normalRules = [...thenThis.normalRules];
+		thenThis.normalRules = new Map(thenThis.normalRules);
 
 		const thenSchema = then(thenThis);
 
 		const otherwiseThis = shallowClone(this) as unknown as S;
 		otherwiseThis.whenRules = [...otherwiseThis.whenRules];
-		otherwiseThis.normalRules = [...otherwiseThis.normalRules];
+		otherwiseThis.normalRules = new Map(otherwiseThis.normalRules);
 		let otherwiseSchema: S | undefined = otherwiseThis;
 		
 		if ( otherwise ) {
 			otherwiseSchema = otherwise(otherwiseThis);
 		}
 
-		this.whenRules.push({
-			name: 'custom_when',
-			method: is,
-			then: thenSchema,
-			otherwise: otherwiseSchema
-		})
+		this.whenRules.push(
+			new WhenRule(
+				'custom_when',
+				this.type,
+				is,
+				thenSchema,
+				otherwiseSchema
+			)
+		)
 
 		return this;
 	} 
@@ -461,8 +414,31 @@ export abstract class Schema<Input = any, Final = any> {
 	 * (meaning value will only be validated if key 
 	 * is present in onlyOnTouch: OnlyOnTouch<Input>).
 	 */
-	public onlyOnTouch() {
-		this._isOnlyOnTouch = true;
+	public onlyOnTouch(onlyOnTouch?: (schema: this) => this) {
+		if ( onlyOnTouch === undefined ) {
+			this._isOnlyOnTouch = true;
+			return this;
+		}
+
+		let thisClone = shallowClone(this);
+		thisClone._isOnlyOnTouch = undefined;
+		thisClone._isOptional = undefined;
+		thisClone._isNullable = undefined;
+		thisClone._isRequired = undefined;
+		thisClone.whenRules = [];
+		thisClone.normalRules = new Map();
+
+		thisClone = onlyOnTouch(thisClone);
+
+		this.normalRules.set(
+			'onlyOnTouchRule',
+			new WhenRule(
+				'onlyOnTouchRule',
+				this.type,
+				() => true,
+				thisClone
+			)
+		)
 
 		return this;
 	}

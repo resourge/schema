@@ -81,4 +81,31 @@ describe('Schema', () => {
 		}]))
 		.compile();
 	})
+
+	it('should individual validation only on touch', () => {
+		const schema = number().min(1)
+		.onlyOnTouch((schema) => schema.max(10))
+		.compile();
+
+		expect(schema.isValid(0)).toBeFalsy()
+		expect(schema.isValid(1)).toBeTruthy()
+		expect(schema.isValid(11)).toBeTruthy()
+		expect(schema.isValid(11, [''])).toBeFalsy()
+	})
+
+	it('should individual validation only on touch', () => {
+		const a = number().min(1);
+
+		const schema = a
+		.compile();
+
+		const schema2 = a.max(9)
+		.compile();
+
+		expect(schema.isValid(0)).toBeFalsy()
+		expect(schema.isValid(10)).toBeTruthy()
+		expect(schema2.isValid(0)).toBeFalsy()
+		expect(schema2.isValid(5)).toBeTruthy()
+		expect(schema2.isValid(10)).toBeFalsy()
+	})
 })

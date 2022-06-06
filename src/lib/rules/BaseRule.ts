@@ -1,9 +1,9 @@
-import { Context, SchemaError } from '../types/types'
+import { CompileSchemaConfig, Context, SchemaError } from '../types/types'
 import { MessageType } from '../utils/messages'
 
-export type RuleMethod<Value, T = any> = (
+export type RuleMethod<Value, Final = any> = (
 	value: Value, 
-	obj: T
+	form: Final
 ) => SchemaError[] | false
 
 enum Parameters {
@@ -15,20 +15,6 @@ enum Parameters {
 
 	VALUE = 'value',
 	RECURSIVE_KEY = 'recursiveKey',
-}
-
-export function addRule(
-	type: string,
-	name: string,
-	method: Function,
-	context: Context
-) {
-	const index = context.index = context.index + 1;
-	const ruleFnName = `${type}_${name}_${index}`;
-
-	context.rules[ruleFnName] = method;
-
-	return ruleFnName;
 }
 
 export abstract class BaseRule<Value, T = any, Method extends Function = RuleMethod<Value, T>> {
@@ -93,16 +79,30 @@ export abstract class BaseRule<Value, T = any, Method extends Function = RuleMet
 			};
 	}
 
-	public getRuleSrcCode(
-		context: Context,
+	public addRule(
 		type: string,
-		valueKey: string,
-		path: string,
-		onlyOnTouch: boolean
+		name: string,
+		method: Function,
+		context: Context
+	) {
+		const index = context.index = context.index + 1;
+		const ruleFnName = `${type}_${name}_${index}`;
+	
+		context.rules[ruleFnName] = method;
+	
+		return ruleFnName;
+	}
+
+	public getRuleSrcCode(
+		{
+			context, 
+			path
+		}: Pick<Required<CompileSchemaConfig>, 'context' | 'path'>,
+		type: string, valueKey: string, onlyOnTouch: boolean
 	) {
 		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		// context.async = context.async || (rule.type === 'ASYNC')
-		const methodName = addRule(
+		const methodName = this.addRule(
 			type, 
 			this.name,
 			this.method,
@@ -132,10 +132,7 @@ export abstract class BaseRule<Value, T = any, Method extends Function = RuleMet
 	}
 
 	public abstract getRule(
-		context: Context,
-		type: string,
-		valueKey: string,
-		path: string,
-		onlyOnTouch: boolean
+		config: Required<CompileSchemaConfig>,
+		type: string, valueKey: string, onlyOnTouch: boolean
 	): string[]
 }

@@ -1,4 +1,4 @@
-import { Context, SchemaError } from '../types/types'
+import { CompileSchemaConfig, Context, SchemaError } from '../types/types'
 import { Parameters } from '../utils/Utils'
 
 import { BaseRule } from './BaseRule'
@@ -19,21 +19,17 @@ export type RuleMethod<Value, T = any> = RuleBooleanMethod<Value, T> | RuleMetho
 
 export class Rule<Value, T = any> extends BaseRule<Value, T, RuleMethod<Value, T>> {
 	public getRule(
-		context: Context,
-		type: string,
-		valueKey: string,
-		path: string,
-		onlyOnTouch: boolean
+		config: Required<CompileSchemaConfig>,
+		type: string, valueKey: string, onlyOnTouch: boolean
 	) {
 		const {
 			methodName,
 			parameters,
 			srcCode
 		} = this.getRuleSrcCode(
-			context,
+			config,
 			type,
 			valueKey,
-			path,
 			onlyOnTouch
 		)
 

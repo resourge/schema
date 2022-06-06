@@ -1,9 +1,11 @@
+import { Schema } from '../core/schema'
 import { MessageType } from '../utils/messages'
 
 export type SchemaError = {
 	path: string
 	error: string
 }
+export type PrivateSchema = Schema<any, any> & { compileSchema: Schema<any, any>['compileSchema'] }
 
 export type Context = {
 	index: number

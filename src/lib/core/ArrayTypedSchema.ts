@@ -1,7 +1,6 @@
 import { ObjectPropertiesSchema } from '../types/SchemaMap';
-import { CompileSchemaConfig } from '../types/types';
+import { CompileSchemaConfig, PrivateSchema } from '../types/types';
 
-import { PrivateSchema } from './ObjectTypedSchema';
 import { Schema } from './schema';
 
 export abstract class ArrayTypedSchema<

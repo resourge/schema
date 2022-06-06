@@ -30,9 +30,9 @@ Benchmarks to compare with other schemas validators (the performance can variate
 ```sh
 @resourge/schema x 18,634,802 ops/sec ±1.30%  (93 runs sampled)
 Fast Validator   x  1,632,544 ops/sec ±0.50%  (92 runs sampled)
-joi 			 x    182,179 ops/sec ±1.15%  (93 runs sampled)
-zod 			 x     52,358 ops/sec ±0.86%  (89 runs sampled)
-Yup 			 x      8,573 ops/sec ±4.42%  (81 runs sampled)
+joi              x    182,179 ops/sec ±1.15%  (93 runs sampled)
+zod              x     52,358 ops/sec ±0.86%  (89 runs sampled)
+Yup              x      8,573 ops/sec ±4.42%  (81 runs sampled)
 Fastest is  [ '@resourge/schema' ]
 ```
 

@@ -421,7 +421,7 @@ export abstract class Schema<Input = any, Final = any> {
 	 * })
 	 * ```
 	 */
-	public when<S extends Schema<any> = this, Form = any>({
+	public when<Form = any, S extends Schema<any> = this>({
 		is,
 		then,
 		otherwise

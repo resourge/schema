@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/resourge/schema/compare/v1.0.1...v1.0.2) (2022-06-06)
+
+
+### Bug Fixes
+
+* **asyncrule:** fix AsyncRuleMethodSchemaError type returning false instead of true ([a8acda6](https://github.com/resourge/schema/commit/a8acda614a28344a12c98cc5f43c827c3d8678e6))
+
 ## [1.0.1](https://github.com/resourge/schema/compare/v1.0.0...v1.0.1) (2022-06-06)
 
 

@@ -20,7 +20,7 @@ describe('date', () => {
 		const schemaMessage = new DateSchema().today(newMessage);
 
 		const errors: SchemaError[] = [{
-			key: '',
+			path: '',
 			error: newMessage
 		}]
 

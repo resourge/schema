@@ -298,17 +298,22 @@ export abstract class Schema<Input = any, Final = any> {
 		}
 
 		const isOnlyOnTouch = schema._isOnlyOnTouch ?? context.onlyOnTouch;
-		if ( isOnlyOnTouch ) {
-			schema.onlyOnTouch();
-			mandatoryRules.push((fnSrcCode: string[]) => [
-				`if ( ${Parameters.ONLY_ON_TOUCH}.some((key) => key.includes(\`${schema.path}\`) || \`${schema.path}\`.includes(key)) ){`,
-				...fnSrcCode,
-				`context.onlyOnTouchErrors[\`${schema.path}\`] = errors.filter((error) => error.key === \`${schema.path}\`);`,
-				'}',
-				`else if ( context.onlyOnTouchErrors[\`${schema.path}\`] ){`,
-				`context.onlyOnTouchErrors[\`${schema.path}\`].forEach((error) => errors.push(error))`,
-				'}'
-			])
+		if ( isOnlyOnTouch !== undefined ) { 
+			if ( isOnlyOnTouch ) {
+				schema.onlyOnTouch();
+				mandatoryRules.push((fnSrcCode: string[]) => [
+					`if ( ${Parameters.ONLY_ON_TOUCH}.some((key) => key.includes(\`${schema.path}\`) || \`${schema.path}\`.includes(key)) ){`,
+					...fnSrcCode,
+					`context.onlyOnTouchErrors[\`${schema.path}\`] = errors.filter((error) => error.key === \`${schema.path}\`);`,
+					'}',
+					`else if ( context.onlyOnTouchErrors[\`${schema.path}\`] ){`,
+					`context.onlyOnTouchErrors[\`${schema.path}\`].forEach((error) => errors.push(error))`,
+					'}'
+				])
+			}
+			else {
+				schema.notOnlyOnTouch();
+			}
 		}
 
 		return mandatoryRules

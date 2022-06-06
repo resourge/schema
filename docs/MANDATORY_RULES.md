@@ -4,6 +4,10 @@
 
 ## onlyOnTouch
 
+Makes validation only if values were `touched`. By default, all validation will work regardless of `touches`.
+
+### onlyOnTouch
+
 Makes validation only in case data was `touched`.
 
 ```Typescript
@@ -28,7 +32,18 @@ object({
 ])
 ```
 
+### notOnlyOnTouch
+
+Makes validation validate regardless of `touch`. 
+
+```Typescript
+string().notOnlyOnTouch()
+```
+
 ## required
+
+Makes validation check if value is null or undefined. By default schemas only validate type.
+
 ### required
 
 Makes validation required (meaning not null and not undefined)
@@ -45,6 +60,8 @@ string().notRequired()
 ```
 ## optional
 
+Makes validation check if value is undefined. By default schemas only validate type.
+
 ### optional
 
 Makes validation optional (meaning it can be undefined)
@@ -60,6 +77,9 @@ Makes validation optional (meaning it can not be undefined)
 string().notOptional()
 ```
 ## nullable
+
+Makes validation check if value is null. By default schemas only validate type.
+
 ### nullable
 
 Makes validation nullable (meaning it can be null)

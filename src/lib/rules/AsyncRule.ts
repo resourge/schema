@@ -13,7 +13,7 @@ export type AsyncRuleMethodSchemaError<Value, T = any> = (
 	value: NonNullable<Value>, 
 	form: T, 
 	context: Context
-) => Promise<SchemaError[] | false>
+) => Promise<SchemaError[] | true>
 
 export type AsyncRuleMethod<Value, T = any> = AsyncRuleBooleanMethod<Value, T> | AsyncRuleMethodSchemaError<Value, T>
 

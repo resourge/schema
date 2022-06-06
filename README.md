@@ -223,13 +223,13 @@ const isValid = schema.isValid();
 ```
 
 ### Compile Options
-| Name | Type | Required | Description |
-| ---- | ---- | -------- | ----------- |
-| **debug** | `boolean` | false | Shows validation structure in a log. (only works in dev) |
-| **onlyOnTouch** | `boolean` | false | Set's default onlyOnTouch in every schema. (default false) |
-| **defaultOptional** | `boolean` | false | Set's default optional in every schema. |
-| **defaultNullable** | `boolean` | false | Set's default nullable in every schema. |
-| **messages** | `object` | false | Object containing all default messages (expect the specific message for the schema). |
+| Name | Type | Required | default | Description |
+| ---- | ---- | -------- | ------- | ----------- |
+| **debug** | `boolean` | false | false | Shows validation structure in a log. (only works in dev) |
+| **onlyOnTouch** | `boolean` | false | false | Set's default onlyOnTouch in every schema. (default false) |
+| **defaultOptional** | `boolean` | false | false | Set's default optional in every schema. |
+| **defaultNullable** | `boolean` | false | false | Set's default nullable in every schema. |
+| **messages** | `object` | false | false | Object containing all default messages (expect the specific message for the schema). |
 
 ## validate
 

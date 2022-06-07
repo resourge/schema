@@ -1,8 +1,9 @@
 import { Schema } from '../core/schema'
 import { CompileSchemaConfig, PrivateSchema } from '../types/types'
 import { Parameters, SchemaTypes } from '../utils/Utils'
+import { getOnlyOnTouchSrcCode } from '../utils/getOnlyOnTouchSrcCode'
 
-import { BaseRule } from './BaseRule'
+import { BaseRule, GetRuleConfig } from './BaseRule'
 import { RuleBooleanMethod } from './Rule'
 
 export type WhenConfig<
@@ -55,6 +56,7 @@ export class WhenRule<Value = any, T = any> extends BaseRule<Value, T, RuleBoole
 				context,
 				path: path ?? ''
 			},
+			this.name,
 			this.schemaType,
 			valueKey,
 			false
@@ -96,24 +98,18 @@ export class WhenRule<Value = any, T = any> extends BaseRule<Value, T, RuleBoole
 	public getRule(
 		{
 			context, 
-			key,
 			path
-		}: Required<CompileSchemaConfig>
+		}: GetRuleConfig
 	): string[] {
 		const thenSrcCode = this.then.compileSchema({
 			context,
-			key,
+			key: path,
 			path
 		});
 
-		return [
-			`if ( ${Parameters.ONLY_ON_TOUCH}.some((key) => key.includes(\`${path}\`) || \`${path}\`.includes(key)) ){`,
-			...thenSrcCode,
-			`context.onlyOnTouchErrors[\`${path}\`] = errors.filter((error) => error.key === \`${path}\`);`,
-			'}',
-			`else if ( context.onlyOnTouchErrors[\`${path}\`] ){`,
-			`context.onlyOnTouchErrors[\`${path}\`].forEach((error) => errors.push(error))`,
-			'}'
-		]
+		return getOnlyOnTouchSrcCode(
+			path,
+			thenSrcCode
+		)
 	}
 }

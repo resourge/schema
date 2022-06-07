@@ -41,25 +41,23 @@ describe('object', () => {
 
 	it('should individual validation only on touch', () => {
 		const schema = object({
-			productId: number().min(10).onlyOnTouch((schema) => 
-				schema.min(1)
+			productId: number().onlyOnTouch((schema) => 
+				schema.min(2)
 			),
 			productName: string()
 		})
-		
-		.compile({
-			debug: true
-		});
+		.compile();
 
 		expect(
 			schema.isValid({
 				productId: 1,
 				productName: 'Product Name'
 			})
-		).toBeFalsy()
+		).toBeTruthy()
+
 		expect(
 			schema.isValid({
-				productId: 1,
+				productId: 2,
 				productName: 'Product Name'
 			}, 
 			['productId'])

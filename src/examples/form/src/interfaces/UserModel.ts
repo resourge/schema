@@ -62,15 +62,9 @@ const schema = object<UserModel>({
 export const useUserModel = (model?: UserType) => {
 	return useForm<UserModel>(new UserModel(model), {
 		validate: async (form: UserModel) => {
-			const errors = await schema.validate(form)
-			if (errors.length > 0) {
-				return await Promise.reject(errors)
-			}
+			return await schema.validate(form)
 		},
-		onErrors: (errors) => {
-			/// This method changes the native `isValid`
-			return errors.map((error: any) => ({ path: error.key, errors: [error.error] }))
-		},
+		onErrors: (errors) => errors,
 		validateDefault: true 
 	})
 }

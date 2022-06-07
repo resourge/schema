@@ -12,6 +12,7 @@ import { ObjectPropertiesSchema } from '../types/SchemaMap'
 import { CompileConfig, CompileSchemaConfig, Context, SchemaError } from '../types/types'
 import { Parameters, SchemaTypes } from '../utils/Utils'
 import { beautifyFunction } from '../utils/beautifyFunction'
+import { getOnlyOnTouchSrcCode } from '../utils/getOnlyOnTouchSrcCode'
 import { defaultMessages, MessageType } from '../utils/messages'
 
 declare global {
@@ -22,6 +23,9 @@ declare global {
 type TestMethodConfig<Method extends Function> = {
 	test: Method
 	message: string | ((messages: MessageType) => string)
+	/**
+	 * Servers to make validation unique, otherwise method cannot be changed
+	 */
 	name?: string
 }
 
@@ -87,17 +91,16 @@ export abstract class Schema<Input = any, Final = any> {
 	// #region Normal Rules
 	protected compileNormalRules(context: Context, valueKey: string): string[] {
 		const srcCode: string[] = [];
-		this.normalRules.forEach((rule) => {
+		this.normalRules.forEach((rule, key) => {
 			srcCode.push(
 				...rule.getRule(
 					{
 						context, 
-						path: this.path,
-						key: '',
-						srcCode: []
+						path: this.path
 					},
-					this.type,
 					valueKey,
+					key,
+					this.type,
 					Boolean(this._isOnlyOnTouch ?? context.onlyOnTouch)
 				)
 			)
@@ -128,8 +131,7 @@ export abstract class Schema<Input = any, Final = any> {
 		const rule = new Rule(
 			'MESSAGE',
 			this.rule,
-			this.message,
-			`schema_is_${this.type}`
+			this.message
 		)
 
 		const {
@@ -141,6 +143,7 @@ export abstract class Schema<Input = any, Final = any> {
 				context,
 				path: this.path
 			},
+			`is_${this.type}`,
 			this.type,
 			valueKey,
 			false
@@ -247,15 +250,10 @@ export abstract class Schema<Input = any, Final = any> {
 		if ( isOnlyOnTouch !== undefined ) { 
 			if ( isOnlyOnTouch ) {
 				schema.onlyOnTouch();
-				mandatoryRules.push((fnSrcCode: string[]) => [
-					`if ( ${Parameters.ONLY_ON_TOUCH}.some((key) => key.includes(\`${schema.path}\`) || \`${schema.path}\`.includes(key)) ){`,
-					...fnSrcCode,
-					`context.onlyOnTouchErrors[\`${schema.path}\`] = errors.filter((error) => error.key === \`${schema.path}\`);`,
-					'}',
-					`else if ( context.onlyOnTouchErrors[\`${schema.path}\`] ){`,
-					`context.onlyOnTouchErrors[\`${schema.path}\`].forEach((error) => errors.push(error))`,
-					'}'
-				])
+				mandatoryRules.push((fnSrcCode: string[]) => getOnlyOnTouchSrcCode(
+					schema.path,
+					fnSrcCode
+				))
 			}
 			else {
 				schema.notOnlyOnTouch();
@@ -304,8 +302,7 @@ export abstract class Schema<Input = any, Final = any> {
 				new Rule(
 					'MESSAGE',
 					method.test,
-					method.message,
-					method.name
+					method.message
 				)
 			)
 
@@ -337,12 +334,11 @@ export abstract class Schema<Input = any, Final = any> {
 	) {
 		if ( typeof method === 'object' ) {
 			this.normalRules.set(
-				method.name ?? `asyncTest${this.normalRules.size}`,
+				method.name ?? `asyncTest_${this.normalRules.size}`,
 				new AsyncRule(
 					'MESSAGE',
 					method.test,
-					method.message,
-					method.name
+					method.message
 				)
 			)
 
@@ -420,15 +416,23 @@ export abstract class Schema<Input = any, Final = any> {
 			return this;
 		}
 
-		let thisClone = shallowClone(this);
-		thisClone._isOnlyOnTouch = undefined;
-		thisClone._isOptional = undefined;
-		thisClone._isNullable = undefined;
-		thisClone._isRequired = undefined;
-		thisClone.whenRules = [];
-		thisClone.normalRules = new Map();
+		let thenClone = shallowClone(this);
+		thenClone._isOnlyOnTouch = undefined;
+		thenClone._isOptional = undefined;
+		thenClone._isNullable = undefined;
+		thenClone._isRequired = undefined;
+		thenClone.whenRules = [];
+		thenClone.normalRules = new Map();
 
-		thisClone = onlyOnTouch(thisClone);
+		thenClone = onlyOnTouch(thenClone);
+
+		if ( __DEV__ ) {
+			thenClone.normalRules.forEach((_, key) => {
+				if ( this.normalRules.has(key) ) {
+					throw new Error(`Method ${key} already exists outside of 'onlyOnTouch'. To prevent confusion decide if you want '${key}' outside or inside 'onlyOnTouch'`)
+				}
+			})
+		}
 
 		this.normalRules.set(
 			'onlyOnTouchRule',
@@ -436,7 +440,7 @@ export abstract class Schema<Input = any, Final = any> {
 				'onlyOnTouchRule',
 				this.type,
 				() => true,
-				thisClone
+				thenClone
 			)
 		)
 

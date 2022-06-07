@@ -1,7 +1,7 @@
-import { CompileSchemaConfig, Context, SchemaError } from '../types/types'
+import { Context, SchemaError } from '../types/types'
 import { Parameters } from '../utils/Utils';
 
-import { BaseRule } from './BaseRule';
+import { BaseRule, GetRuleConfig } from './BaseRule';
 
 export type AsyncRuleBooleanMethod<Value, T = any> = (
 	value: NonNullable<Value>, 
@@ -22,8 +22,10 @@ export class AsyncRule<Value, T = any> extends BaseRule<Value, T, AsyncRuleMetho
 		{
 			context,
 			path
-		}: Required<CompileSchemaConfig>,
-		type: string, valueKey: string, onlyOnTouch: boolean
+		}: GetRuleConfig,
+		valueKey: string,
+		name: string,
+		type: string, onlyOnTouch: boolean
 	) {
 		context.async = true;
 
@@ -36,6 +38,7 @@ export class AsyncRule<Value, T = any> extends BaseRule<Value, T, AsyncRuleMetho
 				context,
 				path
 			},
+			name,
 			type,
 			valueKey,
 			onlyOnTouch

@@ -32,6 +32,7 @@
   "scripts": {
     "bench": "npm --prefix ./benchmark run benchmark",
     "bench:heavy": "npm --prefix ./benchmark run heavy:benchmark",
+    "example": "npm --prefix ./src/examples/form run dev",
     "commit": "git pull && git add . && git-cz",
     "lint": "eslint \"./src/**/*.{ts,tsx}\"",
     "lint:prod": "cross-env NODE_ENV=production npm run lint",

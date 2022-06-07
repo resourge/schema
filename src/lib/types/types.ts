@@ -30,9 +30,24 @@ export type CompileSchemaConfig = {
 }
 
 export type CompileConfig = { 
+	/**
+	 * console logs the validation structure.
+	 */
 	debug?: boolean
+	/**
+	 * Makes onlyOnTouch default in the schemas.
+	 */
 	onlyOnTouch?: boolean
+	/**
+	 * Makes optional default in the schemas. @default undefined
+	 */
 	defaultOptional?: boolean
+	/**
+	 * Makes nullable default in the schemas. @default undefined
+	 */
 	defaultNullable?: boolean
+	/**
+	 * Object containing messages.
+	 */
 	messages?: Partial<MessageType>
 }

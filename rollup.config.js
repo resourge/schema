@@ -12,8 +12,8 @@ import {
 	license
 } from './package.json';
 
-const external = ['@resourge/shallow-clone'];
-const globals = { '@resourge/shallow-clone': 'ShallowClone' }
+const external = [];
+const globals = {}
 
 const babelPlugins = [
 	'babel-plugin-dev-expression'

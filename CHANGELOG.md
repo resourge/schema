@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/resourge/schema/compare/v1.1.1...v1.2.0) (2022-06-09)
+
+
+### Features
+
+* **objecttypedschema:** add extend method to ObjectTypeSchema ([b4f449b](https://github.com/resourge/schema/commit/b4f449b1d762ec3b0a72c8f9155db5529785cc63))
+
 ## [1.1.1](https://github.com/resourge/schema/compare/v1.1.0...v1.1.1) (2022-06-09)
 
 

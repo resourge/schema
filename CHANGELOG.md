@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/resourge/schema/compare/v1.2.0...v1.2.1) (2022-06-09)
+
+
+### Bug Fixes
+
+* **objectschema.ts:** fix type not working as intenteded when extending ([1d8c4fc](https://github.com/resourge/schema/commit/1d8c4fc4ff8a3c069173a00cfa22430c7e7ec852))
+
 # [1.2.0](https://github.com/resourge/schema/compare/v1.1.1...v1.2.0) (2022-06-09)
 
 

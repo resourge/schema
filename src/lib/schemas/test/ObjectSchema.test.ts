@@ -63,4 +63,40 @@ describe('object', () => {
 			['productId'])
 		).toBeTruthy()
 	})
+
+	it('should extend schema', () => {
+		const schema = object({
+			productId: number(),
+			productName: string()
+		}).optional().compile();
+	
+		expect(schema.isValid({
+			productId: 1,
+			productName: 'Product Name'
+		})).toBeTruthy()
+
+		const schema2 = schema.extend<{ 
+			productId: number
+			productName: string
+			productCategory?: string 
+		}>({
+			productCategory: string().required()
+		}).compile();
+
+		expect(schema.isValid({
+			productId: 1,
+			productName: 'Product Name'
+		})).toBeTruthy()
+
+		expect(schema2.isValid({
+			productId: 1,
+			productName: 'Product Name'
+		})).toBeFalsy()
+
+		expect(schema2.isValid({
+			productId: 1,
+			productName: 'Product Name',
+			productCategory: 'Product Category'
+		})).toBeTruthy()
+	})
 })

@@ -405,7 +405,7 @@ export abstract class Schema<Input = any, Final = any> {
 			)
 		)
 
-		return this;
+		return shallowClone(this);
 	} 
 
 	/**
@@ -416,7 +416,7 @@ export abstract class Schema<Input = any, Final = any> {
 	public onlyOnTouch(onlyOnTouch?: (schema: this) => this) {
 		if ( onlyOnTouch === undefined ) {
 			this._isOnlyOnTouch = true;
-			return this;
+			return shallowClone(this);
 		}
 
 		let thenClone = shallowClone(this);
@@ -446,8 +446,7 @@ export abstract class Schema<Input = any, Final = any> {
 				thenClone
 			)
 		)
-
-		return this;
+		return shallowClone(this);
 	}
 
 	/**
@@ -458,7 +457,7 @@ export abstract class Schema<Input = any, Final = any> {
 	public notOnlyOnTouch() {
 		this._isOnlyOnTouch = false;
 
-		return this;
+		return shallowClone(this);
 	}
 	
 	/**
@@ -470,7 +469,7 @@ export abstract class Schema<Input = any, Final = any> {
 		this._isRequired = true;
 		this.messageRequired = message;
 
-		return this;
+		return shallowClone(this);
 	}
 
 	/**
@@ -481,7 +480,7 @@ export abstract class Schema<Input = any, Final = any> {
 		this._isNullable = undefined;
 		this._isRequired = false;
 
-		return this;
+		return shallowClone(this);
 	}
 
 	/**
@@ -491,7 +490,7 @@ export abstract class Schema<Input = any, Final = any> {
 		this._isOptional = true;
 		this._isRequired = undefined;
 
-		return this;
+		return shallowClone(this);
 	}
 
 	/**
@@ -502,7 +501,7 @@ export abstract class Schema<Input = any, Final = any> {
 		this._isRequired = undefined;
 		this.messageOptional = message;
 
-		return this;
+		return shallowClone(this);
 	}
 
 	/**
@@ -512,7 +511,7 @@ export abstract class Schema<Input = any, Final = any> {
 		this._isNullable = true;
 		this._isRequired = undefined;
 
-		return this;
+		return shallowClone(this);
 	}
 
 	/**
@@ -523,7 +522,7 @@ export abstract class Schema<Input = any, Final = any> {
 		this._isRequired = undefined;
 		this.messageNullable = message;
 
-		return this;
+		return shallowClone(this);
 	}
 
 	/**
@@ -593,7 +592,7 @@ export abstract class Schema<Input = any, Final = any> {
 			return validate(value, context, value, onlyOnTouch)
 		}
 
-		return this;
+		return shallowClone(this);
 	}
 
 	/**

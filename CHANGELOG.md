@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/resourge/schema/compare/v1.1.0...v1.1.1) (2022-06-09)
+
+
+### Bug Fixes
+
+* **schema:** improve when rule ([8fb7b5c](https://github.com/resourge/schema/commit/8fb7b5c37773d0fe4f7e97a7c21292dba773cbe8))
+
 # [1.1.0](https://github.com/resourge/schema/compare/v1.0.3...v1.1.0) (2022-06-07)
 
 

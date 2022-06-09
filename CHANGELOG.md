@@ -1,3 +1,10 @@
+## [1.2.2](https://github.com/resourge/schema/compare/v1.2.1...v1.2.2) (2022-06-09)
+
+
+### Bug Fixes
+
+* **schemas:** fix schemas sharing references ([4e42157](https://github.com/resourge/schema/commit/4e4215734f24b4a6254d802eae9878963dca0708))
+
 ## [1.2.1](https://github.com/resourge/schema/compare/v1.2.0...v1.2.1) (2022-06-09)
 
 

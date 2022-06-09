@@ -378,15 +378,18 @@ export abstract class Schema<Input = any, Final = any> {
 		otherwise
 	}: WhenConfig<S, Input, Form>) {
 		const thenThis = shallowClone(this) as unknown as S;
-		thenThis.whenRules = [...thenThis.whenRules];
-		thenThis.normalRules = new Map(thenThis.normalRules);
+
+		thenThis.whenRules = [];
+		thenThis.normalRules = new Map(this.normalRules);
 
 		const thenSchema = then(thenThis);
 
 		const otherwiseThis = shallowClone(this) as unknown as S;
-		otherwiseThis.whenRules = [...otherwiseThis.whenRules];
-		otherwiseThis.normalRules = new Map(otherwiseThis.normalRules);
+		otherwiseThis.whenRules = [];
+		otherwiseThis.normalRules = new Map(this.normalRules);
 		let otherwiseSchema: S | undefined = otherwiseThis;
+
+		this.normalRules = new Map();
 		
 		if ( otherwise ) {
 			otherwiseSchema = otherwise(otherwiseThis);

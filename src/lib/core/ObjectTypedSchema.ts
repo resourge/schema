@@ -1,5 +1,3 @@
-import { shallowClone } from '@resourge/shallow-clone';
-
 import { SchemaMap } from '../types/SchemaMap';
 import { CompileSchemaConfig, PrivateSchema } from '../types/types';
 
@@ -38,18 +36,5 @@ export abstract class ObjectTypedSchema<
 			srcCode: schemaRules, 
 			path
 		});
-	}
-
-	public extend<
-		TInput extends Input = Input,
-		TFinal extends Final = Final
-	>(schemas: SchemaMap<TInput>): ObjectTypedSchema<TInput, TFinal> {
-		Object.keys(schemas)
-		.forEach((key) => {
-			// @ts-expect-error // this will never be undefined but typescript can't comprehend that
-			this.shape.push([key, schemas[key as keyof SchemaMap<Input>]])
-		})
-
-		return shallowClone<ObjectTypedSchema<TInput, TFinal>>(this as unknown as ObjectTypedSchema<TInput, TFinal>);
 	}
 }

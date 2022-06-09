@@ -1,4 +1,5 @@
 /* eslint-disable no-useless-escape */
+import { Definitions } from '../core/Definitions';
 import { Schema } from '../core/schema';
 import { PostalCodeInfo } from '../postalCodes';
 import { NullableType } from '../types/SchemaMap';
@@ -25,8 +26,12 @@ export class StringSchema<
 	protected override message: string = `{{key}} is not ${this.type}`
 	protected rule = (value: any) => typeof value === 'string'
 
-	constructor(message?: string) {
-		super();
+	public clone() {
+		return new StringSchema<Input, Final>(this.message, this.def)
+	}
+
+	constructor(message?: string, def?: Definitions) {
+		super(def);
 
 		this.message = message ?? this.message;
 	}

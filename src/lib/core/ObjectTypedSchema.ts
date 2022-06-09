@@ -1,20 +1,21 @@
 import { SchemaMap } from '../types/SchemaMap';
 import { CompileSchemaConfig, PrivateSchema } from '../types/types';
 
+import { Definitions } from './Definitions';
 import { Schema } from './schema';
 
 export abstract class ObjectTypedSchema<
 	Input = any,
 	Final = any
 > extends Schema<Input, Final> {
-	protected shape: Array<[string, PrivateSchema]> = []
+	protected schemas: SchemaMap<Input>
+	protected shape: Map<string, PrivateSchema>;
 
-	constructor(schemas: SchemaMap<Input>) {
-		super();
+	constructor(schemas: SchemaMap<Input>, def?: Definitions) {
+		super(def);
 
-		this.shape = Object.keys(schemas)
-		// @ts-expect-error // this will never be undefined but typescript can't comprehend that
-		.map((key) => [key, schemas[key]])
+		this.schemas = schemas;
+		this.shape = new Map(Object.entries(schemas))
 	}
 
 	protected override compileSchema({
@@ -22,12 +23,16 @@ export abstract class ObjectTypedSchema<
 		key, 
 		path
 	}: CompileSchemaConfig) {
-		const schemaRules = this.shape.flatMap(([childKey, schema]) => {
-			return schema.compileSchema({
-				context, 
-				key: `${key ? `${key}.` : ''}${childKey}`, 
-				path: `${path ? `${path}.` : ''}${childKey}`
-			})
+		const schemaRules: string[] = []
+		
+		this.shape.forEach((schema, childKey) => {
+			schemaRules.push(
+				...schema.compileSchema({
+					context, 
+					key: `${key ? `${key}.` : ''}${childKey}`, 
+					path: `${path ? `${path}.` : ''}${childKey}`
+				})
+			);
 		})
 
 		return super.compileSchema({

@@ -8,14 +8,14 @@ export const beautifyFunction = (funcArr: string[]): string => {
 	.map((a) => a.replace(/\t/g, '').trim())
 	.forEach((line) => {
 		if ( /{$/g.test(line) || line.includes('promises.push(') ) {
-			normalize.push(`${identTab.repeat(countScope > 0 ? countScope : 0)}${line}`)
+			normalize.push(`${identTab.repeat(countScope)}${line}`)
 			countScope += 1
 			return;
 		} 
 		else if ( /}$|}\)/.test(line) || /^\);$/g.test(line) ) {
 			countScope -= 1
 		} 
-		normalize.push(`${identTab.repeat(countScope > 0 ? countScope : 0)}${line}`)
+		normalize.push(`${identTab.repeat(countScope)}${line}`)
 	})
 
 	return normalize.join('\n')

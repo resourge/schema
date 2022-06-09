@@ -69,12 +69,16 @@ export class WhenRule<Value = any, T = any> extends BaseRule<Value, T, RuleBoole
 			srcCode
 		});
 
-		const otherwiseSrcCode = this.otherwise ? this.otherwise.compileSchema({
+		// This will never be undefined because when 
+		// creating whenRules otherwise is inserted by default
+		// Only when whenRule is a normalRule will otherwise be undefined 
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		const otherwiseSrcCode = this.otherwise!.compileSchema({
 			context,
 			srcCode,
 			key,
 			path
-		}) : undefined;
+		});
 
 		const whenSrcCode = [
 			`const ${methodName}_isValid = ${Parameters.CONTEXT_KEY}.rules.${methodName}(${parameters.join(',')});`,
@@ -83,16 +87,12 @@ export class WhenRule<Value = any, T = any> extends BaseRule<Value, T, RuleBoole
 			'}'
 		]
 
-		if ( otherwiseSrcCode && otherwiseSrcCode.length ) {
-			return [
-				...whenSrcCode,
-				'else {',
-				...otherwiseSrcCode,
-				'}'
-			]
-		}
-
-		return whenSrcCode;
+		return [
+			...whenSrcCode,
+			'else {',
+			...otherwiseSrcCode,
+			'}'
+		]
 	}
 
 	public getRule(

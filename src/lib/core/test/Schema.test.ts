@@ -51,17 +51,17 @@ describe('Schema', () => {
 		expect(schema.isOptional).toBeFalsy()
 		expect(schema.isRequired).toBeFalsy()
 
-		schema.nullable();
-		expect(schema.isNullable).toBeTruthy()
+		const newSchema = schema.nullable();
+		expect(newSchema.isNullable).toBeTruthy()
 
-		schema.onlyOnTouch();
-		expect(schema.isOnlyOnTouch).toBeTruthy()
+		const newSchema1 = schema.onlyOnTouch();
+		expect(newSchema1.isOnlyOnTouch).toBeTruthy()
 
-		schema.optional();
-		expect(schema.isOptional).toBeTruthy();
+		const newSchema2 = schema.optional();
+		expect(newSchema2.isOptional).toBeTruthy();
 
-		schema.required();
-		expect(schema.isRequired).toBeTruthy();
+		const newSchema3 = schema.required();
+		expect(newSchema3.isRequired).toBeTruthy();
 
 		schema.test({
 			test: () => true,

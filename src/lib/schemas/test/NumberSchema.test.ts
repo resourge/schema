@@ -209,4 +209,21 @@ describe('number', () => {
 		expect(validate(10)).toBeFalsy()
 		expect(validate(-10)).toBeTruthy()
 	})
+
+	it('should each schema be separated from previous', () => {
+		const schema = number().nullable().min(1);
+		const schema1 = schema.optional().max(10);
+	
+		expect(schema.isNullable).toBe(true)
+		expect(schema.isOptional).toBe(false)
+		expect(schema1.isNullable).toBe(true)
+		expect(schema1.isOptional).toBe(true)
+
+		// @ts-expect-error
+		expect(schema.def.normalRules.size).toBe(1)
+		// @ts-expect-error
+		expect(schema1.def.normalRules.size).toBe(2)
+		// @ts-expect-error
+		expect(schema.def.normalRules.size).not.toBe(schema1.def.normalRules.size)
+	})
 })

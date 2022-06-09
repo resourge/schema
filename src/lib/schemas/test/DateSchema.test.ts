@@ -29,4 +29,21 @@ describe('date', () => {
 		)
 		.toEqual(errors)
 	})
+
+	it('should each schema be separated from previous', () => {
+		const schema = date().nullable()
+		const schema1 = schema.optional().today();
+	
+		expect(schema.isNullable).toBe(true)
+		expect(schema.isOptional).toBe(false)
+		expect(schema1.isNullable).toBe(true)
+		expect(schema1.isOptional).toBe(true)
+
+		// @ts-expect-error
+		expect(schema.def.normalRules.size).toBe(0)
+		// @ts-expect-error
+		expect(schema1.def.normalRules.size).toBe(1)
+		// @ts-expect-error
+		expect(schema.def.normalRules.size).not.toBe(schema1.def.normalRules.size)
+	})
 })

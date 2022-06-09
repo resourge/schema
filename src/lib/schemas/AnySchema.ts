@@ -1,4 +1,5 @@
 
+import { Definitions } from '../core/Definitions';
 import { Schema } from '../core/schema';
 import { SchemaTypes } from '../utils/Utils';
 
@@ -10,8 +11,12 @@ export class AnySchema<
 	protected message: string = `{{key}} is not ${this.type}`
 	protected rule = () => true
 	
-	constructor(message?: string) {
-		super();
+	public clone() {
+		return new AnySchema(this.message, this.def)
+	}
+
+	constructor(message?: string, def?: Definitions) {
+		super(def);
 
 		this.message = message ?? this.message;
 	}

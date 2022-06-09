@@ -1,3 +1,4 @@
+import { Definitions } from '../core/Definitions';
 import { Schema } from '../core/schema';
 import { NullableType } from '../types/SchemaMap';
 import { SchemaTypes } from '../utils/Utils';
@@ -10,8 +11,12 @@ export class NumberSchema<
 	protected message: string = `{{key}} is not ${this.type}`
 	protected rule = (value: number) => typeof value === 'number'
 
-	constructor(message?: string) {
-		super();
+	public clone() {
+		return new NumberSchema(this.message, this.def)
+	}
+
+	constructor(message?: string, def?: Definitions) {
+		super(def);
 
 		this.message = message ?? this.message;
 	}

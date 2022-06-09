@@ -99,4 +99,24 @@ describe('object', () => {
 			productCategory: 'Product Category'
 		})).toBeTruthy()
 	})
+
+	it('should each schema be separated from previous', () => {
+		const productIdSchema = number();
+		// @ts-expect-error
+		expect(productIdSchema.def.normalRules.size).toBe(0)
+
+		const schema = object({
+			productId: productIdSchema.required(),
+			productName: string()
+		}).nullable();
+		const schema1 = schema.optional();
+
+		// @ts-expect-error
+		expect(productIdSchema.def.normalRules.size).toBe(0)
+	
+		expect(schema.isNullable).toBe(true)
+		expect(schema.isOptional).toBe(false)
+		expect(schema1.isNullable).toBe(true)
+		expect(schema1.isOptional).toBe(true)
+	})
 })

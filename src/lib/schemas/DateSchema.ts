@@ -1,3 +1,4 @@
+import { Definitions } from '../core/Definitions';
 import { Schema } from '../core/schema';
 import { NullableType } from '../types/SchemaMap';
 import { SchemaTypes } from '../utils/Utils';
@@ -17,8 +18,12 @@ export class DateSchema<
 	protected message: string = `{{key}} is not ${this.type}`
 	protected rule = (value: Date) => (value instanceof Date) && !isNaN((value as unknown as Date).getTime())
 
-	constructor(message?: string) {
-		super();
+	public clone() {
+		return new DateSchema<Input, Final>(this.message, this.def)
+	}
+
+	constructor(message?: string, def?: Definitions) {
+		super(def);
 
 		this.message = message ?? this.message;
 	}

@@ -1,5 +1,6 @@
 
 import { ArrayTypedSchema } from '../core/ArrayTypedSchema';
+import { Definitions } from '../core/Definitions';
 import { ObjectPropertiesSchema } from '../types/SchemaMap';
 import { SchemaTypes } from '../utils/Utils';
 
@@ -12,8 +13,12 @@ export class ArraySchema<
 	protected message: string = `{{key}} is not ${this.type}`
 	protected rule = (value: any[]) => Array.isArray(value)
 
-	constructor(schema: S, message?: string) {
-		super(schema);
+	public clone() {
+		return new ArraySchema<Input, Final, S>(this.schema as unknown as S, this.message, this.def)
+	}
+
+	constructor(schema: S, message?: string, def?: Definitions) {
+		super(schema, def);
 
 		this.message = message ?? this.message;
 	}

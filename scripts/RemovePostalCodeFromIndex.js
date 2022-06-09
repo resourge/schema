@@ -7,15 +7,14 @@ const removePostalCode = (typePath) => {
 	let content = fs.readFileSync(typesFilePath, 'utf-8');
 	
 	// Remove import
-	content = content.replace(/import .* from '\.\/postalCodes\/index\.js';/g, '');
+	// content = content.replace(/import .* from '\.\/postalCodes\/index\.js';/g, '');
 	// Remove export
 	content = content.replace(/export .* from '\.\/postalCodes\/index\.js';/g, '');
 	// Remove import
-	content = content.replace(` */
+	content = content.replace(`
 
 
-
-export `, ` */
+export `, `
 export `);
 	
 	// Write File

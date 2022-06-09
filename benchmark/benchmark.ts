@@ -62,10 +62,10 @@ const joiSchema = joi.object<typeof delivery>({
 });
 
 const schema = object<typeof delivery>({
-	deliveryName: string().min(3).required(),
+	deliveryName: string().required().min(3),
 	products: array(
 		object({
-			productName: string().min(3).required()
+			productName: string().required().min(3)
 		}).required()
 	).required()
 }).compile();

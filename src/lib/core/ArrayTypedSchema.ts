@@ -1,6 +1,7 @@
 import { ObjectPropertiesSchema } from '../types/SchemaMap';
 import { CompileSchemaConfig, PrivateSchema } from '../types/types';
 
+import { Definitions } from './Definitions';
 import { Schema } from './schema';
 
 export abstract class ArrayTypedSchema<
@@ -10,8 +11,8 @@ export abstract class ArrayTypedSchema<
 > extends Schema<Input, Final> {
 	protected schema: PrivateSchema
 
-	constructor(schema: S) {
-		super();
+	constructor(schema: S, def?: Definitions) {
+		super(def);
 		this.schema = schema as unknown as PrivateSchema
 	}
 

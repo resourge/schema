@@ -1,6 +1,5 @@
 
-import { shallowClone } from '@resourge/shallow-clone';
-
+import { Definitions } from '../core/Definitions';
 import { ObjectTypedSchema } from '../core/ObjectTypedSchema';
 import { NullableType, SchemaMap } from '../types/SchemaMap';
 import { SchemaTypes } from '../utils/Utils';
@@ -13,23 +12,34 @@ export class ObjectSchema<
 	protected message: string = `{{key}} is not ${this.type}`
 	protected rule = (value: any) => typeof value === 'object'
 
-	constructor(schemas: SchemaMap<Input>, message?: string) {
-		super(schemas);
+	public clone() {
+		return new ObjectSchema<Input, Final>(this.schemas, this.message, this.def)
+	}
+
+	constructor(schemas: SchemaMap<Input>, message?: string, def?: Definitions) {
+		super(schemas, def);
 
 		this.message = message ?? this.message;
 	}
 
+	/**
+	 * 
+	 * @param schemas 
+	 * @returns 
+	 */
 	public extend<
 		TInput extends Input = Input,
 		TFinal extends Final = Final
 	>(schemas: SchemaMap<TInput>): ObjectSchema<TInput, TFinal> {
-		Object.keys(schemas)
-		.forEach((key) => {
+		const _this = this.clone();
+		
+		Object.entries(schemas)
+		.forEach(([key, schema]) => {
 			// @ts-expect-error // this will never be undefined but typescript can't comprehend that
-			this.shape.push([key, schemas[key as keyof SchemaMap<Input>]])
+			_this.shape.set(key, schema.clone())
 		})
 
-		return shallowClone(this) as unknown as ObjectSchema<TInput, TFinal>;
+		return _this as unknown as ObjectSchema<TInput, TFinal>;
 	}
 }
 

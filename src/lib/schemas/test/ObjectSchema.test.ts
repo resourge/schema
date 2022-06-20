@@ -41,19 +41,98 @@ describe('object', () => {
 
 	it('should individual validation only on touch', () => {
 		const schema = object({
-			productId: number().onlyOnTouch((schema) => 
+			productId: number()
+			.onlyOnTouch((schema) => 
 				schema.min(2)
 			),
 			productName: string()
 		})
 		.compile();
-
+		
 		expect(
 			schema.isValid({
 				productId: 1,
 				productName: 'Product Name'
 			})
 		).toBeTruthy()
+
+		let errors = schema.validate({
+			productId: 1,
+			productName: 'Product Name'
+		})
+
+		expect(
+			schema.validate({
+				productId: 1,
+				productName: 'Product Name'
+			})
+		).toEqual(errors)
+
+		expect(
+			schema.validate(
+				{
+					productId: 0,
+					productName: 'Product Name'
+				}, 
+				['productId']
+			)
+		).not.toEqual(errors)
+
+		errors = schema.validate(
+			{
+				productId: 0,
+				productName: 'Product Name'
+			}, 
+			['productId']
+		)
+
+		expect(
+			schema.validate(
+				{
+					productId: 1,
+					productName: 'Product Name'
+				}, 
+				['productId']
+			)
+		).toEqual(errors)
+
+		expect(
+			schema.validate(
+				{
+					productId: 1,
+					productName: 'Product Name v2'
+				}, 
+				['productName']
+			)
+		).toEqual(errors)
+
+		expect(
+			schema.validate(
+				{
+					productId: 3,
+					productName: 'Product Name v2'
+				}, 
+				['productId']
+			)
+		).not.toEqual(errors)
+
+		errors = schema.validate(
+			{
+				productId: 3,
+				productName: 'Product Name v2'
+			}, 
+			['productId']
+		)
+
+		expect(
+			schema.validate(
+				{
+					productId: 3,
+					productName: 'Product Name v3'
+				}, 
+				['productName']
+			)
+		).toEqual(errors)
 
 		expect(
 			schema.isValid({

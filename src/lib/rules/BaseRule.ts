@@ -49,7 +49,7 @@ export abstract class BaseRule<Value, T = any, Method extends Function = RuleMet
 				methodName: string, 
 				path: string, 
 				onlyOnTouch: boolean,
-				_context: Context
+				context: Context
 			) => {
 				return [
 					`${methodName}_isValid.forEach((error) => {`,
@@ -58,7 +58,7 @@ export abstract class BaseRule<Value, T = any, Method extends Function = RuleMet
 					'	error: error.error',
 					'};',
 					`${Parameters.ERRORS_KEY}.push(${methodName}_error);`,
-					onlyOnTouch ? `(${Parameters.CONTEXT_KEY}.onlyOnTouchErrors[\`${path}\`] = ${Parameters.CONTEXT_KEY}.onlyOnTouchErrors[\`${path}\`] || []).push(${methodName}_error);` : '',
+					context.async && onlyOnTouch ? `(${Parameters.CONTEXT_KEY}.onlyOnTouchErrors[\`${path}\`] = ${Parameters.CONTEXT_KEY}.onlyOnTouchErrors[\`${path}\`] || []).push(${methodName}_error);` : '',
 					'})'
 				]
 			} : (
@@ -74,7 +74,7 @@ export abstract class BaseRule<Value, T = any, Method extends Function = RuleMet
 					`	error: \`${_message.replace('{{key}}', path)}\``,
 					'};',
 					`${Parameters.ERRORS_KEY}.push(${methodName}_error);`,
-					onlyOnTouch ? `(${Parameters.CONTEXT_KEY}.onlyOnTouchErrors[\`${path}\`] = ${Parameters.CONTEXT_KEY}.onlyOnTouchErrors[\`${path}\`] || []).push(${methodName}_error);` : ''
+					context.async && onlyOnTouch ? `(${Parameters.CONTEXT_KEY}.onlyOnTouchErrors[\`${path}\`] = ${Parameters.CONTEXT_KEY}.onlyOnTouchErrors[\`${path}\`] || []).push(${methodName}_error);` : ''
 				]
 			};
 	}

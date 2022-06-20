@@ -130,7 +130,7 @@ describe('number', () => {
 	})
 
 	it('should be onlyOnTouch', () => {
-		const schema = number().onlyOnTouch().compile();
+		const schema = number().min(11).onlyOnTouch().compile();
 	
 		const validate = (value: any) => schema.isValid(value);
 		
@@ -141,7 +141,12 @@ describe('number', () => {
 
 		const validate2 = (value: any) => schema.isValid(value, ['']);
 		
-		expect(validate2(10)).toBeTruthy()
+		expect(validate2(10)).toBeFalsy()
+
+		const errors = schema.validate(10, ['']);
+		expect(schema.validate(10, [''])).toEqual(errors)
+		expect(schema.validate(11, [''])).not.toEqual(errors)
+		expect(validate2(11)).toBeTruthy()
 		expect(validate2(null)).toBeFalsy()
 		expect(validate2('10')).toBeFalsy()
 		expect(validate2(undefined)).toBeFalsy()

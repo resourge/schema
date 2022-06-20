@@ -1,3 +1,15 @@
+# [1.3.0](https://github.com/resourge/schema/compare/v1.2.3...v1.3.0) (2022-06-20)
+
+
+### Bug Fixes
+
+* **baserule:** maintain onlyOnTouch errors in case other keys are changed ([de09f89](https://github.com/resourge/schema/commit/de09f89bf7f8a915182e1249d7a216cd640cc601))
+
+
+### Features
+
+* **stringschema:** add min length to required string ([77160c1](https://github.com/resourge/schema/commit/77160c11b6fc97d8a258cbaae3154520402811e8))
+
 ## [1.2.3](https://github.com/resourge/schema/compare/v1.2.2...v1.2.3) (2022-06-20)
 
 

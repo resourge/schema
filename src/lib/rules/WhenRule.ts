@@ -1,7 +1,6 @@
 import { Schema } from '../core/schema'
 import { CompileSchemaConfig, PrivateSchema } from '../types/types'
 import { Parameters, SchemaTypes } from '../utils/Utils'
-import { getOnlyOnTouchSrcCode } from '../utils/getOnlyOnTouchSrcCode'
 
 import { BaseRule, GetRuleConfig } from './BaseRule'
 import { RuleBooleanMethod } from './Rule'
@@ -21,11 +20,13 @@ export class WhenRule<Value = any, T = any> extends BaseRule<Value, T, RuleBoole
 	public schemaType: SchemaTypes
 	public then: PrivateSchema
 	public otherwise?: PrivateSchema
+	public onlyOnTouch: boolean
 
 	constructor(
 		name: string,
 		schemaType: SchemaTypes,
 		method: RuleBooleanMethod<Value, T>,
+		onlyOnTouch: boolean,
 		then: Schema<any, any>,
 		otherwise?: Schema<any, any>
 	) {
@@ -36,6 +37,7 @@ export class WhenRule<Value = any, T = any> extends BaseRule<Value, T, RuleBoole
 
 		this.schemaType = schemaType;
 		this.name = name;
+		this.onlyOnTouch = onlyOnTouch;
 		this.then = then as unknown as PrivateSchema;
 		this.otherwise = otherwise as unknown as PrivateSchema;
 	}
@@ -101,15 +103,13 @@ export class WhenRule<Value = any, T = any> extends BaseRule<Value, T, RuleBoole
 			path
 		}: GetRuleConfig
 	): string[] {
-		const thenSrcCode = this.then.compileSchema({
+		// @ts-expect-error
+		this.then.def._isOnlyOnTouch = this.onlyOnTouch;
+		
+		return this.then.compileSchema({
 			context,
 			key: path,
 			path
 		});
-
-		return getOnlyOnTouchSrcCode(
-			path,
-			thenSrcCode
-		)
 	}
 }

@@ -133,7 +133,7 @@ export abstract class Schema<Input = any, Final = any> {
 			`is_${this.type}`,
 			this.type,
 			valueKey,
-			false
+			Boolean(this.def._isOnlyOnTouch ?? context.onlyOnTouch)
 		)
 
 		const rulesSrcCode = this.compileNormalRules(context, valueKey);
@@ -393,6 +393,7 @@ export abstract class Schema<Input = any, Final = any> {
 				'custom_when',
 				this.type,
 				is,
+				false,
 				thenSchema,
 				otherwiseSchema
 			)
@@ -439,6 +440,7 @@ export abstract class Schema<Input = any, Final = any> {
 				'onlyOnTouchRule',
 				this.type,
 				() => true,
+				true,
 				thenClone
 			)
 		)

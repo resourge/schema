@@ -1,3 +1,10 @@
+## [1.3.2](https://github.com/resourge/schema/compare/v1.3.1...v1.3.2) (2022-06-20)
+
+
+### Performance Improvements
+
+* **rule:** add currentValue for array cases ([33c8147](https://github.com/resourge/schema/commit/33c8147d494f0f9b7a00174dcac8613fac602369))
+
 ## [1.3.1](https://github.com/resourge/schema/compare/v1.3.0...v1.3.1) (2022-06-20)
 
 

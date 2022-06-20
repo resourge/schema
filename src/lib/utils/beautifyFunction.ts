@@ -12,7 +12,7 @@ export const beautifyFunction = (funcArr: string[]): string => {
 			countScope += 1
 			return;
 		} 
-		else if ( /}$|}[);]{0,1}/.test(line) || /^\);$/g.test(line) ) {
+		else if ( /}(?!])/.test(line) || /^\);$/g.test(line) ) {
 			countScope -= 1
 		} 
 		normalize.push(`${identTab.repeat(countScope)}${line}`)

@@ -120,6 +120,9 @@ export abstract class Schema<Input = any, Final = any> {
 			this.rule,
 			this.message
 		)
+		
+		// Order is important for mandatoryRules
+		const mandatoryRules = this.getMandatoryRules(this, context);
 
 		const {
 			methodName,
@@ -154,7 +157,6 @@ export abstract class Schema<Input = any, Final = any> {
 			'}'
 		]
 
-		const mandatoryRules = this.getMandatoryRules(this, context);
 		return mandatoryRules
 		.reduce((fnSrcCode, rule) => rule(fnSrcCode, valueKey), fnSrcCode)
 	}

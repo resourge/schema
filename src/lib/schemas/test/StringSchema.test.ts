@@ -11,6 +11,17 @@ describe('string', () => {
 		expect(schema.isValid('aaa')).toBeTruthy()
 		expect(schema.isValid('aaa3')).toBeFalsy()
 	})
+	
+	it('should be required', () => {
+		const schema = string().required().compile();
+
+		// @ts-expect-error
+		expect(schema.isValid(null)).toBeFalsy()
+		// @ts-expect-error
+		expect(schema.isValid(undefined)).toBeFalsy()
+		expect(schema.isValid('')).toBeFalsy()
+		expect(schema.isValid('a')).toBeTruthy()
+	})
 
 	it('should be equals', () => {
 		const schema = string().equals('Name').compile();

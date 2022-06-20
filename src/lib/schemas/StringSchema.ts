@@ -25,6 +25,15 @@ export class StringSchema<
 	protected type: SchemaTypes = SchemaTypes.STRING
 	protected override message: string = `{{key}} is not ${this.type}`
 	protected rule = (value: any) => typeof value === 'string'
+	protected minRequired: boolean = false;
+
+	protected onMinRequired = () => {
+		if ( this.minRequired ) {
+			this.minRequired = false;
+
+			this.def.normalRules.delete('minLength')
+		}
+	};
 
 	public clone() {
 		return new StringSchema<Input, Final>(this.message, this.def)
@@ -36,6 +45,49 @@ export class StringSchema<
 		this.message = message ?? this.message;
 	}
 
+	public override required(message?: string): this {
+		if ( !this.def.normalRules.has('minLength') ) {
+			this.minRequired = true;
+			return super.required(message).test({
+				test: (value: any) => value,
+				message: message ?? ((messages) => messages.required),
+				name: 'minLength'
+			}) as unknown as this
+		}
+
+		return super.required(message);
+	}
+
+	public override notRequired(): this {
+		this.onMinRequired();
+		
+		return super.notRequired();
+	}
+
+	public override optional(): this {
+		this.onMinRequired();
+		
+		return super.optional();
+	}
+
+	public override notOptional(message?: string): this {
+		this.onMinRequired();
+		
+		return super.notOptional(message);
+	}
+
+	public override nullable(): this {
+		this.onMinRequired();
+		
+		return super.nullable();
+	}
+
+	public override notNullable(message?: string): this {
+		this.onMinRequired();
+		
+		return super.notNullable(message);
+	}
+
 	/**
 	 * Checks if has a size bigger than minValue
 	 * @param minValue min string length
@@ -43,6 +95,7 @@ export class StringSchema<
 	 * {{key}} will be replace with current key
 	 */
 	public min(minValue: number, message?: string) {
+		this.minRequired = false;
 		return this.test({
 			test: (value: any) => value.length >= minValue,
 			message: message ?? ((messages) => messages.string.min(minValue)),

@@ -12,6 +12,17 @@ string('Custom error message')
 
 ## Options
 
+
+### required
+
+Checks if string is not null/undefined/empty string. (Basically the default [MANDATORY_RULES](./MANDATORY_RULES.md) plus empty string)
+
+```Typescript
+string().required()
+// with custom message
+string().required('Custom error message')
+```
+
 ### min
 
 Checks if string has a size bigger than minValue.

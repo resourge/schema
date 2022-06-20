@@ -1,4 +1,9 @@
 import Benchmark from 'benchmark';
+
+declare module '../src/lib/core/schema' {
+	export const __DEV__: boolean;
+}
+
 import Validator, { ValidationSchema } from 'fastest-validator';
 import { object, array, string } from '../src/lib/index';
 import * as yup from 'yup';

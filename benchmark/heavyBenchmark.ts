@@ -1,3 +1,7 @@
+declare module '../src/lib/core/schema' {
+	export const __DEV__: boolean;
+}
+
 import Benchmark from 'benchmark';
 import Validator, { ValidationSchema } from 'fastest-validator';
 import { object, array, string } from '../src/lib/index';

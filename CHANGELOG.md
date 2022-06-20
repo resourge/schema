@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/resourge/schema/compare/v1.3.0...v1.3.1) (2022-06-20)
+
+
+### Bug Fixes
+
+* **beutifyfunction:** fix error where beautifyFunction was getting less indentations that expected ([28248f1](https://github.com/resourge/schema/commit/28248f139bba73fd0cea2a0717c23429fd83da29))
+
 # [1.3.0](https://github.com/resourge/schema/compare/v1.2.3...v1.3.0) (2022-06-20)
 
 

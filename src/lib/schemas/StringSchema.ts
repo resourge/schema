@@ -350,7 +350,7 @@ export class StringSchema<
 		message?: string
 	) {
 		if ( typeof postalCode === 'function' ) {
-			return this.test((value, form, context: Context) => {
+			return this.test((value, form, _currentValue, context: Context) => {
 				const _postalCode = postalCode(value, form);
 				if ( _postalCode.regex.test(value) ) {
 					return true;

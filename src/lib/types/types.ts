@@ -27,6 +27,7 @@ export type CompileSchemaConfig = {
 	key?: string
 	srcCode?: string[]
 	path?: string
+	arrayKey?: string
 }
 
 export type CompileConfig = { 

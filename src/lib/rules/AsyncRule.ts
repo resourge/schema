@@ -1,48 +1,36 @@
 import { Context, SchemaError } from '../types/types'
 import { Parameters } from '../utils/Utils';
 
-import { BaseRule, GetRuleConfig } from './BaseRule';
+import { BaseRule, RuleSrcCodeConfig } from './BaseRule';
 
 export type AsyncRuleBooleanMethod<Value, T = any> = (
 	value: NonNullable<Value>, 
-	obj: T, 
+	obj: T,
+	currentValue: any,
 	context: Context
 ) => Promise<boolean>
 
 export type AsyncRuleMethodSchemaError<Value, T = any> = (
 	value: NonNullable<Value>, 
-	form: T, 
+	form: T,
+	currentValue: any,
 	context: Context
 ) => Promise<SchemaError[] | true>
 
 export type AsyncRuleMethod<Value, T = any> = AsyncRuleBooleanMethod<Value, T> | AsyncRuleMethodSchemaError<Value, T>
 
 export class AsyncRule<Value, T = any> extends BaseRule<Value, T, AsyncRuleMethod<Value, T>> {
-	public override getRule(
-		{
-			context,
-			path
-		}: GetRuleConfig,
-		valueKey: string,
-		name: string,
-		type: string, onlyOnTouch: boolean
-	) {
+	public override getRule(config: RuleSrcCodeConfig) {
+		const {
+			context
+		} = config;
 		context.async = true;
 
 		const {
 			methodName,
 			parameters,
 			srcCode
-		} = this.getRuleSrcCode(
-			{
-				context,
-				path
-			},
-			name,
-			type,
-			valueKey,
-			onlyOnTouch
-		)
+		} = this.getRuleSrcCode(config)
 
 		return [
 			`${Parameters.PROMISE_KEY}.push(`,

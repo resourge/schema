@@ -17,7 +17,13 @@ enum Parameters {
 	RECURSIVE_KEY = 'recursiveKey',
 }
 
-export type GetRuleConfig = Pick<Required<CompileSchemaConfig>, 'context' | 'path'>
+export type RuleSrcCodeConfig = Pick<Required<CompileSchemaConfig>, 'context' | 'path'> & {
+	ruleMethodName: string
+	ruleType: string
+	valueKey: string
+	onlyOnTouch: boolean
+	arrayKey?: string
+}
 
 export abstract class BaseRule<Value, T = any, Method extends Function = RuleMethod<Value, T>> {
 	public type: 'METHOD_ERROR' | 'MESSAGE'
@@ -95,26 +101,28 @@ export abstract class BaseRule<Value, T = any, Method extends Function = RuleMet
 
 	public getRuleSrcCode(
 		{
-			context, 
-			path
-		}: GetRuleConfig,
-		name: string,
-		type: string, 
-		valueKey: string, 
-		onlyOnTouch: boolean
+			context,
+			path,
+			onlyOnTouch,
+			ruleMethodName,
+			ruleType,
+			valueKey,
+			arrayKey
+		}: RuleSrcCodeConfig
 	) {
 		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		// context.async = context.async || (rule.type === 'ASYNC')
 		const methodName = this.addRule(
-			type, 
-			(name ?? '').replace(/\s+/g, '_'),
+			ruleType, 
+			(ruleMethodName ?? '').replace(/\s+/g, '_'),
 			this.method,
 			context
 		)
 
 		const parameters: string[] = [
 			valueKey, 
-			Parameters.OBJECT_KEY, 
+			Parameters.OBJECT_KEY,
+			arrayKey ?? valueKey, 
 			Parameters.CONTEXT_KEY
 		]
 		// eslint-disable-next-line @typescript-eslint/no-this-alias
@@ -134,9 +142,5 @@ export abstract class BaseRule<Value, T = any, Method extends Function = RuleMet
 		}
 	}
 
-	public abstract getRule(
-		config: GetRuleConfig,
-		valueKey: string, name: string, type: string, 
-		onlyOnTouch: boolean
-	): string[]
+	public abstract getRule(config: RuleSrcCodeConfig): string[]
 }

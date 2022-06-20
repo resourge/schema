@@ -76,20 +76,23 @@ export abstract class Schema<Input = any, Final = any> {
 	}
 
 	// #region Normal Rules
-	protected compileNormalRules(context: Context, valueKey: string): string[] {
+	protected compileNormalRules(
+		context: Context, 
+		valueKey: string, 
+		arrayKey?: string
+	): string[] {
 		const srcCode: string[] = [];
 		this.def.normalRules.forEach((rule, key) => {
 			srcCode.push(
-				...rule.getRule(
-					{
-						context, 
-						path: this.def.path
-					},
+				...rule.getRule({
+					context, 
+					path: this.def.path,
+					onlyOnTouch: Boolean(this.def._isOnlyOnTouch ?? context.onlyOnTouch),
+					ruleMethodName: key,
+					ruleType: this.type,
 					valueKey,
-					key,
-					this.type,
-					Boolean(this.def._isOnlyOnTouch ?? context.onlyOnTouch)
-				)
+					arrayKey
+				})
 			)
 		})
 		return srcCode
@@ -97,13 +100,16 @@ export abstract class Schema<Input = any, Final = any> {
 	// #endregion Normal Rules
 
 	// #region When Rules
-	protected compileWhenSchema(config: CompileSchemaConfig) {
+	protected compileWhenSchema(
+		config: CompileSchemaConfig,
+		arrayKey?: string
+	) {
 		const srcCode: string[] = [];
 		this.def.whenRules.forEach((rule) => {
 			const valueKey = this.getValueKey(config.key)
 
 			srcCode.push(
-				...rule.getWhenRule(valueKey, config)
+				...rule.getWhenRule(valueKey, config, arrayKey)
 			)
 		})
 		return srcCode
@@ -113,7 +119,8 @@ export abstract class Schema<Input = any, Final = any> {
 	protected compileNormalSchema(
 		valueKey: string, 
 		context: Context, 
-		srcCode: string[]
+		srcCode: string[],
+		arrayKey: string | undefined
 	) {
 		const rule = new Rule(
 			'MESSAGE',
@@ -128,18 +135,17 @@ export abstract class Schema<Input = any, Final = any> {
 			methodName,
 			parameters,
 			srcCode: errorsSyntax
-		} = rule.getRuleSrcCode(
-			{
-				context,
-				path: this.def.path
-			},
-			`is_${this.type}`,
-			this.type,
+		} = rule.getRuleSrcCode({
+			context,
+			path: this.def.path,
+			onlyOnTouch: Boolean(this.def._isOnlyOnTouch ?? context.onlyOnTouch),
+			ruleMethodName: `is_${this.type}`,
+			ruleType: this.type,
 			valueKey,
-			Boolean(this.def._isOnlyOnTouch ?? context.onlyOnTouch)
-		)
+			arrayKey
+		})
 
-		const rulesSrcCode = this.compileNormalRules(context, valueKey);
+		const rulesSrcCode = this.compileNormalRules(context, valueKey, arrayKey);
 
 		const fn = `${Parameters.CONTEXT_KEY}.rules.${methodName}(${parameters.join(',')})`;
 
@@ -256,21 +262,25 @@ export abstract class Schema<Input = any, Final = any> {
 		context, 
 		key, 
 		srcCode = [],
-		path
+		path,
+		arrayKey
 	}: CompileSchemaConfig) {
 		const valueKey = this.getValueKey(key)
 		this.def.path = path ?? key ?? '';
 
 		if ( this.def.whenRules && this.def.whenRules.length ) {
-			return this.compileWhenSchema({
-				context, 
-				key, 
-				srcCode,
-				path
-			})
+			return this.compileWhenSchema(
+				{
+					context, 
+					key, 
+					srcCode,
+					path
+				}, 
+				arrayKey
+			)
 		}
 
-		return this.compileNormalSchema(valueKey, context, srcCode);
+		return this.compileNormalSchema(valueKey, context, srcCode, arrayKey);
 	}
 
 	/**

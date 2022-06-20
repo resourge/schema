@@ -1,41 +1,31 @@
 import { Context, SchemaError } from '../types/types'
 import { Parameters } from '../utils/Utils'
 
-import { BaseRule, GetRuleConfig } from './BaseRule'
+import { BaseRule, RuleSrcCodeConfig } from './BaseRule'
 
 export type RuleBooleanMethod<Value, T = any> = (
 	value: NonNullable<Value>, 
-	obj: T, 
+	obj: T,
+	currentValue: any,
 	context: Context
 ) => boolean
 
 export type RuleMethodSchemaError<Value, T = any> = (
 	value: NonNullable<Value>, 
-	obj: T, 
+	obj: T,
+	currentValue: any,
 	context: Context
 ) => SchemaError[] | true
 
 export type RuleMethod<Value, T = any> = RuleBooleanMethod<Value, T> | RuleMethodSchemaError<Value, T>
 
 export class Rule<Value, T = any> extends BaseRule<Value, T, RuleMethod<Value, T>> {
-	public getRule(
-		config: GetRuleConfig,
-		valueKey: string, name: string,
-		type: string, onlyOnTouch: boolean
-	) {
+	public getRule(config: RuleSrcCodeConfig) {
 		const {
 			methodName,
 			parameters,
 			srcCode
-		} = this.getRuleSrcCode(
-			config,
-			name,
-			type,
-			valueKey,
-			onlyOnTouch
-		)
-
-		// false or [...]
+		} = this.getRuleSrcCode(config)
 
 		return [
 			`const ${methodName}_isValid = ${Parameters.CONTEXT_KEY}.rules.${methodName}(${parameters.join(',')});`,

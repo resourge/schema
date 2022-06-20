@@ -2,7 +2,7 @@ import { Schema } from '../core/schema'
 import { CompileSchemaConfig, PrivateSchema } from '../types/types'
 import { Parameters, SchemaTypes } from '../utils/Utils'
 
-import { BaseRule, GetRuleConfig } from './BaseRule'
+import { BaseRule, RuleSrcCodeConfig } from './BaseRule'
 import { RuleBooleanMethod } from './Rule'
 
 export type WhenConfig<
@@ -49,26 +49,27 @@ export class WhenRule<Value = any, T = any> extends BaseRule<Value, T, RuleBoole
 			key,
 			path,
 			srcCode
-		}: CompileSchemaConfig
+		}: CompileSchemaConfig,
+		arrayKey?: string
 	): string[] {
 		const {
 			methodName, parameters
-		} = this.getRuleSrcCode(
-			{
-				context,
-				path: path ?? ''
-			},
-			this.name,
-			this.schemaType,
+		} = this.getRuleSrcCode({
+			context,
+			path: path ?? '',
+			onlyOnTouch: false,
 			valueKey,
-			false
-		)
+			ruleType: this.schemaType,
+			ruleMethodName: this.name,
+			arrayKey
+		})
 
 		const thenSrcCode = this.then.compileSchema({
 			context,
 			key,
 			path,
-			srcCode
+			srcCode,
+			arrayKey
 		});
 
 		// This will never be undefined because when 
@@ -79,7 +80,8 @@ export class WhenRule<Value = any, T = any> extends BaseRule<Value, T, RuleBoole
 			context,
 			srcCode,
 			key,
-			path
+			path,
+			arrayKey
 		});
 
 		const whenSrcCode = [
@@ -100,8 +102,9 @@ export class WhenRule<Value = any, T = any> extends BaseRule<Value, T, RuleBoole
 	public getRule(
 		{
 			context, 
-			path
-		}: GetRuleConfig
+			path,
+			arrayKey
+		}: RuleSrcCodeConfig
 	): string[] {
 		// @ts-expect-error
 		this.then.def._isOnlyOnTouch = this.onlyOnTouch;
@@ -109,7 +112,8 @@ export class WhenRule<Value = any, T = any> extends BaseRule<Value, T, RuleBoole
 		return this.then.compileSchema({
 			context,
 			key: path,
-			path
+			path,
+			arrayKey
 		});
 	}
 }

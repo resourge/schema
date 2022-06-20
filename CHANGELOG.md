@@ -1,3 +1,11 @@
+## [1.2.3](https://github.com/resourge/schema/compare/v1.2.2...v1.2.3) (2022-06-20)
+
+
+### Bug Fixes
+
+* **baserule:** missing ; after creating const ([eaf52f3](https://github.com/resourge/schema/commit/eaf52f38a7c91228c5b2197c37f24c6aeff54d6e))
+* **schema:** fix onlyOnTouch errors not staying after changing other camps ([f447e65](https://github.com/resourge/schema/commit/f447e65b714430efe685abe8403db6ece189ae67))
+
 ## [1.2.2](https://github.com/resourge/schema/compare/v1.2.1...v1.2.2) (2022-06-09)
 
 

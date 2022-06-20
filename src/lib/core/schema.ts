@@ -585,7 +585,6 @@ export abstract class Schema<Input = any, Final = any> {
 			}
 		}
 		/* c8 ignore stop */ // this is for better debugging no need to test coverage
-
 		const validate = new Function(
 			Parameters.VALUE,
 			Parameters.CONTEXT_KEY,

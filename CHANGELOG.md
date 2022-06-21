@@ -1,3 +1,10 @@
+## [1.3.3](https://github.com/resourge/schema/compare/v1.3.2...v1.3.3) (2022-06-21)
+
+
+### Bug Fixes
+
+* **arraytypedschema:** fix a bug when defining arrayKey the system was forgeting to add comma ([5bd206d](https://github.com/resourge/schema/commit/5bd206dd5b47738716617055b8be8d05e568b88c))
+
 ## [1.3.2](https://github.com/resourge/schema/compare/v1.3.1...v1.3.2) (2022-06-20)
 
 

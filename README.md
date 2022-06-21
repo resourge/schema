@@ -144,6 +144,18 @@ number()
 	// but in otherwise optional() will still be used
 	then: (schema) => schema.negative().required()
 });
+
+object({
+	productId: number(),
+	productTypeId: number().optional()
+	// "productId" here it will change the "value" from "is"
+	// "productId" will only affect the "is" "value"
+	.when('productId', {
+		is: (value) => value === 10,
+		then: (schema) => schema.required()
+	})
+})
+.compile();
 ```
 
 ### Normal Rule

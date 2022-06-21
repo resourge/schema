@@ -1,5 +1,6 @@
 import { PostalCodes } from 'src/lib/postalCodes';
 
+import { object } from '../ObjectSchema';
 import { string, StringSchema } from '../StringSchema';
 
 describe('string', () => {
@@ -203,6 +204,24 @@ describe('string', () => {
 		expect(schema1.isValid('001')).toBeFalsy()
 		expect(schema1.isValid('4999333')).toBeFalsy()
 		expect(schema1.isValid('4999-333')).toBeTruthy()
+	})
+
+	it('should test enum types', () => {
+		enum FieldTypeEnum {
+			FREE_TEXT = 'FREE_TEXT',
+			EXISTING_FIELD = 'EXISTING_FIELD',
+			SQL_EXPRESSION = 'SQL_EXPRESSION',
+			SOURCE_FIELD = 'SOURCE_FIELD'
+		}
+
+		const schema = object<{ productName: FieldTypeEnum }>({
+			productName: string().nullable()
+			.enum(FieldTypeEnum)
+		}).compile();
+
+		expect(schema.isValid({ productName: FieldTypeEnum.EXISTING_FIELD })).toBeTruthy();
+		// @ts-expect-error
+		expect(schema.isValid({ productName: 'NOT ENUM VALUE' })).toBeFalsy()
 	})
 
 	it('should each schema be separated from previous', () => {

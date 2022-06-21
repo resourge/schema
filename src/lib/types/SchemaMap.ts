@@ -13,7 +13,9 @@ export type ObjectPropertiesSchema<T = any, Final = any> =
 		? (
 			string extends T
 				? StringSchema<T, Final>
-				: StringSchema<NullableType<string>, Final>
+				: [T] extends [string] ? 
+					StringSchema<string, Final>
+					: StringSchema<NullableType<string>, Final>
 		) : T extends NullableType<number>
 			? (
 				number extends T  

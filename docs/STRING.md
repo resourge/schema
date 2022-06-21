@@ -225,41 +225,57 @@ Postal Codes regex validations are included.
 import { PostalCodes } from '@resourge/schemas/postalCodes';
 
 object({
-	country: string(),
-	postalCode: string().postalCode(PostalCodes.PT
+  country: string(),
+  postalCode: string().postalCode(PostalCodes.PT
 })
 // with custom message
 object({
-	country: string(),
-	postalCode: string().postalCode(PostalCodes.PT, 'Custom error message'))
+  country: string(),
+  postalCode: string().postalCode(PostalCodes.PT, 'Custom error message'))
 })
 // or
 object({
-	country: string(),
-	postalCode: string().postalCode(
-		(_, form) => {
-			if(form.country === 'Espanha') {
-				return PostalCodes.ES
-			}
-			return PostalCodes.PT
-		}
-	)
+  country: string(),
+  postalCode: string().postalCode(
+    (_, form) => {
+      if(form.country === 'Espanha') {
+        return PostalCodes.ES
+      }
+      return PostalCodes.PT
+    }
+  )
 })
 // with custom message
 object({
-	country: string(),
-	postalCode: string().postalCode(
-		(_, form) => {
-			if(form.country === 'Espanha') {
-				return PostalCodes.ES
-			}
-			return PostalCodes.PT
-		}, 
-		'Custom error message'
-	)
+  country: string(),
+  postalCode: string().postalCode(
+    (_, form) => {
+      if(form.country === 'Espanha') {
+        return PostalCodes.ES
+      }
+      return PostalCodes.PT
+    }, 
+    'Custom error message'
+  )
 })
 ```
 
+### enum
+
+Checks if string is a value of enum.
+
+```Typescript
+
+enum FieldTypeEnum {
+  FREE_TEXT = 'FREE_TEXT',
+  EXISTING_FIELD = 'EXISTING_FIELD',
+  SQL_EXPRESSION = 'SQL_EXPRESSION',
+  SOURCE_FIELD = 'SOURCE_FIELD'
+}
+string().enum(FieldTypeEnum)
+// with custom message
+string().enum(FieldTypeEnum, 'Custom error message')
+```
 
 ## Contribution
 

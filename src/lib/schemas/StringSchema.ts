@@ -371,6 +371,22 @@ export class StringSchema<
 			name: 'postalCode'
 		})
 	}
+
+	/**
+	 * Checks if is a value of enum.
+	 * @param enumObject enum
+	 * @param message @option Overrides default message
+	 * {{key}} will be replace with current key
+	 */
+	public enum<T extends { [name: string]: any }>(enumObject: T, message?: string) {
+		const enumValues = Object.values(enumObject);
+
+		return this.test({
+			test: (value: any) => enumValues.includes(value),
+			message: message ?? ((messages) => messages.string.enum),
+			name: 'email'
+		})
+	}
 }
 
 export const string = <

@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/resourge/schema/compare/v1.4.0...v1.5.0) (2022-06-21)
+
+
+### Features
+
+* **namewhen:** when can also accept a "key" to change the "is" value ([8031791](https://github.com/resourge/schema/commit/803179183404059dd4e0d4a64ed235f5f1f90f4c))
+
 # [1.4.0](https://github.com/resourge/schema/compare/v1.3.3...v1.4.0) (2022-06-21)
 
 

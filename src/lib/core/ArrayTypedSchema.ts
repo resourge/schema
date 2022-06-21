@@ -31,7 +31,7 @@ export abstract class ArrayTypedSchema<
 			context, 
 			key: `${key ?? ''}[${iKey}]`, 
 			path: `${path ?? ''}[\${${iKey}}]`,
-			arrayKey: `value${key ?? ''}[${iKey}]`
+			arrayKey: `value${key ? `.${key}` : ''}[${iKey}]`
 		});
 
 		const arraySchemaRules = [

@@ -1,4 +1,4 @@
-import { number } from 'src/lib/schemas'
+import { number, object } from 'src/lib/schemas'
 
 describe('Schema', () => {
 	it('when', () => {
@@ -17,6 +17,33 @@ describe('Schema', () => {
 
 		expect(validate(11)).toBeTruthy()
 		expect(validate(undefined)).toBeTruthy()
+
+		const namedWhenSchema = object({
+			productId: number(),
+			productTypeId: number().optional()
+			.when('productId', {
+				is: (value) => value === 10,
+				then: (schema) => schema.required()
+			})
+		})
+		.compile();
+
+		expect(namedWhenSchema.isValid({
+			productId: 1,
+			// @ts-expect-error
+			productTypeId: undefined
+		})).toBeTruthy()
+
+		expect(namedWhenSchema.isValid({
+			productId: 1,
+			productTypeId: 1
+		})).toBeTruthy()
+
+		expect(namedWhenSchema.isValid({
+			productId: 10,
+			// @ts-expect-error
+			productTypeId: undefined
+		})).toBeFalsy()
 	})
 
 	it('async', async () => {

@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-implied-eval */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { AsyncRule, AsyncRuleBooleanMethod, AsyncRuleMethodSchemaError } from '../rules/AsyncRule'
+import { NamedWhenRule } from '../rules/NamedWhenRule'
 import { Rule, RuleBooleanMethod, RuleMethodSchemaError } from '../rules/Rule'
 import { WhenConfig, WhenRule } from '../rules/WhenRule'
 import { FormKey } from '../types/FormKey'
@@ -359,27 +360,10 @@ export abstract class Schema<Input = any, Final = any> {
 		return _this;
 	}
 
-	/**
-	 * Makes schema conditional. Meaning when `is` is true 
-	 * it will validate with `then schema` otherwise will 
-	 * validate with `otherwise schema`.
-	 * @param {WhenConfig} 
-	 * @example
-	 * ```Typescript
-	 * number()
-	 * .optional() // Validation will be included in `then` and `otherwise`
-	 * .when({
-	 * 	is: (value, form) => value === 10,
-	 *  then: (schema) => schema.required() ,
-	 *  otherwise: (schema) => schema.notOptional()
-	 * })
-	 * ```
-	 */
-	public when<Form = any, S extends Schema<any> = this>({
-		is,
-		then,
-		otherwise
-	}: WhenConfig<S, Input, Form>): this {
+	private _when<S extends Schema<any> = this>(
+		then: (schema: S) => S,
+		otherwise?: ((schema: S) => S)
+	) {
 		const _this = this.clone();
 
 		const thenThis = this.clone();
@@ -400,11 +384,79 @@ export abstract class Schema<Input = any, Final = any> {
 			otherwiseSchema = otherwise(otherwiseThis);
 		}
 
+		return {
+			_this,
+			thenSchema,
+			otherwiseSchema
+		};
+	} 
+
+	/**
+	 * Makes schema conditional. Meaning when `is` is true 
+	 * it will validate with `then schema` otherwise will 
+	 * validate with `otherwise schema`.
+	 * @param {WhenConfig} 
+	 * @example
+	 * ```Typescript
+	 * number()
+	 * .optional() // Validation will be included in `then` and `otherwise`
+	 * .when({
+	 * 	is: (value, form) => value === 10,
+	 *  then: (schema) => schema.required() ,
+	 *  otherwise: (schema) => schema.notOptional()
+	 * })
+	 * ```
+	 */
+	public when<Form = any, S extends Schema<any> = this>(
+		name: string,
+		config: WhenConfig<S, Input, Form>
+	): this
+	public when<Form = any, S extends Schema<any> = this>(
+		config: WhenConfig<S, Input, Form>
+	): this
+	public when<Form = any, S extends Schema<any> = this>(
+		name: WhenConfig<S, Input, Form> | string,
+		config?: WhenConfig<S, Input, Form>
+	): this {
+		if ( typeof name === 'string' ) {
+			const {
+				_this,
+				thenSchema,
+				otherwiseSchema
+			} = this._when<S>(
+				(config as WhenConfig<S, Input, Form>).then,
+				(config as WhenConfig<S, Input, Form>).otherwise
+			)
+
+			_this.def.whenRules.push(
+				new NamedWhenRule(
+					name,
+					'custom_when',
+					this.type,
+					(config as WhenConfig<S, Input, Form>).is,
+					false,
+					thenSchema,
+					otherwiseSchema
+				)
+			)
+
+			return _this;
+		}
+
+		const {
+			_this,
+			thenSchema,
+			otherwiseSchema
+		} = this._when<S>(
+			name.then,
+			name.otherwise
+		)
+
 		_this.def.whenRules.push(
 			new WhenRule(
 				'custom_when',
 				this.type,
-				is,
+				name.is,
 				false,
 				thenSchema,
 				otherwiseSchema

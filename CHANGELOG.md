@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/resourge/schema/compare/v1.3.3...v1.4.0) (2022-06-21)
+
+
+### Features
+
+* **stringschema:** add enum validation ([18938c5](https://github.com/resourge/schema/commit/18938c58ebadf5615965e6090e68a63ec8214dfb))
+
 ## [1.3.3](https://github.com/resourge/schema/compare/v1.3.2...v1.3.3) (2022-06-21)
 
 

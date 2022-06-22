@@ -23,9 +23,7 @@ export class ObjectSchema<
 	}
 
 	/**
-	 * 
-	 * @param schemas 
-	 * @returns 
+	 * Extends current schema object
 	 */
 	public extend<
 		TInput extends Input = Input,

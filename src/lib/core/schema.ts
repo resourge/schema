@@ -407,16 +407,16 @@ export abstract class Schema<Input = any, Final = any> {
 	 * })
 	 * ```
 	 */
-	public when<Form = any, S extends Schema<any> = this>(
+	public when<Value = any, Form = any, S extends Schema<any> = this>(
 		name: string,
-		config: WhenConfig<S, Input, Form>
+		config: WhenConfig<S, Value, Form>
 	): this
-	public when<Form = any, S extends Schema<any> = this>(
-		config: WhenConfig<S, Input, Form>
+	public when<Value = any, Form = any, S extends Schema<any> = this>(
+		config: WhenConfig<S, Value, Form>
 	): this
-	public when<Form = any, S extends Schema<any> = this>(
-		name: WhenConfig<S, Input, Form> | string,
-		config?: WhenConfig<S, Input, Form>
+	public when<Value = any, Form = any, S extends Schema<any> = this>(
+		name: WhenConfig<S, Value, Form> | string,
+		config?: WhenConfig<S, Value, Form>
 	): this {
 		if ( typeof name === 'string' ) {
 			const {
@@ -424,8 +424,8 @@ export abstract class Schema<Input = any, Final = any> {
 				thenSchema,
 				otherwiseSchema
 			} = this._when<S>(
-				(config as WhenConfig<S, Input, Form>).then,
-				(config as WhenConfig<S, Input, Form>).otherwise
+				(config as WhenConfig<S, Value, Form>).then,
+				(config as WhenConfig<S, Value, Form>).otherwise
 			)
 
 			_this.def.whenRules.push(
@@ -433,7 +433,7 @@ export abstract class Schema<Input = any, Final = any> {
 					name,
 					'custom_when',
 					this.type,
-					(config as WhenConfig<S, Input, Form>).is,
+					(config as WhenConfig<S, Value, Form>).is,
 					false,
 					thenSchema,
 					otherwiseSchema

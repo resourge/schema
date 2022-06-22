@@ -1,3 +1,10 @@
+## [1.5.1](https://github.com/resourge/schema/compare/v1.5.0...v1.5.1) (2022-06-22)
+
+
+### Bug Fixes
+
+* **schema:** fix type on when value ([f7bfc0f](https://github.com/resourge/schema/commit/f7bfc0fe1e7c9f6d0b96a4b7c6e121caf5b1843a))
+
 # [1.5.0](https://github.com/resourge/schema/compare/v1.4.0...v1.5.0) (2022-06-21)
 
 

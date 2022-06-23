@@ -34,7 +34,12 @@ export class ObjectSchema<
 		Object.entries(schemas)
 		.forEach(([key, schema]) => {
 			// @ts-expect-error // this will never be undefined but typescript can't comprehend that
-			_this.shape.set(key, schema.clone())
+			const _schema = schema.clone()
+			
+			_this.shape.set(key, _schema)
+
+			// @ts-expect-error // this will never be undefined but typescript can't comprehend that
+			_this.schemas[key] = _schema;
 		})
 
 		return _this as unknown as ObjectSchema<TInput, TFinal>;

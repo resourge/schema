@@ -16,6 +16,9 @@ import { defaultMessages, MessageType } from '../utils/messages'
 import { Definitions } from './Definitions'
 
 type TestMethodConfig<Method extends Function> = {
+	/**
+	 * When test is "false" errors shows
+	 */
 	test: Method
 	message: string | ((messages: MessageType) => string)
 	/**

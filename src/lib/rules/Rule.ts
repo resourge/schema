@@ -3,13 +3,18 @@ import { Parameters } from '../utils/Utils'
 
 import { BaseRule, RuleSrcCodeConfig } from './BaseRule'
 
+/**
+ * When test is "false" message appears
+ */
 export type RuleBooleanMethod<Value, T = any> = (
 	value: NonNullable<Value>, 
 	obj: T,
 	currentValue: any,
 	context: Context
 ) => boolean
-
+/**
+ * When test is "false" message appears
+ */
 export type RuleMethodSchemaError<Value, T = any> = (
 	value: NonNullable<Value>, 
 	obj: T,

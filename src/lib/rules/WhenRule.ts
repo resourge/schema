@@ -10,6 +10,9 @@ export type WhenConfig<
 	Input, 
 	Final = Input,
 > = {
+	/**
+	 * When "is" returns true "then", when false "otherwise"
+	 */
 	is: RuleBooleanMethod<Input, Final>
 	then: (schema: T) => T
 	otherwise?: (schema: T) => T

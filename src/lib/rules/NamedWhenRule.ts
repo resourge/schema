@@ -40,13 +40,15 @@ export class NamedWhenRule<Value = any, T = any> extends WhenRule<Value, T> {
 		arrayKey?: string
 	): string[] {
 		let _valueKey = valueKey;
-		if ( key ) {
-			if ( key.includes('.') ) {
-				const arr = key.split('.');
+		let _key = key;
+		
+		if ( _key ) {
+			if ( _key.includes('.') ) {
+				const arr = _key.split('.');
 				arr.pop();
 
-				key = arr.join('.')
-				_valueKey = `value.${key}.${this.namedValueKey}`
+				_key = arr.join('.')
+				_valueKey = `value.${_key}.${this.namedValueKey}`
 			}
 			else {
 				_valueKey = `value.${this.namedValueKey}`

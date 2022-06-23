@@ -20,17 +20,23 @@ export type ObjectPropertiesSchema<T = any, Final = any> =
 			? (
 				number extends T  
 					? NumberSchema<T, Final>
-					: NumberSchema<NullableType<number>, Final>
+					: [T] extends [number] ? 
+						NumberSchema<number, Final>
+						: NumberSchema<NullableType<number>, Final>
 			) : T extends NullableType<boolean>
 				? (
 					boolean extends T  
 						? BooleanSchema<T, Final>
-						: BooleanSchema<NullableType<boolean>, Final>
+						: [T] extends [boolean] ? 
+							BooleanSchema<boolean, Final>
+							: BooleanSchema<NullableType<boolean>, Final>
 				) : T extends NullableType<Date>
 					? (
 						Date extends T  
 							? DateSchema<T, Final>
-							: DateSchema<NullableType<Date>, Final>
+							: [T] extends [Date] ? 
+								DateSchema<Date, Final>
+								: DateSchema<NullableType<Date>, Final>
 					) : T extends NullableType<any[]>
 						? ArraySchema<T extends any[] ? T : any[], Final>
 						: T extends NullableType<object>

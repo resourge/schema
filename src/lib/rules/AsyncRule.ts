@@ -2,14 +2,18 @@ import { Context, SchemaError } from '../types/types'
 import { Parameters } from '../utils/Utils';
 
 import { BaseRule, RuleSrcCodeConfig } from './BaseRule';
-
+/**
+ * When test is "false" message appears
+ */
 export type AsyncRuleBooleanMethod<Value, T = any> = (
 	value: NonNullable<Value>, 
 	obj: T,
 	currentValue: any,
 	context: Context
 ) => Promise<boolean>
-
+/**
+ * When test is "false" message appears
+ */
 export type AsyncRuleMethodSchemaError<Value, T = any> = (
 	value: NonNullable<Value>, 
 	form: T,

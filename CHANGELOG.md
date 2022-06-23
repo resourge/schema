@@ -1,3 +1,10 @@
+## [1.6.1](https://github.com/resourge/schema/compare/v1.6.0...v1.6.1) (2022-06-23)
+
+
+### Bug Fixes
+
+* **objectschema:** fix "extend" a second time ignoring the first "extend" ([57cb6e4](https://github.com/resourge/schema/commit/57cb6e44c61a73f9d044a39052efc272e67dc308))
+
 # [1.6.0](https://github.com/resourge/schema/compare/v1.5.2...v1.6.0) (2022-06-23)
 
 

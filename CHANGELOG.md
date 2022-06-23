@@ -1,3 +1,10 @@
+## [1.5.2](https://github.com/resourge/schema/compare/v1.5.1...v1.5.2) (2022-06-23)
+
+
+### Bug Fixes
+
+* **namedwhenrule:** nested keys where losing parts of keys ([eb5b1f6](https://github.com/resourge/schema/commit/eb5b1f62fe6ba795158f44fef348422b824d1cc6))
+
 ## [1.5.1](https://github.com/resourge/schema/compare/v1.5.0...v1.5.1) (2022-06-22)
 
 

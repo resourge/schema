@@ -36,8 +36,7 @@ export class NamedWhenRule<Value = any, T = any> extends WhenRule<Value, T> {
 			key,
 			path,
 			srcCode
-		}: CompileSchemaConfig,
-		arrayKey?: string
+		}: CompileSchemaConfig
 	): string[] {
 		let _valueKey = valueKey;
 		let _key = key;
@@ -65,8 +64,7 @@ export class NamedWhenRule<Value = any, T = any> extends WhenRule<Value, T> {
 				key,
 				path,
 				srcCode
-			},
-			arrayKey
+			}
 		)
 	}
 }

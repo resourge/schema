@@ -1,25 +1,23 @@
-import { Context, SchemaError } from '../types/types'
+import { SchemaError } from '../types/types'
 import { Parameters } from '../utils/Utils'
 
-import { BaseRule, RuleSrcCodeConfig } from './BaseRule'
+import { BaseRule, RuleSrcCodeConfig, RuleTestConfig } from './BaseRule'
 
 /**
  * When test is "false" message appears
  */
 export type RuleBooleanMethod<Value, T = any> = (
 	value: NonNullable<Value>, 
-	obj: T,
-	currentValue: any,
-	context: Context
+	parent: any,
+	config: RuleTestConfig<T>
 ) => boolean
 /**
  * When test is "false" message appears
  */
 export type RuleMethodSchemaError<Value, T = any> = (
 	value: NonNullable<Value>, 
-	obj: T,
-	currentValue: any,
-	context: Context
+	parent: any,
+	config: RuleTestConfig<T>
 ) => SchemaError[] | true
 
 export type RuleMethod<Value, T = any> = RuleBooleanMethod<Value, T> | RuleMethodSchemaError<Value, T>

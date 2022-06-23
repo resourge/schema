@@ -82,8 +82,7 @@ export abstract class Schema<Input = any, Final = any> {
 	// #region Normal Rules
 	protected compileNormalRules(
 		context: Context, 
-		valueKey: string, 
-		arrayKey?: string
+		valueKey: string
 	): string[] {
 		const srcCode: string[] = [];
 		this.def.normalRules.forEach((rule, key) => {
@@ -95,7 +94,7 @@ export abstract class Schema<Input = any, Final = any> {
 					ruleMethodName: key,
 					ruleType: this.type,
 					valueKey,
-					arrayKey
+					key
 				})
 			)
 		})
@@ -104,16 +103,13 @@ export abstract class Schema<Input = any, Final = any> {
 	// #endregion Normal Rules
 
 	// #region When Rules
-	protected compileWhenSchema(
-		config: CompileSchemaConfig,
-		arrayKey?: string
-	) {
+	protected compileWhenSchema(config: CompileSchemaConfig) {
 		const srcCode: string[] = [];
 		this.def.whenRules.forEach((rule) => {
 			const valueKey = this.getValueKey(config.key)
 
 			srcCode.push(
-				...rule.getWhenRule(valueKey, config, arrayKey)
+				...rule.getWhenRule(valueKey, config)
 			)
 		})
 		return srcCode
@@ -121,10 +117,12 @@ export abstract class Schema<Input = any, Final = any> {
 	// #endregion When Rules
 
 	protected compileNormalSchema(
-		valueKey: string, 
-		context: Context, 
-		srcCode: string[],
-		arrayKey: string | undefined
+		valueKey: string,
+		{
+			context,
+			key,
+			srcCode = []
+		}: CompileSchemaConfig
 	) {
 		const rule = new Rule(
 			'MESSAGE',
@@ -146,10 +144,10 @@ export abstract class Schema<Input = any, Final = any> {
 			ruleMethodName: `is_${this.type}`,
 			ruleType: this.type,
 			valueKey,
-			arrayKey
+			key
 		})
 
-		const rulesSrcCode = this.compileNormalRules(context, valueKey, arrayKey);
+		const rulesSrcCode = this.compileNormalRules(context, valueKey);
 
 		const fn = `${Parameters.CONTEXT_KEY}.rules.${methodName}(${parameters.join(',')})`;
 
@@ -266,25 +264,28 @@ export abstract class Schema<Input = any, Final = any> {
 		context, 
 		key, 
 		srcCode = [],
-		path,
-		arrayKey
+		path
 	}: CompileSchemaConfig) {
 		const valueKey = this.getValueKey(key)
 		this.def.path = path ?? key ?? '';
 
 		if ( this.def.whenRules && this.def.whenRules.length ) {
-			return this.compileWhenSchema(
-				{
-					context, 
-					key, 
-					srcCode,
-					path
-				}, 
-				arrayKey
-			)
+			return this.compileWhenSchema({
+				context, 
+				key, 
+				srcCode,
+				path
+			})
 		}
 
-		return this.compileNormalSchema(valueKey, context, srcCode, arrayKey);
+		return this.compileNormalSchema(valueKey, 
+			{
+				context, 
+				key, 
+				srcCode,
+				path
+			}
+		);
 	}
 
 	/**
@@ -651,6 +652,7 @@ export abstract class Schema<Input = any, Final = any> {
 				console.log('method', beautifyFunction(srcCode))
 			}
 		}
+
 		/* c8 ignore stop */ // this is for better debugging no need to test coverage
 		const validate = new Function(
 			Parameters.VALUE,

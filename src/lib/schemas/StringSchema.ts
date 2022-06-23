@@ -3,7 +3,6 @@ import { Definitions } from '../core/Definitions';
 import { Schema } from '../core/schema';
 import { PostalCodeInfo } from '../postalCodes';
 import { NullableType } from '../types/SchemaMap';
-import { Context } from '../types/types';
 import { SchemaTypes } from '../utils/Utils';
 
 const NUMERIC_PATTERN = /^[-]?([1-9]\d*|0)(\.\d+)?$/;
@@ -350,7 +349,7 @@ export class StringSchema<
 		message?: string
 	) {
 		if ( typeof postalCode === 'function' ) {
-			return this.test((value, form, _currentValue, context: Context) => {
+			return this.test((value, form, { context }) => {
 				const _postalCode = postalCode(value, form);
 				if ( _postalCode.regex.test(value) ) {
 					return true;

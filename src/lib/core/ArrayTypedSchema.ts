@@ -30,8 +30,7 @@ export abstract class ArrayTypedSchema<
 		const schemaRules = this.schema.compileSchema({
 			context, 
 			key: `${key ?? ''}[${iKey}]`, 
-			path: `${path ?? ''}[\${${iKey}}]`,
-			arrayKey: `value${key ? `.${key}` : ''}[${iKey}]`
+			path: `${path ?? ''}[\${${iKey}}]`
 		});
 
 		const arraySchemaRules = [

@@ -1,24 +1,22 @@
-import { Context, SchemaError } from '../types/types'
+import { SchemaError } from '../types/types'
 import { Parameters } from '../utils/Utils';
 
-import { BaseRule, RuleSrcCodeConfig } from './BaseRule';
+import { BaseRule, RuleSrcCodeConfig, RuleTestConfig } from './BaseRule';
 /**
  * When test is "false" message appears
  */
 export type AsyncRuleBooleanMethod<Value, T = any> = (
 	value: NonNullable<Value>, 
-	obj: T,
-	currentValue: any,
-	context: Context
+	parent: any,
+	config: RuleTestConfig<T>
 ) => Promise<boolean>
 /**
  * When test is "false" message appears
  */
 export type AsyncRuleMethodSchemaError<Value, T = any> = (
 	value: NonNullable<Value>, 
-	form: T,
-	currentValue: any,
-	context: Context
+	parent: any,
+	config: RuleTestConfig<T>
 ) => Promise<SchemaError[] | true>
 
 export type AsyncRuleMethod<Value, T = any> = AsyncRuleBooleanMethod<Value, T> | AsyncRuleMethodSchemaError<Value, T>

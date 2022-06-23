@@ -6,6 +6,11 @@ export type RuleMethod<Value, Final = any> = (
 	form: Final
 ) => SchemaError[] | false
 
+export type RuleTestConfig<T> = {
+	context: Context
+	form: T
+}
+
 enum Parameters {
 	ERRORS_KEY = 'errors',
 	PROMISE_KEY = 'promises',
@@ -22,7 +27,7 @@ export type RuleSrcCodeConfig = Pick<Required<CompileSchemaConfig>, 'context' | 
 	ruleType: string
 	valueKey: string
 	onlyOnTouch: boolean
-	arrayKey?: string
+	key?: string
 }
 
 export abstract class BaseRule<Value, T = any, Method extends Function = RuleMethod<Value, T>> {
@@ -107,7 +112,7 @@ export abstract class BaseRule<Value, T = any, Method extends Function = RuleMet
 			ruleMethodName,
 			ruleType,
 			valueKey,
-			arrayKey
+			key
 		}: RuleSrcCodeConfig
 	) {
 		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
@@ -119,12 +124,19 @@ export abstract class BaseRule<Value, T = any, Method extends Function = RuleMet
 			context
 		)
 
+		const lastIndex = valueKey.lastIndexOf('.');
+
+		const parentKey = lastIndex > -1 ? valueKey.substring(0, lastIndex) : valueKey
+		
 		const parameters: string[] = [
 			valueKey, 
-			Parameters.OBJECT_KEY,
-			arrayKey ?? valueKey, 
-			Parameters.CONTEXT_KEY
+			parentKey,
+			`{ 
+				${Parameters.CONTEXT_KEY}: ${Parameters.CONTEXT_KEY},
+				form: ${Parameters.OBJECT_KEY}
+			}`
 		]
+
 		// eslint-disable-next-line @typescript-eslint/no-this-alias
 		const ruleThis = this;
 

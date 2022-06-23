@@ -21,8 +21,7 @@ export abstract class ObjectTypedSchema<
 	protected override compileSchema({
 		context, 
 		key, 
-		path,
-		arrayKey
+		path
 	}: CompileSchemaConfig) {
 		const schemaRules: string[] = []
 		
@@ -31,8 +30,7 @@ export abstract class ObjectTypedSchema<
 				...schema.compileSchema({
 					context, 
 					key: `${key ? `${key}.` : ''}${childKey}`, 
-					path: `${path ? `${path}.` : ''}${childKey}`,
-					arrayKey
+					path: `${path ? `${path}.` : ''}${childKey}`
 				})
 			);
 		})
@@ -41,8 +39,7 @@ export abstract class ObjectTypedSchema<
 			context, 
 			key, 
 			srcCode: schemaRules, 
-			path,
-			arrayKey
+			path
 		});
 	}
 }

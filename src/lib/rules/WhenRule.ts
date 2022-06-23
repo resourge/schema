@@ -52,8 +52,7 @@ export class WhenRule<Value = any, T = any> extends BaseRule<Value, T, RuleBoole
 			key,
 			path,
 			srcCode
-		}: CompileSchemaConfig,
-		arrayKey?: string
+		}: CompileSchemaConfig
 	): string[] {
 		const {
 			methodName, parameters
@@ -64,15 +63,14 @@ export class WhenRule<Value = any, T = any> extends BaseRule<Value, T, RuleBoole
 			valueKey,
 			ruleType: this.schemaType,
 			ruleMethodName: this.name,
-			arrayKey
+			key
 		})
 
 		const thenSrcCode = this.then.compileSchema({
 			context,
 			key,
 			path,
-			srcCode,
-			arrayKey
+			srcCode
 		});
 
 		// This will never be undefined because when 
@@ -83,8 +81,7 @@ export class WhenRule<Value = any, T = any> extends BaseRule<Value, T, RuleBoole
 			context,
 			srcCode,
 			key,
-			path,
-			arrayKey
+			path
 		});
 
 		const whenSrcCode = [
@@ -105,8 +102,7 @@ export class WhenRule<Value = any, T = any> extends BaseRule<Value, T, RuleBoole
 	public getRule(
 		{
 			context, 
-			path,
-			arrayKey
+			path
 		}: RuleSrcCodeConfig
 	): string[] {
 		// @ts-expect-error
@@ -115,8 +111,7 @@ export class WhenRule<Value = any, T = any> extends BaseRule<Value, T, RuleBoole
 		return this.then.compileSchema({
 			context,
 			key: path,
-			path,
-			arrayKey
+			path
 		});
 	}
 }

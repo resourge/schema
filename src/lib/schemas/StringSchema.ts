@@ -34,7 +34,7 @@ export class StringSchema<
 		}
 	};
 
-	public clone() {
+	protected clone() {
 		return new StringSchema<Input, Final>(this.message, this.def)
 	}
 
@@ -345,7 +345,7 @@ export class StringSchema<
 	 * {{key}} will be replace with current key
 	 */
 	public postalCode(
-		postalCode: PostalCodeInfo | ((value: NonNullable<Input>, form: this['final']) => PostalCodeInfo), 
+		postalCode: PostalCodeInfo | ((value: NonNullable<Input>, form: any) => PostalCodeInfo), 
 		message?: string
 	) {
 		if ( typeof postalCode === 'function' ) {

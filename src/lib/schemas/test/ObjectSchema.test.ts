@@ -192,10 +192,17 @@ describe('object', () => {
 
 		// @ts-expect-error
 		expect(productIdSchema.def.normalRules.size).toBe(0)
-	
+
+		// @ts-expect-error
 		expect(schema.isNullable).toBe(true)
+
+		// @ts-expect-error
 		expect(schema.isOptional).toBe(false)
+
+		// @ts-expect-error
 		expect(schema1.isNullable).toBe(true)
+
+		// @ts-expect-error
 		expect(schema1.isOptional).toBe(true)
 	})
 })

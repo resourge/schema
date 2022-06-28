@@ -11,7 +11,7 @@ export class BooleanSchema<
 	protected message: string = `{{key}} is not ${this.type}`
 	protected rule = (value: Input) => typeof value === 'boolean'
 	
-	public clone() {
+	protected clone() {
 		return new BooleanSchema<Input, Final>(this.message, this.def)
 	}
 
@@ -19,6 +19,21 @@ export class BooleanSchema<
 		super(def);
 
 		this.message = message ?? this.message;
+	}
+
+	/**
+	 * Checks if is true or false
+	 * @param mustBeValue
+	 * @param message @option Overrides default message
+	 * {{key}} will be replace with current key
+	 */
+	public mustBe(mustBeValue: boolean, message?: string) {
+		const _mustBeValue = mustBeValue.toString();
+		return this.test({
+			test: (value: any) => _mustBeValue === value.toString(),
+			message: message ?? ((messages) => messages.array.empty),
+			name: 'mustBe'
+		})
 	}
 }
 

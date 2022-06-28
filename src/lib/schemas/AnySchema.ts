@@ -11,7 +11,7 @@ export class AnySchema<
 	protected message: string = `{{key}} is not ${this.type}`
 	protected rule = () => true
 	
-	public clone() {
+	protected clone() {
 		return new AnySchema(this.message, this.def)
 	}
 

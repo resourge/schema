@@ -11,7 +11,7 @@ export class NumberSchema<
 	protected message: string = `{{key}} is not ${this.type}`
 	protected rule = (value: number) => typeof value === 'number'
 
-	public clone() {
+	protected clone() {
 		return new NumberSchema(this.message, this.def)
 	}
 

@@ -73,21 +73,29 @@ describe('Schema', () => {
 		const schema = number()
 		.compile();
 	
+		// @ts-expect-error
 		expect(schema.isNullable).toBeFalsy()
+		// @ts-expect-error
 		expect(schema.isOnlyOnTouch).toBeFalsy()
+		// @ts-expect-error
 		expect(schema.isOptional).toBeFalsy()
+		// @ts-expect-error
 		expect(schema.isRequired).toBeFalsy()
 
 		const newSchema = schema.nullable();
+		// @ts-expect-error
 		expect(newSchema.isNullable).toBeTruthy()
 
 		const newSchema1 = schema.onlyOnTouch();
+		// @ts-expect-error
 		expect(newSchema1.isOnlyOnTouch).toBeTruthy()
 
 		const newSchema2 = schema.optional();
+		// @ts-expect-error
 		expect(newSchema2.isOptional).toBeTruthy();
 
 		const newSchema3 = schema.required();
+		// @ts-expect-error
 		expect(newSchema3.isRequired).toBeTruthy();
 
 		schema.test({

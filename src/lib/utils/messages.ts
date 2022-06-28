@@ -30,6 +30,9 @@ export const defaultMessages = {
 		unique: 'Requires to be unique',
 		uniqueBy: 'Requires to be unique'
 	},
+	boolean: {
+		mustBe: (mustBeValue: boolean) => `Must be ${mustBeValue.toString()}`
+	},
 	date: {
 		today: 'Requires to be today\'s date'
 	},

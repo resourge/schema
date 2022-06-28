@@ -13,7 +13,7 @@ export class ArraySchema<
 	protected message: string = `{{key}} is not ${this.type}`
 	protected rule = (value: any[]) => Array.isArray(value)
 
-	public clone() {
+	protected clone() {
 		return new ArraySchema<Input, Final, S>(this.schema as unknown as S, this.message, this.def)
 	}
 

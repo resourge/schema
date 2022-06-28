@@ -35,19 +35,19 @@ export abstract class Schema<Input = any, Final = any> {
 	protected async: boolean = false;
 
 	protected def: Definitions<Input, Final> = new Definitions<Input, Final>();
-	public get isOnlyOnTouch(): boolean {
+	private get isOnlyOnTouch(): boolean {
 		return this.def._isOnlyOnTouch ?? false;
 	}
 
-	public get isOptional(): boolean {
+	private get isOptional(): boolean {
 		return this.def._isOptional ?? false;
 	}
 
-	public get isNullable(): boolean {
+	private get isNullable(): boolean {
 		return this.def._isNullable ?? false;
 	}
 
-	public get isRequired(): boolean {
+	private get isRequired(): boolean {
 		return this.def._isRequired ?? false;
 	}
 	protected abstract clone(): any

@@ -12,7 +12,7 @@ export class ObjectSchema<
 	protected message: string = `{{key}} is not ${this.type}`
 	protected rule = (value: any) => typeof value === 'object'
 
-	public clone() {
+	protected clone() {
 		return new ObjectSchema<Input, Final>(this.schemas, this.message, this.def)
 	}
 

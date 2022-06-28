@@ -18,7 +18,7 @@ export class DateSchema<
 	protected message: string = `{{key}} is not ${this.type}`
 	protected rule = (value: Date) => (value instanceof Date) && !isNaN((value as unknown as Date).getTime())
 
-	public clone() {
+	protected clone() {
 		return new DateSchema<Input, Final>(this.message, this.def)
 	}
 

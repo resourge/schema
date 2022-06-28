@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/resourge/schema/compare/v1.6.1...v1.7.0) (2022-06-28)
+
+
+### Features
+
+* **boolean schema:** add mustBe to check if value is true or false ([6a568c5](https://github.com/resourge/schema/commit/6a568c5b2ee81c4808b3aff6d6303609f1316178))
+
 ## [1.6.1](https://github.com/resourge/schema/compare/v1.6.0...v1.6.1) (2022-06-23)
 
 

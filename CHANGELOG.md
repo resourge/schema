@@ -1,3 +1,10 @@
+## [1.7.1](https://github.com/resourge/schema/compare/v1.7.0...v1.7.1) (2022-07-01)
+
+
+### Bug Fixes
+
+* **readme.md:** fix installation process with wrong package name ([0ce75e4](https://github.com/resourge/schema/commit/0ce75e41c3c667f4ded81e440d5ccc0472ecd5a3))
+
 # [1.7.0](https://github.com/resourge/schema/compare/v1.6.1...v1.7.0) (2022-06-28)
 
 

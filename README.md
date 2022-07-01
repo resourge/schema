@@ -60,13 +60,13 @@ npm run bench
 Install using [Yarn](https://yarnpkg.com):
 
 ```sh
-yarn add @resourge/schemas
+yarn add @resourge/schema
 ```
 
 or NPM:
 
 ```sh
-npm install @resourge/schemas --save
+npm install @resourge/schema --save
 ```
 
 ## Usage

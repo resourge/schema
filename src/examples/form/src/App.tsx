@@ -18,9 +18,8 @@ function App() {
 				<div className='formControl'>
 					<div className='formLabel'>Name:</div>
 					<div>
-						
 						<input 
-						{...field('name', { isNativeEvent: true })}
+						{...field('name')}
 						></input>
 						{!formState.name.isValid ? <span className='formErrorMessage'>{formState.name.errors[0]}</span> : null}
 					</div>
@@ -28,7 +27,7 @@ function App() {
 				<div className='formControl'>
 					<div className='formLabel'>Age:</div>
 					<div>
-						<input type={'number'}{...field('age', { isNativeEvent: true, onChange: (value) => Number(value) })}></input>
+						<input type={'number'}{...field('age', { onChange: (value) => Number(value) })}></input>
 						{!formState.age.isValid ? <span className='formErrorMessage'>{formState.age.errors[0]}</span> : null}
 					</div>
 				</div>
@@ -36,19 +35,23 @@ function App() {
 					<div className='formLabel'>Location:</div>
 					<div>
 						<span className='formLabelSelect'>City:</span>
-						<select {...field('location.city', { isNativeEvent: true })}>
+						<select {...field('location.city')}>
 							<option value={''} />
 							{locationCitiesOptions.map((option) => <option key={option.value} value={option.value} selected={option.value === field('location.city').value}>{option.label}</option>)}
 						</select> 
 						{!formState.location.city.isValid ? <span className='formErrorMessage'>{formState.location.city.errors[0]}</span> : null}
 						<br/>
 						<span className='formLabelSelect'>Address:</span>
-						<input {...field('location.address', { isNativeEvent: true })} />
+						<input {...field('location.address')} />
 						{!formState.location.address.isValid ? <span className='formErrorMessage'>{formState.location.postalCode.errors[0]}</span> : null}
 						<br/>
 						<span className='formLabelSelect'>PostalCode:</span>
-						<input {...field('location.postalCode', { isNativeEvent: true })} />
+						<input {...field('location.postalCode')} />
 						{!formState.location.postalCode.isValid ? <span className='formErrorMessage'>{formState.location.postalCode.errors[0]}</span> : null}
+						<br/>
+						<span className='formLabelSelect'>phoneNumber:</span>
+						<input {...field('location.phoneNumber')} />
+						{!formState.location.phoneNumber.isValid ? <span className='formErrorMessage'>{formState.location.phoneNumber.errors[0]}</span> : null}
 					</div>
 				</div>
 			</div>

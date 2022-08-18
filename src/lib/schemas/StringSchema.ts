@@ -1,6 +1,7 @@
 /* eslint-disable no-useless-escape */
 import { Definitions } from '../core/Definitions';
 import { Schema } from '../core/schema';
+import { PhoneNumberInfo } from '../phoneNumbers';
 import { PostalCodeInfo } from '../postalCodes';
 import { NullableType } from '../types/SchemaMap';
 import { SchemaTypes } from '../utils/Utils';
@@ -368,6 +369,39 @@ export class StringSchema<
 			test: (value: any) => postalCode.regex.test(value),
 			message: message ?? ((messages) => messages.string.postalCode(postalCode)),
 			name: 'postalCode'
+		})
+	}
+
+	/**
+	 * Checks if is a valid phoneNumber.
+	 * @param phoneNumber phone number to validate or a function which we can return desired phone number
+	 * @param message @option Overrides default message
+	 * {{key}} will be replace with current key
+	 */
+	public phoneNumber(
+		phoneNumber: PhoneNumberInfo | ((value: NonNullable<Input>, form: any) => PhoneNumberInfo), 
+		message?: string
+	) {
+		if ( typeof phoneNumber === 'function' ) {
+			return this.test((value, form, { context }) => {
+				const _phoneNumber = phoneNumber(value, form);
+				if ( _phoneNumber.regex.test(value) ) {
+					return true;
+				}
+
+				return [
+					{
+						path: '',
+						error: message ?? context.messages.string.phoneNumber(_phoneNumber)
+					}
+				]
+			})
+		}
+
+		return this.test({
+			test: (value: any) => phoneNumber.regex.test(value),
+			message: message ?? ((messages) => messages.string.phoneNumber(phoneNumber)),
+			name: 'phoneNumber'
 		})
 	}
 

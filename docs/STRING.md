@@ -260,6 +260,46 @@ object({
 })
 ```
 
+### phoneNumbers
+
+Checks if is a valid phoneNumber.
+Phone Number regex validations are included for every country.
+
+```Typescript
+import { phoneNumbers } from '@resourge/schemas/phoneNumbers';
+
+object({
+  phoneNumber: string().phoneNumber(PhoneNumbers.pt_PT).required()
+// with custom message
+object({
+  phoneNumber: string().phoneNumber(PhoneNumbers.pt_PT) 'Custom error message'))
+})
+// or
+object({
+  phoneNumber: string().phoneNumber(
+    (_, form) => {
+      if(form.country === 'Spain') {
+        return PhoneNumbers.es_ES
+      }
+      return PhoneNumbers.pt_PT
+    }
+  )
+})
+// with custom message
+object({
+  country: string(),
+  postalCode: string().postalCode(
+    (_, form) => {
+      if(form.country === 'Spain') {
+        return PhoneNumbers.es_ES
+      }
+      return PhoneNumbers.pt_PT
+    }, 
+    'Custom error message'
+  )
+})
+```
+
 ### enum
 
 Checks if string is a value of enum.

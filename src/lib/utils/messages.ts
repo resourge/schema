@@ -1,3 +1,4 @@
+import { PhoneNumberInfo } from '../phoneNumbers'
 import { PostalCodeInfo } from '../postalCodes'
 
 enum FormatInvalidTypeEnum {
@@ -66,7 +67,8 @@ export const defaultMessages = {
 		singleLine: getInvalidFormatMessage('singleLine'),
 		email: getInvalidFormatMessage('email'),
 		enum: getInvalidFormatMessage('enum'),
-		postalCode: ({ format }: PostalCodeInfo) => `Invalid format needs to be like ${format}`
+		postalCode: ({ format }: PostalCodeInfo) => `Invalid format needs to be like ${format}`,
+		phoneNumber: ({ countryCode }: PhoneNumberInfo) => `Invalid phone format ${countryCode ? '(' + countryCode + ')' : ''} `
 	},
 	notOptional: 'Not optional item',
 	notNullable: 'Not optional item',

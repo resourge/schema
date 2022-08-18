@@ -95,8 +95,59 @@ const getPackage = (
 
 	const POSTAL_CODE_INDEX = `${SOURCE_FOLDER}/postalCodes/index.ts`
 
+	const PHONE_NUMBER_INDEX = `${SOURCE_FOLDER}/phoneNumbers/index.ts`
+
 	// JS modules for bundlers
 	const modules = [
+		{
+			input: {
+				index: SOURCE_INDEX_FILE,
+				'phoneNumbers/index': PHONE_NUMBER_INDEX
+			},
+			output: {
+				dir: OUTPUT_DIR,
+				format: 'esm',
+				sourcemap,
+				banner: banner
+			},
+			external,
+			plugins: [
+				replace({
+					preventAssignment: true,
+					delimiters: ['\\b', '\\b(?!\\.)'],
+					values: {
+						phoneNumbers: 'schemas'
+					}
+				}),
+				...defaultExtPlugin,
+				babel({
+					exclude: /node_modules/,
+					babelHelpers: 'bundled',
+					presets: [
+						babelPresetEnv,
+						'@babel/preset-react',
+						'@babel/preset-typescript'
+					],
+					plugins: babelPlugins,
+					extensions: ['.ts', '.tsx']
+				})
+			]
+		},
+		{
+			input: {
+				index: SOURCE_INDEX_FILE,
+				'phoneNumbers/index': PHONE_NUMBER_INDEX
+			},
+			output: {
+				dir: OUTPUT_DIR,
+				format: 'esm',
+				banner: banner
+			},
+			plugins: [
+				jsonPlugin,
+				dts()
+			]
+		},
 		{
 			input: {
 				index: SOURCE_INDEX_FILE,

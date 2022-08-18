@@ -1,6 +1,7 @@
 import { useForm } from '@resourge/react-form'
 
-import { array, number, object, string } from '../../../../lib';
+import { number, object, PostalCodes, string } from '../../../../lib';
+import { PhoneNumbers } from '../../../../lib/phoneNumbers';
 
 type OptionType = {
 	value: string
@@ -23,6 +24,8 @@ export type LocationType = {
 	city: string
 	address: string
 	postalCode: string
+	phoneNumber: string
+
 }
 
 export type UserType = {
@@ -30,13 +33,12 @@ export type UserType = {
 	age: number
 	location: LocationType
 	hobbies: Array<keyof typeof HobbiesEnum>
-
 }
 
 export class UserModel {
 	public name = ''
 	public age = 16
-	public location: LocationType = { address: '', city: '', postalCode: '' }
+	public location: LocationType = { address: '', city: '', postalCode: '', phoneNumber: '' }
 	public hobbies: Array<keyof typeof HobbiesEnum> = []
 
 	constructor(model?: UserType) {
@@ -54,17 +56,15 @@ const schema = object<UserModel>({
 	location: object({
 		city: string().required(),
 		address: string().required(),
-		// eslint-disable-next-line prefer-regex-literals
-		postalCode: string().pattern(RegExp('\d{4}([\-]\d{3})?')).required()
+		postalCode: string().postalCode(PostalCodes.PT).required(),
+		phoneNumber: string().phoneNumber(PhoneNumbers.am_AM).required()
 	})
 }).compile();
 
 export const useUserModel = (model?: UserType) => {
 	return useForm<UserModel>(new UserModel(model), {
-		validate: async (form: UserModel) => {
-			return await schema.validate(form)
+		validate: (form: UserModel, changedKeys) => {
+			return schema.validate(form, changedKeys)
 		},
-		onErrors: (errors) => errors,
-		validateDefault: true 
 	})
 }

@@ -1,3 +1,10 @@
+# [1.8.0](https://github.com/resourge/schema/compare/v1.7.1...v1.8.0) (2022-08-18)
+
+
+### Features
+
+* **phonenumber:** implementation of validation for phoneNumber with all countries ([2d9c491](https://github.com/resourge/schema/commit/2d9c49168b1f149f8fa4e93af1c32eb8b741579c))
+
 ## [1.7.1](https://github.com/resourge/schema/compare/v1.7.0...v1.7.1) (2022-07-01)
 
 

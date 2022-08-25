@@ -13,7 +13,11 @@ export class ObjectSchema<
 	protected rule = (value: any) => typeof value === 'object'
 
 	protected clone() {
-		return new ObjectSchema<Input, Final>(this.schemas, this.message, this.def)
+		return new ObjectSchema<Input, Final>(
+			this.schemas, 
+			this.message, 
+			this.def
+		)
 	}
 
 	constructor(schemas: SchemaMap<Input>, message?: string, def?: Definitions) {

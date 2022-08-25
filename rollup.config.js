@@ -102,6 +102,7 @@ const getPackage = (
 		{
 			input: {
 				index: SOURCE_INDEX_FILE,
+				'postalCodes/index': POSTAL_CODE_INDEX,
 				'phoneNumbers/index': PHONE_NUMBER_INDEX
 			},
 			output: {
@@ -116,7 +117,8 @@ const getPackage = (
 					preventAssignment: true,
 					delimiters: ['\\b', '\\b(?!\\.)'],
 					values: {
-						phoneNumbers: 'schemas'
+						postalCodes: 'schemas',
+						phoneNumbers: 'phoneNumbers'
 					}
 				}),
 				...defaultExtPlugin,
@@ -136,56 +138,8 @@ const getPackage = (
 		{
 			input: {
 				index: SOURCE_INDEX_FILE,
+				'postalCodes/index': POSTAL_CODE_INDEX,
 				'phoneNumbers/index': PHONE_NUMBER_INDEX
-			},
-			output: {
-				dir: OUTPUT_DIR,
-				format: 'esm',
-				banner: banner
-			},
-			plugins: [
-				jsonPlugin,
-				dts()
-			]
-		},
-		{
-			input: {
-				index: SOURCE_INDEX_FILE,
-				'postalCodes/index': POSTAL_CODE_INDEX
-			},
-			output: {
-				dir: OUTPUT_DIR,
-				format: 'esm',
-				sourcemap,
-				banner: banner
-			},
-			external,
-			plugins: [
-				replace({
-					preventAssignment: true,
-					delimiters: ['\\b', '\\b(?!\\.)'],
-					values: {
-						postalCodes: 'schemas'
-					}
-				}),
-				...defaultExtPlugin,
-				babel({
-					exclude: /node_modules/,
-					babelHelpers: 'bundled',
-					presets: [
-						babelPresetEnv,
-						'@babel/preset-react',
-						'@babel/preset-typescript'
-					],
-					plugins: babelPlugins,
-					extensions: ['.ts', '.tsx']
-				})
-			]
-		},
-		{
-			input: {
-				index: SOURCE_INDEX_FILE,
-				'postalCodes/index': POSTAL_CODE_INDEX
 			},
 			output: {
 				dir: OUTPUT_DIR,

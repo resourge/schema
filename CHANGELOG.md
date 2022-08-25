@@ -1,3 +1,11 @@
+## [1.8.1](https://github.com/resourge/schema/compare/v1.8.0...v1.8.1) (2022-08-25)
+
+
+### Bug Fixes
+
+* **objecttypeschema:** fix extends not removing references ([5e2d01c](https://github.com/resourge/schema/commit/5e2d01c19d946008f7fb46e11c8c18d4bf520a69))
+* **phonenumbers:** fix phonenumbers generation ([9e27ca6](https://github.com/resourge/schema/commit/9e27ca63e834b2d859a565b595cdd7f097b042de))
+
 # [1.8.0](https://github.com/resourge/schema/compare/v1.7.1...v1.8.0) (2022-08-18)
 
 

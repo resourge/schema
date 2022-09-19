@@ -101,6 +101,24 @@ number().negative()
 number().negative('Custom error message')
 ```
 
+
+### enum
+
+Checks if number is a value of enum.
+
+```Typescript
+
+enum FieldTypeEnum {
+  FREE_TEXT = 1,
+  EXISTING_FIELD = 2,
+  SQL_EXPRESSION = 3,
+  SOURCE_FIELD = 4,
+}
+number().enum(FieldTypeEnum)
+// with custom message
+number().enum(FieldTypeEnum, 'Custom error message')
+```
+
 ## Contribution
 
 In case you have different validations that you use, please tell us so we improve the library.

@@ -417,7 +417,7 @@ export class StringSchema<
 		return this.test({
 			test: (value: any) => enumValues.includes(value),
 			message: message ?? ((messages) => messages.string.enum),
-			name: 'email'
+			name: 'enumString'
 		})
 	}
 }

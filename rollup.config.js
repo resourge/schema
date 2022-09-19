@@ -127,8 +127,12 @@ const getPackage = (
 					babelHelpers: 'bundled',
 					presets: [
 						babelPresetEnv,
-						'@babel/preset-react',
-						'@babel/preset-typescript'
+						['@babel/preset-react', {
+							useBuiltIns: true
+						}],
+						['@babel/preset-typescript', {
+							optimizeConstEnums: true
+						}]
 					],
 					plugins: babelPlugins,
 					extensions: ['.ts', '.tsx']
@@ -170,8 +174,12 @@ const getPackage = (
 					exclude: /node_modules/,
 					babelHelpers: 'bundled',
 					presets: [
-						'@babel/preset-typescript',
-						'@babel/preset-react',
+						['@babel/preset-react', {
+							useBuiltIns: true
+						}],
+						['@babel/preset-typescript', {
+							optimizeConstEnums: true
+						}],
 						babelPresetEnv
 					],
 					plugins: babelPlugins,
@@ -200,14 +208,12 @@ const getPackage = (
 					babelHelpers: 'bundled',
 					presets: [
 						babelPresetEnv,
-						[
-							'@babel/preset-react',
-							{
-								// Compile JSX Spread to Object.assign(), which is reliable in ESM browsers.
-								useBuiltIns: true
-							}
-						],
-						'@babel/preset-typescript'
+						['@babel/preset-react', {
+							useBuiltIns: true
+						}],
+						['@babel/preset-typescript', {
+							optimizeConstEnums: true
+						}]
 					],
 					plugins: babelPlugins,
 					extensions: ['.ts', '.tsx']
@@ -241,8 +247,12 @@ const getPackage = (
 					babelHelpers: 'bundled',
 					presets: [
 						babelPresetEnv,
-						'@babel/preset-react',
-						'@babel/preset-typescript'
+						['@babel/preset-react', {
+							useBuiltIns: true
+						}],
+						['@babel/preset-typescript', {
+							optimizeConstEnums: true
+						}]
 					],
 					plugins: babelPlugins,
 					extensions: ['.ts', '.tsx']
@@ -271,8 +281,12 @@ const getPackage = (
 					babelHelpers: 'bundled',
 					presets: [
 						babelPresetEnv,
-						'@babel/preset-react',
-						'@babel/preset-typescript'
+						['@babel/preset-react', {
+							useBuiltIns: true
+						}],
+						['@babel/preset-typescript', {
+							optimizeConstEnums: true
+						}]
 					],
 					plugins: babelPlugins,
 					extensions: ['.ts', '.tsx']

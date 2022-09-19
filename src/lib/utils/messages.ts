@@ -45,7 +45,8 @@ export const defaultMessages = {
 		integer: 'Requires to be a integer number',
 		decimal: (equalsValue: number) => `Requires to have ${equalsValue} decimal number`,
 		positive: 'Requires to be positive number',
-		negative: 'Requires to be negative number'
+		negative: 'Requires to be negative number',
+		enum: getInvalidFormatMessage('enum')
 	},
 	string: {
 		min: (minValue: number) => `Requires to have at least minimum size of ${minValue}`,

@@ -23,3 +23,4 @@ const fixTypes = (typePath) => {
 
 fixTypes('../dist/index.d.ts')
 fixTypes('../dist/postalCodes/index.d.ts')
+fixTypes('../dist/phoneNumbers/index.d.ts')

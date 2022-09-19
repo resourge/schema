@@ -1,3 +1,10 @@
+# [1.9.0](https://github.com/resourge/schema/compare/v1.8.1...v1.9.0) (2022-09-19)
+
+
+### Features
+
+* **numberschema:** add enum to number validation ([83e98d2](https://github.com/resourge/schema/commit/83e98d2c0abdcece4ff3b365833127d6cabd307d))
+
 ## [1.8.1](https://github.com/resourge/schema/compare/v1.8.0...v1.8.1) (2022-08-25)
 
 

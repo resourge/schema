@@ -6,6 +6,27 @@
   "types": "./dist/index.d.ts",
   "unpkg": "./dist/umd/schema.production.min.js",
   "private": false,
+  "exports": {
+    "./package.json": "./package.json",
+    ".": "./dist/index.js",
+    "./phoneNumbers": "./dist/phoneNumbers/index.js",
+    "./postalCodes": "./dist/postalCodes/index.js",
+    "./dist/phoneNumbers": "./dist/phoneNumbers/index.js",
+    "./dist/postalCodes": "./dist/postalCodes/index.js"
+  },
+  "typesVersions": {
+    "*": {
+      ".": [
+        "./dist/index.d.ts"
+      ],
+      "phoneNumbers": [
+        "./dist/phoneNumbers/index.js"
+      ],
+      "postalCodes": [
+        "./dist/postalCodes/index.js"
+      ]
+    }
+  },
   "publishConfig": {
     "access": "public"
   },

@@ -23,6 +23,7 @@ const babelPresetEnv = ['@babel/preset-env', {
 	targets: [
 		'defaults',
 		'not IE 11',
+		'chrome > 78', // To remove in the future
 		'maintained node versions'
 	],
 	loose: true,

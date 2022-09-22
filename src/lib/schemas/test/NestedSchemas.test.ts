@@ -23,18 +23,22 @@ const validateValueCantHaveSpecialCharactersButCanHaveSlashAndMinusResourge = {
 describe('Nested Schemas', () => {
 	it('deep nested', () => {
 		const schemaFinalTableResourge = object({
-			name: string().required(),
-			sqlFrom: string().notRequired(),
+			name: string()
+			.required(),
+			sqlFrom: string()
+			.notRequired(),
 			file: object({
 				path: object({
-					folderPath: string().notRequired()
+					folderPath: string()
+					.notRequired()
 					.test(validateIfPathIsValidResourge)
 					.test(validateValueCantHaveSpecialCharactersButCanHaveSlashAndMinusResourge)
 					.when('fileName', {
 						is: (value) => value,
 						then: (schema) => schema.required('file_path.messages.folder_path_is_required')
 					}),
-					fileName: string().notRequired()
+					fileName: string()
+					.notRequired()
 					.test(validateIfPathIsValidResourge)
 					.test(validateValueCantHaveSpecialCharactersButCanHaveSlashAndMinusResourge)
 					.when('folderPath', {
@@ -46,16 +50,19 @@ describe('Nested Schemas', () => {
 					fileType: object({
 						label: string(),
 						value: string()
-					}).notRequired(),
+					})
+					.notRequired(),
 					contentType: object({
 						label: string(),
 						value: string()
-					}).notRequired()
+					})
+					.notRequired()
 					.when('isContentTypeDisabled', {
 						is: (isContentTypeDisabled: boolean) => isContentTypeDisabled,
 						then: (schema) => schema.required()
 					}),
-					otherSeparator: string().notRequired()
+					otherSeparator: string()
+					.notRequired()
 					.when('isSeparatorOtherDisabled', {
 						is: (isSeparatorOtherDisabled: boolean) => isSeparatorOtherDisabled,
 						then: (schema) => schema.required()
@@ -63,7 +70,8 @@ describe('Nested Schemas', () => {
 					textQualifier: object({
 						label: string(),
 						value: string()
-					}).notRequired()
+					})
+					.notRequired()
 					.when('isTextQualifierDisabled', {
 						is: (isTextQualifierDisabled: boolean) => isTextQualifierDisabled,
 						then: (schema) => schema.required()
@@ -73,7 +81,8 @@ describe('Nested Schemas', () => {
 					separator: object({
 						label: string(),
 						value: string()
-					}).notRequired()
+					})
+					.notRequired()
 					.when('isSeparatorDisabled', {
 						is: (isSeparatorDisabled) => isSeparatorDisabled,
 						then: (schema) => schema.required()
@@ -83,7 +92,8 @@ describe('Nested Schemas', () => {
 					fileType: object({
 						label: string(),
 						value: string()
-					}).notRequired()
+					})
+					.notRequired()
 					.test({
 						message: 'file_type_is_required',
 						test: (value, form) => Boolean(!form.path.example || value)
@@ -92,28 +102,43 @@ describe('Nested Schemas', () => {
 			}),
 			sources: array(
 				object({
-					sourceId: number().notRequired(),
-					name: string().required(),
-					sourceType: number().required(),
-					selected: boolean().notRequired(),
+					sourceId: number()
+					.notRequired(),
+					name: string()
+					.required(),
+					sourceType: number()
+					.required(),
+					selected: boolean()
+					.notRequired(),
 					fields: array(
 						object({
-							finalTableFieldId: number().notRequired(),
-							finalTableId: number().notRequired(),
-							finalField: string().required(),
-							description: string().required(),
-							initialField: string().required(),
-							dataType: string().notRequired(),
-							precision: number().notRequired(),
-							scale: number().notRequired(),
-							length: string().notRequired(),
-							active: boolean().notRequired(),
+							finalTableFieldId: number()
+							.notRequired(),
+							finalTableId: number()
+							.notRequired(),
+							finalField: string()
+							.required(),
+							description: string()
+							.required(),
+							initialField: string()
+							.required(),
+							dataType: string()
+							.notRequired(),
+							precision: number()
+							.notRequired(),
+							scale: number()
+							.notRequired(),
+							length: string()
+							.notRequired(),
+							active: boolean()
+							.notRequired(),
 							index: number(),
 							fieldType: string(),
 							_isAlreadyTransformed: boolean(),
 							fieldIdentifier: boolean()
 						})
-					).min(1)
+					)
+					.min(1)
 				})
 			)
 			.min(1)
@@ -156,7 +181,8 @@ describe('Nested Schemas', () => {
 				schemaFinalTableResourge
 			)
 			.min(1)
-		}).compile();
+		})
+		.compile();
 
 		expect(
 			schema.isValid({
@@ -175,11 +201,11 @@ describe('Nested Schemas', () => {
 							{
 								sourceId: 51320,
 								name: 'Acc_area1_area2',
+								// @ts-expect-error // Private value
 								sourceIndex: 0,
 								sourceType: 1,
 								isReadonly: false,
 								fields: [
-									// @ts-expect-error
 									{
 										active: true,
 										index: 0,
@@ -192,7 +218,9 @@ describe('Nested Schemas', () => {
 										length: '1',
 										fieldType: 'SOURCE_FIELD',
 										_isAlreadyTransformed: false,
-										fieldIdentifier: false
+										fieldIdentifier: false,
+										precision: 0,
+										scale: 0
 									}
 								]
 							}
@@ -203,7 +231,7 @@ describe('Nested Schemas', () => {
 								fileName: ''
 							},
 							type: {
-								// @ts-expect-error
+								// @ts-expect-error // Private value
 								contentTypes: [
 									{
 										label: 'Delimited',
@@ -1198,6 +1226,7 @@ describe('Nested Schemas', () => {
 					}
 				}
 			})
-		).toBeTruthy()
+		)
+		.toBeTruthy()
 	})
 })

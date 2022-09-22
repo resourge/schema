@@ -1,6 +1,4 @@
-
 import { locationCitiesOptions, UserModel, useUserModel } from './interfaces/UserModel';
-
 
 function App() {
 	const { form, field, formState, handleSubmit, changeValue } = useUserModel()
@@ -27,7 +25,7 @@ function App() {
 				<div className='formControl'>
 					<div className='formLabel'>Age:</div>
 					<div>
-						<input type={'number'}{...field('age', { onChange: (value) => Number(value) })}></input>
+						<input type={'number'}{...field('age', { onChange: (value: any) => Number(value) })}></input>
 						{!formState.age.isValid ? <span className='formErrorMessage'>{formState.age.errors[0]}</span> : null}
 					</div>
 				</div>

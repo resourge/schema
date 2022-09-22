@@ -23,10 +23,10 @@ enum Parameters {
 }
 
 export type RuleSrcCodeConfig = Pick<Required<CompileSchemaConfig>, 'context' | 'path'> & {
+	onlyOnTouch: boolean
 	ruleMethodName: string
 	ruleType: string
 	valueKey: string
-	onlyOnTouch: boolean
 	key?: string
 }
 

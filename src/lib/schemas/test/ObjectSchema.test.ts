@@ -7,36 +7,45 @@ describe('object', () => {
 		const schema = object({
 			productId: number(),
 			productName: string()
-		}).optional().compile();
+		})
+		.optional()
+		.compile();
 	
-		// @ts-expect-error
-		expect(schema.isValid(undefined)).toBeTruthy()
+		// @ts-expect-error // To be able to check
+		expect(schema.isValid(undefined))
+		.toBeTruthy()
 		expect(schema.isValid({
 			productId: 1,
 			productName: 'Product Name'
-		})).toBeTruthy()
+		}))
+		.toBeTruthy()
 	
 		const schema2 = new ObjectSchema({
 			productId: number(),
 			productName: string()
-		}).compile();
+		})
+		.compile();
 	
-		// @ts-expect-error
-		expect(schema2.isValid(undefined)).toBeFalsy()
+		// @ts-expect-error // To be able to check
+		expect(schema2.isValid(undefined))
+		.toBeFalsy()
 		expect(schema2.isValid({
-			// @ts-expect-error
+			// @ts-expect-error // To be able to check
 			productId: '1',
 			productName: 'Product Name'
-		})).toBeFalsy()
+		}))
+		.toBeFalsy()
 		expect(schema2.isValid({
 			productId: 1,
-			// @ts-expect-error
+			// @ts-expect-error // To be able to check
 			productName: 1
-		})).toBeFalsy()
+		}))
+		.toBeFalsy()
 		expect(schema2.isValid({
 			productId: 1,
 			productName: 'Product Name'
-		})).toBeTruthy()
+		}))
+		.toBeTruthy()
 	})
 
 	it('should individual validation only on touch', () => {
@@ -54,7 +63,8 @@ describe('object', () => {
 				productId: 1,
 				productName: 'Product Name'
 			})
-		).toBeTruthy()
+		)
+		.toBeTruthy()
 
 		let errors = schema.validate({
 			productId: 1,
@@ -66,7 +76,8 @@ describe('object', () => {
 				productId: 1,
 				productName: 'Product Name'
 			})
-		).toEqual(errors)
+		)
+		.toEqual(errors)
 
 		expect(
 			schema.validate(
@@ -94,7 +105,8 @@ describe('object', () => {
 				}, 
 				['productId']
 			)
-		).toEqual(errors)
+		)
+		.toEqual(errors)
 
 		expect(
 			schema.validate(
@@ -104,7 +116,8 @@ describe('object', () => {
 				}, 
 				['productName']
 			)
-		).toEqual(errors)
+		)
+		.toEqual(errors)
 
 		expect(
 			schema.validate(
@@ -132,7 +145,8 @@ describe('object', () => {
 				}, 
 				['productName']
 			)
-		).toEqual(errors)
+		)
+		.toEqual(errors)
 
 		expect(
 			schema.isValid({
@@ -140,69 +154,85 @@ describe('object', () => {
 				productName: 'Product Name'
 			}, 
 			['productId'])
-		).toBeTruthy()
+		)
+		.toBeTruthy()
 	})
 
 	it('should extend schema', () => {
 		const schema = object({
 			productId: number(),
 			productName: string()
-		}).optional().compile();
+		})
+		.optional()
+		.compile();
 	
 		expect(schema.isValid({
 			productId: 1,
 			productName: 'Product Name'
-		})).toBeTruthy()
+		}))
+		.toBeTruthy()
 
 		const schema2 = schema.extend<{ 
 			productId: number
 			productName: string
 			productCategory?: string 
 		}>({
-			productCategory: string().required()
-		}).compile();
+			productCategory: string()
+			.required()
+		})
+		.compile();
 
 		expect(schema.isValid({
 			productId: 1,
 			productName: 'Product Name'
-		})).toBeTruthy()
+		}))
+		.toBeTruthy()
 
 		expect(schema2.isValid({
 			productId: 1,
 			productName: 'Product Name'
-		})).toBeFalsy()
+		}))
+		.toBeFalsy()
 
 		expect(schema2.isValid({
 			productId: 1,
 			productName: 'Product Name',
 			productCategory: 'Product Category'
-		})).toBeTruthy()
+		}))
+		.toBeTruthy()
 	})
 
 	it('should each schema be separated from previous', () => {
 		const productIdSchema = number();
-		// @ts-expect-error
-		expect(productIdSchema.def.normalRules.size).toBe(0)
+		// @ts-expect-error // To check protected values
+		expect(productIdSchema.def.normalRules.size)
+		.toBe(0)
 
 		const schema = object({
 			productId: productIdSchema.required(),
 			productName: string()
-		}).nullable();
+		})
+		.nullable();
 		const schema1 = schema.optional();
 
-		// @ts-expect-error
-		expect(productIdSchema.def.normalRules.size).toBe(0)
+		// @ts-expect-error // To check private values
+		expect(productIdSchema.def.normalRules.size)
+		.toBe(0)
 
-		// @ts-expect-error
-		expect(schema.isNullable).toBe(true)
+		// @ts-expect-error // To check private values
+		expect(schema.isNullable)
+		.toBe(true)
 
-		// @ts-expect-error
-		expect(schema.isOptional).toBe(false)
+		// @ts-expect-error // To check private values
+		expect(schema.isOptional)
+		.toBe(false)
 
-		// @ts-expect-error
-		expect(schema1.isNullable).toBe(true)
+		// @ts-expect-error // To check private values
+		expect(schema1.isNullable)
+		.toBe(true)
 
-		// @ts-expect-error
-		expect(schema1.isOptional).toBe(true)
+		// @ts-expect-error // To check private values
+		expect(schema1.isOptional)
+		.toBe(true)
 	})
 })

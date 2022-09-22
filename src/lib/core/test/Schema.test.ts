@@ -6,21 +6,27 @@ describe('Schema', () => {
 		.optional()
 		.when({
 			is: (value) => value < 10 || value === null,
-			then: (schema) => schema.negative().required()
+			then: (schema) => schema.negative()
+			.required()
 		})
 		.compile();
 	
 		const validate = (value: any) => schema.isValid(value);
 		
-		expect(validate(-9)).toBeTruthy()
-		expect(validate(null)).toBeFalsy()
+		expect(validate(-9))
+		.toBeTruthy()
+		expect(validate(null))
+		.toBeFalsy()
 
-		expect(validate(11)).toBeTruthy()
-		expect(validate(undefined)).toBeTruthy()
+		expect(validate(11))
+		.toBeTruthy()
+		expect(validate(undefined))
+		.toBeTruthy()
 
 		const namedWhenSchema = object({
 			productId: number(),
-			productTypeId: number().optional()
+			productTypeId: number()
+			.optional()
 			.when('productId', {
 				is: (value) => value === 10,
 				then: (schema) => schema.required()
@@ -30,20 +36,23 @@ describe('Schema', () => {
 
 		expect(namedWhenSchema.isValid({
 			productId: 1,
-			// @ts-expect-error
+			// @ts-expect-error // To force validation
 			productTypeId: undefined
-		})).toBeTruthy()
+		}))
+		.toBeTruthy()
 
 		expect(namedWhenSchema.isValid({
 			productId: 1,
 			productTypeId: 1
-		})).toBeTruthy()
+		}))
+		.toBeTruthy()
 
 		expect(namedWhenSchema.isValid({
 			productId: 10,
-			// @ts-expect-error
+			// @ts-expect-error // To force validation
 			productTypeId: undefined
-		})).toBeFalsy()
+		}))
+		.toBeFalsy()
 	})
 
 	it('async', async () => {
@@ -73,30 +82,38 @@ describe('Schema', () => {
 		const schema = number()
 		.compile();
 	
-		// @ts-expect-error
-		expect(schema.isNullable).toBeFalsy()
-		// @ts-expect-error
-		expect(schema.isOnlyOnTouch).toBeFalsy()
-		// @ts-expect-error
-		expect(schema.isOptional).toBeFalsy()
-		// @ts-expect-error
-		expect(schema.isRequired).toBeFalsy()
+		// @ts-expect-error // To check private values
+		expect(schema.isNullable)
+		.toBeFalsy()
+		// @ts-expect-error // To check private values
+		expect(schema.isOnlyOnTouch)
+		.toBeFalsy()
+		// @ts-expect-error // To check private values
+		expect(schema.isOptional)
+		.toBeFalsy()
+		// @ts-expect-error // To check private values
+		expect(schema.isRequired)
+		.toBeFalsy()
 
 		const newSchema = schema.nullable();
-		// @ts-expect-error
-		expect(newSchema.isNullable).toBeTruthy()
+		// @ts-expect-error // To check private values
+		expect(newSchema.isNullable)
+		.toBeTruthy()
 
 		const newSchema1 = schema.onlyOnTouch();
-		// @ts-expect-error
-		expect(newSchema1.isOnlyOnTouch).toBeTruthy()
+		// @ts-expect-error // To check private values
+		expect(newSchema1.isOnlyOnTouch)
+		.toBeTruthy()
 
 		const newSchema2 = schema.optional();
-		// @ts-expect-error
-		expect(newSchema2.isOptional).toBeTruthy();
+		// @ts-expect-error // To check private values
+		expect(newSchema2.isOptional)
+		.toBeTruthy();
 
 		const newSchema3 = schema.required();
-		// @ts-expect-error
-		expect(newSchema3.isRequired).toBeTruthy();
+		// @ts-expect-error // To check private values
+		expect(newSchema3.isRequired)
+		.toBeTruthy();
 
 		schema.test({
 			test: () => true,
@@ -118,13 +135,18 @@ describe('Schema', () => {
 	})
 
 	it('should individual validation only on touch', () => {
-		const schema = number().min(1)
+		const schema = number()
+		.min(1)
 		.onlyOnTouch((schema) => schema.max(10))
 		.compile();
 
-		expect(schema.isValid(0)).toBeFalsy()
-		expect(schema.isValid(1)).toBeTruthy()
-		expect(schema.isValid(11)).toBeTruthy()
-		expect(schema.isValid(11, [''])).toBeFalsy()
+		expect(schema.isValid(0))
+		.toBeFalsy()
+		expect(schema.isValid(1))
+		.toBeTruthy()
+		expect(schema.isValid(11))
+		.toBeTruthy()
+		expect(schema.isValid(11, ['']))
+		.toBeFalsy()
 	})
 })

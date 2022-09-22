@@ -54,9 +54,7 @@ export class WhenRule<Value = any, T = any> extends BaseRule<Value, T, RuleBoole
 			srcCode
 		}: CompileSchemaConfig
 	): string[] {
-		const {
-			methodName, parameters
-		} = this.getRuleSrcCode({
+		const { methodName, parameters } = this.getRuleSrcCode({
 			context,
 			path: path ?? '',
 			onlyOnTouch: false,
@@ -105,7 +103,7 @@ export class WhenRule<Value = any, T = any> extends BaseRule<Value, T, RuleBoole
 			path
 		}: RuleSrcCodeConfig
 	): string[] {
-		// @ts-expect-error
+		// @ts-expect-error // Because the camp that is changing is protected
 		this.then.def._isOnlyOnTouch = this.onlyOnTouch;
 		
 		return this.then.compileSchema({

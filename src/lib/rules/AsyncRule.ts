@@ -23,9 +23,7 @@ export type AsyncRuleMethod<Value, T = any> = AsyncRuleBooleanMethod<Value, T> |
 
 export class AsyncRule<Value, T = any> extends BaseRule<Value, T, AsyncRuleMethod<Value, T>> {
 	public override getRule(config: RuleSrcCodeConfig) {
-		const {
-			context
-		} = config;
+		const { context } = config;
 		context.async = true;
 
 		const {

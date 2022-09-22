@@ -4,5 +4,5 @@
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom';
 
-// @ts-expect-error
+// @ts-expect-error // add __dev__
 globalThis.__DEV__ = true;

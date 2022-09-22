@@ -2,31 +2,31 @@ import { Schema } from '../core/schema'
 import { MessageType } from '../utils/messages'
 
 export type SchemaError = {
-	path: string
 	error: string
+	path: string
 }
 export type PrivateSchema = Schema<any, any> & { compileSchema: Schema<any, any>['compileSchema'] }
 
 export type Context = {
 	index: number
-	onlyOnTouch?: boolean
-	optional?: boolean
-	nullable?: boolean
 	messages: MessageType
-	async?: boolean
-	rules: {
-		[key: string]: Function
-	}
 	onlyOnTouchErrors: {
 		[key: string]: SchemaError[]
 	}
+	rules: {
+		[key: string]: Function
+	}
+	async?: boolean
+	nullable?: boolean
+	onlyOnTouch?: boolean
+	optional?: boolean
 }
 
 export type CompileSchemaConfig = {
 	context: Context
 	key?: string
-	srcCode?: string[]
 	path?: string
+	srcCode?: string[]
 }
 
 export type CompileConfig = { 
@@ -35,19 +35,19 @@ export type CompileConfig = {
 	 */
 	debug?: boolean
 	/**
-	 * Makes onlyOnTouch default in the schemas.
+	 * Makes nullable default in the schemas. @default undefined
 	 */
-	onlyOnTouch?: boolean
+	defaultNullable?: boolean
 	/**
 	 * Makes optional default in the schemas. @default undefined
 	 */
 	defaultOptional?: boolean
 	/**
-	 * Makes nullable default in the schemas. @default undefined
-	 */
-	defaultNullable?: boolean
-	/**
 	 * Object containing messages.
 	 */
 	messages?: Partial<MessageType>
+	/**
+	 * Makes onlyOnTouch default in the schemas.
+	 */
+	onlyOnTouch?: boolean
 }

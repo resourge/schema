@@ -7,7 +7,8 @@ test('beautifyFunction', () => {
 			'Test',
 			'}'
 		])
-	).toBe(`if (true) {
+	)
+	.toBe(`if (true) {
 	Test
 }`)
 })

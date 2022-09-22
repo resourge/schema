@@ -4,20 +4,27 @@ import { date, DateSchema } from '../DateSchema'
 
 describe('date', () => {
 	it('should be today', () => {
-		const schema = date().today().compile();
+		const schema = date()
+		.today()
+		.compile();
 
-		expect(schema.isValid(new Date('2001-01-01'))).toBeFalsy()
-		expect(schema.isValid(new Date())).toBeTruthy()
-		expect(schema.isValid(new Date('test'))).toBeFalsy()
+		expect(schema.isValid(new Date('2001-01-01')))
+		.toBeFalsy()
+		expect(schema.isValid(new Date()))
+		.toBeTruthy()
+		expect(schema.isValid(new Date('test')))
+		.toBeFalsy()
 
 		const _date = new Date();
 
 		_date.setHours(10);
 
-		expect(schema.isValid(_date)).toBeTruthy()
+		expect(schema.isValid(_date))
+		.toBeTruthy()
 
 		const newMessage = 'New Message'
-		const schemaMessage = new DateSchema().today(newMessage);
+		const schemaMessage = new DateSchema()
+		.today(newMessage);
 
 		const errors: SchemaError[] = [{
 			path: '',
@@ -31,23 +38,31 @@ describe('date', () => {
 	})
 
 	it('should each schema be separated from previous', () => {
-		const schema = date().nullable()
-		const schema1 = schema.optional().today();
+		const schema = date()
+		.nullable()
+		const schema1 = schema.optional()
+		.today();
 	
-		// @ts-expect-error
-		expect(schema.isNullable).toBe(true)
-		// @ts-expect-error
-		expect(schema.isOptional).toBe(false)
-		// @ts-expect-error
-		expect(schema1.isNullable).toBe(true)
-		// @ts-expect-error
-		expect(schema1.isOptional).toBe(true)
+		// @ts-expect-error // To check protected values
+		expect(schema.isNullable)
+		.toBe(true)
+		// @ts-expect-error // To check protected values
+		expect(schema.isOptional)
+		.toBe(false)
+		// @ts-expect-error // To check protected values
+		expect(schema1.isNullable)
+		.toBe(true)
+		// @ts-expect-error // To check protected values
+		expect(schema1.isOptional)
+		.toBe(true)
 
-		// @ts-expect-error
-		expect(schema.def.normalRules.size).toBe(0)
-		// @ts-expect-error
-		expect(schema1.def.normalRules.size).toBe(1)
-		// @ts-expect-error
+		// @ts-expect-error // To check protected values
+		expect(schema.def.normalRules.size)
+		.toBe(0)
+		// @ts-expect-error // To check protected values
+		expect(schema1.def.normalRules.size)
+		.toBe(1)
+		// @ts-expect-error // To check protected values
 		expect(schema.def.normalRules.size).not.toBe(schema1.def.normalRules.size)
 	})
 })

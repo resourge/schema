@@ -77,7 +77,7 @@ export class NumberSchema<
 		}
 		
 		return this.test({
-			test: test,
+			test,
 			message: message ?? ((messages) => messages.number.equals(value)),
 			name: 'equalsNumber'
 		})

@@ -48,7 +48,8 @@ export class StringSchema<
 	public override required(message?: string): this {
 		if ( !this.def.normalRules.has('minLength') ) {
 			this.minRequired = true;
-			return super.required(message).test({
+			return super.required(message)
+			.test({
 				test: (value: any) => value,
 				message: message ?? ((messages) => messages.required),
 				name: 'minLength'
@@ -159,7 +160,7 @@ export class StringSchema<
 		}
 		
 		return this.test({
-			test: test,
+			test,
 			message: message ?? ((messages) => messages.string.equals(value)),
 			name: 'equalsString'
 		})

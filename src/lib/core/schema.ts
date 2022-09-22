@@ -7,7 +7,12 @@ import { Rule, RuleBooleanMethod, RuleMethodSchemaError } from '../rules/Rule'
 import { WhenConfig, WhenRule } from '../rules/WhenRule'
 import { FormKey } from '../types/FormKey'
 import { ObjectPropertiesSchema } from '../types/SchemaMap'
-import { CompileConfig, CompileSchemaConfig, Context, SchemaError } from '../types/types'
+import {
+	CompileConfig,
+	CompileSchemaConfig,
+	Context,
+	SchemaError
+} from '../types/types'
 import { Parameters, SchemaTypes } from '../utils/Utils'
 import { beautifyFunction } from '../utils/beautifyFunction'
 import { getOnlyOnTouchSrcCode } from '../utils/getOnlyOnTouchSrcCode'
@@ -16,11 +21,11 @@ import { defaultMessages, MessageType } from '../utils/messages'
 import { Definitions } from './Definitions'
 
 type TestMethodConfig<Method extends Function> = {
+	message: string | ((messages: MessageType) => string)
 	/**
 	 * When test is "false" errors shows
 	 */
 	test: Method
-	message: string | ((messages: MessageType) => string)
 	/**
 	 * Servers to make validation unique, otherwise method cannot be changed
 	 */

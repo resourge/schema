@@ -14,7 +14,9 @@ export abstract class ObjectTypedSchema<
 	constructor(schemas: SchemaMap<Input>, def?: Definitions) {
 		super(def);
 
-		this.schemas = { ...schemas };
+		this.schemas = {
+			...schemas 
+		};
 		this.shape = new Map(Object.entries(schemas))
 	}
 

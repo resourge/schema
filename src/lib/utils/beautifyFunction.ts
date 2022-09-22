@@ -5,7 +5,8 @@ export const beautifyFunction = (funcArr: string[]): string => {
 
 	funcArr
 	.filter((a) => a)
-	.map((a) => a.replace(/\t/g, '').trim())
+	.map((a) => a.replace(/\t/g, '')
+	.trim())
 	.forEach((line) => {
 		if ( /{/g.test(line) || line.includes('promises.push(') ) {
 			normalize.push(`${identTab.repeat(countScope)}${line}`)

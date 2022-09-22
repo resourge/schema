@@ -6,11 +6,7 @@ import dts from 'rollup-plugin-dts';
 import filsesize from 'rollup-plugin-filesize';
 import { terser } from 'rollup-plugin-terser';
 
-import { 
-	name,
-	author,
-	license
-} from './package.json';
+import { name, author, license } from './package.json'
 
 const external = [];
 const globals = {}
@@ -58,7 +54,8 @@ function createBanner(libraryName, version, authorName, license) {
  */`;
 }
 function capitalizeFirstLetter(string) {
-	return string.charAt(0).toUpperCase() + string.slice(1);
+	return string.charAt(0)
+	.toUpperCase() + string.slice(1);
 }
 
 function getName(name) {
@@ -92,7 +89,9 @@ const getPackage = (
 	 */
 	const sourcemap = true;
 	const banner = createBanner(PROJECT_NAME, VERSION, AUTHOR_NAME, LICENSE);
-	const umdName = PROJECT_NAME.split('-').map(capitalizeFirstLetter).join('')
+	const umdName = PROJECT_NAME.split('-')
+	.map(capitalizeFirstLetter)
+	.join('')
 
 	const POSTAL_CODE_INDEX = `${SOURCE_FOLDER}/postalCodes/index.ts`
 
@@ -110,7 +109,7 @@ const getPackage = (
 				dir: OUTPUT_DIR,
 				format: 'esm',
 				sourcemap,
-				banner: banner
+				banner
 			},
 			external,
 			plugins: [
@@ -131,9 +130,7 @@ const getPackage = (
 						['@babel/preset-react', {
 							useBuiltIns: true
 						}],
-						['@babel/preset-typescript', {
-							optimizeConstEnums: true
-						}]
+						'@babel/preset-typescript'
 					],
 					plugins: babelPlugins,
 					extensions: ['.ts', '.tsx']
@@ -149,7 +146,7 @@ const getPackage = (
 			output: {
 				dir: OUTPUT_DIR,
 				format: 'esm',
-				banner: banner
+				banner
 			},
 			plugins: [
 				jsonPlugin,
@@ -166,7 +163,7 @@ const getPackage = (
 				file: `${CJS_DIR}/${PROJECT_NAME}.development.js`,
 				format: 'cjs',
 				sourcemap,
-				banner: banner
+				banner
 			},
 			external,
 			plugins: [
@@ -178,9 +175,7 @@ const getPackage = (
 						['@babel/preset-react', {
 							useBuiltIns: true
 						}],
-						['@babel/preset-typescript', {
-							optimizeConstEnums: true
-						}],
+						'@babel/preset-typescript',
 						babelPresetEnv
 					],
 					plugins: babelPlugins,
@@ -199,7 +194,7 @@ const getPackage = (
 				file: `${CJS_DIR}/${PROJECT_NAME}.production.min.js`,
 				format: 'cjs',
 				sourcemap,
-				banner: banner
+				banner
 			},
 			external,
 			plugins: [
@@ -212,9 +207,7 @@ const getPackage = (
 						['@babel/preset-react', {
 							useBuiltIns: true
 						}],
-						['@babel/preset-typescript', {
-							optimizeConstEnums: true
-						}]
+						'@babel/preset-typescript'
 					],
 					plugins: babelPlugins,
 					extensions: ['.ts', '.tsx']
@@ -223,7 +216,10 @@ const getPackage = (
 					preventAssignment: true,
 					'process.env.NODE_ENV': JSON.stringify('production')
 				}),
-				terser({ ecma: 8, safari10: true })
+				terser({
+					ecma: 8,
+					safari10: true 
+				})
 			]
 		}
 	];
@@ -236,7 +232,7 @@ const getPackage = (
 				file: `${UMD_DIR}/${PROJECT_NAME}.development.js`,
 				format: 'umd',
 				sourcemap,
-				banner: banner,
+				banner,
 				globals,
 				name: umdName
 			},
@@ -251,9 +247,7 @@ const getPackage = (
 						['@babel/preset-react', {
 							useBuiltIns: true
 						}],
-						['@babel/preset-typescript', {
-							optimizeConstEnums: true
-						}]
+						'@babel/preset-typescript'
 					],
 					plugins: babelPlugins,
 					extensions: ['.ts', '.tsx']
@@ -270,7 +264,7 @@ const getPackage = (
 				file: `${UMD_DIR}/${PROJECT_NAME}.production.min.js`,
 				format: 'umd',
 				sourcemap,
-				banner: banner,
+				banner,
 				globals,
 				name: umdName
 			},
@@ -285,9 +279,7 @@ const getPackage = (
 						['@babel/preset-react', {
 							useBuiltIns: true
 						}],
-						['@babel/preset-typescript', {
-							optimizeConstEnums: true
-						}]
+						'@babel/preset-typescript'
 					],
 					plugins: babelPlugins,
 					extensions: ['.ts', '.tsx']
@@ -307,7 +299,7 @@ const getPackage = (
 			output: {
 				file: `${OUTPUT_DIR}/main.js`,
 				format: 'cjs',
-				banner: banner
+				banner
 			},
 			plugins: [
 				...defaultExtPlugin,

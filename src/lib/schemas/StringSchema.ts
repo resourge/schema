@@ -176,7 +176,7 @@ export class StringSchema<
 		return this.test({
 			test: (value: any) => reg.test(value),
 			message: message ?? ((messages) => messages.string.pattern(reg)),
-			name: 'pattern'
+			name: `pattern_${reg.source.replace(/[&\/\\#, +()$~%.'":*?<>{}]/g, '_')}`
 		})
 	}
 

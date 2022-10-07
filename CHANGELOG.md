@@ -1,3 +1,10 @@
+## [1.9.1](https://github.com/resourge/schema/compare/v1.9.0...v1.9.1) (2022-10-07)
+
+
+### Bug Fixes
+
+* **stringschema:** fix a bug with pattern where multiple pattern would be override the previous ([9ac3539](https://github.com/resourge/schema/commit/9ac35392af0b14037f4610e50c13e6356dfa68d0))
+
 # [1.9.0](https://github.com/resourge/schema/compare/v1.8.1...v1.9.0) (2022-09-19)
 
 

@@ -1,3 +1,10 @@
+## [1.9.2](https://github.com/resourge/schema/compare/v1.9.1...v1.9.2) (2022-10-18)
+
+
+### Bug Fixes
+
+* **stringschema:** fix pattern namming including special characters ([67cbdbd](https://github.com/resourge/schema/commit/67cbdbdd7e7016af3a8080436f5acb666caf7dd0))
+
 ## [1.9.1](https://github.com/resourge/schema/compare/v1.9.0...v1.9.1) (2022-10-07)
 
 

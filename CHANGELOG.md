@@ -1,3 +1,10 @@
+## [1.9.3](https://github.com/resourge/schema/compare/v1.9.2...v1.9.3) (2022-10-26)
+
+
+### Bug Fixes
+
+* **shemas:** add message param to schemas not having message ([eb19086](https://github.com/resourge/schema/commit/eb19086fb7adf5c22a810e54f7a4da55469af87a))
+
 ## [1.9.2](https://github.com/resourge/schema/compare/v1.9.1...v1.9.2) (2022-10-18)
 
 

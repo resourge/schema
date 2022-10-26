@@ -40,6 +40,6 @@ export class BooleanSchema<
 export const boolean = <
 	Input extends boolean = boolean,
 	Final = any
->() => {
-	return new BooleanSchema<Input, Final>();
+>(message?: string) => {
+	return new BooleanSchema<Input, Final>(message);
 }

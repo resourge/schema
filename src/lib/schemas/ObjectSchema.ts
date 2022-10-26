@@ -53,7 +53,8 @@ export class ObjectSchema<
 export const object = <
 	Input extends object = object,
 >(
-	schemas: SchemaMap<Input>
+	schemas: SchemaMap<Input>,
+	message?: string
 ) => {
-	return new ObjectSchema<Input>(schemas);
+	return new ObjectSchema<Input>(schemas, message);
 }

@@ -45,6 +45,6 @@ export class DateSchema<
 export const date = <
 	Input extends Date = Date,
 	Final = any
->() => {
-	return new DateSchema<Input, Final>();
+>(message?: string) => {
+	return new DateSchema<Input, Final>(message);
 }

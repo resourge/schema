@@ -155,6 +155,6 @@ export class NumberSchema<
 export const number = <
 	Input extends number = number,
 	Final = any
->() => {
-	return new NumberSchema<Input, Final>();
+>(message?: string) => {
+	return new NumberSchema<Input, Final>(message);
 }

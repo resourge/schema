@@ -426,6 +426,6 @@ export class StringSchema<
 export const string = <
 	Input extends string = string,
 	Final = any
->() => {
-	return new StringSchema<Input, Final>(); ;
+>(message?: string) => {
+	return new StringSchema<Input, Final>(message); ;
 }

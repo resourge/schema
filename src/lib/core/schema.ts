@@ -174,9 +174,7 @@ export abstract class Schema<Input = any, Final = any> {
 		.reduce((fnSrcCode, rule) => rule(fnSrcCode, valueKey), fnSrcCode)
 	}
 
-	protected getMandatoryRules(schema: Schema<any>, context: Context) {
-		const mandatoryRules: Array<(fnSrcCode: string[], valueKey: string) => string[]> = []
-
+	protected getIsOptional(mandatoryRules: Array<(fnSrcCode: string[], valueKey: string) => string[]>, schema: Schema<any>, context: Context) {
 		const isOptional = schema.def._isOptional ?? context.optional;
 		if ( isOptional !== undefined ) {
 			if ( isOptional ) {
@@ -199,7 +197,9 @@ export abstract class Schema<Input = any, Final = any> {
 				])
 			}
 		}
+	}
 
+	protected getIsNullable(mandatoryRules: Array<(fnSrcCode: string[], valueKey: string) => string[]>, schema: Schema<any>, context: Context) {
 		const isNullable = schema.def._isNullable ?? context.nullable;
 		if ( isNullable !== undefined ) {
 			if ( isNullable ) {
@@ -222,7 +222,9 @@ export abstract class Schema<Input = any, Final = any> {
 				])
 			}
 		}
+	}
 
+	protected getIsRequired(mandatoryRules: Array<(fnSrcCode: string[], valueKey: string) => string[]>, schema: Schema<any>, context: Context) {
 		const _isRequired = schema.def._isRequired ?? context.nullable;
 		if ( _isRequired !== undefined ) {
 			if ( _isRequired ) {
@@ -247,7 +249,9 @@ export abstract class Schema<Input = any, Final = any> {
 				])
 			}
 		}
+	}
 
+	protected getIsOnlyOnTouch(mandatoryRules: Array<(fnSrcCode: string[], valueKey: string) => string[]>, schema: Schema<any>, context: Context) {
 		const isOnlyOnTouch = schema.def._isOnlyOnTouch ?? context.onlyOnTouch;
 		if ( isOnlyOnTouch !== undefined ) { 
 			if ( isOnlyOnTouch ) {
@@ -261,6 +265,15 @@ export abstract class Schema<Input = any, Final = any> {
 				schema.notOnlyOnTouch();
 			}
 		}
+	}
+
+	protected getMandatoryRules(schema: Schema<any>, context: Context) {
+		const mandatoryRules: Array<(fnSrcCode: string[], valueKey: string) => string[]> = []
+
+		this.getIsOptional(mandatoryRules, schema, context);
+		this.getIsNullable(mandatoryRules, schema, context);
+		this.getIsRequired(mandatoryRules, schema, context);
+		this.getIsOnlyOnTouch(mandatoryRules, schema, context);
 
 		return mandatoryRules
 	}

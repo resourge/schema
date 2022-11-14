@@ -1,5 +1,6 @@
 import { PostalCodes } from 'src/lib/postalCodes';
 
+import { number } from '../NumberSchema';
 import { object } from '../ObjectSchema';
 import { string, StringSchema } from '../StringSchema';
 
@@ -394,5 +395,45 @@ describe('string', () => {
 		.toBe(2)
 		// @ts-expect-error // To check protected values
 		expect(schema.def.normalRules.size).not.toBe(schema1.def.normalRules.size)
+	})
+
+	it('should when', () => {
+		const schema = string()
+		.when({
+			is: (value: string) => value.includes('Test'),
+			then: (schema) => schema.equals('Test 10')
+		})
+		.compile();
+
+		expect(schema.isValid('Test 10'))
+		.toBe(true)
+
+		expect(schema.isValid('Test 11'))
+		.toBe(false)
+
+		const schema1 = object({
+			product: number(),
+			productName: string()
+			.notRequired()
+			
+			.numeric()
+			.when('product', {
+				is: (product: number) => product === 10,
+				then: (schema) => schema.required()
+			})
+		})
+		.compile();
+
+		expect(schema1.isValid({
+			product: 10,
+			productName: '10101'
+		}))
+		.toBe(true)
+
+		expect(schema1.isValid({
+			product: 11,
+			productName: ''
+		}))
+		.toBe(true)
 	})
 })

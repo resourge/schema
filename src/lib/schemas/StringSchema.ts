@@ -214,7 +214,7 @@ export class StringSchema<
 	 */
 	public numeric(message?: string) {
 		return this.test({
-			test: (value: any) => NUMERIC_PATTERN.test(value),
+			test: (value: any) => !value || NUMERIC_PATTERN.test(value),
 			message: message ?? ((messages) => messages.string.numeric),
 			name: 'numeric'
 		})

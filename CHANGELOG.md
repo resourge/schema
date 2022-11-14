@@ -1,3 +1,10 @@
+## [1.9.4](https://github.com/resourge/schema/compare/v1.9.3...v1.9.4) (2022-11-14)
+
+
+### Bug Fixes
+
+* **string:** fix numeric giving error when value was empty ([208dbe5](https://github.com/resourge/schema/commit/208dbe5c5978e5ca64cb45a9e84a95bc8fd2c3fe))
+
 ## [1.9.3](https://github.com/resourge/schema/compare/v1.9.2...v1.9.3) (2022-10-26)
 
 

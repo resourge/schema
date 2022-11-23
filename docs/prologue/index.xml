@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Prologue on</title><link>https://archie-rp.github.io/resourge-schema/docs/prologue/</link><description>Recent content in Prologue on</description><generator>Hugo -- gohugo.io</generator><lastBuildDate>Tue, 06 Oct 2020 08:48:45 +0000</lastBuildDate><atom:link href="https://archie-rp.github.io/resourge-schema/docs/prologue/index.xml" rel="self" type="application/rss+xml"/><item><title>Introduction</title><link>https://archie-rp.github.io/resourge-schema/docs/prologue/introduction/</link><pubDate>Tue, 06 Oct 2020 08:48:57 +0000</pubDate><guid>https://archie-rp.github.io/resourge-schema/docs/prologue/introduction/</guid><description>Quick Start #
+One page summary of how to start a creating form with react form. Quick Start →
+Help #
+How to verify if has a new version. Help →</description></item><item><title>Quick Start</title><link>https://archie-rp.github.io/resourge-schema/docs/prologue/quick-start/</link><pubDate>Mon, 16 Nov 2020 13:59:39 +0100</pubDate><guid>https://archie-rp.github.io/resourge-schema/docs/prologue/quick-start/</guid><description>Compatible #
+React — ReactJS React Native — React Native for mobile Benchmarks #
+Benchmarks to compare with other schemas validators (the performance can variate slightly depending on the machine).
+Normal #
+@resourge/schema x 18,634,802 ops/sec ±1.30% (93 runs sampled)
+Fast Validator x 1,632,544 ops/sec ±0.50% (92 runs sampled)
+joi x 182,179 ops/sec ±1.15% (93 runs sampled)
+zod x 52,358 ops/sec ±0.86% (89 runs sampled)
+Yup x 8,573 ops/sec ±4.42% (81 runs sampled)
+Fastest is [ '@resourge/schema' ]
+Heavy (done with an array with 10 000 items) #
+@resourge/schema x 2,594 ops/sec ±0.</description></item></channel></rss>

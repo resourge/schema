@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://archie-rp.github.io/resourge-schema/sitemap.xml

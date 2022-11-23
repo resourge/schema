@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Api on</title><link>https://archie-rp.github.io/resourge-schema/docs/api/</link><description>Recent content in Api on</description><generator>Hugo -- gohugo.io</generator><lastBuildDate>Tue, 06 Oct 2020 08:48:45 +0000</lastBuildDate><atom:link href="https://archie-rp.github.io/resourge-schema/docs/api/index.xml" rel="self" type="application/rss+xml"/><item><title>Any</title><link>https://archie-rp.github.io/resourge-schema/docs/api/any/</link><pubDate>Tue, 13 Oct 2020 15:21:01 +0200</pubDate><guid>https://archie-rp.github.io/resourge-schema/docs/api/any/</guid><description>Example #
+import { any } from '@resourge/schema';
+any()
+// or
+any('Custom error message')
+Contribution #
+In case you have different validations that you use, please tell us so we improve the library.</description></item><item><title>Array</title><link>https://archie-rp.github.io/resourge-schema/docs/api/array/</link><pubDate>Tue, 13 Oct 2020 15:21:01 +0200</pubDate><guid>https://archie-rp.github.io/resourge-schema/docs/api/array/</guid><description>Example #
+import { number, array } from '@resourge/schema';
+array(&amp;lt;&amp;lt;Schema&amp;gt;&amp;gt;)
+// or
+array(&amp;lt;&amp;lt;Schema&amp;gt;&amp;gt;, 'Custom error message')
+// Validate if array as at least 1 item
+array(number()).min(1)
+Options #
+empty #
+Checks if array is empty
+array(number()).empty()
+// with custom message
+array(number()).empty('Custom error message')
+min #
+Checks if array has a minimal number of items in array
+array(number()).min(1)
+// with custom message
+array(number()).min(1, 'Custom error message')
+max #
+Checks if array has a maximal number of elements.</description></item><item><title>Boolean</title><link>https://archie-rp.github.io/resourge-schema/docs/api/boolean/</link><pubDate>Tue, 13 Oct 2020 15:21:01 +0200</pubDate><guid>https://archie-rp.github.io/resourge-schema/docs/api/boolean/</guid><description>Example #
+import { boolean } from '@resourge/schema';
+boolean()
+// or
+boolean('Custom error message')
+Options #
+mustBe #
+Checks if boolean is true or false
+date().mustBe(true)
+// with custom message
+date().mustBe(true, 'Custom error message')
+Contribution #
+In case you have different validations that you use, please tell us so we improve the library.</description></item><item><title>Date</title><link>https://archie-rp.github.io/resourge-schema/docs/api/date/</link><pubDate>Tue, 13 Oct 2020 15:21:01 +0200</pubDate><guid>https://archie-rp.github.io/resourge-schema/docs/api/date/</guid><description>Example #
+import { date } from '@resourge/schema';
+date()
+// or
+date('Custom error message')
+Options #
+today #
+Checks if date is today
+date().today()
+// with custom message
+date().today('Custom error message')
+Contribution #
+In case you have different validations that you use, please tell us so we improve the library.</description></item><item><title>Number</title><link>https://archie-rp.github.io/resourge-schema/docs/api/number/</link><pubDate>Tue, 13 Oct 2020 15:21:01 +0200</pubDate><guid>https://archie-rp.github.io/resourge-schema/docs/api/number/</guid><description>Example #
+import { number } from '@resourge/schema';
+number()
+// or
+number('Custom error message')
+// Validate if number is bigger than 1
+number().min(1)
+Options #
+min #
+Checks if number is bigger than minValue.
+number().min(1)
+// with custom message
+number().min(1, 'Custom error message')
+max #
+Checks if number is smaller than maxValue.
+number().max(10)
+// with custom message
+number().max(10, 'Custom error message')
+between #
+Checks if number is between minValue and maxValue.</description></item><item><title>Object</title><link>https://archie-rp.github.io/resourge-schema/docs/api/object/</link><pubDate>Tue, 13 Oct 2020 15:21:01 +0200</pubDate><guid>https://archie-rp.github.io/resourge-schema/docs/api/object/</guid><description>Example #
+import { object } from '@resourge/schema';
+object({
+name: string().required(),
+age: number().min(18).required()
+})
+// with message
+object({
+name: string().required(),
+age: number().min(18).required()
+}, 'Custom error message')
+Contribution #
+In case you have different validations that you use, please tell us so we improve the library.</description></item><item><title>String</title><link>https://archie-rp.github.io/resourge-schema/docs/api/string/</link><pubDate>Tue, 13 Oct 2020 15:21:01 +0200</pubDate><guid>https://archie-rp.github.io/resourge-schema/docs/api/string/</guid><description>Example #
+import { string } from '@resourge/schema';
+string()
+// or
+string('Custom error message')
+Options #
+required #
+Checks if string is not null/undefined/empty string. (Basically the default MANDATORY_RULES plus empty string)
+string().required()
+// with custom message
+string().required('Custom error message')
+min #
+Checks if string has a size bigger than minValue.
+string().min(1)
+// with custom message
+string().min(1, 'Custom error message')
+max #
+Checks if string has a size smaller than maxValue.</description></item><item><title>Type of Rules</title><link>https://archie-rp.github.io/resourge-schema/docs/api/type-of-rules/</link><pubDate>Tue, 13 Oct 2020 15:21:01 +0200</pubDate><guid>https://archie-rp.github.io/resourge-schema/docs/api/type-of-rules/</guid><description>Exists 3 types of rules:
+Normal Rule Mandatory Rule When Rule Normal Rules #
+Normal rule consist of 2 types of rules:
+test asyncTest Also exists some predefined normal rules:
+Any Array Boolean Date Number Object String 💡 If you have rules that you normally use, please tell us so we can improve the package. test #
+test is a normal sync validation.
+string()
+// value is the string value
+// form is the original value
+// In this case, test is expected to return either true or an array of errors
+.</description></item></channel></rss>

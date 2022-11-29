@@ -2,7 +2,7 @@
 
 `@resourge/schema` is a schema validator to validate simple and complex forms.
 
-Visit our website [resourge-react-form.netlify.app](https://resourge-react-form.netlify.app)
+Visit our website [resourge-schema-validator.netlify.app](https://resourge-schema-validator.netlify.app)
 
 ## Features
 

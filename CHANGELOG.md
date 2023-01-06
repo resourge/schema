@@ -1,3 +1,10 @@
+## [1.9.5](https://github.com/resourge/schema/compare/v1.9.4...v1.9.5) (2023-01-06)
+
+
+### Bug Fixes
+
+* **schema:** fix multiple test's not working ([2f245d1](https://github.com/resourge/schema/commit/2f245d13c87a94251464792b5529756bfdd6079f))
+
 ## [1.9.4](https://github.com/resourge/schema/compare/v1.9.3...v1.9.4) (2022-11-14)
 
 

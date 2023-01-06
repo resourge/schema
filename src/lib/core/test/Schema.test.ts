@@ -134,6 +134,42 @@ describe('Schema', () => {
 		.compile();
 	})
 
+	it('multiple test\'s', () => {
+		const schema = number()
+		.test((value) => {
+			if ( value > 2 ) {
+				return [
+					{
+						path: '',
+						error: 'Value is not bigger than 2'
+					}
+				]
+			}
+			return []
+		})
+		.test((value) => {
+			if ( value < 10 ) {
+				return [
+					{
+						path: '',
+						error: 'Value is not smaller than 10'
+					}
+				]
+			}
+			return []
+		})
+		.compile();
+
+		expect(schema.isValid(0))
+		.toBeFalsy()
+		expect(schema.isValid(1))
+		.toBeFalsy()
+		expect(schema.isValid(2))
+		.toBeFalsy()
+		expect(schema.isValid(11))
+		.toBeFalsy()
+	})
+
 	it('should individual validation only on touch', () => {
 		const schema = number()
 		.min(1)

@@ -334,7 +334,7 @@ export abstract class Schema<Input = any, Final = any> {
 		}
 
 		_this.def.normalRules.set(
-			method.name ?? `test_${this.def.normalRules.size}`,
+			`test_${this.def.normalRules.size}`,
 			new Rule(
 				'METHOD_ERROR',
 				method
@@ -372,7 +372,7 @@ export abstract class Schema<Input = any, Final = any> {
 		}
 
 		_this.def.normalRules.set(
-			method.name ?? `asyncTest${this.def.normalRules.size}`,
+			`asyncTest${this.def.normalRules.size}`,
 			new AsyncRule(
 				'METHOD_ERROR',
 				method

@@ -2,9 +2,9 @@ import { babel } from '@rollup/plugin-babel';
 import json from '@rollup/plugin-json';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
+import terser from '@rollup/plugin-terser';
 import dts from 'rollup-plugin-dts';
 import filsesize from 'rollup-plugin-filesize';
-import { terser } from 'rollup-plugin-terser';
 
 import { name, author, license } from './package.json'
 

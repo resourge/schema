@@ -1,3 +1,4 @@
+import { date } from '../DateSchema';
 import { number } from '../NumberSchema';
 import { object, ObjectSchema } from '../ObjectSchema';
 import { string } from '../StringSchema';
@@ -234,5 +235,30 @@ describe('object', () => {
 		// @ts-expect-error // To check private values
 		expect(schema1.isOptional)
 		.toBe(true)
+	})
+
+	it('should date inside object be true', () => {
+		const schema = object({
+			productDate: date()
+			.notRequired()
+		})
+		.compile();
+		
+		expect(schema.isValid({
+		// @ts-expect-error To test if is valid
+			productDate: 10
+		}))
+		.toBeFalsy()
+
+		expect(schema.isValid({
+			productDate: new Date()
+		}))
+		.toBeTruthy()
+	
+		expect(schema.isValid({
+		// @ts-expect-error To test if is valid
+			productDate: undefined
+		}))
+		.toBeTruthy()
 	})
 })

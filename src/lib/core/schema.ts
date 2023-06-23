@@ -640,7 +640,7 @@ export abstract class Schema<Input = any, Final = any> {
 			rules: {},
 			onlyOnTouchErrors: {}
 		}
-
+		
 		const schemasSrcCode = this.compileSchema({
 			context
 		});

@@ -65,4 +65,16 @@ describe('date', () => {
 		// @ts-expect-error // To check protected values
 		expect(schema.def.normalRules.size).not.toBe(schema1.def.normalRules.size)
 	})
+
+	it('should be optional even if is not date type', () => {
+		const schema = date()
+		.notRequired()
+
+		// @ts-expect-error To test if is valid
+		expect(schema.isValid(undefined))
+		.toBe(true)
+		// @ts-expect-error To test if is valid
+		expect(schema.isValid(null))
+		.toBe(true)
+	})
 })

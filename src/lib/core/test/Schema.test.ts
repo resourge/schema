@@ -58,12 +58,12 @@ describe('Schema', () => {
 	it('async', async () => {
 		const schema = number()
 		.asyncTest({
-			test: () => Promise.resolve(true),
+			is: () => Promise.resolve(false),
 			message: 'Async message',
 			name: 'Async test2'
 		})
 		.asyncTest({
-			test: () => Promise.resolve(true),
+			is: () => Promise.resolve(false),
 			message: 'Async message'
 		})
 		.compile();
@@ -116,7 +116,7 @@ describe('Schema', () => {
 		.toBeTruthy();
 
 		schema.test({
-			test: () => true,
+			is: () => true,
 			message: 'Custom Text Message'
 		})
 		.test(() => [{
@@ -124,7 +124,7 @@ describe('Schema', () => {
 			error: 'Custom Text Message'
 		}])
 		.asyncTest({
-			test: () => Promise.resolve(true),
+			is: () => Promise.resolve(true),
 			message: 'Async message'
 		})
 		.asyncTest(() => Promise.resolve([{

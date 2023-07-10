@@ -29,7 +29,7 @@ export class NumberSchema<
 	 */
 	public min(minValue: number, message?: string) {
 		return this.test({
-			test: (value) => value >= minValue,
+			is: (value) => !(value >= minValue),
 			message: message ?? ((messages) => messages.number.min(minValue)),
 			name: 'minNumber'
 		})
@@ -43,7 +43,7 @@ export class NumberSchema<
 	 */
 	public max(maxValue: number, message?: string) {
 		return this.test({
-			test: (value) => value <= maxValue,
+			is: (value) => !(value <= maxValue),
 			message: message ?? ((messages) => messages.number.max(maxValue)),
 			name: 'maxNumber'
 		})
@@ -58,7 +58,7 @@ export class NumberSchema<
 	 */
 	public between(minValue: number, maxValue: number, message?: string) {
 		return this.test({
-			test: (value) => value >= minValue && value <= maxValue,
+			is: (value) => !(value >= minValue && value <= maxValue),
 			message: message ?? ((messages) => messages.number.between(minValue, maxValue)),
 			name: 'betweenNumber'
 		})
@@ -71,13 +71,13 @@ export class NumberSchema<
 	 * {{key}} will be replace with current key
 	 */
 	public equals(value: number | number[], message?: string) {
-		let test = (val: number) => val === value
+		let is = (val: number) => !(val === value)
 		if ( Array.isArray(value) ) {
-			test = (val: number) => value.includes(val)
+			is = (val: number) => !value.includes(val)
 		}
 		
 		return this.test({
-			test,
+			is,
 			message: message ?? ((messages) => messages.number.equals(value)),
 			name: 'equalsNumber'
 		})
@@ -90,7 +90,7 @@ export class NumberSchema<
 	 */
 	public integer(message?: string) {
 		return this.test({
-			test: (val) => val % 1 === 0,
+			is: (val) => !(val % 1 === 0),
 			message: message ?? ((messages) => messages.number.integer),
 			name: 'integer'
 		})
@@ -103,7 +103,7 @@ export class NumberSchema<
 	 */
 	public decimal(decimal: number, message?: string) {
 		return this.test({
-			test: (val) => val.toFixed(decimal) === val.toString(),
+			is: (val) => !(val.toFixed(decimal) === val.toString()),
 			message: message ?? ((messages) => messages.number.decimal(decimal)),
 			name: 'decimal'
 		})
@@ -116,7 +116,7 @@ export class NumberSchema<
 	 */
 	public positive(message?: string) {
 		return this.test({
-			test: (val) => val >= 0,
+			is: (val) => !(val >= 0),
 			message: message ?? ((messages) => messages.number.positive),
 			name: 'positive'
 		})
@@ -129,7 +129,7 @@ export class NumberSchema<
 	 */
 	public negative(message?: string) {
 		return this.test({
-			test: (val) => val < 0,
+			is: (val) => !(val < 0),
 			message: message ?? ((messages) => messages.number.negative),
 			name: 'negative'
 		})
@@ -145,7 +145,7 @@ export class NumberSchema<
 		const enumValues = Object.values(enumObject);
 
 		return this.test({
-			test: (value: any) => enumValues.includes(value),
+			is: (value: any) => !enumValues.includes(value),
 			message: message ?? ((messages) => messages.number.enum),
 			name: 'enumNumber'
 		})

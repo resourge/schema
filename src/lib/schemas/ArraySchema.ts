@@ -30,7 +30,7 @@ export class ArraySchema<
 	 */
 	public empty(message?: string) {
 		return this.test({
-			test: (value: any) => value.length === 0,
+			is: (value: any) => !(value.length === 0),
 			message: message ?? ((messages) => messages.array.empty),
 			name: 'empty'
 		})
@@ -44,7 +44,7 @@ export class ArraySchema<
 	 */
 	public min(minValue: number, message?: string) {
 		return this.test({
-			test: (value: any) => minValue <= value.length,
+			is: (value: any) => !(minValue <= value.length),
 			message: message ?? ((messages) => messages.array.min(minValue)),
 			name: 'minArray'
 		})
@@ -58,7 +58,7 @@ export class ArraySchema<
 	 */
 	public max(maxValue: number, message?: string) {
 		return this.test({
-			test: (value: any) => value.length <= maxValue,
+			is: (value: any) => !(value.length <= maxValue),
 			message: message ?? ((messages) => messages.array.max(maxValue)),
 			name: 'maxArray'
 		})
@@ -72,7 +72,7 @@ export class ArraySchema<
 	 */
 	public length(length: number, message?: string) {
 		return this.test({
-			test: (value: any) => value.length === length,
+			is: (value: any) => !(value.length === length),
 			message: message ?? ((messages) => messages.array.length(length)),
 			name: 'lengthArray'
 		})
@@ -88,7 +88,7 @@ export class ArraySchema<
 	 */
 	public unique(message?: string) {
 		return this.test({
-			test: (value: any) => value.length === (new Set(value)).size,
+			is: (value: any) => !(value.length === (new Set(value)).size),
 			message: message ?? ((messages) => messages.array.unique),
 			name: 'uniqueArray'
 		})
@@ -105,7 +105,7 @@ export class ArraySchema<
 		)
 
 		return this.test({
-			test: (value: any) => value.length === (new Set(value.map(mapCb))).size,
+			is: (value: any) => !(value.length === (new Set(value.map(mapCb))).size),
 			message: message ?? ((messages) => messages.array.uniqueBy),
 			name: 'uniqueByArray'
 		})

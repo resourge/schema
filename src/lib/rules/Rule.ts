@@ -32,7 +32,7 @@ export class Rule<Value, T = any> extends BaseRule<Value, T, RuleMethod<Value, T
 
 		return [
 			`const ${methodName}_isValid = ${Parameters.CONTEXT_KEY}.rules.${methodName}(${parameters.join(',')});`,
-			(this.isMethodError ? `if ( ${methodName}_isValid.length ) {` : `if ( !${methodName}_isValid ) {`),
+			(this.isMethodError ? `if ( ${methodName}_isValid.length ) {` : `if ( ${methodName}_isValid ) {`),
 			...srcCode,
 			'}'
 		]

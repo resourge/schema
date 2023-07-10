@@ -50,7 +50,7 @@ export class StringSchema<
 			this.minRequired = true;
 			return super.required(message)
 			.test({
-				test: (value: any) => value,
+				is: (value: any) => !value,
 				message: message ?? ((messages) => messages.required),
 				name: 'minLength'
 			}) as unknown as this
@@ -98,7 +98,7 @@ export class StringSchema<
 	public min(minValue: number, message?: string) {
 		this.minRequired = false;
 		return this.test({
-			test: (value: any) => value.length >= minValue,
+			is: (value: any) => !(value.length >= minValue),
 			message: message ?? ((messages) => messages.string.min(minValue)),
 			name: 'minLength'
 		})
@@ -112,7 +112,7 @@ export class StringSchema<
 	 */
 	public max(maxValue: number, message?: string) {
 		return this.test({
-			test: (value: any) => value.length <= maxValue,
+			is: (value: any) => !(value.length <= maxValue),
 			message: message ?? ((messages) => messages.string.max(maxValue)),
 			name: 'maxLength'
 		})
@@ -127,7 +127,7 @@ export class StringSchema<
 	 */
 	public between(minValue: number, maxValue: number, message?: string) {
 		return this.test({
-			test: (value) => value.length >= minValue && value.length <= maxValue,
+			is: (value) => !(value.length >= minValue && value.length <= maxValue),
 			message: message ?? ((messages) => messages.number.between(minValue, maxValue)),
 			name: 'betweenNumber'
 		})
@@ -141,7 +141,7 @@ export class StringSchema<
 	 */
 	public length(length: number, message?: string) {
 		return this.test({
-			test: (value: any) => value.length === length,
+			is: (value: any) => !(value.length === length),
 			message: message ?? ((messages) => messages.string.length(length)),
 			name: 'length'
 		})
@@ -154,13 +154,13 @@ export class StringSchema<
 	 * {{key}} will be replace with current key
 	 */
 	public equals(value: string | string[], message?: string) {
-		let test = (val: string) => val === value
+		let is = (val: string) => !(val === value)
 		if ( Array.isArray(value) ) {
-			test = (val: string) => value.includes(val)
+			is = (val: string) => !value.includes(val)
 		}
 		
 		return this.test({
-			test,
+			is,
 			message: message ?? ((messages) => messages.string.equals(value)),
 			name: 'equalsString'
 		})
@@ -174,7 +174,7 @@ export class StringSchema<
 	 */
 	public pattern(reg: RegExp, message?: string) {
 		return this.test({
-			test: (value: any) => reg.test(value),
+			is: (value: any) => !reg.test(value),
 			message: message ?? ((messages) => messages.string.pattern(reg)),
 			name: `pattern_${reg.source.replace(/(\W|\W|-)/g, '_')}`
 		})
@@ -187,7 +187,7 @@ export class StringSchema<
 	 */
 	public empty(message?: string) {
 		return this.test({
-			test: (value: any) => value.length === 0,
+			is: (value: any) => !(value.length === 0),
 			message: message ?? ((messages) => messages.string.empty),
 			name: 'empty'
 		})
@@ -201,7 +201,7 @@ export class StringSchema<
 	 */
 	public contains(value: string, message?: string) {
 		return this.test({
-			test: (val: any) => val.includes(value),
+			is: (val: any) => !val.includes(value),
 			message: message ?? ((messages) => messages.string.contains(value)),
 			name: 'contains'
 		})
@@ -214,7 +214,7 @@ export class StringSchema<
 	 */
 	public numeric(message?: string) {
 		return this.test({
-			test: (value: any) => !value || NUMERIC_PATTERN.test(value),
+			is: (value: any) => !(!value || NUMERIC_PATTERN.test(value)),
 			message: message ?? ((messages) => messages.string.numeric),
 			name: 'numeric'
 		})
@@ -227,7 +227,7 @@ export class StringSchema<
 	 */
 	public alpha(message?: string) {
 		return this.test({
-			test: (value: any) => ALPHA_PATTERN.test(value),
+			is: (value: any) => !ALPHA_PATTERN.test(value),
 			message: message ?? ((messages) => messages.string.alpha),
 			name: 'alpha'
 		})
@@ -240,7 +240,7 @@ export class StringSchema<
 	 */
 	public alphanum(message?: string) {
 		return this.test({
-			test: (value: any) => ALPHANUM_PATTERN.test(value),
+			is: (value: any) => !ALPHANUM_PATTERN.test(value),
 			message: message ?? ((messages) => messages.string.alphanum),
 			name: 'alphanum'
 		})
@@ -253,7 +253,7 @@ export class StringSchema<
 	 */
 	public alphadash(message?: string) {
 		return this.test({
-			test: (value: any) => ALPHADASH_PATTERN.test(value),
+			is: (value: any) => !ALPHADASH_PATTERN.test(value),
 			message: message ?? ((messages) => messages.string.alphadash),
 			name: 'alphadash'
 		})
@@ -266,7 +266,7 @@ export class StringSchema<
 	 */
 	public hex(message?: string) {
 		return this.test({
-			test: (value: any) => value.length % 2 === 0 && HEX_PATTERN.test(value),
+			is: (value: any) => !(value.length % 2 === 0 && HEX_PATTERN.test(value)),
 			message: message ?? ((messages) => messages.string.hex),
 			name: 'hex'
 		})
@@ -279,7 +279,7 @@ export class StringSchema<
 	 */
 	public base64(message?: string) {
 		return this.test({
-			test: (value: any) => BASE64_PATTERN.test(value),
+			is: (value: any) => !BASE64_PATTERN.test(value),
 			message: message ?? ((messages) => messages.string.base64),
 			name: 'base64'
 		})
@@ -292,7 +292,7 @@ export class StringSchema<
 	 */
 	public uuid(message?: string) {
 		return this.test({
-			test: (value: any) => UUID_PATTERN.test(value),
+			is: (value: any) => !UUID_PATTERN.test(value),
 			message: message ?? ((messages) => messages.string.uuid),
 			name: 'uuid'
 		})
@@ -305,7 +305,7 @@ export class StringSchema<
 	 */
 	public url(message?: string) {
 		return this.test({
-			test: (value: any) => URL_PATTERN.test(value),
+			is: (value: any) => !URL_PATTERN.test(value),
 			message: message ?? ((messages) => messages.string.url),
 			name: 'url'
 		})
@@ -318,7 +318,7 @@ export class StringSchema<
 	 */
 	public cuid(message?: string) {
 		return this.test({
-			test: (value: any) => CUID_PATTERN.test(value),
+			is: (value: any) => !CUID_PATTERN.test(value),
 			message: message ?? ((messages) => messages.string.cuid),
 			name: 'cuid'
 		})
@@ -334,7 +334,7 @@ export class StringSchema<
 		const pattern = mode === 'precise' ? PRECISE_PATTERN : BASIC_PATTERN;
 
 		return this.test({
-			test: (value: any) => pattern.test(value),
+			is: (value: any) => !pattern.test(value),
 			message: message ?? ((messages) => messages.string.email),
 			name: 'email'
 		})
@@ -367,7 +367,7 @@ export class StringSchema<
 		}
 
 		return this.test({
-			test: (value: any) => postalCode.regex.test(value),
+			is: (value: any) => !postalCode.regex.test(value),
 			message: message ?? ((messages) => messages.string.postalCode(postalCode)),
 			name: 'postalCode'
 		})
@@ -400,7 +400,7 @@ export class StringSchema<
 		}
 
 		return this.test({
-			test: (value: any) => phoneNumber.regex.test(value),
+			is: (value: any) => !phoneNumber.regex.test(value),
 			message: message ?? ((messages) => messages.string.phoneNumber(phoneNumber)),
 			name: 'phoneNumber'
 		})
@@ -416,7 +416,7 @@ export class StringSchema<
 		const enumValues = Object.values(enumObject);
 
 		return this.test({
-			test: (value: any) => enumValues.includes(value),
+			is: (value: any) => !enumValues.includes(value),
 			message: message ?? ((messages) => messages.string.enum),
 			name: 'enumString'
 		})

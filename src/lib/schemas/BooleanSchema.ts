@@ -30,7 +30,7 @@ export class BooleanSchema<
 	public mustBe(mustBeValue: boolean, message?: string) {
 		const _mustBeValue = mustBeValue.toString();
 		return this.test({
-			test: (value: any) => _mustBeValue === value.toString(),
+			is: (value: any) => _mustBeValue !== value.toString(),
 			message: message ?? ((messages) => messages.array.empty),
 			name: 'mustBe'
 		})

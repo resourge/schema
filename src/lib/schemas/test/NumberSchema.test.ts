@@ -298,7 +298,7 @@ describe('number', () => {
 	it('should test custom test', () => {
 		const schema = number()
 		.test({
-			test: (value) => value !== 10,
+			is: (value) => value !== 10,
 			message: 'Requires to be 10',
 			name: ''
 		})
@@ -307,9 +307,9 @@ describe('number', () => {
 		const validate = (value: any) => schema.isValid(value);
 		
 		expect(validate(10))
-		.toBeFalsy()
-		expect(validate(-10))
 		.toBeTruthy()
+		expect(validate(-10))
+		.toBeFalsy()
 	})
 
 	it('should each schema be separated from previous', () => {
@@ -365,6 +365,7 @@ describe('number', () => {
 		}))
 		.toBeTruthy();
 		expect(schema.isValid({
+			// @ts-expect-error Expected error
 			productName: 6 
 		}))
 		.toBeFalsy()

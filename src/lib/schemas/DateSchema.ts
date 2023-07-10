@@ -35,7 +35,7 @@ export class DateSchema<
 	 */
 	public today(message?: string) {
 		return this.test({
-			test: (value: Date) => isToday(value),
+			is: (value: Date) => !isToday(value),
 			message: message ?? ((messages) => messages.date.today),
 			name: 'today'
 		})

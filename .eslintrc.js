@@ -10,7 +10,7 @@ module.exports = {
 		'standard-with-typescript',
 		'react-app'
 	],
-	ignorePatterns: ['**/dist/*', './main.js', '**/examples/**/*'],
+	ignorePatterns: ['**/dist/*', './main.js', '**/examples/**/*', '**/benchmark/**/*'],
 	parser: '@typescript-eslint/parser',
 	parserOptions: {
 		project: './tsconfig.json',

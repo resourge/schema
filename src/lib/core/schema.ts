@@ -20,16 +20,34 @@ import { defaultMessages, MessageType } from '../utils/messages'
 
 import { Definitions } from './Definitions'
 
-type TestMethodConfig<Method extends Function> = {
+type OldTestMethodConfig<Method extends Function> = {
+	/**
+	 * When is is "true" errors shows
+	 */
 	message: string | ((messages: MessageType) => string)
 	/**
-	 * When test is "false" errors shows
+	 * @deprecated When test is "false" errors shows
 	 */
 	test: Method
 	/**
 	 * Servers to make validation unique, otherwise method cannot be changed
 	 */
 	name?: string
+}
+type TestMethodConfig<Method extends Function> = {
+	/**
+	 * When is is "true" errors shows
+	 */
+	is: Method
+	message: string | ((messages: MessageType) => string)
+	/**
+	 * Servers to make validation unique, otherwise method cannot be changed
+	 */
+	name?: string
+	/**
+	 * @deprecated When test is "false" errors shows
+	 */
+	test?: Method
 }
 
 type OnlyOnTouch<Input> = Array<Input extends any[] | Record<string, any> ? FormKey<Input> : string>
@@ -310,13 +328,18 @@ export abstract class Schema<Input = any, Final = any> {
 	 * Method for custom validation
 	 */
 	public test<Form = this['final']>(
-		method: RuleMethodSchemaError<Input, Form>,
-	): ObjectPropertiesSchema<Input, Form>
-	public test<Form = this['final']>(
 		method: TestMethodConfig<RuleBooleanMethod<Input, Form>>
 	): ObjectPropertiesSchema<Input, Form>
 	public test<Form = this['final']>(
-		method: RuleMethodSchemaError<Input, Form> | TestMethodConfig<RuleBooleanMethod<Input, Form>>
+		method: RuleMethodSchemaError<Input, Form>
+	): ObjectPropertiesSchema<Input, Form>
+	public test<Form = this['final']>(
+		method: OldTestMethodConfig<RuleBooleanMethod<Input, Form>>
+	): ObjectPropertiesSchema<Input, Form>
+	public test<Form = this['final']>(
+		method: TestMethodConfig<RuleBooleanMethod<Input, Form>> | 
+		OldTestMethodConfig<RuleBooleanMethod<Input, Form>> | 
+		RuleMethodSchemaError<Input, Form>
 	): ObjectPropertiesSchema<Input, Form> {
 		const _this = this.clone();
 
@@ -325,7 +348,7 @@ export abstract class Schema<Input = any, Final = any> {
 				method.name ?? `test_${this.def.normalRules.size}`,
 				new Rule(
 					'MESSAGE',
-					method.test,
+					(method as TestMethodConfig<RuleBooleanMethod<Input, Form>>).is ?? ((...args) => !(method as OldTestMethodConfig<RuleBooleanMethod<Input, Form>>).test(...args)),
 					method.message
 				)
 			)
@@ -348,13 +371,16 @@ export abstract class Schema<Input = any, Final = any> {
 	 * Method for async custom validation
 	 */
 	public asyncTest<Form = this['final']>(
-		method: AsyncRuleMethodSchemaError<Input, Form>,
-	): this
-	public asyncTest<Form = this['final']>(
 		method: TestMethodConfig<AsyncRuleBooleanMethod<Input, Form>>
 	): this
 	public asyncTest<Form = this['final']>(
-		method: AsyncRuleMethodSchemaError<Input, Form> | TestMethodConfig<AsyncRuleBooleanMethod<Input, Form>>
+		method: AsyncRuleMethodSchemaError<Input, Form>,
+	): this
+	public asyncTest<Form = this['final']>(
+		method: OldTestMethodConfig<AsyncRuleBooleanMethod<Input, Form>>
+	): this
+	public asyncTest<Form = this['final']>(
+		method: AsyncRuleMethodSchemaError<Input, Form> | TestMethodConfig<AsyncRuleBooleanMethod<Input, Form>> | OldTestMethodConfig<AsyncRuleBooleanMethod<Input, Form>>
 	): this {
 		const _this = this.clone();
 
@@ -363,7 +389,7 @@ export abstract class Schema<Input = any, Final = any> {
 				method.name ?? `asyncTest_${this.def.normalRules.size}`,
 				new AsyncRule(
 					'MESSAGE',
-					method.test,
+					(method as TestMethodConfig<AsyncRuleBooleanMethod<Input, Form>>).is ?? (async (...args) => !(await (method as OldTestMethodConfig<AsyncRuleBooleanMethod<Input, Form>>).test(...args))),
 					method.message
 				)
 			)

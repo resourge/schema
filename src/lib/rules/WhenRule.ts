@@ -1,9 +1,9 @@
-import { Schema } from '../core/schema'
-import { CompileSchemaConfig, PrivateSchema } from '../types/types'
-import { Parameters, SchemaTypes } from '../utils/Utils'
+import { type Schema } from '../core/schema'
+import { type CompileSchemaConfig, type PrivateSchema } from '../types/types'
+import { Parameters, type SchemaTypes } from '../utils/Utils'
 
-import { BaseRule, RuleSrcCodeConfig } from './BaseRule'
-import { RuleBooleanMethod } from './Rule'
+import { BaseRule, type RuleSrcCodeConfig } from './BaseRule'
+import { type RuleBooleanMethod } from './Rule'
 
 export type WhenConfig<
 	T,

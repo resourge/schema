@@ -1,7 +1,7 @@
 
 import { ArrayTypedSchema } from '../core/ArrayTypedSchema';
-import { Definitions } from '../core/Definitions';
-import { ObjectPropertiesSchema } from '../types/SchemaMap';
+import { type Definitions } from '../core/Definitions';
+import { type ObjectPropertiesSchema } from '../types/SchemaMap';
 import { SchemaTypes } from '../utils/Utils';
 
 export class ArraySchema<
@@ -126,6 +126,6 @@ export const array = <
 >(
 	schemas: S,
 	message?: string
-): ArraySchema<Array<S['Input']>, Final, S> => {
+): ArraySchema<Array<S['input']>, Final, S> => {
 	return new ArraySchema(schemas, message);
 }

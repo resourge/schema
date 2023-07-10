@@ -1,7 +1,7 @@
-import { SchemaError } from '../types/types'
+import { type SchemaError } from '../types/types'
 import { Parameters } from '../utils/Utils'
 
-import { BaseRule, RuleSrcCodeConfig, RuleTestConfig } from './BaseRule'
+import { BaseRule, type RuleSrcCodeConfig, type RuleTestConfig } from './BaseRule'
 
 /**
  * When test is "false" message appears

@@ -1,13 +1,20 @@
+/* eslint-disable @typescript-eslint/restrict-plus-operands */
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 import { babel } from '@rollup/plugin-babel';
 import json from '@rollup/plugin-json';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
 import terser from '@rollup/plugin-terser';
+import { readFileSync } from 'fs';
 import dts from 'rollup-plugin-dts';
 import filsesize from 'rollup-plugin-filesize';
 
-import { name, author, license } from './package.json'
-
+const pkg = JSON.parse(readFileSync('package.json', {
+	encoding: 'utf8' 
+}));
+const {
+	name, author, license
+} = pkg
 const external = [];
 const globals = {}
 
@@ -54,8 +61,7 @@ function createBanner(libraryName, version, authorName, license) {
  */`;
 }
 function capitalizeFirstLetter(string) {
-	return string.charAt(0)
-	.toUpperCase() + string.slice(1);
+	return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 function getName(name) {

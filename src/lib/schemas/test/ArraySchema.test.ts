@@ -1,5 +1,5 @@
+import { number, object, string } from '..';
 import { array, ArraySchema } from '../ArraySchema'
-import { number, object, string } from '../index';
 
 describe('array', () => {
 	it('should be empty', () => {

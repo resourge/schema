@@ -1,7 +1,7 @@
-import { SchemaMap } from '../types/SchemaMap';
-import { CompileSchemaConfig, PrivateSchema } from '../types/types';
+import { type SchemaMap } from '../types/SchemaMap';
+import { type CompileSchemaConfig, type PrivateSchema } from '../types/types';
 
-import { Definitions } from './Definitions';
+import { type Definitions } from './Definitions';
 import { Schema } from './schema';
 
 export abstract class ObjectTypedSchema<

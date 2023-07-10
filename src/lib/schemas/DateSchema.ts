@@ -1,6 +1,6 @@
-import { Definitions } from '../core/Definitions';
+import { type Definitions } from '../core/Definitions';
 import { Schema } from '../core/schema';
-import { NullableType } from '../types/SchemaMap';
+import { type NullableType } from '../types/SchemaMap';
 import { SchemaTypes } from '../utils/Utils';
 
 const isToday = (someDate: Date): boolean => {

@@ -1,5 +1,5 @@
-import { PhoneNumberInfo } from '../phoneNumbers'
-import { PostalCodeInfo } from '../postalCodes'
+import { type PhoneNumberInfo } from '../phoneNumbers'
+import { type PostalCodeInfo } from '../postalCodes'
 
 enum FormatInvalidTypeEnum {
 	'enum' = 'enum',

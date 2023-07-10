@@ -1,10 +1,10 @@
-import { AnySchema } from '../schemas/AnySchema';
-import { ArraySchema } from '../schemas/ArraySchema';
-import { BooleanSchema } from '../schemas/BooleanSchema';
-import { DateSchema } from '../schemas/DateSchema';
-import { NumberSchema } from '../schemas/NumberSchema';
-import { ObjectSchema } from '../schemas/ObjectSchema';
-import { StringSchema } from '../schemas/StringSchema';
+import { type AnySchema } from '../schemas/AnySchema';
+import { type ArraySchema } from '../schemas/ArraySchema';
+import { type BooleanSchema } from '../schemas/BooleanSchema';
+import { type DateSchema } from '../schemas/DateSchema';
+import { type NumberSchema } from '../schemas/NumberSchema';
+import { type ObjectSchema } from '../schemas/ObjectSchema';
+import { type StringSchema } from '../schemas/StringSchema';
 
 export type NullableType<T> = undefined | null | T
 

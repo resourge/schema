@@ -1,5 +1,5 @@
-import { CompileSchemaConfig, Context, SchemaError } from '../types/types'
-import { MessageType } from '../utils/messages'
+import { type CompileSchemaConfig, type Context, type SchemaError } from '../types/types'
+import { type MessageType } from '../utils/messages'
 
 export type RuleMethod<Value, Final = any> = (
 	value: Value, 
@@ -30,7 +30,7 @@ export type RuleSrcCodeConfig = Pick<Required<CompileSchemaConfig>, 'context' | 
 	key?: string
 }
 
-export abstract class BaseRule<Value, T = any, Method extends Function = RuleMethod<Value, T>> {
+export abstract class BaseRule<Value, T = any, Method extends (...args: any[]) => any = RuleMethod<Value, T>> {
 	public type: 'METHOD_ERROR' | 'MESSAGE'
 	public method: Method
 	protected getErrorMessage: (methodName: string, path: string, onlyOnTouch: boolean, context: Context) => string[]
@@ -93,7 +93,7 @@ export abstract class BaseRule<Value, T = any, Method extends Function = RuleMet
 	public addRule(
 		type: string,
 		name: string,
-		method: Function,
+		method: (...args: any[]) => any,
 		context: Context
 	) {
 		const index = context.index = context.index + 1;

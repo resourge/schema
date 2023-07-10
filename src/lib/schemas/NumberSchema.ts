@@ -1,6 +1,6 @@
-import { Definitions } from '../core/Definitions';
+import { type Definitions } from '../core/Definitions';
 import { Schema } from '../core/schema';
-import { NullableType } from '../types/SchemaMap';
+import { type NullableType } from '../types/SchemaMap';
 import { SchemaTypes } from '../utils/Utils';
 
 export class NumberSchema<
@@ -141,6 +141,7 @@ export class NumberSchema<
 	 * @param message @option Overrides default message
 	 * {{key}} will be replace with current key
 	 */
+	// eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
 	public enum<T extends { [name: string]: any }>(enumObject: T, message?: string) {
 		const enumValues = Object.values(enumObject);
 

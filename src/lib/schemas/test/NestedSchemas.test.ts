@@ -1,4 +1,4 @@
-import { SchemaError } from 'src/lib/types/types';
+import { type SchemaError } from 'src/lib/types/types';
 
 import { array } from '../ArraySchema';
 import { boolean } from '../BooleanSchema';

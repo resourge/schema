@@ -6,8 +6,6 @@
     "benchmark": "ts-node --project tsconfig.json benchmark.ts",
     "heavy:benchmark": "ts-node heavyBenchmark.ts"
   },
-  "author": "resourge",
-  "license": "MIT",
   "dependencies": {
     "benchmark": "^2.1.4",
     "fastest-validator": "^1.12.0",

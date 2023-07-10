@@ -1,9 +1,9 @@
 /* eslint-disable no-useless-escape */
-import { Definitions } from '../core/Definitions';
+import type { Definitions } from '../core/Definitions';
 import { Schema } from '../core/schema';
-import { PhoneNumberInfo } from '../phoneNumbers';
-import { PostalCodeInfo } from '../postalCodes';
-import { NullableType } from '../types/SchemaMap';
+import type { PhoneNumberInfo } from '../phoneNumbers';
+import type { PostalCodeInfo } from '../postalCodes';
+import type { NullableType } from '../types/SchemaMap';
 import { SchemaTypes } from '../utils/Utils';
 
 const NUMERIC_PATTERN = /^[-]?([1-9]\d*|0)(\.\d+)?$/;
@@ -412,6 +412,7 @@ export class StringSchema<
 	 * @param message @option Overrides default message
 	 * {{key}} will be replace with current key
 	 */
+	// eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
 	public enum<T extends { [name: string]: any }>(enumObject: T, message?: string) {
 		const enumValues = Object.values(enumObject);
 

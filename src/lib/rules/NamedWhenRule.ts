@@ -1,8 +1,8 @@
-import { Schema } from '../core/schema'
-import { CompileSchemaConfig } from '../types/types'
-import { SchemaTypes } from '../utils/Utils'
+import { type Schema } from '../core/schema'
+import { type CompileSchemaConfig } from '../types/types'
+import { type SchemaTypes } from '../utils/Utils'
 
-import { RuleBooleanMethod } from './Rule'
+import { type RuleBooleanMethod } from './Rule'
 import { WhenRule } from './WhenRule'
 
 export class NamedWhenRule<Value = any, T = any> extends WhenRule<Value, T> {

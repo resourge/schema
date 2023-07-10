@@ -1,18 +1,23 @@
 {
   "name": "@resourge/schema",
   "version": "1.9.5",
-  "main": "./dist/main.js",
+  "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "unpkg": "./dist/umd/schema.production.min.js",
-  "private": false,
   "exports": {
-    "./package.json": "./package.json",
-    ".": "./dist/index.js",
-    "./phoneNumbers": "./dist/phoneNumbers/index.js",
-    "./postalCodes": "./dist/postalCodes/index.js",
-    "./dist/phoneNumbers": "./dist/phoneNumbers/index.js",
-    "./dist/postalCodes": "./dist/postalCodes/index.js"
+    ".": {
+		"import": "./dist/index.js",
+		"require": "./dist/index.cjs"
+	},
+    "./phoneNumbers": {
+		"import": "./dist/phoneNumbers/index.js",
+		"require": "./dist/phoneNumbers/index.cjs"
+	},
+    "./postalCodes": {
+		"import": "./dist/postalCodes/index.js",
+		"require": "./dist/postalCodes/index.cjs"
+	}
   },
   "typesVersions": {
     "*": {
@@ -20,13 +25,15 @@
         "./dist/index.d.ts"
       ],
       "phoneNumbers": [
-        "./dist/phoneNumbers/index.js"
+        "./dist/phoneNumbers/index.d.ts"
       ],
       "postalCodes": [
-        "./dist/postalCodes/index.js"
+        "./dist/postalCodes/index.d.ts"
       ]
     }
   },
+  "private": false,
+  "type": "module",
   "publishConfig": {
     "access": "public"
   },
@@ -46,22 +53,20 @@
   ],
   "author": "resourge",
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/resourge/schema.git"
-  },
   "scripts": {
     "bench": "npm --prefix ./benchmark run benchmark",
     "bench:heavy": "npm --prefix ./benchmark run heavy:benchmark",
     "example": "npm --prefix ./src/examples/form run dev",
-    "commit": "git pull && git add . && git-cz",
-    "lint": "eslint \"./src/**/*.{ts,tsx}\"",
-    "lint:prod": "cross-env NODE_ENV=production npm run lint",
     "generate_postal_codes": "node ./scripts/codPostal/GenerateCountryPostalCodes.js",
     "fix-types": "node ./scripts/FixTypes.js",
     "remove-postal-code": "node ./scripts/RemovePostalCodeFromIndex.js",
     "remove-phone-number": "node ./scripts/RemovePhoneNumberFromIndex.js",
+    "commitizen": "git-cz",
+    "commit": "git pull && git add . && npm run commitizen",
+    "lint": "eslint \"./src/**/*.{ts,tsx}\"",
+    "lint:prod": "cross-env NODE_ENV=production npm run lint",
     "dev": "vite",
+    "vite:build": "tsc && vite build",
     "build": "rollup -c && npm run fix-types && npm run remove-postal-code && npm run remove-phone-number",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -69,51 +74,61 @@
     "semantic-release": "semantic-release"
   },
   "devDependencies": {
-    "@babel/core": "^7.19.1",
-    "@babel/preset-env": "^7.19.1",
-    "@babel/preset-react": "^7.18.6",
-    "@babel/preset-typescript": "^7.18.6",
-    "@rollup/plugin-babel": "^5.3.1",
-    "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^14.1.0",
-    "@rollup/plugin-replace": "^4.0.0",
-    "@rollup/plugin-terser": "^0.4.0",
-    "@semantic-release/changelog": "^6.0.1",
+    "@babel/core": "^7.22.8",
+    "@babel/preset-env": "^7.22.7",
+    "@babel/preset-react": "^7.22.5",
+    "@babel/preset-typescript": "^7.22.5",
+    "@fastify/deepmerge": "^1.3.0",
+    "@rollup/plugin-babel": "^6.0.3",
+    "@rollup/plugin-json": "^6.0.0",
+    "@rollup/plugin-node-resolve": "^15.1.0",
+    "@rollup/plugin-replace": "^5.0.2",
+    "@rollup/plugin-terser": "^0.4.3",
+    "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/exec": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
     "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
+    "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.4.3",
-    "@types/react": "^18.0.20",
-    "@types/react-dom": "^18.0.6",
-    "@typescript-eslint/eslint-plugin": "^5.38.0",
-    "@vitejs/plugin-react": "^2.1.0",
+    "@types/minimatch": "^5.1.2",
+    "@types/node": "^20.4.1",
+    "@types/react": "^18.2.14",
+    "@types/react-dom": "^18.2.6",
+    "@typescript-eslint/eslint-plugin": "^5.61.0",
+    "@vitejs/plugin-react": "^4.0.3",
+    "app-root-path": "^3.1.0",
     "babel-plugin-dev-expression": "^0.2.3",
-    "c8": "^7.11.3",
+    "c8": "^8.0.0",
     "cross-env": "^7.0.3",
     "cz-conventional-changelog": "^3.3.0",
-    "eslint": "^8.23.1",
+    "eslint": "^8.44.0",
     "eslint-config-react-app": "^7.0.1",
-    "eslint-config-standard-with-typescript": "^23.0.0",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-import-newlines": "^1.2.3",
-    "eslint-plugin-n": "^15.3.0",
-    "eslint-plugin-promise": "^6.0.1",
-    "eslint-plugin-react": "^7.31.8",
-    "eslint-plugin-testing-library": "^5.6.4",
-    "eslint-plugin-typescript-sort-keys": "^2.1.0",
-    "jsdom": "^20.0.0",
+    "eslint-config-standard-with-typescript": "^36.0.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-import-newlines": "^1.3.4",
+    "eslint-plugin-n": "^15.6.1",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-testing-library": "^5.11.0",
+    "eslint-plugin-typescript-sort-keys": "^2.3.0",
+    "glob": "^10.3.3",
+    "jsdom": "^22.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "rollup": "^2.79.1",
-    "rollup-plugin-dts": "^4.2.2",
-    "rollup-plugin-filesize": "^9.1.2",
-    "semantic-release": "^19.0.5",
-    "typescript": "^4.8.3",
-    "vite": "^3.1.3",
-    "vite-plugin-checker": "^0.5.1",
-    "vite-tsconfig-paths": "^3.5.0",
-    "vitest": "^0.23.4"
+    "rollup": "^3.26.2",
+    "rollup-plugin-dts": "^5.3.0",
+    "rollup-plugin-filesize": "^10.0.0",
+    "semantic-release": "^21.0.7",
+    "typescript": "^4.9.5",
+    "vite": "^4.4.2",
+    "vite-plugin-checker": "^0.6.1",
+    "vite-plugin-dts": "^3.2.0",
+    "vite-tsconfig-paths": "^4.2.0",
+    "vitest": "^0.33.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/resourge/schema.git"
   },
   "config": {
     "commitizen": {

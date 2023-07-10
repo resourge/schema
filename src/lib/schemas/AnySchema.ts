@@ -1,10 +1,10 @@
 
-import { Definitions } from '../core/Definitions';
+import { type Definitions } from '../core/Definitions';
 import { Schema } from '../core/schema';
 import { SchemaTypes } from '../utils/Utils';
 
 export class AnySchema<
-	Input extends any = any, 
+	Input = any, 
 	Final = any
 > extends Schema<Input, Final> {
 	protected type: SchemaTypes = SchemaTypes.ARRAY
@@ -23,7 +23,7 @@ export class AnySchema<
 }
 
 export const any = <
-	Input extends any = any,
+	Input = any,
 	Final = any,
 >(message?: string) => {
 	return new AnySchema<Input, Final>(message);

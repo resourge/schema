@@ -1,26 +1,27 @@
 /* eslint-disable no-new-func */
 /* eslint-disable @typescript-eslint/no-implied-eval */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { AsyncRule, AsyncRuleBooleanMethod, AsyncRuleMethodSchemaError } from '../rules/AsyncRule'
+
+import { AsyncRule, type AsyncRuleBooleanMethod, type AsyncRuleMethodSchemaError } from '../rules/AsyncRule'
 import { NamedWhenRule } from '../rules/NamedWhenRule'
-import { Rule, RuleBooleanMethod, RuleMethodSchemaError } from '../rules/Rule'
-import { WhenConfig, WhenRule } from '../rules/WhenRule'
-import { FormKey } from '../types/FormKey'
-import { ObjectPropertiesSchema } from '../types/SchemaMap'
+import { Rule, type RuleBooleanMethod, type RuleMethodSchemaError } from '../rules/Rule'
+import { type WhenConfig, WhenRule } from '../rules/WhenRule'
+import { type FormKey } from '../types/FormKey'
+import { type ObjectPropertiesSchema } from '../types/SchemaMap'
 import {
-	CompileConfig,
-	CompileSchemaConfig,
-	Context,
-	SchemaError
+	type CompileConfig,
+	type CompileSchemaConfig,
+	type Context,
+	type SchemaError
 } from '../types/types'
-import { Parameters, SchemaTypes } from '../utils/Utils'
+import { Parameters, type SchemaTypes } from '../utils/Utils'
 import { beautifyFunction } from '../utils/beautifyFunction'
 import { getOnlyOnTouchSrcCode } from '../utils/getOnlyOnTouchSrcCode'
-import { defaultMessages, MessageType } from '../utils/messages'
+import { defaultMessages, type MessageType } from '../utils/messages'
 
 import { Definitions } from './Definitions'
 
-type OldTestMethodConfig<Method extends Function> = {
+type OldTestMethodConfig<Method extends (...args: any[]) => any> = {
 	/**
 	 * When is is "true" errors shows
 	 */
@@ -34,7 +35,7 @@ type OldTestMethodConfig<Method extends Function> = {
 	 */
 	name?: string
 }
-type TestMethodConfig<Method extends Function> = {
+type TestMethodConfig<Method extends (...args: any[]) => any> = {
 	/**
 	 * When is is "true" errors shows
 	 */
@@ -53,7 +54,7 @@ type TestMethodConfig<Method extends Function> = {
 type OnlyOnTouch<Input> = Array<Input extends any[] | Record<string, any> ? FormKey<Input> : string>
 
 export abstract class Schema<Input = any, Final = any> {
-	public Input!: Input;
+	public input!: Input;
 	public final!: Final;
 	protected async: boolean = false;
 

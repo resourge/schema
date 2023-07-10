@@ -1,7 +1,7 @@
 
-import { Definitions } from '../core/Definitions';
+import { type Definitions } from '../core/Definitions';
 import { ObjectTypedSchema } from '../core/ObjectTypedSchema';
-import { NullableType, SchemaMap } from '../types/SchemaMap';
+import { type NullableType, type SchemaMap } from '../types/SchemaMap';
 import { SchemaTypes } from '../utils/Utils';
 
 export class ObjectSchema<

@@ -1,9 +1,9 @@
 import { number, NumberSchema } from '../NumberSchema';
-import { S } from '../index';
+import { object } from '../ObjectSchema';
 
 describe('number', () => {
 	it('should be number', () => {
-		const schema = S.number()
+		const schema = number()
 		.compile();
 	
 		const validate = (value: any) => schema.isValid(value);
@@ -353,7 +353,7 @@ describe('number', () => {
 			SOURCE_FIELD = 4
 		}
 
-		const schema = S.object<{ productName: FieldTypeEnum }>({
+		const schema = object<{ productName: FieldTypeEnum }>({
 			productName: number()
 			.nullable()
 			.enum(FieldTypeEnum)
@@ -365,8 +365,7 @@ describe('number', () => {
 		}))
 		.toBeTruthy();
 		expect(schema.isValid({
-			// @ts-expect-error Expected error
-			productName: 6 
+			productName: 6 as FieldTypeEnum
 		}))
 		.toBeFalsy()
 	})

@@ -261,4 +261,247 @@ describe('object', () => {
 		}))
 		.toBeTruthy()
 	})
+
+	describe('should have one of the keys true', () => {
+		it('diferent schemas', () => {
+			const schema = object<{
+				productId?: number
+				productName?: string
+				productType?: string
+			}>({
+				productId: number().notRequired(),
+				productName: string().notRequired(),
+				productType: string().notRequired()
+			})
+			.oneOf({
+				productId: number().required(),
+				productName: string().required(),
+				productType: string().required()
+			})
+			.compile();
+
+			expect(schema.isValid({ }))
+			.toBeFalsy()
+
+			expect(schema.isValid({
+				productId: 1
+			}))
+			.toBeTruthy()
+
+			expect(schema.isValid({
+				productName: 'Test'
+			}))
+			.toBeTruthy()
+
+			expect(schema.isValid({
+				productType: 'Test'
+			}))
+			.toBeTruthy()
+
+			expect(schema.isValid({
+				productId: 1,
+				productName: 'Test',
+				productType: 'Test'
+			}))
+			.toBeTruthy()
+		})
+		it('same schema', () => {
+			const schema = object<{
+				productName?: string
+				productType?: string
+			}>({
+				productName: string().notRequired(),
+				productType: string().notRequired()
+			})
+			.oneOf(['productName', 'productType'], string().required())
+			.compile();
+
+			expect(schema.isValid({ }))
+			.toBeFalsy()
+
+			expect(schema.isValid({
+				productName: 'Test'
+			}))
+			.toBeTruthy()
+
+			expect(schema.isValid({
+				productType: 'Test'
+			}))
+			.toBeTruthy()
+
+			expect(schema.isValid({
+				productName: 'Test',
+				productType: 'Test'
+			}))
+			.toBeTruthy()
+		})
+
+		it('multiple oneOf', () => {
+			const productSchema = object<{
+				productName?: string
+				productType?: string
+			}>({
+				productName: string().notRequired(),
+				productType: string().notRequired()
+			})
+			.oneOf(['productName', 'productType'], string().required())
+
+			const schema = object({
+				product1: productSchema,
+				product2: productSchema
+			})
+			.compile();
+
+			expect(schema.isValid({ 
+				product1: {},
+				product2: {}
+			}))
+			.toBeFalsy()
+
+			expect(schema.isValid({
+				product1: {
+					productName: 'Test'
+				},
+				product2: {}
+			}))
+			.toBeFalsy()
+
+			expect(schema.isValid({
+				product1: { },
+				product2: {
+					productName: 'Test'
+				}
+			}))
+			.toBeFalsy()
+
+			expect(schema.isValid({
+				product1: {
+					productName: 'Test'
+				},
+				product2: {
+					productName: 'Test'
+				}
+			}))
+			.toBeTruthy()
+		})
+
+		describe('should have a custom message', () => {
+			it('should all errors have the same custom message', () => {
+				const customMessage = 'Custom Message';
+				const schema = object<{
+					productName?: string
+					productType?: string
+				}>({
+					productName: string().notRequired(),
+					productType: string().notRequired()
+				})
+				.oneOf({
+					productName: string().required(),
+					productType: string().required()
+				}, customMessage)
+				.compile();
+
+				expect(schema.validate({}))
+				.toEqual([
+					{
+						path: 'productName',
+						error: customMessage
+					},
+					{
+						path: 'productType',
+						error: customMessage
+					}
+				])
+
+				expect(schema.validate({
+					productName: 'Test547896'
+				}))
+				.toEqual([])
+			})
+
+			it('should have one custom error', () => {
+				const customMessage = 'Custom Message';
+				const schema = object<{
+					productName?: string
+					productType?: string
+				}>({
+					productName: string().notRequired(),
+					productType: string().notRequired()
+				})
+				.oneOf({
+					productName: string().required(),
+					productType: string().required()
+				}, {
+					path: 'productName',
+					error: customMessage
+				})
+				.compile();
+
+				expect(schema.validate({}))
+				.toEqual([
+					{
+						path: 'productName',
+						error: customMessage
+					}
+				])
+
+				expect(schema.validate({
+					productName: 'Test'
+				}))
+				.toEqual([])
+			})
+
+			it('should have multiple custom error', () => {
+				const customMessage = 'Custom Message';
+				const schema = object<{
+					productId?: number
+					productName?: string
+					productType?: string
+				}>({
+					productId: number().notRequired(),
+					productName: string().notRequired(),
+					productType: string().notRequired()
+				})
+				.oneOf({
+					productName: string().required(),
+					productType: string().required()
+				}, [
+					{
+						path: 'productId',
+						error: customMessage
+					},
+					{
+						path: 'productName',
+						error: customMessage
+					},
+					{
+						path: 'productType',
+						error: customMessage
+					}
+				])
+				.compile();
+
+				expect(schema.validate({}))
+				.toEqual([
+					{
+						path: 'productId',
+						error: customMessage
+					},
+					{
+						path: 'productName',
+						error: customMessage
+					},
+					{
+						path: 'productType',
+						error: customMessage
+					}
+				])
+
+				expect(schema.validate({
+					productName: 'Test'
+				}))
+				.toEqual([])
+			})
+		})
+	})
 })

@@ -7,17 +7,17 @@
   "unpkg": "./dist/umd/schema.production.min.js",
   "exports": {
     ".": {
-		"import": "./dist/index.js",
-		"require": "./dist/index.cjs"
-	},
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
     "./phoneNumbers": {
-		"import": "./dist/phoneNumbers/index.js",
-		"require": "./dist/phoneNumbers/index.cjs"
-	},
+      "import": "./dist/phoneNumbers/index.js",
+      "require": "./dist/phoneNumbers/index.cjs"
+    },
     "./postalCodes": {
-		"import": "./dist/postalCodes/index.js",
-		"require": "./dist/postalCodes/index.cjs"
-	}
+      "import": "./dist/postalCodes/index.js",
+      "require": "./dist/postalCodes/index.cjs"
+    }
   },
   "typesVersions": {
     "*": {
@@ -96,6 +96,7 @@
     "@types/react-dom": "^18.2.6",
     "@typescript-eslint/eslint-plugin": "^5.61.0",
     "@vitejs/plugin-react": "^4.0.3",
+    "@vitest/coverage-v8": "^0.33.0",
     "app-root-path": "^3.1.0",
     "babel-plugin-dev-expression": "^0.2.3",
     "c8": "^8.0.0",

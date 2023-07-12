@@ -31,6 +31,7 @@ export class NamedWhenRule<Value = any, T = any> extends WhenRule<Value, T> {
 
 	public override getWhenRule(
 		valueKey: string,
+		errorParameterKey: string,
 		{
 			context, 
 			key,
@@ -59,6 +60,7 @@ export class NamedWhenRule<Value = any, T = any> extends WhenRule<Value, T> {
 		
 		return super.getWhenRule(
 			_valueKey,
+			errorParameterKey,
 			{
 				context, 
 				key,

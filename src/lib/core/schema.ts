@@ -58,6 +58,8 @@ export abstract class Schema<Input = any, Final = any> {
 	public final!: Final;
 	protected async: boolean = false;
 
+	private readonly errorParameterKey: string = Parameters.ERRORS_KEY;
+
 	protected def: Definitions<Input, Final> = new Definitions<Input, Final>();
 	private get isOnlyOnTouch(): boolean {
 		return this.def._isOnlyOnTouch ?? false;
@@ -84,6 +86,7 @@ export abstract class Schema<Input = any, Final = any> {
 		if ( def ) {
 			this.def = def.clone();
 		}
+		this.errorParameterKey = Parameters.ERRORS_KEY
 	}
 
 	protected getValueKey(key?: string) {
@@ -96,7 +99,7 @@ export abstract class Schema<Input = any, Final = any> {
 	
 	protected getErrorSyntax(message: string) {
 		return [
-			`${Parameters.ERRORS_KEY}.push({`,
+			`${this.errorParameterKey}.push({`,
 			`	path: \`${this.def.path}\`,`,
 			`	error: ${this.getMessage(message)}`,
 			'});'
@@ -118,6 +121,7 @@ export abstract class Schema<Input = any, Final = any> {
 					ruleMethodName: key,
 					ruleType: this.type,
 					valueKey,
+					errorParameterKey: this.errorParameterKey,
 					key
 				})
 			)
@@ -133,7 +137,7 @@ export abstract class Schema<Input = any, Final = any> {
 			const valueKey = this.getValueKey(config.key)
 
 			srcCode.push(
-				...rule.getWhenRule(valueKey, config)
+				...rule.getWhenRule(valueKey, this.errorParameterKey, config)
 			)
 		})
 		return srcCode
@@ -168,6 +172,7 @@ export abstract class Schema<Input = any, Final = any> {
 			ruleMethodName: `is_${this.type}`,
 			ruleType: this.type,
 			valueKey,
+			errorParameterKey: this.errorParameterKey,
 			key
 		})
 
@@ -675,18 +680,18 @@ export abstract class Schema<Input = any, Final = any> {
 		this.async = context.async ?? false;
 	
 		let srcCode = [
-			`const ${Parameters.ERRORS_KEY} = [];`,
+			`const ${this.errorParameterKey} = [];`,
 			...schemasSrcCode,
-			`return ${Parameters.ERRORS_KEY}`
+			`return ${this.errorParameterKey}`
 		];
 
 		if ( this.async ) {
 			srcCode = [
-				`const ${Parameters.ERRORS_KEY} = [];`,
+				`const ${this.errorParameterKey} = [];`,
 				`const ${Parameters.PROMISE_KEY} = [];`,
 				...schemasSrcCode,
 				`return Promise.all(${Parameters.PROMISE_KEY})`,
-				`.then(() => ${Parameters.ERRORS_KEY})`
+				`.then(() => ${this.errorParameterKey})`
 			]
 		}
 

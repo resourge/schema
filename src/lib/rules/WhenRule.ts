@@ -47,6 +47,7 @@ export class WhenRule<Value = any, T = any> extends BaseRule<Value, T, RuleBoole
 
 	public getWhenRule(
 		valueKey: string,
+		errorParameterKey: string,
 		{
 			context, 
 			key,
@@ -61,6 +62,7 @@ export class WhenRule<Value = any, T = any> extends BaseRule<Value, T, RuleBoole
 			valueKey,
 			ruleType: this.schemaType,
 			ruleMethodName: this.name,
+			errorParameterKey,
 			key
 		})
 

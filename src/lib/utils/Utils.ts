@@ -18,3 +18,8 @@ export enum SchemaTypes {
 	OBJECT = 'object',
 	DATE = 'date'
 }
+
+let oneOfFunctionIndex = 0;
+export function createOneOfFunctionName() {
+	return `${Parameters.ERRORS_KEY}_one_of_${oneOfFunctionIndex++}`;
+}

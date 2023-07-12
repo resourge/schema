@@ -1,4 +1,5 @@
 import { type CompileSchemaConfig, type Context, type SchemaError } from '../types/types'
+import { Parameters } from '../utils/Utils'
 import { type MessageType } from '../utils/messages'
 
 export type RuleMethod<Value, Final = any> = (
@@ -11,18 +12,8 @@ export type RuleTestConfig<T> = {
 	form: T
 }
 
-enum Parameters {
-	ERRORS_KEY = 'errors',
-	PROMISE_KEY = 'promises',
-	CONTEXT_KEY = 'context',
-	ONLY_ON_TOUCH = 'onlyOnTouch',
-	OBJECT_KEY = 'object',
-
-	VALUE = 'value',
-	RECURSIVE_KEY = 'recursiveKey',
-}
-
 export type RuleSrcCodeConfig = Pick<Required<CompileSchemaConfig>, 'context' | 'path'> & {
+	errorParameterKey: string
 	onlyOnTouch: boolean
 	ruleMethodName: string
 	ruleType: string
@@ -33,7 +24,7 @@ export type RuleSrcCodeConfig = Pick<Required<CompileSchemaConfig>, 'context' | 
 export abstract class BaseRule<Value, T = any, Method extends (...args: any[]) => any = RuleMethod<Value, T>> {
 	public type: 'METHOD_ERROR' | 'MESSAGE'
 	public method: Method
-	protected getErrorMessage: (methodName: string, path: string, onlyOnTouch: boolean, context: Context) => string[]
+	protected getErrorMessage: (methodName: string, path: string, onlyOnTouch: boolean, errorParameterKey: string, context: Context) => string[]
 
 	public get isMethodError(): boolean {
 		return this.type === 'METHOD_ERROR'  
@@ -60,6 +51,7 @@ export abstract class BaseRule<Value, T = any, Method extends (...args: any[]) =
 				methodName: string, 
 				path: string, 
 				onlyOnTouch: boolean,
+				errorParameterKey: string, 
 				context: Context
 			) => {
 				return [
@@ -68,7 +60,7 @@ export abstract class BaseRule<Value, T = any, Method extends (...args: any[]) =
 					`	path: error.path ? error.path : \`${path}\`,`,
 					'	error: error.error',
 					'};',
-					`${Parameters.ERRORS_KEY}.push(${methodName}_error);`,
+					`${errorParameterKey}.push(${methodName}_error);`,
 					context.async && onlyOnTouch ? `(${Parameters.CONTEXT_KEY}.onlyOnTouchErrors[\`${path}\`] = ${Parameters.CONTEXT_KEY}.onlyOnTouchErrors[\`${path}\`] || []).push(${methodName}_error);` : '',
 					'})'
 				]
@@ -76,6 +68,7 @@ export abstract class BaseRule<Value, T = any, Method extends (...args: any[]) =
 				methodName: string, 
 				path: string, 
 				onlyOnTouch: boolean,
+				errorParameterKey: string, 
 				context: Context
 			) => {
 				const _message: string | ((messages: MessageType) => string) = typeof message === 'string' ? message : (message as ((messages: MessageType) => string))(context.messages)
@@ -84,7 +77,7 @@ export abstract class BaseRule<Value, T = any, Method extends (...args: any[]) =
 					`	path: \`${path}\`,`,
 					`	error: \`${_message.replace('{{key}}', path)}\``,
 					'};',
-					`${Parameters.ERRORS_KEY}.push(${methodName}_error);`,
+					`${errorParameterKey}.push(${methodName}_error);`,
 					context.async && onlyOnTouch ? `(${Parameters.CONTEXT_KEY}.onlyOnTouchErrors[\`${path}\`] = ${Parameters.CONTEXT_KEY}.onlyOnTouchErrors[\`${path}\`] || []).push(${methodName}_error);` : ''
 				]
 			};
@@ -112,6 +105,7 @@ export abstract class BaseRule<Value, T = any, Method extends (...args: any[]) =
 			ruleMethodName,
 			ruleType,
 			valueKey,
+			errorParameterKey,
 			key
 		}: RuleSrcCodeConfig
 	) {
@@ -148,6 +142,7 @@ export abstract class BaseRule<Value, T = any, Method extends (...args: any[]) =
 					methodName,
 					path,
 					onlyOnTouch,
+					errorParameterKey,
 					context
 				)
 			}

@@ -420,7 +420,7 @@ export class StringSchema<
 			is: (value: any) => !enumValues.includes(value),
 			message: message ?? ((messages) => messages.string.enum),
 			name: 'enumString'
-		})
+		}) as unknown as StringSchema<T[keyof T], Final>
 	}
 }
 

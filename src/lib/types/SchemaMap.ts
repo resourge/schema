@@ -10,7 +10,7 @@ import { type IsEnum } from './IsEnum';
 
 export type NullableType<T> = undefined | null | T
 
-export type ObjectPropertiesSchema<T = any, Final = any> = 
+export type ObjectPropertiesSchema<T = any, Final = T> = 
 IsEnum<T> extends true 
 	? StringSchema<T, any> 
 	: T extends NullableType<string>
@@ -47,12 +47,12 @@ IsEnum<T> extends true
 							? ObjectSchema<T, Final>
 							: AnySchema  
 							
-type PartialSchemaMap<TSchema = any> = {
-	[key in keyof TSchema]?: ObjectPropertiesSchema<TSchema[key]>;
+type PartialSchemaMap<TSchema = any, TFinal = TSchema> = {
+	[key in keyof TSchema]?: ObjectPropertiesSchema<TSchema[key], TFinal>;
 } 
 
-type StrictSchemaMap<TSchema = any> = {
-	[key in keyof TSchema]-?: ObjectPropertiesSchema<TSchema[key]>
+type StrictSchemaMap<TSchema = any, TFinal = TSchema> = {
+	[key in keyof TSchema]-?: ObjectPropertiesSchema<TSchema[key], TFinal>
 };
 
-export type SchemaMap<TSchema = any, isStrict = false> = isStrict extends true ? StrictSchemaMap<TSchema> : PartialSchemaMap<TSchema>
+export type SchemaMap<TSchema = any, isStrict = false, TFinal = TSchema> = isStrict extends true ? StrictSchemaMap<TSchema, TFinal> : PartialSchemaMap<TSchema, TFinal>

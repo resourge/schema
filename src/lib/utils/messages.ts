@@ -1,5 +1,6 @@
 import { type PhoneNumberInfo } from '../phoneNumbers'
 import { type PostalCodeInfo } from '../postalCodes'
+import { type DateFormat } from '../types/DateFormat'
 
 enum FormatInvalidTypeEnum {
 	'enum' = 'enum',
@@ -35,6 +36,9 @@ export const defaultMessages = {
 		mustBe: (mustBeValue: boolean) => `Must be ${mustBeValue.toString()}`
 	},
 	date: {
+		equals: (date: Date, format: DateFormat) => `Requires to be at equal to date ${date.toLocaleString()}`,
+		maxDate: (maxDate: Date, format: DateFormat) => `Requires to be at smaller than date ${maxDate.toLocaleString()}`,
+		minDate: (minDate: Date, format: DateFormat) => `Requires to be at bigger than date ${minDate.toLocaleString()}`,
 		today: 'Requires to be today\'s date'
 	},
 	number: {

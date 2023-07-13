@@ -11,7 +11,16 @@ Makes validation only if values were `touched`. By default, all validation will 
 Makes validation only in case data was `touched`.
 
 ```Typescript
+// This version simplify checks if camp was touched
 string().onlyOnTouch()
+
+
+// This version make it so required and asyncText are only validated when onlyOnTouch is true
+string().onlyOnTouch(
+  (schema) => schema.required().asyncText(() => {
+    return Promise.resolve([])
+  })
+)
 ```
 
 Requires an array of strings `keys` to validate camp. Only keys present will validate.
@@ -25,10 +34,10 @@ object({
 	street: string().onlyOnTouch()
   })
 }).validate(objectVariable, [
-	'name',
-	'age',
-	'address.city',
-	'address.street'
+  'name',
+  'age',
+  'address.city',
+  'address.street'
 ])
 ```
 

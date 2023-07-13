@@ -13,7 +13,7 @@ Visit our website [resourge-schema-validator.netlify.app](https://resourge-schem
 - Offers a complete collection of validations (email, postalCode, etc...).
 - Custom methods (test and asyncTest) easy to implement and use.
 - 100% coverage.
-- Includes validation for countries postal codes.
+- Includes validation for countries postal codes and phone numbers.
 
 ## How it was done
 
@@ -70,7 +70,7 @@ or NPM:
 npm install @resourge/schema --save
 ```
 
-## Usage
+## Basic usage
 
 ```Typescript
 import { array, object, string } from '@resourge/schemas';
@@ -78,12 +78,6 @@ import { array, object, string } from '@resourge/schemas';
 type User = {
   name: string
   age: number
-  location: {
-    city: string
-    address: string,
-    postalCode: string,
-    country: string
-  },
   hobbies: string[]
 }
 
@@ -105,12 +99,6 @@ const user: User = {
 const schema = object<User>({
   name: string().min(5).required(),
   age: number().min(18).required(),
-  location: object({
-    city: string().required(),
-    address: string().required(),
-    postalCode: string().postalCode(PostalCodes.PT).required(),
-    country: string().min(3).required(),
-  }).required(),
   hobbies: array(string()).min(1).required(),
 }).compile();
 
@@ -118,48 +106,48 @@ const schemaErrors = schema.validate(user)
 const isValidUser = schema.isValid(user)
 ```
 
-## Rule
+## Documentation
 
-Exists 3 types of rules, [Normal Rule](#normalRule), [Mandatory Rule](#mandatoryRule) and [When Rule](#whenRule)
+### Rules
 
-### Mandatory Rule
+Exists 3 types of rules, [Normal Rules](#normalRules), [Mandatory Rules](#mandatoryRules) and [When Rules](#whenRules)
 
-`Mandatory rule` are rules that come before [Normal Rule](#normalRule) and in case they fail [Normal Rule](#normalRule) will not be called.
+#### Mandatory Rules
+
+`Mandatory rules` are rules that come before [Normal Rules](#normalRules) and in case they fail [Normal Rules](#normalRules) will not be called.
 
 [See more](docs/MANDATORY_RULES.md)
 
-### When Rule
+#### When Rules
 
-`When rule` are rules that come before [Mandatory Rule](#mandatoryRule).
-
-`When rule` adjust the schema based in the validation `is` providing the `then` schema changes or `otherwise` schema changes.
-
-`When rule` are additive, meaning they take the previous validations and add it with `then` or `otherwise`.
+- Are rules that come before [Mandatory Rules](#mandatoryRules).
+- Adjust the schema based in the validation `is` providing the `then` schema changes or `otherwise` schema changes.
+- Are additive, meaning they take the previous validations and add it to `then` or `otherwise`.
 
 ```Typescript
 number()
 .optional()
 .when({
-	is: (value) => value < 10 || value === null,
-	// required() will cancel optional()
-	// but in otherwise optional() will still be used
-	then: (schema) => schema.negative().required()
+  is: (value) => value < 10 || value === null,
+  // required() will cancel optional()
+  // but in otherwise optional() will still be used
+  then: (schema) => schema.negative().required()
 });
 
 object({
-	productId: number(),
-	productTypeId: number().optional()
-	// "productId" here it will change the "value" from "is"
-	// "productId" will only affect the "is" "value"
-	.when('productId', {
-		is: (value) => value === 10,
-		then: (schema) => schema.required()
-	})
+  productId: number(),
+  productTypeId: number().optional()
+  // "productId" here it will change the "value" from "is"
+  // "productId" will only affect the "is" "value"
+  .when('productId', {
+    is: (value) => value === 10,
+    then: (schema) => schema.required()
+  })
 })
 .compile();
 ```
 
-### Normal Rule
+#### Normal Rule
 
 `Normal rule` consist of 2 types of rules, [test](#test) and [asyncTest](#asyncTest).
 
@@ -183,17 +171,17 @@ string()
 // value is the string value
 // form is the original value
 // In this case, test is expected to return either true or an array of errors
-.test((value, form) => [{
-	// key can be a empty string or a key
-	// In the case key is a empty string the system will replace it with original key
-	key: '', 
-	error: 'Custom error Message'
+.test((value, parent, config) => [{
+  // path can be a empty string or a path
+  // In the case path is a empty string the system will replace it with original path
+  path: '', 
+  error: 'Custom error Message'
 }])
 // or
 .test({
-	// In this case, test is a mandatory a boolean
-	test: (value, form) => true,
-	message: 'Custom error Message'
+  // In this case, test is a mandatory a boolean
+  is: (value, parent, config) => true,
+  message: 'Custom error Message'
 })
 ```
 
@@ -207,26 +195,26 @@ string()
 // form is the original value
 // In this case, test is expected to return a promise containing either true or an array of errors
 .asyncTest(
-	(value, form) => Promise.resolve([{
-		// key can be a empty string or a key
-		// In the case key is a empty string the system will replace it with original key
-		// NOTE: It does not handle the catch, it expect to always resolve the promise
-		key: '', 
-		error: 'Custom error Message'
-	}])
+  (value, parent, config) => Promise.resolve([{
+    // path can be a empty string or a path
+    // In the case path is a empty string the system will replace it with original path
+    // NOTE: It does not handle the catch, it expect to always resolve the promise
+    path: '', 
+    error: 'Custom error Message'
+  }])
 )
 // or
 .asyncTest({
-	// In this case, test is a mandatory a boolean
-	// NOTE: It does not handle the catch, it expect to always resolve the promise
-	test: (value, form) => Promise.resolve(true),
-	message: 'Custom error Message'
+  // In this case, test is a mandatory a boolean
+  // NOTE: It does not handle the catch, it expect to always resolve the promise
+  is: (value, parent, config) => Promise.resolve(true),
+  message: 'Custom error Message'
 })
 ```
 
 ## Compile
 
-`compile` is a method to generate the schema (it's recommended to use in every schema, otherwise `isValid` and `validate` will still call it).
+`compile` is a method to generate the schema (it's recommended to use in every schema. Otherwise `isValid` and `validate` will call it).
 
 ```jsx
 import { array, object, string } from '@resourge/schemas';
@@ -239,7 +227,7 @@ const isValid = schema.isValid();
 | Name | Type | Required | Default | Description |
 | ---- | ---- | -------- | ------- | ----------- |
 | **debug** | `boolean` | false | false | Shows validation structure in a log. (only works in dev) |
-| **onlyOnTouch** | `boolean` | false | false | Set's default onlyOnTouch in every schema. (default false) |
+| **onlyOnTouch** | `boolean` | false | false | Set's default onlyOnTouch in every schema. |
 | **defaultOptional** | `boolean` | false | undefined | Set's default optional in every schema. (default undefined, meaning it will not validate if is optional or not) |
 | **defaultNullable** | `boolean` | false | undefined | Set's default nullable in every schema. (default undefined, meaning it will not validate if is nullable or not) |
 | **messages** | `object` | false |  | Object containing all default messages (expect the specific message for the schema). |
@@ -259,7 +247,7 @@ const errors = schema.validate({ age: 10 })
 /* errors will be
 [
   { 
-    key: 'age',
+    path: 'age',
     error: 'Requires to have at least minimum size of 20'}
   }
 ]
@@ -283,29 +271,86 @@ schema.isValid({ age: 25 }) // true
 
 ```
 
-## S as shortname
-
-Example using `S` shortname from schema.
+## Advance usage
 
 ```Typescript
-import { PostalCodes } from '@resourge/schema/postalCodes';
+import { number, object, string, array } from '@resourge/schemas';
+import { PostalCodes } from '@resourge/schemas/PostalCodes';
+import { PhoneNumbers } from '@resourge/schemas/PhoneNumbers';
 
-import { S } from '@resourge/schema';
-
-const user = {
-  name: 'Himaru',
-  age: 18,
-  postalCode: '1000-100'
+type User = {
+  name: string
+  age: number
+  phoneNumber: string
+  nif: string
+  gender: {
+    type: GenderEnum,
+    other?: string
+  }
+  location: {
+    city: string
+    address: string,
+    postalCode: string,
+    country: string
+  },
+  hobbies: string[]
 }
 
-const schema = S.object({
-  name: S.string().required(),
-  age: S.number().min(16).required(),
-  postalCode: S.string().postalCode(PostalCodes.PT)
+enum GenderEnum {
+	MALE = 'male',
+	FEMALE = 'female',
+	OTHER = 'other'
+}
+
+const user: User = {
+  name: 'Rimuru',
+  age: 39,
+  phoneNumber: '',
+  nif: '',
+  gender: {
+	type: GenderEnum.MALE
+  }
+  location: {
+    city: 'Tempest',
+    address: 'Tempest',
+    postalCode: '4000-000',
+    country: 'Tempest'
+  },
+  hobbies: [
+	'Read',
+	'Nothing'
+  ]	
+}
+
+const schema = object<UserModel>({
+  name: string().min(5).required(),
+  age: number().min(18).required(),
+  nif: string().onlyOnTouch(
+    (schema) => schema.asyncTest({
+      is: (value, parent, config) => Promise.resolve(true),
+      message: 'Async error'
+    })
+  ),
+  phoneNumber: string().phoneNumber(PhoneNumbers.pt_PT).required(),
+  location: object({
+    city: string().required(),
+    address: string().required(),
+    postalCode: string().postalCode(PostalCodes.PT).required(),
+    country: string().min(3).required(),
+  }).required(),
+  gender: object({
+    type: string().enum(GenderEnum),
+    other: string().when('type', {
+	  is: (typeValue) => typeValue === GenderEnum.OTHER,
+	  then: (schema) => schema.required()
+    }) 
+	//
+  }),
+  hobbies: array(string().enum(HobbiesEnum)).min(1).required(),
 }).compile();
 
-schema.isValid(user)
-
+const schemaErrors = schema.validate(user)
+const isValidUser = schema.isValid(user)
 ```
 
 ## Contribution

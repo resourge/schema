@@ -54,6 +54,10 @@ export class ObjectSchema<
 		return _this as unknown as ObjectSchema<TInput, TFinal>;
 	}
 
+	/**
+	 * OneOf makes the validation only false when all schema keys are false (have errors in them)
+	 * This is exclusive to oneOf schema, all other validation still will take place,
+	 */
 	public oneOf(
 		oneOfKey: OneOf<Input>,
 		oneOfConfig?: OneOfConfigMessage
@@ -66,11 +70,11 @@ export class ObjectSchema<
 	public oneOf<Key extends keyof Input>(
 		oneOfKey: OneOf<Input> | Key[],
 		schema?: SchemaMap<Input>[Key] | OneOfConfigMessage,
-		oneOfConfig?: OneOfConfigMessage
+		oneOfConfigMessage?: OneOfConfigMessage
 	): this {
 		const _this = this.clone();
 
-		const _oneOfConfig = !Array.isArray(oneOfKey) ? (schema as OneOfConfigMessage) : oneOfConfig;
+		const _oneOfConfig = !Array.isArray(oneOfKey) ? (schema as OneOfConfigMessage) : oneOfConfigMessage;
 
 		const message = _oneOfConfig
 

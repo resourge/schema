@@ -149,7 +149,7 @@ export class NumberSchema<
 			is: (value: any) => !enumValues.includes(value),
 			message: message ?? ((messages) => messages.number.enum),
 			name: 'enumNumber'
-		})
+		}) as unknown as NumberSchema<T[keyof T], Final>
 	}
 }
 

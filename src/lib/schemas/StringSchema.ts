@@ -3,7 +3,6 @@ import type { Definitions } from '../core/Definitions';
 import { Schema } from '../core/schema';
 import type { PhoneNumberInfo } from '../phoneNumbers';
 import type { PostalCodeInfo } from '../postalCodes';
-import type { NullableType } from '../types/SchemaMap';
 import { SchemaTypes } from '../utils/Utils';
 
 const NUMERIC_PATTERN = /^[-]?([1-9]\d*|0)(\.\d+)?$/;
@@ -19,7 +18,7 @@ const UUID_PATTERN = /^([a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[a-f0-9]{4}-[a-
 const BASIC_PATTERN = /^\S+@\S+\.\S+$/;
 
 export class StringSchema<
-	Input extends NullableType<string> = string,
+	Input = string,
 	Final = any
 > extends Schema<Input, Final> {
 	protected type: SchemaTypes = SchemaTypes.STRING
@@ -127,7 +126,7 @@ export class StringSchema<
 	 */
 	public between(minValue: number, maxValue: number, message?: string) {
 		return this.test({
-			is: (value) => !(value.length >= minValue && value.length <= maxValue),
+			is: (value) => !((value as string).length >= minValue && (value as string).length <= maxValue),
 			message: message ?? ((messages) => messages.number.between(minValue, maxValue)),
 			name: 'betweenNumber'
 		})
@@ -160,7 +159,7 @@ export class StringSchema<
 		}
 		
 		return this.test({
-			is,
+			is: is as any,
 			message: message ?? ((messages) => messages.string.equals(value)),
 			name: 'equalsString'
 		})
@@ -353,7 +352,7 @@ export class StringSchema<
 		if ( typeof postalCode === 'function' ) {
 			return this.test((value, form, { context }) => {
 				const _postalCode = postalCode(value, form);
-				if ( _postalCode.regex.test(value) ) {
+				if ( _postalCode.regex.test((value as string)) ) {
 					return true;
 				}
 
@@ -386,7 +385,7 @@ export class StringSchema<
 		if ( typeof phoneNumber === 'function' ) {
 			return this.test((value, form, { context }) => {
 				const _phoneNumber = phoneNumber(value, form);
-				if ( _phoneNumber.regex.test(value) ) {
+				if ( _phoneNumber.regex.test((value as string)) ) {
 					return true;
 				}
 

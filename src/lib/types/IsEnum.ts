@@ -1,14 +1,13 @@
+type Primitive = string | number | bigint | boolean | null | undefined
 
-type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
-	k: infer I
-) => void
-	? I
-	: never;
+type IsStringUnion<T> = `${T extends Primitive ? T : ''}` extends T ? true : false
 
-type IsUnion<T> = [T] extends [UnionToIntersection<T>] ? false : true;
+enum GenericEnum {}
 
-export type IsEnum<E> = IsUnion<NonNullable<E>> extends true 
-	? keyof E extends 'toString' | 'valueOf' 
-		? true 
-		: false 
-	: false
+export type IsEnum<E> = E extends any[] 
+	? false
+	: E extends typeof GenericEnum 
+		? IsStringUnion<E extends Primitive ? E : E> extends true 
+			? false 
+			: E extends object ? false : true
+		: false

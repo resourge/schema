@@ -11,41 +11,41 @@ import { type IsEnum } from './IsEnum';
 export type NullableType<T> = undefined | null | T
 
 export type ObjectPropertiesSchema<T = any, Final = any> = 
-	IsEnum<T> extends true 
-		? StringSchema<T, any> 
-		: T extends NullableType<string>
+IsEnum<T> extends true 
+	? StringSchema<T, any> 
+	: T extends NullableType<string>
+		? (
+			string extends T
+				? StringSchema<T, Final>
+				: [T] extends [string] ? 
+					StringSchema<string, Final>
+					: StringSchema<NullableType<string>, Final>
+		) : T extends NullableType<number>
 			? (
-				string extends T
-					? StringSchema<T, Final>
-					: [T] extends [string] ? 
-						StringSchema<string, Final>
-						: StringSchema<NullableType<string>, Final>
-			) : T extends NullableType<number>
+				number extends T  
+					? NumberSchema<T, Final>
+					: [T] extends [number] ? 
+						NumberSchema<number, Final>
+						: NumberSchema<NullableType<number>, Final>
+			) : T extends NullableType<boolean>
 				? (
-					number extends T  
-						? NumberSchema<T, Final>
-						: [T] extends [number] ? 
-							NumberSchema<number, Final>
-							: NumberSchema<NullableType<number>, Final>
-				) : T extends NullableType<boolean>
+					boolean extends T  
+						? BooleanSchema<T, Final>
+						: [T] extends [boolean] ? 
+							BooleanSchema<boolean, Final>
+							: BooleanSchema<NullableType<boolean>, Final>
+				) : T extends NullableType<Date>
 					? (
-						boolean extends T  
-							? BooleanSchema<T, Final>
-							: [T] extends [boolean] ? 
-								BooleanSchema<boolean, Final>
-								: BooleanSchema<NullableType<boolean>, Final>
-					) : T extends NullableType<Date>
-						? (
-							Date extends T  
-								? DateSchema<T, Final>
-								: [T] extends [Date] ? 
-									DateSchema<Date, Final>
-									: DateSchema<NullableType<Date>, Final>
-						) : T extends NullableType<any[]>
-							? ArraySchema<T extends any[] ? T : any[], Final>
-							: T extends NullableType<object>
-								? ObjectSchema<T, Final>
-								: AnySchema  
+						Date extends T  
+							? DateSchema<T, Final>
+							: [T] extends [Date] ? 
+								DateSchema<Date, Final>
+								: DateSchema<NullableType<Date>, Final>
+					) : T extends NullableType<any[]>
+						? ArraySchema<T extends any[] ? T : any[], Final>
+						: T extends NullableType<object>
+							? ObjectSchema<T, Final>
+							: AnySchema  
 							
 type PartialSchemaMap<TSchema = any> = {
 	[key in keyof TSchema]?: ObjectPropertiesSchema<TSchema[key]>;

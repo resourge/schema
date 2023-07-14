@@ -29,7 +29,7 @@ export class NumberSchema<
 	 */
 	public min(minValue: number, message?: string) {
 		return this.test({
-			is: (value) => !(value >= minValue),
+			is: (value: number) => !(value >= minValue),
 			message: message ?? ((messages) => messages.number.min(minValue)),
 			name: 'minNumber'
 		})

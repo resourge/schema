@@ -10,4 +10,10 @@ export type IsEnum<E> = E extends any[]
 		? IsStringUnion<E extends Primitive ? E : E> extends true 
 			? false 
 			: E extends object ? false : true
-		: false
+		: keyof E extends 'toString' | 'valueOf' 
+			? false 
+			: E extends GenericEnum 
+				? false
+				: keyof E extends 'toString' | 'valueOf' | 'toFixed' | 'toExponential' | 'toPrecision' | 'toLocaleString'
+					? true
+					: false

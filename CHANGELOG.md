@@ -1,3 +1,25 @@
+# [1.10.0](https://github.com/resourge/schema/compare/v1.9.5...v1.10.0) (2023-07-14)
+
+
+### Bug Fixes
+
+* **isenum:** fix isEnum not working 100% of cases ([5e8c433](https://github.com/resourge/schema/commit/5e8c433bacaeea2fc97442c5bb4add495189c191))
+* **isenum:** fix isenum type ([e217301](https://github.com/resourge/schema/commit/e2173014f2a6c1fee434868a7583e76674346c36))
+* **schemamap:** fix type for when it is an enum ([1c8f300](https://github.com/resourge/schema/commit/1c8f300e1a3e3f04437a5b68c9b622c839952110))
+* **schema:** remove duplicated onlyontouch ([e4d93a7](https://github.com/resourge/schema/commit/e4d93a721f59f521497d233b6025a8fd23060589))
+* **stringschema:** fix type for enums ([b9f85bb](https://github.com/resourge/schema/commit/b9f85bbc35e9c2be563bd463eb7e8faecaf6fc8c))
+
+
+### Features
+
+* **anyschema:** add enum to anyschema ([39979e8](https://github.com/resourge/schema/commit/39979e8b431a99177f4460fbb616b967a846d902))
+* **dateschema:** add minDate, maxDate and equals to validation of dates ([23c4bd9](https://github.com/resourge/schema/commit/23c4bd98d0dbe872a395d39e2e14eb061f36a731))
+* **messages:** add way to change default messages ([8a96728](https://github.com/resourge/schema/commit/8a96728949db477056d74a8310e734afd619bac6))
+* **objectschema:** add oneOf ([6a3a09d](https://github.com/resourge/schema/commit/6a3a09dd41c767cf72e68f9b507abae205d0e7ac))
+* **objectschema:** remove mandatory object in objectSchema ([5cb6297](https://github.com/resourge/schema/commit/5cb62970a32e3e5d2c0785d108af8fd5a7019bc5))
+* **package:** update package build and dependencies ([394564d](https://github.com/resourge/schema/commit/394564d32b8806dce1ccaddcd9e3dbd176fcee5f))
+* **schema:** add is and deprecate test to better match test statements ([f61d48d](https://github.com/resourge/schema/commit/f61d48d6134d7340ddc96bc1524fb44cdb40e3b5))
+
 ## [1.9.5](https://github.com/resourge/schema/compare/v1.9.4...v1.9.5) (2023-01-06)
 
 

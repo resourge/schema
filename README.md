@@ -212,7 +212,7 @@ string()
 })
 ```
 
-## Compile
+### Compile
 
 `compile` is a method to generate the schema (it's recommended to use in every schema. Otherwise `isValid` and `validate` will call it).
 
@@ -223,7 +223,7 @@ const schema = number().min(20).compile(); // calling compile
 const isValid = schema.isValid();
 ```
 
-### Compile Options
+#### Compile Options
 | Name | Type | Required | Default | Description |
 | ---- | ---- | -------- | ------- | ----------- |
 | **debug** | `boolean` | false | false | Shows validation structure in a log. (only works in dev) |
@@ -232,7 +232,7 @@ const isValid = schema.isValid();
 | **defaultNullable** | `boolean` | false | undefined | Set's default nullable in every schema. (default undefined, meaning it will not validate if is nullable or not) |
 | **messages** | `object` | false |  | Object containing all default messages (expect the specific message for the schema). |
 
-## validate
+### validate
 
 `validate` is a method to validate the data. Returns the errors.
 
@@ -255,7 +255,7 @@ const errors = schema.validate({ age: 10 })
 
 ```
 
-## isValid
+### isValid
 
 `isValid` is a method to validate the data. Returns true or false.
 

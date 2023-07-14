@@ -3,7 +3,7 @@ import { type WhenRule } from '../rules/WhenRule';
 import { type FormKey } from '../types/FormKey';
 import { type SchemaError } from '../types/types';
 
-type OnlyOnTouch<Input> = Array<Input extends any[] | Record<string, any> ? FormKey<Input> : string>
+export type OnlyOnTouch<Input> = Array<Input extends any[] | Record<string, any> ? FormKey<Input> : string>
 
 export class Definitions<Input = any, Final = any> {
 	public _isOnlyOnTouch?: boolean;

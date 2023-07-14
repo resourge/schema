@@ -6,7 +6,6 @@ import { AsyncRule, type AsyncRuleBooleanMethod, type AsyncRuleMethodSchemaError
 import { NamedWhenRule } from '../rules/NamedWhenRule'
 import { Rule, type RuleBooleanMethod, type RuleMethodSchemaError } from '../rules/Rule'
 import { type WhenConfig, WhenRule } from '../rules/WhenRule'
-import { type FormKey } from '../types/FormKey'
 import { type ObjectPropertiesSchema } from '../types/SchemaMap'
 import {
 	type CompileConfig,
@@ -19,7 +18,7 @@ import { beautifyFunction } from '../utils/beautifyFunction'
 import { getOnlyOnTouchSrcCode } from '../utils/getOnlyOnTouchSrcCode'
 import { defaultMessages, type MessageType } from '../utils/messages'
 
-import { Definitions } from './Definitions'
+import { Definitions, type OnlyOnTouch } from './Definitions'
 
 type OldTestMethodConfig<Method extends (...args: any[]) => any> = {
 	/**
@@ -50,8 +49,6 @@ type TestMethodConfig<Method extends (...args: any[]) => any> = {
 	 */
 	test?: Method
 }
-
-type OnlyOnTouch<Input> = Array<Input extends any[] | Record<string, any> ? FormKey<Input> : string>
 
 export abstract class Schema<Input = any, Final = any> {
 	public input!: Input;

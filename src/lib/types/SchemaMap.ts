@@ -10,9 +10,15 @@ import { type IsEnum } from './IsEnum';
 
 export type NullableType<T> = undefined | null | T
 
+export type EnumPropertiesSchema<T = any, Final = T> = [T] extends [number]
+	? NumberSchema<T, Final> 
+	: [T] extends [string]
+		? StringSchema<T, Final> 
+		: AnySchema<T, Final> 
+
 export type ObjectPropertiesSchema<T = any, Final = T> = 
 IsEnum<T> extends true 
-	? StringSchema<T, any> 
+	? EnumPropertiesSchema<T, Final>
 	: T extends NullableType<string>
 		? (
 			string extends T

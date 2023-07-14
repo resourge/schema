@@ -1,4 +1,5 @@
 import { any, AnySchema } from '../AnySchema';
+import { object } from '../ObjectSchema';
 
 describe('any', () => {
 	test('should validate', () => {
@@ -37,5 +38,30 @@ describe('any', () => {
 		// @ts-expect-error // To check private values
 		expect(schema1.isOptional)
 		.toBe(true)
+	})
+
+	it('should test enum types', () => {
+		enum FieldTypeEnum {
+			FREE_TEXT = 1,
+			EXISTING_FIELD = 2,
+			SQL_EXPRESSION = 3,
+			SOURCE_FIELD = '4'
+		}
+
+		const schema = object<{ productName: FieldTypeEnum }>({
+			productName: any()
+			.nullable()
+			.enum(FieldTypeEnum)
+		})
+		.compile();
+
+		expect(schema.isValid({
+			productName: FieldTypeEnum.EXISTING_FIELD 
+		}))
+		.toBeTruthy();
+		expect(schema.isValid({
+			productName: 6 as FieldTypeEnum
+		}))
+		.toBeFalsy()
 	})
 })

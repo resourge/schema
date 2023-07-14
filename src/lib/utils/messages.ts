@@ -24,6 +24,9 @@ const getInvalidFormatMessage = (type: keyof typeof FormatInvalidTypeEnum) => {
 }
 
 export const defaultMessages = {
+	any: {
+		enum: getInvalidFormatMessage('enum')
+	},
 	array: {
 		empty: 'Requires to be empty',
 		min: (minValue: number) => minValue === 1 ? `Requires at least ${minValue} item` : `Requires at least ${minValue} items`,

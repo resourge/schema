@@ -353,6 +353,26 @@ const schemaErrors = schema.validate(user)
 const isValidUser = schema.isValid(user)
 ```
 
+### Change default messages
+
+`@resourge/schema`, by default, has default messages. This message can be changed globally.
+
+```Typescript
+const customMinMessage = 'Custom min message';
+
+setupDefaultMessage({
+  //... rest of translations
+  string: {
+    min: () => customMinMessage
+  }
+})
+
+const schema = string()
+.min(10)
+.compile();
+
+```
+
 ## Contribution
 
 We plan to add more validations, as they became necessary.

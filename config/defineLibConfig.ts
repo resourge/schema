@@ -1,11 +1,14 @@
 import deepmerge from '@fastify/deepmerge'
 import { resolve } from 'path'
 import { defineConfig, type UserConfigExport } from 'vite'
+import banner from 'vite-plugin-banner'
+import { checker } from 'vite-plugin-checker'
 import dts from 'vite-plugin-dts'
 import viteTsconfigPaths from 'vite-tsconfig-paths'
 
 import PackageJson from '../package.json'
 
+import { createBanner } from './createBanner'
 import { packages } from './getPackages'
 
 const {
@@ -88,7 +91,18 @@ export const defineLibConfig = (
 			}, {}) : {}
 		},
 		plugins: [
+			banner(createBanner()),
 			viteTsconfigPaths(),
+			checker({ 
+				typescript: true,
+				enableBuild: true,
+				overlay: {
+					initialIsOpen: false
+				},
+				eslint: {
+					lintCommand: 'eslint "./src/**/*.{ts,tsx}"'
+				}
+			}),
 			dts({
 				insertTypesEntry: true,
 				rollupTypes: true,

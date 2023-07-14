@@ -92,11 +92,18 @@ export const defineLibConfig = (
 			dts({
 				insertTypesEntry: true,
 				rollupTypes: true,
+
 				bundledPackages: packagesNames,
 				compilerOptions: {
 					preserveSymlinks: true,
 					paths: {}
 				},
+				exclude: [
+					'**/*.test*',
+					'./src/App.tsx',
+					'./src/main.tsx',
+					'./src/setupTests.ts'
+				],
 				afterBuild
 			})
 		]

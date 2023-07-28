@@ -1,3 +1,10 @@
+## [1.10.2](https://github.com/resourge/schema/compare/v1.10.1...v1.10.2) (2023-07-28)
+
+
+### Bug Fixes
+
+* **types:** missing core types returning ([1dc422c](https://github.com/resourge/schema/commit/1dc422c3434fb8dd657280a055b87792860fa079))
+
 ## [1.10.1](https://github.com/resourge/schema/compare/v1.10.0...v1.10.1) (2023-07-28)
 
 

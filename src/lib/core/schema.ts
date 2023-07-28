@@ -20,7 +20,7 @@ import { defaultMessages, type MessageType } from '../utils/messages'
 
 import { Definitions, type OnlyOnTouch } from './Definitions'
 
-type OldTestMethodConfig<Method extends (...args: any[]) => any> = {
+export type OldTestMethodConfig<Method extends (...args: any[]) => any> = {
 	/**
 	 * When is is "true" errors shows
 	 */
@@ -34,7 +34,7 @@ type OldTestMethodConfig<Method extends (...args: any[]) => any> = {
 	 */
 	name?: string
 }
-type TestMethodConfig<Method extends (...args: any[]) => any> = {
+export type TestMethodConfig<Method extends (...args: any[]) => any> = {
 	/**
 	 * When is is "true" errors shows
 	 */

@@ -1,10 +1,10 @@
-import { any } from './AnySchema';
-import { array } from './ArraySchema';
-import { boolean } from './BooleanSchema';
-import { date } from './DateSchema';
-import { number } from './NumberSchema';
-import { object } from './ObjectSchema';
-import { string } from './StringSchema';
+import { any, AnySchema } from './AnySchema';
+import { array, ArraySchema } from './ArraySchema';
+import { boolean, BooleanSchema } from './BooleanSchema';
+import { date, DateSchema } from './DateSchema';
+import { number, NumberSchema } from './NumberSchema';
+import { object, ObjectSchema } from './ObjectSchema';
+import { string, StringSchema } from './StringSchema';
 
 export {
 	any,
@@ -13,5 +13,13 @@ export {
 	date,
 	number,
 	object,
-	string
+	string,
+
+	AnySchema,
+	ArraySchema,
+	BooleanSchema,
+	DateSchema,
+	NumberSchema,
+	ObjectSchema,
+	StringSchema
 }

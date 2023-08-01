@@ -1,3 +1,10 @@
+## [1.10.3](https://github.com/resourge/schema/compare/v1.10.2...v1.10.3) (2023-08-01)
+
+
+### Bug Fixes
+
+* **types:** return more types ([673ef5e](https://github.com/resourge/schema/commit/673ef5e76ba22c876403564b62c116049bc6c694))
+
 ## [1.10.2](https://github.com/resourge/schema/compare/v1.10.1...v1.10.2) (2023-07-28)
 
 

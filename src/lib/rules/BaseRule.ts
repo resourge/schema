@@ -71,7 +71,9 @@ export abstract class BaseRule<Value, T = any, Method extends (...args: any[]) =
 				errorParameterKey: string, 
 				context: Context
 			) => {
-				const _message: string | ((messages: MessageType) => string) = typeof message === 'string' ? message : (message as ((messages: MessageType) => string))(context.messages)
+				const _message: string | ((messages: MessageType) => string) = typeof message === 'string' 
+					? message 
+					: (message as ((messages: MessageType) => string))(context.messages)
 				return [
 					`const ${methodName}_error = {`,
 					`	path: \`${path}\`,`,

@@ -2,6 +2,7 @@ import { type SchemaError } from 'src/lib/types/types';
 import { createDate } from 'src/lib/utils/Utils';
 
 import { date, DateSchema } from '../DateSchema'
+import { object } from '../ObjectSchema';
 
 describe('date', () => {
 	it('should be today', () => {
@@ -526,6 +527,29 @@ describe('date', () => {
 			expect(schema.isValid(date))
 			.toBeFalsy()
 		}
+
+		it('test', () => {
+			const schema = object({
+				minDate: date().maxDate((parent) => parent.maxDate),
+				maxDate: date().minDate((parent) => parent.minDate)
+			}).compile();
+
+			expect(
+				schema
+				.isValid({ 
+					minDate: new Date(2001, 1, 1, 0, 0, 0, 0), 
+					maxDate: new Date(2001, 1, 2, 0, 0, 0, 0)
+				})
+			).toBeTruthy();
+
+			expect(
+				schema
+				.isValid({ 
+					minDate: new Date(2001, 1, 3, 0, 0, 0, 0), 
+					maxDate: new Date(2001, 1, 2, 0, 0, 0, 0)
+				})
+			).toBeFalsy();
+		})
 
 		it('only on year', () => {
 			const maxDate = createDate({

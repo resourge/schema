@@ -1,5 +1,6 @@
 import { type Definitions } from '../core/Definitions';
 import { Schema } from '../core/schema';
+import { type RuleTestConfig } from '../rules/BaseRule';
 import { type DateFormat } from '../types/DateFormat';
 import { type NullableType } from '../types/SchemaMap';
 import { SchemaTypes, createDate } from '../utils/Utils';
@@ -10,6 +11,8 @@ const isToday = (someDate: Date): boolean => {
 		someDate.getMonth() === today.getMonth() &&
 		someDate.getFullYear() === today.getFullYear()
 }
+
+type MinDateMethod<Form> = (parent: any, config: RuleTestConfig<Form>) => Date | undefined
 
 export class DateSchema<
 	Input extends NullableType<Date> = Date,
@@ -42,142 +45,93 @@ export class DateSchema<
 		})
 	}
 
-	private getIsFunction(
-		date: Date,
+	private getIsFunction<Form = this['final']>(
+		date: Date | MinDateMethod<Form>,
 		format: DateFormat,
 		cb: (x: number, y: number) => boolean
 	) {
-		let is: (value: Date) => boolean;
+		let getTime: (date: Date) => number;
+
+		const _cb = typeof date === 'function' 
+			? (x: number | undefined, y: number) => {
+				if ( x === undefined ) {
+					return false;
+				}
+				return cb(x, y);
+			} : cb
 
 		switch (format) {
 			case 'year':
-				is = (value: Date) => cb(date.getFullYear(), value.getFullYear())
+				getTime = (date: Date) => date.getFullYear()
 				break;
 			case 'month':
-				is = (value: Date) => {
-					const _value = createDate({
-						year: value.getFullYear(),
-						month: value.getMonth()
-					})
-					return cb(
-						createDate({
-							year: date.getFullYear(),
-							month: date.getMonth()
-						}).getTime(), 
-						_value.getTime()
-					)
-				}
+				getTime = (date: Date) => createDate({
+					year: date.getFullYear(),
+					month: date.getMonth()
+				}).getTime()
 				break;
 			case 'date':
-				is = (value: Date) => {
-					const _value = createDate({
-						year: value.getFullYear(),
-						month: value.getMonth(),
-						day: value.getDate()
-					})
-					return cb(
-						createDate({
-							year: date.getFullYear(),
-							month: date.getMonth(),
-							day: date.getDate()
-						}).getTime(),
-						_value.getTime()
-					)
-				}
+				getTime = (date: Date) => createDate({
+					year: date.getFullYear(),
+					month: date.getMonth(),
+					day: date.getDate()
+				}).getTime()
 				break;
 			case 'hour': 
-				is = (value: Date) => {
-					const _value = createDate({
-						year: value.getFullYear(),
-						month: value.getMonth(),
-						day: value.getDate(),
-						hour: value.getHours()
-					})
-					return cb(
-						createDate({
-							year: date.getFullYear(),
-							month: date.getMonth(),
-							day: date.getDate(),
-							hour: date.getHours()
-						}).getTime(),
-						_value.getTime()
-					)
-				}
+				getTime = (date: Date) => createDate({
+					year: date.getFullYear(),
+					month: date.getMonth(),
+					day: date.getDate(),
+					hour: date.getHours()
+				}).getTime()
 				break;
 			case 'minute': 
-				is = (value: Date) => {
-					const _value = createDate({
-						year: value.getFullYear(),
-						month: value.getMonth(),
-						day: value.getDate(),
-						hour: value.getHours(),
-						minute: value.getMinutes()
-					})
-					return cb(
-						createDate({
-							year: date.getFullYear(),
-							month: date.getMonth(),
-							day: date.getDate(),
-							hour: date.getHours(),
-							minute: date.getMinutes()
-						}).getTime(),
-						_value.getTime()
-					)
-				}
+				getTime = (date: Date) => createDate({
+					year: date.getFullYear(),
+					month: date.getMonth(),
+					day: date.getDate(),
+					hour: date.getHours(),
+					minute: date.getMinutes()
+				}).getTime()
 				break;
 			case 'second': 
-				is = (value: Date) => {
-					const _value = createDate({
-						year: value.getFullYear(),
-						month: value.getMonth(),
-						day: value.getDate(),
-						hour: value.getHours(),
-						minute: value.getMinutes(),
-						second: value.getSeconds()
-					})
-					return cb(
-						createDate({
-							year: date.getFullYear(),
-							month: date.getMonth(),
-							day: date.getDate(),
-							hour: date.getHours(),
-							minute: date.getMinutes(),
-							second: date.getSeconds()
-						}).getTime(),
-						_value.getTime()
-					)
-				}
+				getTime = (date: Date) => createDate({
+					year: date.getFullYear(),
+					month: date.getMonth(),
+					day: date.getDate(),
+					hour: date.getHours(),
+					minute: date.getMinutes(),
+					second: date.getSeconds()
+				}).getTime()
 				break;
 			case 'time': 
-				is = (value: Date) => {
-					const _value = createDate({
-						hour: value.getHours(),
-						minute: value.getMinutes(),
-						second: value.getSeconds(),
-						millisecond: value.getSeconds()
-					})
-					return cb(
-						createDate({
-							hour: date.getHours(),
-							minute: date.getMinutes(),
-							second: date.getSeconds(),
-							millisecond: date.getSeconds()
-						}).getTime(),
-						_value.getTime()
-					)
-				}
+				getTime = (date: Date) => createDate({
+					hour: date.getHours(),
+					minute: date.getMinutes(),
+					second: date.getSeconds(),
+					millisecond: date.getSeconds()
+				}).getTime()
 				break;
 			default: 
-				is = (value: Date) => {
-					return cb(
-						date.getTime(),
-						value.getTime()
-					)
-				}
+				getTime = (date: Date) => date.getTime()
 				break;
 		}
 
-		return is
+		const getDate = (
+			typeof date === 'function' 
+				? (date: MinDateMethod<Form>, parent: any, config: RuleTestConfig<Form>) => {
+					const _date = date(parent, config);
+
+					return _date ? getTime(_date) : undefined
+				} : getTime
+		) as (date: Date | MinDateMethod<Form>, parent: any, config: RuleTestConfig<Form>) => number
+
+		return (value: Date, parent: any, config: RuleTestConfig<Form>) => {
+			return _cb(
+				getDate(date, parent, config), 
+				getTime(value)
+			)
+		}
 	}
 	
 	/**
@@ -188,7 +142,7 @@ export class DateSchema<
 	 * {{key}} will be replace with current key
 	 * * Note: If format = 'time' it will only compare hour, minutes, seconds and milliseconds, while format = 'dateTime' it will compare everything
 	 */
-	public minDate(minDate: Date, format: DateFormat = 'date', message?: string) {
+	public minDate<Form = this['final']>(minDate: Date | MinDateMethod<Form>, format: DateFormat = 'date', message?: string) {
 		return this.test({
 			is: this.getIsFunction(
 				minDate,
@@ -208,7 +162,7 @@ export class DateSchema<
 	 * {{key}} will be replace with current key
 	 * * Note: If format = 'time' it will only compare hour, minutes, seconds and milliseconds, while format = 'dateTime' it will compare everything
 	 */
-	public maxDate(maxDate: Date, format: DateFormat = 'date', message?: string) {
+	public maxDate<Form = this['final']>(maxDate: Date | MinDateMethod<Form>, format: DateFormat = 'date', message?: string) {
 		return this.test({
 			is: this.getIsFunction(
 				maxDate,
@@ -228,7 +182,7 @@ export class DateSchema<
 	 * {{key}} will be replace with current key
 	 * * Note: If format = 'time' it will only compare hour, minutes, seconds and milliseconds, while format = 'dateTime' it will compare everything
 	 */
-	public equals(date: Date, format: DateFormat = 'date', message?: string) {
+	public equals<Form = this['final']>(date: Date | MinDateMethod<Form>, format: DateFormat = 'date', message?: string) {
 		return this.test({
 			is: this.getIsFunction(
 				date,

@@ -41,9 +41,9 @@ export let defaultMessages = {
 		mustBe: (mustBeValue: boolean) => `Must be ${mustBeValue.toString()}`
 	},
 	date: {
-		equals: (date: Date, format: DateFormat) => `Requires to be at equal to date ${date.toLocaleString()}`,
-		maxDate: (maxDate: Date, format: DateFormat) => `Requires to be at smaller than date ${maxDate.toLocaleString()}`,
-		minDate: (minDate: Date, format: DateFormat) => `Requires to be at bigger than date ${minDate.toLocaleString()}`,
+		equals: (date: Date | ((...args: any[]) => any), format: DateFormat) => typeof date === 'function' ? 'Date is not equal' : `Requires to be at equal to date ${date.toLocaleString()}`,
+		maxDate: (maxDate: Date | ((...args: any[]) => any), format: DateFormat) => typeof maxDate === 'function' ? 'Date is not bigger than min date' : `Requires to be at smaller than date ${maxDate.toLocaleString()}`,
+		minDate: (minDate: Date | ((...args: any[]) => any), format: DateFormat) => typeof minDate === 'function' ? 'Date is not smaller than max date' : `Requires to be at bigger than date ${minDate.toLocaleString()}`,
 		today: 'Requires to be today\'s date'
 	},
 	number: {

@@ -1,3 +1,15 @@
+# [1.11.0](https://github.com/resourge/schema/compare/v1.10.3...v1.11.0) (2023-08-31)
+
+
+### Bug Fixes
+
+* **package:** fix package import adding /. to path ([46c920d](https://github.com/resourge/schema/commit/46c920db5fc8b521b48315e66a44b9d901791124))
+
+
+### Features
+
+* **dateschema:** add minDate and maxDate with custom validation ([5095736](https://github.com/resourge/schema/commit/5095736e807f0ca581d0756bfd9e97ea1b3fac73))
+
 ## [1.10.3](https://github.com/resourge/schema/compare/v1.10.2...v1.10.3) (2023-08-01)
 
 

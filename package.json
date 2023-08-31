@@ -20,7 +20,7 @@
   },
   "typesVersions": {
     "*": {
-      ".": [
+      "index.d.ts": [
         "./dist/index.d.ts"
       ],
       "phoneNumbers": [

@@ -1,3 +1,10 @@
+## [1.11.1](https://github.com/resourge/schema/compare/v1.11.0...v1.11.1) (2023-09-08)
+
+
+### Bug Fixes
+
+* **formkey:** fix formKey not working fo file, Date, etc types ([ae90e00](https://github.com/resourge/schema/commit/ae90e00c596be89d9e665aa47e84c546a52443a1))
+
 # [1.11.0](https://github.com/resourge/schema/compare/v1.10.3...v1.11.0) (2023-08-31)
 
 

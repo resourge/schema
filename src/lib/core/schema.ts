@@ -540,7 +540,7 @@ export abstract class Schema<Input = any, Final = any> {
 		thenClone = onlyOnTouch(thenClone);
 
 		/* c8 ignore start */
-		if ( __DEV__ ) {
+		if ( process.env.NODE_ENV === 'development' ) {
 			thenClone.def.normalRules.forEach((_, key) => {
 				if ( this.def.normalRules.has(key) ) {
 					throw new Error(`Method ${key} already exists outside of 'onlyOnTouch'. To prevent confusion decide if you want '${key}' outside or inside 'onlyOnTouch'`)
@@ -693,7 +693,7 @@ export abstract class Schema<Input = any, Final = any> {
 		}
 
 		/* c8 ignore start */ // this is for better debugging no need to test coverage
-		if ( __DEV__ ) {
+		if ( process.env.NODE_ENV === 'development' ) {
 			if ( debug ) {
 				/* eslint-disable no-console */
 				console.log('method', beautifyFunction(srcCode))

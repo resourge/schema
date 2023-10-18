@@ -1,12 +1,4 @@
 import Benchmark from 'benchmark';
-
-declare module '../src/lib/core/schema' {
-	export const __DEV__: boolean;
-}
-declare module '../src/lib/rules/NamedWhenRule' {
-	export const __DEV__: boolean;
-}
-
 import Validator, { ValidationSchema } from 'fastest-validator';
 import { object, array, string } from '../src/lib/index';
 import * as yup from 'yup';
@@ -14,10 +6,6 @@ import { z } from 'zod';
 import joi from 'joi';
 
 const v = new Validator();
-
-// @ts-expect-error
-globalThis.__DEV__ = true;
-
 const delivery = {
 	deliveryName: 'te',
 	products: [

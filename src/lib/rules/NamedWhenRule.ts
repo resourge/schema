@@ -54,7 +54,7 @@ export class NamedWhenRule<Value = any, T = any> extends WhenRule<Value, T> {
 				_valueKey = `value.${this.namedValueKey}`
 			}
 		}
-		else if ( __DEV__ ) {
+		else if ( process.env.NODE_ENV === 'development' ) {
 			throw new Error('Cannot use "when" at the schema root.')
 		}
 		

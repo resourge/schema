@@ -1,21 +1,30 @@
-type RecursiveKeyOfHandleValue<TValue, Text extends string> =
-TValue extends Array<infer E>
-	? `${Text}` | RecursiveKeyOfHandleValue<E, `${Text}[${number}]`>
-	: TValue extends object
-		? TValue extends File | Date | Blob | Map<any, any> | Set<any> | Uint16Array | Uint32Array | Uint8Array
-			? Text
-			: Text | `${Text}${RecursiveKeyOf<TValue, false>}`
-		: Text;
-  
-type RecursiveKeyOfAccess<TKey extends string | number> = `.${TKey}`;
+type Primitive =
+  | null
+  | undefined
+  | string
+  | number
+  | boolean
+  | symbol
+  | bigint;
 
-export type RecursiveKeyOf<TObj extends object, isFirstLevel extends boolean = true> = {
-	[TKey in keyof TObj & (string | number)]:
-	isFirstLevel extends true
-		? RecursiveKeyOfHandleValue<TObj[TKey], `${TKey}`>
-		: RecursiveKeyOfHandleValue<TObj[TKey], RecursiveKeyOfAccess<TKey>>;
+type BrowserNativeObject = Date | FileList | File | Blob | Map<any, any> | Set<any> | Uint16Array | Uint32Array | Uint8Array;
+
+type AddDotToKey<TKey extends string | number> = `.${TKey}`;
+  
+type ToString<TKey extends string | number> = `${TKey}`;
+
+type RecursiveKeyOfHandleValue<TValue, Text extends string, TraversedTypes> =
+TValue extends Primitive | BrowserNativeObject | TraversedTypes
+	? Text
+	: TValue extends Array<infer E>
+		? `${Text}` | RecursiveKeyOfHandleValue<E, `${Text}[${number}]`, TraversedTypes>
+		: TValue extends object
+			? Text | `${Text}${AddDotToKey<RecursiveKeyOf<TValue, TraversedTypes | TValue>>}`
+			: Text;
+export type RecursiveKeyOf<TObj extends object, TraversedTypes = TObj> = {
+	[TKey in keyof TObj & (string | number)]: RecursiveKeyOfHandleValue<TObj[TKey], ToString<TKey>, TraversedTypes>;
 }[keyof TObj & (string | number)];
 
 export type FormKey<T extends Record<string, any> | any[]> = T extends Array<infer E>
-	? RecursiveKeyOfHandleValue<E, `[${number}]`>
+	? RecursiveKeyOfHandleValue<E, `[${number}]`, number>
 	: RecursiveKeyOf<T>

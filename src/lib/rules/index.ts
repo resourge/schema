@@ -6,4 +6,4 @@ export type {
 	AsyncRuleBooleanMethod, AsyncRuleMethodSchemaError, AsyncRuleMethod,
 	RuleBooleanMethod, RuleMethodSchemaError, RuleMethod,
 	WhenConfig
-}
+};

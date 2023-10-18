@@ -1,6 +1,6 @@
 import { string } from 'src/lib/schemas';
 
-import { setupDefaultMessage } from '../messages'
+import { setupDefaultMessage } from '../messages';
 
 test('beautifyFunction', () => {
 	const customMinMessage = 'Custom min message';
@@ -9,7 +9,7 @@ test('beautifyFunction', () => {
 		string: {
 			min: () => customMinMessage
 		}
-	})
+	});
 
 	const schema = string()
 	.min(10)
@@ -23,5 +23,5 @@ test('beautifyFunction', () => {
 			path: '',
 			error: customMinMessage
 		}
-	])
-})
+	]);
+});

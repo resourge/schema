@@ -750,28 +750,28 @@ const postalCodesExamples = {
 		valid: '12345',
 		invalid: '123456' 
 	}
-} as const
+} as const;
 
 test('postalCodes object', () => {
 	Object.entries(PostalCodes)
 	.forEach(([key, data]) => {
-		const postalCode = postalCodesExamples[key as keyof typeof PostalCodes]
+		const postalCode = postalCodesExamples[key as keyof typeof PostalCodes];
 
 		expect(data.regex.test(postalCode.valid))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(data.regex.test(postalCode.invalid))
-		.toBeFalsy()
-	})
-})
+		.toBeFalsy();
+	});
+});
 
 test('postalCodes singular const\'s', () => {
 	Object.entries(postalCodesExamples)
 	.forEach(([key, { valid, invalid }]) => {
-		const postalCode = PostalCodesRest[key as keyof typeof PostalCodes]
+		const postalCode = PostalCodesRest[key as keyof typeof PostalCodes];
 
 		expect(postalCode.regex.test(valid))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(postalCode.regex.test(invalid))
-		.toBeFalsy()
-	})
-})
+		.toBeFalsy();
+	});
+});

@@ -10,11 +10,11 @@ export abstract class ObjectTypedSchema<
 	Input = any,
 	Final = any
 > extends Schema<Input, Final> {
-	protected schemas: SchemaMap<Input>
+	protected schemas: SchemaMap<Input>;
 	protected shape: Map<string, PrivateSchema>;
 
 	protected oneOfRules = new Map<string, PrivateSchema>();
-	protected oneOfConfig: OneOfConfig = {}
+	protected oneOfConfig: OneOfConfig = {};
 
 	constructor(schemas: SchemaMap<Input>, def?: Definitions) {
 		super(def);
@@ -22,7 +22,7 @@ export abstract class ObjectTypedSchema<
 		this.schemas = {
 			...schemas 
 		};
-		this.shape = new Map(Object.entries(schemas))
+		this.shape = new Map(Object.entries(schemas));
 	}
 
 	protected compileOneOfRules({
@@ -42,7 +42,7 @@ export abstract class ObjectTypedSchema<
 
 		this.oneOfRules.forEach((schema, childKey ) => {
 			// @ts-expect-error To be only accessible for the developer
-			schema.errorParameterKey = errorParameterKey
+			schema.errorParameterKey = errorParameterKey;
 
 			srcCode.push(
 				this.oneOfConfig.includeAllErrors 
@@ -77,7 +77,7 @@ export abstract class ObjectTypedSchema<
 					)
 			),
 			'}'
-		)
+		);
 
 		return srcCode;
 	}
@@ -88,7 +88,7 @@ export abstract class ObjectTypedSchema<
 		path,
 		srcCode = []
 	}: CompileSchemaConfig) {
-		const schemaRules: string[] = srcCode
+		const schemaRules: string[] = srcCode;
 		
 		this.shape.forEach((schema, childKey) => {
 			schemaRules.push(
@@ -98,7 +98,7 @@ export abstract class ObjectTypedSchema<
 					path: `${path ? `${path}.` : ''}${childKey}`
 				})
 			);
-		})
+		});
 
 		if ( this.oneOfRules.size ) {
 			schemaRules.push(

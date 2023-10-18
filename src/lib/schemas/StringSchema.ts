@@ -11,7 +11,7 @@ const ALPHA_PATTERN = /^[a-zA-Z]+$/;
 const ALPHANUM_PATTERN = /^[a-zA-Z0-9]+$/;
 const ALPHADASH_PATTERN = /^[a-zA-Z0-9_-]+$/;
 const HEX_PATTERN = /^[0-9a-fA-F]+$/;
-const URL_PATTERN = /^(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$/
+const URL_PATTERN = /^(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$/;
 const BASE64_PATTERN = /^(?:[A-Za-z0-9+\\/]{4})*(?:[A-Za-z0-9+\\/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
 const PRECISE_PATTERN = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 const CUID_PATTERN = /^c[^\s-]{8,}$/i;
@@ -22,21 +22,21 @@ export class StringSchema<
 	Input extends NullableType<string> = string,
 	Final = any
 > extends Schema<Input, Final> {
-	protected type: SchemaTypes = SchemaTypes.STRING
-	protected override message: string = `{{key}} is not ${this.type}`
-	protected rule = (value: string) => typeof value === 'string'
+	protected type: SchemaTypes = SchemaTypes.STRING;
+	protected override message: string = `{{key}} is not ${this.type}`;
+	protected rule = (value: string) => typeof value === 'string';
 	protected minRequired: boolean = false;
 
 	protected onMinRequired = () => {
 		if ( this.minRequired ) {
 			this.minRequired = false;
 
-			this.def.normalRules.delete('minLength')
+			this.def.normalRules.delete('minLength');
 		}
 	};
 
 	protected clone() {
-		return new StringSchema<Input, Final>(this.message, this.def)
+		return new StringSchema<Input, Final>(this.message, this.def);
 	}
 
 	constructor(message?: string, def?: Definitions) {
@@ -53,7 +53,7 @@ export class StringSchema<
 				is: (value) => !value,
 				message: message ?? ((messages) => messages.required),
 				name: 'minLength'
-			}) as unknown as this
+			}) as unknown as this;
 		}
 
 		return super.required(message);
@@ -101,7 +101,7 @@ export class StringSchema<
 			is: (value) => !(value.length >= minValue),
 			message: message ?? ((messages) => messages.string.min(minValue)),
 			name: 'minLength'
-		})
+		});
 	}
 
 	/**
@@ -115,7 +115,7 @@ export class StringSchema<
 			is: (value) => !(value.length <= maxValue),
 			message: message ?? ((messages) => messages.string.max(maxValue)),
 			name: 'maxLength'
-		})
+		});
 	}
 
 	/**
@@ -130,7 +130,7 @@ export class StringSchema<
 			is: (value) => !((value ).length >= minValue && (value ).length <= maxValue),
 			message: message ?? ((messages) => messages.number.between(minValue, maxValue)),
 			name: 'betweenNumber'
-		})
+		});
 	}
 
 	/**
@@ -144,7 +144,7 @@ export class StringSchema<
 			is: (value) => !(value.length === length),
 			message: message ?? ((messages) => messages.string.length(length)),
 			name: 'length'
-		})
+		});
 	}
 
 	/**
@@ -154,16 +154,16 @@ export class StringSchema<
 	 * {{key}} will be replace with current key
 	 */
 	public equals(value: string | string[], message?: string) {
-		let is = (val: string) => !(val === value)
+		let is = (val: string) => !(val === value);
 		if ( Array.isArray(value) ) {
-			is = (val: string) => !value.includes(val)
+			is = (val: string) => !value.includes(val);
 		}
 		
 		return this.test({
 			is: is as any,
 			message: message ?? ((messages) => messages.string.equals(value)),
 			name: 'equalsString'
-		})
+		});
 	}
 
 	/**
@@ -177,7 +177,7 @@ export class StringSchema<
 			is: (value) => !reg.test(value),
 			message: message ?? ((messages) => messages.string.pattern(reg)),
 			name: `pattern_${reg.source.replace(/(\W|\W|-)/g, '_')}`
-		})
+		});
 	}
 
 	/**
@@ -190,7 +190,7 @@ export class StringSchema<
 			is: (value) => !(value.length === 0),
 			message: message ?? ((messages) => messages.string.empty),
 			name: 'empty'
-		})
+		});
 	}
 
 	/**
@@ -204,7 +204,7 @@ export class StringSchema<
 			is: (val: any) => !val.includes(value),
 			message: message ?? ((messages) => messages.string.contains(value)),
 			name: 'contains'
-		})
+		});
 	}
 
 	/**
@@ -217,7 +217,7 @@ export class StringSchema<
 			is: (value) => !(!value || NUMERIC_PATTERN.test(value)),
 			message: message ?? ((messages) => messages.string.numeric),
 			name: 'numeric'
-		})
+		});
 	}
 
 	/**
@@ -230,7 +230,7 @@ export class StringSchema<
 			is: (value) => !ALPHA_PATTERN.test(value),
 			message: message ?? ((messages) => messages.string.alpha),
 			name: 'alpha'
-		})
+		});
 	}
 
 	/**
@@ -243,7 +243,7 @@ export class StringSchema<
 			is: (value) => !ALPHANUM_PATTERN.test(value),
 			message: message ?? ((messages) => messages.string.alphanum),
 			name: 'alphanum'
-		})
+		});
 	}
 
 	/**
@@ -256,7 +256,7 @@ export class StringSchema<
 			is: (value) => !ALPHADASH_PATTERN.test(value),
 			message: message ?? ((messages) => messages.string.alphadash),
 			name: 'alphadash'
-		})
+		});
 	}
 
 	/**
@@ -269,7 +269,7 @@ export class StringSchema<
 			is: (value) => !(value.length % 2 === 0 && HEX_PATTERN.test(value)),
 			message: message ?? ((messages) => messages.string.hex),
 			name: 'hex'
-		})
+		});
 	}
 
 	/**
@@ -282,7 +282,7 @@ export class StringSchema<
 			is: (value) => !BASE64_PATTERN.test(value),
 			message: message ?? ((messages) => messages.string.base64),
 			name: 'base64'
-		})
+		});
 	}
 
 	/**
@@ -295,7 +295,7 @@ export class StringSchema<
 			is: (value) => !UUID_PATTERN.test(value),
 			message: message ?? ((messages) => messages.string.uuid),
 			name: 'uuid'
-		})
+		});
 	}
 
 	/**
@@ -308,7 +308,7 @@ export class StringSchema<
 			is: (value) => !URL_PATTERN.test(value),
 			message: message ?? ((messages) => messages.string.url),
 			name: 'url'
-		})
+		});
 	}
 
 	/**
@@ -321,7 +321,7 @@ export class StringSchema<
 			is: (value) => !CUID_PATTERN.test(value),
 			message: message ?? ((messages) => messages.string.cuid),
 			name: 'cuid'
-		})
+		});
 	}
 
 	/**
@@ -337,7 +337,7 @@ export class StringSchema<
 			is: (value) => !pattern.test(value),
 			message: message ?? ((messages) => messages.string.email),
 			name: 'email'
-		})
+		});
 	}
 
 	/**
@@ -362,15 +362,15 @@ export class StringSchema<
 						path: '',
 						error: message ?? context.messages.string.postalCode(_postalCode)
 					}
-				]
-			})
+				];
+			});
 		}
 
 		return this.test({
 			is: (value) => !postalCode.regex.test(value),
 			message: message ?? ((messages) => messages.string.postalCode(postalCode)),
 			name: 'postalCode'
-		})
+		});
 	}
 
 	/**
@@ -395,15 +395,15 @@ export class StringSchema<
 						path: '',
 						error: message ?? context.messages.string.phoneNumber(_phoneNumber)
 					}
-				]
-			})
+				];
+			});
 		}
 
 		return this.test({
 			is: (value) => !phoneNumber.regex.test(value),
 			message: message ?? ((messages) => messages.string.phoneNumber(phoneNumber)),
 			name: 'phoneNumber'
-		})
+		});
 	}
 
 	/**
@@ -420,7 +420,7 @@ export class StringSchema<
 			is: (value) => !enumValues.includes(value),
 			message: message ?? ((messages) => messages.string.enum),
 			name: 'enumString'
-		}) as unknown as StringSchema<T[keyof T], Final>
+		}) as unknown as StringSchema<T[keyof T], Final>;
 	}
 }
 
@@ -429,4 +429,4 @@ export const string = <
 	Final = any
 >(message?: string) => {
 	return new StringSchema<Input, Final>(message); ;
-}
+};

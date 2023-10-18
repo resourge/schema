@@ -1,9 +1,9 @@
-import { type Schema } from '../core/schema'
-import { type CompileSchemaConfig, type PrivateSchema } from '../types/types'
-import { Parameters, type SchemaTypes } from '../utils/Utils'
+import { type Schema } from '../core/schema';
+import { type CompileSchemaConfig, type PrivateSchema } from '../types/types';
+import { Parameters, type SchemaTypes } from '../utils/Utils';
 
-import { BaseRule, type RuleSrcCodeConfig } from './BaseRule'
-import { type RuleBooleanMethod } from './Rule'
+import { BaseRule, type RuleSrcCodeConfig } from './BaseRule';
+import { type RuleBooleanMethod } from './Rule';
 
 export type WhenConfig<
 	T,
@@ -19,11 +19,11 @@ export type WhenConfig<
 }
 
 export class WhenRule<Value = any, T = any> extends BaseRule<Value, T, RuleBooleanMethod<Value, T>> {
-	public name: string
-	public schemaType: SchemaTypes
-	public then: PrivateSchema
-	public otherwise?: PrivateSchema
-	public onlyOnTouch: boolean
+	public name: string;
+	public schemaType: SchemaTypes;
+	public then: PrivateSchema;
+	public otherwise?: PrivateSchema;
+	public onlyOnTouch: boolean;
 
 	constructor(
 		name: string,
@@ -64,7 +64,7 @@ export class WhenRule<Value = any, T = any> extends BaseRule<Value, T, RuleBoole
 			ruleMethodName: this.name,
 			errorParameterKey,
 			key
-		})
+		});
 
 		const thenSrcCode = this.then.compileSchema({
 			context,
@@ -89,14 +89,14 @@ export class WhenRule<Value = any, T = any> extends BaseRule<Value, T, RuleBoole
 			`if ( ${methodName}_isValid ) {`,
 			...thenSrcCode,
 			'}'
-		]
+		];
 
 		return [
 			...whenSrcCode,
 			'else {',
 			...otherwiseSrcCode,
 			'}'
-		]
+		];
 	}
 
 	public getRule(

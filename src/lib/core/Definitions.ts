@@ -22,9 +22,9 @@ export class Definitions<Input = any, Final = any> {
 	 */
 	public path: string = '';
 	public normalRules = new Map<string, BaseRule<Input, Final, (...args: any[]) => any>>();
-	public whenRules: WhenRule[] = []
+	public whenRules: WhenRule[] = [];
 
-	public _validate: ((value: any, onlyOnTouch?: OnlyOnTouch<Input>) => Promise<SchemaError[]> | SchemaError[]) | undefined
+	public _validate: ((value: any, onlyOnTouch?: OnlyOnTouch<Input>) => Promise<SchemaError[]> | SchemaError[]) | undefined;
 
 	public clone(): Definitions<Input, Final> {
 		const newDefinitions = new Definitions();

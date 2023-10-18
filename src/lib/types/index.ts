@@ -1,3 +1,3 @@
-import { type SchemaError } from './types'
+import { type SchemaError } from './types';
 
-export type { SchemaError }
+export type { SchemaError };

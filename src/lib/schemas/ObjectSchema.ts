@@ -1,4 +1,3 @@
-
 import { type Definitions } from '../core/Definitions';
 import { ObjectTypedSchema } from '../core/ObjectTypedSchema';
 import { type OneOf, type OneOfConfigMessage } from '../types/OneOfTypes';
@@ -9,20 +8,20 @@ export class ObjectSchema<
 	Input extends NullableType<object> = object,
 	Final = any
 > extends ObjectTypedSchema<Input, Final> {
-	protected type: SchemaTypes = SchemaTypes.OBJECT
-	protected message: string = `{{key}} is not ${this.type}`
-	protected rule = (value: any) => typeof value === 'object'
+	protected type: SchemaTypes = SchemaTypes.OBJECT;
+	protected message: string = `{{key}} is not ${this.type}`;
+	protected rule = (value: any) => typeof value === 'object';
 
 	protected clone() {
 		const schema = new ObjectSchema<Input, Final>(
 			this.schemas, 
 			this.message, 
 			this.def
-		)
+		);
 
 		schema.oneOfRules = new Map(this.oneOfRules.entries());
 
-		return schema
+		return schema;
 	}
 
 	constructor(schemas: SchemaMap<Input>, message?: string, def?: Definitions) {
@@ -43,13 +42,13 @@ export class ObjectSchema<
 		Object.entries(schemas)
 		.forEach(([key, schema]) => {
 			// @ts-expect-error // this will never be undefined but typescript can't comprehend that
-			const _schema = schema.clone()
+			const _schema = schema.clone();
 			
-			_this.shape.set(key, _schema)
+			_this.shape.set(key, _schema);
 
 			// @ts-expect-error // this will never be undefined but typescript can't comprehend that
 			_this.schemas[key] = _schema;
-		})
+		});
 
 		return _this as unknown as ObjectSchema<TInput, TFinal>;
 	}
@@ -76,16 +75,16 @@ export class ObjectSchema<
 
 		const _oneOfConfig = !Array.isArray(oneOfKey) ? (schema as OneOfConfigMessage) : oneOfConfigMessage;
 
-		const message = _oneOfConfig
+		const message = _oneOfConfig;
 
 		_this.oneOfConfig = {
 			includeAllErrors: !(message && typeof message !== 'string'),
 			message
-		}
+		};
 
 		const schemasEntries: Array<[string, SchemaMap<Input, true>[any]]> = Array.isArray(oneOfKey) 
 			? (oneOfKey as string[]).map((key) => [key, schema])
-			: (Object.entries(oneOfKey))
+			: (Object.entries(oneOfKey));
 
 		schemasEntries
 		.forEach(([key, schema]) => {
@@ -93,7 +92,7 @@ export class ObjectSchema<
 			const _schema = schema.clone();
 			
 			_this.oneOfRules.set(key, _schema);
-		})
+		});
 
 		return _this as this;
 	}
@@ -105,4 +104,4 @@ export const object = <
 	message?: string
 ) => {
 	return new ObjectSchema<Input>(schemas, message);
-}
+};

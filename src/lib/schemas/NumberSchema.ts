@@ -7,12 +7,12 @@ export class NumberSchema<
 	Input extends NullableType<number> = number,
 	Final = any
 > extends Schema<Input, Final> {
-	protected type: SchemaTypes = SchemaTypes.NUMBER
-	protected message: string = `{{key}} is not ${this.type}`
-	protected rule = (value: number) => typeof value === 'number'
+	protected type: SchemaTypes = SchemaTypes.NUMBER;
+	protected message: string = `{{key}} is not ${this.type}`;
+	protected rule = (value: number) => typeof value === 'number';
 
 	protected clone() {
-		return new NumberSchema(this.message, this.def)
+		return new NumberSchema(this.message, this.def);
 	}
 
 	constructor(message?: string, def?: Definitions) {
@@ -32,7 +32,7 @@ export class NumberSchema<
 			is: (value: number) => !(value >= minValue),
 			message: message ?? ((messages) => messages.number.min(minValue)),
 			name: 'minNumber'
-		})
+		});
 	}
 
 	/**
@@ -46,7 +46,7 @@ export class NumberSchema<
 			is: (value) => !(value <= maxValue),
 			message: message ?? ((messages) => messages.number.max(maxValue)),
 			name: 'maxNumber'
-		})
+		});
 	}
 
 	/**
@@ -61,7 +61,7 @@ export class NumberSchema<
 			is: (value) => !(value >= minValue && value <= maxValue),
 			message: message ?? ((messages) => messages.number.between(minValue, maxValue)),
 			name: 'betweenNumber'
-		})
+		});
 	}
 
 	/**
@@ -71,16 +71,16 @@ export class NumberSchema<
 	 * {{key}} will be replace with current key
 	 */
 	public equals(value: number | number[], message?: string) {
-		let is = (val: number) => !(val === value)
+		let is = (val: number) => !(val === value);
 		if ( Array.isArray(value) ) {
-			is = (val: number) => !value.includes(val)
+			is = (val: number) => !value.includes(val);
 		}
 		
 		return this.test({
 			is,
 			message: message ?? ((messages) => messages.number.equals(value)),
 			name: 'equalsNumber'
-		})
+		});
 	}
 
 	/**
@@ -93,7 +93,7 @@ export class NumberSchema<
 			is: (val) => !(val % 1 === 0),
 			message: message ?? ((messages) => messages.number.integer),
 			name: 'integer'
-		})
+		});
 	}
 
 	/**
@@ -106,7 +106,7 @@ export class NumberSchema<
 			is: (val) => !(val.toFixed(decimal) === val.toString()),
 			message: message ?? ((messages) => messages.number.decimal(decimal)),
 			name: 'decimal'
-		})
+		});
 	}
 
 	/**
@@ -119,7 +119,7 @@ export class NumberSchema<
 			is: (val) => !(val >= 0),
 			message: message ?? ((messages) => messages.number.positive),
 			name: 'positive'
-		})
+		});
 	}
 
 	/**
@@ -132,7 +132,7 @@ export class NumberSchema<
 			is: (val) => !(val < 0),
 			message: message ?? ((messages) => messages.number.negative),
 			name: 'negative'
-		})
+		});
 	}
 
 	/**
@@ -149,7 +149,7 @@ export class NumberSchema<
 			is: (value: any) => !enumValues.includes(value),
 			message: message ?? ((messages) => messages.number.enum),
 			name: 'enumNumber'
-		}) as unknown as NumberSchema<T[keyof T], Final>
+		}) as unknown as NumberSchema<T[keyof T], Final>;
 	}
 }
 
@@ -158,4 +158,4 @@ export const number = <
 	Final = any
 >(message?: string) => {
 	return new NumberSchema<Input, Final>(message);
-}
+};

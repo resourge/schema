@@ -1,6 +1,6 @@
-import { type CompileSchemaConfig, type Context, type SchemaError } from '../types/types'
-import { Parameters } from '../utils/Utils'
-import { type MessageType } from '../utils/messages'
+import { type CompileSchemaConfig, type Context, type SchemaError } from '../types/types';
+import { Parameters } from '../utils/Utils';
+import { type MessageType } from '../utils/messages';
 
 export type RuleMethod<Value, Final = any> = (
 	value: Value, 
@@ -22,12 +22,12 @@ export type RuleSrcCodeConfig = Pick<Required<CompileSchemaConfig>, 'context' | 
 }
 
 export abstract class BaseRule<Value, T = any, Method extends (...args: any[]) => any = RuleMethod<Value, T>> {
-	public type: 'METHOD_ERROR' | 'MESSAGE'
-	public method: Method
-	protected getErrorMessage: (methodName: string, path: string, onlyOnTouch: boolean, errorParameterKey: string, context: Context) => string[]
+	public type: 'METHOD_ERROR' | 'MESSAGE';
+	public method: Method;
+	protected getErrorMessage: (methodName: string, path: string, onlyOnTouch: boolean, errorParameterKey: string, context: Context) => string[];
 
 	public get isMethodError(): boolean {
-		return this.type === 'METHOD_ERROR'  
+		return this.type === 'METHOD_ERROR';  
 	}
 
 	constructor(
@@ -63,7 +63,7 @@ export abstract class BaseRule<Value, T = any, Method extends (...args: any[]) =
 					`${errorParameterKey}.push(${methodName}_error);`,
 					context.async && onlyOnTouch ? `(${Parameters.CONTEXT_KEY}.onlyOnTouchErrors[\`${path}\`] = ${Parameters.CONTEXT_KEY}.onlyOnTouchErrors[\`${path}\`] || []).push(${methodName}_error);` : '',
 					'})'
-				]
+				];
 			} : (
 				methodName: string, 
 				path: string, 
@@ -73,7 +73,7 @@ export abstract class BaseRule<Value, T = any, Method extends (...args: any[]) =
 			) => {
 				const _message: string | ((messages: MessageType) => string) = typeof message === 'string' 
 					? message 
-					: (message as ((messages: MessageType) => string))(context.messages)
+					: (message as ((messages: MessageType) => string))(context.messages);
 				return [
 					`const ${methodName}_error = {`,
 					`	path: \`${path}\`,`,
@@ -81,7 +81,7 @@ export abstract class BaseRule<Value, T = any, Method extends (...args: any[]) =
 					'};',
 					`${errorParameterKey}.push(${methodName}_error);`,
 					context.async && onlyOnTouch ? `(${Parameters.CONTEXT_KEY}.onlyOnTouchErrors[\`${path}\`] = ${Parameters.CONTEXT_KEY}.onlyOnTouchErrors[\`${path}\`] || []).push(${methodName}_error);` : ''
-				]
+				];
 			};
 	}
 
@@ -118,11 +118,11 @@ export abstract class BaseRule<Value, T = any, Method extends (...args: any[]) =
 			(ruleMethodName ?? '').replace(/\s+/g, '_'),
 			this.method,
 			context
-		)
+		);
 
 		const lastIndex = valueKey.lastIndexOf('.');
 
-		const parentKey = lastIndex > -1 ? valueKey.substring(0, lastIndex) : valueKey
+		const parentKey = lastIndex > -1 ? valueKey.substring(0, lastIndex) : valueKey;
 		
 		const parameters: string[] = [
 			valueKey, 
@@ -131,7 +131,7 @@ export abstract class BaseRule<Value, T = any, Method extends (...args: any[]) =
 				${Parameters.CONTEXT_KEY}: ${Parameters.CONTEXT_KEY},
 				form: ${Parameters.OBJECT_KEY}
 			}`
-		]
+		];
 
 		// eslint-disable-next-line @typescript-eslint/no-this-alias
 		const ruleThis = this;
@@ -146,9 +146,9 @@ export abstract class BaseRule<Value, T = any, Method extends (...args: any[]) =
 					onlyOnTouch,
 					errorParameterKey,
 					context
-				)
+				);
 			}
-		}
+		};
 	}
 
 	public abstract getRule(config: RuleSrcCodeConfig): string[]

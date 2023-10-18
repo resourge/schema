@@ -7,18 +7,18 @@ import { object } from '../ObjectSchema';
 import { string } from '../StringSchema';
 
 const isFilePathValid = (path: string) => {
-	return /^((\/)?[\w-])+$/i.test(path)
-}
+	return /^((\/)?[\w-])+$/i.test(path);
+};
 
 const validateIfPathIsValidResourge = {
 	message: 'utils.validation.file_path_is_not_valid',
 	test: (value: string) => !(value && !isFilePathValid(value))
-}
+};
 
 const validateValueCantHaveSpecialCharactersButCanHaveSlashAndMinusResourge = {
 	message: 'utils.validation.the_field_cant_have_special_characters',
 	test: (value: string) => !/[^\w\\/-]+/g.test(value)
-}
+};
 
 describe('Nested Schemas', () => {
 	it('deep nested', () => {
@@ -143,11 +143,11 @@ describe('Nested Schemas', () => {
 			)
 			.min(1)
 			.test((value: any[], finalField) => {
-				const errors: SchemaError[] = []
+				const errors: SchemaError[] = [];
 
 				if ( value && value.length > 1 ) {
 					const [firstSource, ...sources] = value;
-					const fieldsIndex: number[] = []
+					const fieldsIndex: number[] = [];
 
 					firstSource.fields?.forEach((field: any, fieldIndex: number) => {
 						sources.forEach((source) => {
@@ -155,26 +155,26 @@ describe('Nested Schemas', () => {
 							if ( sourceField && sourceField.dataType !== field.dataType ) {
 								fieldsIndex.push(fieldIndex);
 							}
-						})
-					})
+						});
+					});
 
 					fieldsIndex.forEach((fieldIndex) => {
 						value.forEach((_, sourceIndex) => {
 							errors.push({
 								error: 'final_table_page.messages.different_data_type',
 								path: `finalTables[${finalField.index as number}].sources[${sourceIndex}].fields[${fieldIndex}].dataType`
-							})
-						})
-					})
+							});
+						});
+					});
 				}
 
 				if ( errors.length ) {
-					return errors
+					return errors;
 				}
 
 				return true;
 			})
-		})
+		});
 
 		const schema = object({
 			finalTables: array(
@@ -1227,6 +1227,6 @@ describe('Nested Schemas', () => {
 				}
 			})
 		)
-		.toBeTruthy()
-	})
-})
+		.toBeTruthy();
+	});
+});

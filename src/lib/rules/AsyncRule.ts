@@ -1,4 +1,4 @@
-import { type SchemaError } from '../types/types'
+import { type SchemaError } from '../types/types';
 import { Parameters } from '../utils/Utils';
 
 import { BaseRule, type RuleSrcCodeConfig, type RuleTestConfig } from './BaseRule';
@@ -30,7 +30,7 @@ export class AsyncRule<Value, T = any> extends BaseRule<Value, T, AsyncRuleMetho
 			methodName,
 			parameters,
 			srcCode
-		} = this.getRuleSrcCode(config)
+		} = this.getRuleSrcCode(config);
 
 		return [
 			`${Parameters.PROMISE_KEY}.push(`,
@@ -41,6 +41,6 @@ export class AsyncRule<Value, T = any> extends BaseRule<Value, T, AsyncRuleMetho
 			'}',
 			'})',
 			');'
-		]
+		];
 	}
 }

@@ -1,4 +1,4 @@
-import { number, object } from 'src/lib/schemas'
+import { number, object } from 'src/lib/schemas';
 
 describe('Schema', () => {
 	it('when', () => {
@@ -14,14 +14,14 @@ describe('Schema', () => {
 		const validate = (value: any) => schema.isValid(value);
 		
 		expect(validate(-9))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(validate(null))
-		.toBeFalsy()
+		.toBeFalsy();
 
 		expect(validate(11))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(validate(undefined))
-		.toBeTruthy()
+		.toBeTruthy();
 
 		const namedWhenSchema = object({
 			productId: number(),
@@ -39,21 +39,21 @@ describe('Schema', () => {
 			// @ts-expect-error // To force validation
 			productTypeId: undefined
 		}))
-		.toBeTruthy()
+		.toBeTruthy();
 
 		expect(namedWhenSchema.isValid({
 			productId: 1,
 			productTypeId: 1
 		}))
-		.toBeTruthy()
+		.toBeTruthy();
 
 		expect(namedWhenSchema.isValid({
 			productId: 10,
 			// @ts-expect-error // To force validation
 			productTypeId: undefined
 		}))
-		.toBeFalsy()
-	})
+		.toBeFalsy();
+	});
 
 	it('async', async () => {
 		const schema = number()
@@ -70,13 +70,13 @@ describe('Schema', () => {
 
 		const validate = async (value: any) => await schema.isValid(value);
 	
-		await expect(validate(-9)).resolves.toBeTruthy()
+		await expect(validate(-9)).resolves.toBeTruthy();
 
-		await expect(validate(null)).resolves.toBeFalsy()
+		await expect(validate(null)).resolves.toBeFalsy();
 
-		await expect(validate(11)).resolves.toBeTruthy()
-		await expect(validate(undefined)).resolves.toBeFalsy()
-	})
+		await expect(validate(11)).resolves.toBeTruthy();
+		await expect(validate(undefined)).resolves.toBeFalsy();
+	});
 
 	it('mandatoryRules', () => {
 		const schema = number()
@@ -84,26 +84,26 @@ describe('Schema', () => {
 	
 		// @ts-expect-error // To check private values
 		expect(schema.isNullable)
-		.toBeFalsy()
+		.toBeFalsy();
 		// @ts-expect-error // To check private values
 		expect(schema.isOnlyOnTouch)
-		.toBeFalsy()
+		.toBeFalsy();
 		// @ts-expect-error // To check private values
 		expect(schema.isOptional)
-		.toBeFalsy()
+		.toBeFalsy();
 		// @ts-expect-error // To check private values
 		expect(schema.isRequired)
-		.toBeFalsy()
+		.toBeFalsy();
 
 		const newSchema = schema.nullable();
 		// @ts-expect-error // To check private values
 		expect(newSchema.isNullable)
-		.toBeTruthy()
+		.toBeTruthy();
 
 		const newSchema1 = schema.onlyOnTouch();
 		// @ts-expect-error // To check private values
 		expect(newSchema1.isOnlyOnTouch)
-		.toBeTruthy()
+		.toBeTruthy();
 
 		const newSchema2 = schema.optional();
 		// @ts-expect-error // To check private values
@@ -132,7 +132,7 @@ describe('Schema', () => {
 			error: 'Custom Text Message'
 		}]))
 		.compile();
-	})
+	});
 
 	it('multiple test\'s', () => {
 		const schema = number()
@@ -143,9 +143,9 @@ describe('Schema', () => {
 						path: '',
 						error: 'Value is not bigger than 2'
 					}
-				]
+				];
 			}
-			return []
+			return [];
 		})
 		.test((value) => {
 			if ( value < 10 ) {
@@ -154,21 +154,21 @@ describe('Schema', () => {
 						path: '',
 						error: 'Value is not smaller than 10'
 					}
-				]
+				];
 			}
-			return []
+			return [];
 		})
 		.compile();
 
 		expect(schema.isValid(0))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema.isValid(1))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema.isValid(2))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema.isValid(11))
-		.toBeFalsy()
-	})
+		.toBeFalsy();
+	});
 
 	it('should individual validation only on touch', () => {
 		const schema = number()
@@ -177,12 +177,12 @@ describe('Schema', () => {
 		.compile();
 
 		expect(schema.isValid(0))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema.isValid(1))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(schema.isValid(11))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(schema.isValid(11, ['']))
-		.toBeFalsy()
-	})
-})
+		.toBeFalsy();
+	});
+});

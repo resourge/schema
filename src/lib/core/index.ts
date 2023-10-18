@@ -3,4 +3,4 @@ import { type OldTestMethodConfig, type TestMethodConfig } from './schema';
 
 export type {
 	OldTestMethodConfig, TestMethodConfig, OnlyOnTouch 
-}
+};

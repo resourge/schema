@@ -7,12 +7,12 @@ export class BooleanSchema<
 	Input extends NullableType<boolean> = boolean,
 	Final = Input
 > extends Schema<Input, Final> {
-	protected type: SchemaTypes = SchemaTypes.BOOLEAN
-	protected message: string = `{{key}} is not ${this.type}`
-	protected rule = (value: Input) => typeof value === 'boolean'
+	protected type: SchemaTypes = SchemaTypes.BOOLEAN;
+	protected message: string = `{{key}} is not ${this.type}`;
+	protected rule = (value: Input) => typeof value === 'boolean';
 	
 	protected clone() {
-		return new BooleanSchema<Input, Final>(this.message, this.def)
+		return new BooleanSchema<Input, Final>(this.message, this.def);
 	}
 
 	constructor(message?: string, def?: Definitions) {
@@ -33,7 +33,7 @@ export class BooleanSchema<
 			is: (value: any) => _mustBeValue !== value.toString(),
 			message: message ?? ((messages) => messages.array.empty),
 			name: 'mustBe'
-		})
+		});
 	}
 }
 
@@ -42,4 +42,4 @@ export const boolean = <
 	Final = any
 >(message?: string) => {
 	return new BooleanSchema<Input, Final>(message);
-}
+};

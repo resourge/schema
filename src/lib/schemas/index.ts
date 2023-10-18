@@ -22,4 +22,4 @@ export {
 	NumberSchema,
 	ObjectSchema,
 	StringSchema
-}
+};

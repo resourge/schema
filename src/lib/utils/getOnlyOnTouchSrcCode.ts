@@ -1,4 +1,4 @@
-import { Parameters } from './Utils'
+import { Parameters } from './Utils';
 
 export const getOnlyOnTouchSrcCode = (
 	path: string,
@@ -12,5 +12,5 @@ export const getOnlyOnTouchSrcCode = (
 		`else if ( context.onlyOnTouchErrors[\`${path}\`] ){`,
 		`context.onlyOnTouchErrors[\`${path}\`].forEach((error) => errors.push(error))`,
 		'}'
-	]
-}
+	];
+};

@@ -8,18 +8,18 @@ describe('any', () => {
 		.compile();
 	
 		expect(schema.isValid(undefined))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(schema.isValid(true))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(schema.isValid(false))
-		.toBeTruthy()
+		.toBeTruthy();
 	
 		const schema1 = new AnySchema()
 		.compile();
 	
 		expect(schema1.isValid(true))
-		.toBeTruthy()
-	})
+		.toBeTruthy();
+	});
 
 	it('should each schema be separated from previous', () => {
 		const schema = any()
@@ -28,17 +28,17 @@ describe('any', () => {
 	
 		// @ts-expect-error // To check private values
 		expect(schema.isNullable)
-		.toBe(true)
+		.toBe(true);
 		// @ts-expect-error // To check private values
 		expect(schema.isOptional)
-		.toBe(false)
+		.toBe(false);
 		// @ts-expect-error // To check private values
 		expect(schema1.isNullable)
-		.toBe(true)
+		.toBe(true);
 		// @ts-expect-error // To check private values
 		expect(schema1.isOptional)
-		.toBe(true)
-	})
+		.toBe(true);
+	});
 
 	it('should test enum types', () => {
 		enum FieldTypeEnum {
@@ -62,6 +62,6 @@ describe('any', () => {
 		expect(schema.isValid({
 			productName: 6 as FieldTypeEnum
 		}))
-		.toBeFalsy()
-	})
-})
+		.toBeFalsy();
+	});
+});

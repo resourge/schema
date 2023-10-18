@@ -1,4 +1,4 @@
-import { beautifyFunction } from '../beautifyFunction'
+import { beautifyFunction } from '../beautifyFunction';
 
 test('beautifyFunction', () => {
 	expect(
@@ -10,5 +10,5 @@ test('beautifyFunction', () => {
 	)
 	.toBe(`if (true) {
 	Test
-}`)
-})
+}`);
+});

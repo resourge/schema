@@ -9,11 +9,11 @@ export abstract class ArrayTypedSchema<
 	Final = any,
 	S extends ObjectPropertiesSchema<Input[number], Final> = ObjectPropertiesSchema<Input[number], Final>
 > extends Schema<Input, Final> {
-	protected schema: PrivateSchema
+	protected schema: PrivateSchema;
 
 	constructor(schema: S, def?: Definitions) {
 		super(def);
-		this.schema = schema as unknown as PrivateSchema
+		this.schema = schema as unknown as PrivateSchema;
 	}
 
 	protected override compileSchema({
@@ -21,7 +21,7 @@ export abstract class ArrayTypedSchema<
 		key, 
 		path
 	}: CompileSchemaConfig) {
-		const valueKey = this.getValueKey(key)
+		const valueKey = this.getValueKey(key);
 
 		const index = context.index = context.index + 1;
 
@@ -38,7 +38,7 @@ export abstract class ArrayTypedSchema<
 			`for (var ${iKey} = 0; ${iKey} < l; ${iKey}++) {`,
 			...schemaRules,
 			'}'
-		]
+		];
 
 		return super.compileSchema({
 			context, 

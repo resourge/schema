@@ -1,8 +1,8 @@
-import deepmerge from '@fastify/deepmerge'
+import deepmerge from '@fastify/deepmerge';
 
-import { type PhoneNumberInfo } from '../phoneNumbers'
-import { type PostalCodeInfo } from '../postalCodes'
-import { type DateFormat } from '../types/DateFormat'
+import { type PhoneNumberInfo } from '../phoneNumbers';
+import { type PostalCodeInfo } from '../postalCodes';
+import { type DateFormat } from '../types/DateFormat';
 
 enum FormatInvalidTypeEnum {
 	'enum' = 'enum',
@@ -22,8 +22,8 @@ enum FormatInvalidTypeEnum {
 }
 
 const getInvalidFormatMessage = (type: keyof typeof FormatInvalidTypeEnum) => {
-	return `Invalid ${FormatInvalidTypeEnum[type]} format`
-}
+	return `Invalid ${FormatInvalidTypeEnum[type]} format`;
+};
 
 export let defaultMessages = {
 	any: {
@@ -83,7 +83,7 @@ export let defaultMessages = {
 	notOptional: 'Not optional item',
 	notNullable: 'Not optional item',
 	required: 'Required item'
-} as const
+} as const;
 
 export type MessageType = typeof defaultMessages
 
@@ -100,5 +100,5 @@ const deepMerge = deepmerge();
  * @param newDefaultMessages 
  */
 export function setupDefaultMessage(newDefaultMessages: DeepPartial<MessageType>) {
-	defaultMessages = deepMerge(defaultMessages, newDefaultMessages) as MessageType
+	defaultMessages = deepMerge(defaultMessages, newDefaultMessages) as MessageType;
 }

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { type IsEnum } from '../IsEnum'
+import { type IsEnum } from '../IsEnum';
 
 describe('should isEnum be true', () => {
 	enum FieldTypeEnum {
@@ -24,8 +24,8 @@ describe('should isEnum be true', () => {
 	}
 
 	class Teste {
-		public asdas: number = 1
-		public fgg: string = ''
+		public asdas: number = 1;
+		public fgg: string = '';
 	}
 	type ExpectTrue<T extends true> = T;
 	type ExpectFalse<T extends false> = T;
@@ -34,7 +34,7 @@ describe('should isEnum be true', () => {
 		type Test1 = ExpectTrue<IsEnum<FieldTypeEnum>>;
 		type Test2 = ExpectTrue<IsEnum<FieldTypeEnumF>>;
 		type Test3 = ExpectTrue<IsEnum<FieldTypeEnumS>>;
-	})
+	});
 
 	it('should be false', () => {
 		type Test1 = ExpectFalse<IsEnum<Teste>>;
@@ -60,5 +60,5 @@ describe('should isEnum be true', () => {
 		type Test21 = ExpectFalse<IsEnum<1 | '3'>>;
 		type Test22 = ExpectFalse<IsEnum<'1' | '5'>>;
 		type Test23 = ExpectFalse<IsEnum<'1' | boolean> >
-	})
-})
+	});
+});

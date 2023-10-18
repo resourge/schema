@@ -14,12 +14,12 @@ describe('object', () => {
 	
 		// @ts-expect-error // To be able to check
 		expect(schema.isValid(undefined))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(schema.isValid({
 			productId: 1,
 			productName: 'Product Name'
 		}))
-		.toBeTruthy()
+		.toBeTruthy();
 	
 		const schema2 = new ObjectSchema({
 			productId: number(),
@@ -29,25 +29,25 @@ describe('object', () => {
 	
 		// @ts-expect-error // To be able to check
 		expect(schema2.isValid(undefined))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema2.isValid({
 			// @ts-expect-error // To be able to check
 			productId: '1',
 			productName: 'Product Name'
 		}))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema2.isValid({
 			productId: 1,
 			// @ts-expect-error // To be able to check
 			productName: 1
 		}))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema2.isValid({
 			productId: 1,
 			productName: 'Product Name'
 		}))
-		.toBeTruthy()
-	})
+		.toBeTruthy();
+	});
 
 	it('should individual validation only on touch', () => {
 		const schema = object({
@@ -65,12 +65,12 @@ describe('object', () => {
 				productName: 'Product Name'
 			})
 		)
-		.toBeTruthy()
+		.toBeTruthy();
 
 		let errors = schema.validate({
 			productId: 1,
 			productName: 'Product Name'
-		})
+		});
 
 		expect(
 			schema.validate({
@@ -78,7 +78,7 @@ describe('object', () => {
 				productName: 'Product Name'
 			})
 		)
-		.toEqual(errors)
+		.toEqual(errors);
 
 		expect(
 			schema.validate(
@@ -88,7 +88,7 @@ describe('object', () => {
 				}, 
 				['productId']
 			)
-		).not.toEqual(errors)
+		).not.toEqual(errors);
 
 		errors = schema.validate(
 			{
@@ -96,7 +96,7 @@ describe('object', () => {
 				productName: 'Product Name'
 			}, 
 			['productId']
-		)
+		);
 
 		expect(
 			schema.validate(
@@ -107,7 +107,7 @@ describe('object', () => {
 				['productId']
 			)
 		)
-		.toEqual(errors)
+		.toEqual(errors);
 
 		expect(
 			schema.validate(
@@ -118,7 +118,7 @@ describe('object', () => {
 				['productName']
 			)
 		)
-		.toEqual(errors)
+		.toEqual(errors);
 
 		expect(
 			schema.validate(
@@ -128,7 +128,7 @@ describe('object', () => {
 				}, 
 				['productId']
 			)
-		).not.toEqual(errors)
+		).not.toEqual(errors);
 
 		errors = schema.validate(
 			{
@@ -136,7 +136,7 @@ describe('object', () => {
 				productName: 'Product Name v2'
 			}, 
 			['productId']
-		)
+		);
 
 		expect(
 			schema.validate(
@@ -147,7 +147,7 @@ describe('object', () => {
 				['productName']
 			)
 		)
-		.toEqual(errors)
+		.toEqual(errors);
 
 		expect(
 			schema.isValid({
@@ -156,8 +156,8 @@ describe('object', () => {
 			}, 
 			['productId'])
 		)
-		.toBeTruthy()
-	})
+		.toBeTruthy();
+	});
 
 	it('should extend schema', () => {
 		const schema = object({
@@ -171,7 +171,7 @@ describe('object', () => {
 			productId: 1,
 			productName: 'Product Name'
 		}))
-		.toBeTruthy()
+		.toBeTruthy();
 
 		const schema2 = schema.extend<{ 
 			productId: number
@@ -187,27 +187,27 @@ describe('object', () => {
 			productId: 1,
 			productName: 'Product Name'
 		}))
-		.toBeTruthy()
+		.toBeTruthy();
 
 		expect(schema2.isValid({
 			productId: 1,
 			productName: 'Product Name'
 		}))
-		.toBeFalsy()
+		.toBeFalsy();
 
 		expect(schema2.isValid({
 			productId: 1,
 			productName: 'Product Name',
 			productCategory: 'Product Category'
 		}))
-		.toBeTruthy()
-	})
+		.toBeTruthy();
+	});
 
 	it('should each schema be separated from previous', () => {
 		const productIdSchema = number();
 		// @ts-expect-error // To check protected values
 		expect(productIdSchema.def.normalRules.size)
-		.toBe(0)
+		.toBe(0);
 
 		const schema = object({
 			productId: productIdSchema.required(),
@@ -218,24 +218,24 @@ describe('object', () => {
 
 		// @ts-expect-error // To check private values
 		expect(productIdSchema.def.normalRules.size)
-		.toBe(0)
+		.toBe(0);
 
 		// @ts-expect-error // To check private values
 		expect(schema.isNullable)
-		.toBe(true)
+		.toBe(true);
 
 		// @ts-expect-error // To check private values
 		expect(schema.isOptional)
-		.toBe(false)
+		.toBe(false);
 
 		// @ts-expect-error // To check private values
 		expect(schema1.isNullable)
-		.toBe(true)
+		.toBe(true);
 
 		// @ts-expect-error // To check private values
 		expect(schema1.isOptional)
-		.toBe(true)
-	})
+		.toBe(true);
+	});
 
 	it('should date inside object be true', () => {
 		const schema = object({
@@ -248,19 +248,19 @@ describe('object', () => {
 		// @ts-expect-error To test if is valid
 			productDate: 10
 		}))
-		.toBeFalsy()
+		.toBeFalsy();
 
 		expect(schema.isValid({
 			productDate: new Date()
 		}))
-		.toBeTruthy()
+		.toBeTruthy();
 	
 		expect(schema.isValid({
 		// @ts-expect-error To test if is valid
 			productDate: undefined
 		}))
-		.toBeTruthy()
-	})
+		.toBeTruthy();
+	});
 
 	describe('should have one of the keys true', () => {
 		it('diferent schemas', () => {
@@ -281,30 +281,30 @@ describe('object', () => {
 			.compile();
 
 			expect(schema.isValid({ }))
-			.toBeFalsy()
+			.toBeFalsy();
 
 			expect(schema.isValid({
 				productId: 1
 			}))
-			.toBeTruthy()
+			.toBeTruthy();
 
 			expect(schema.isValid({
 				productName: 'Test'
 			}))
-			.toBeTruthy()
+			.toBeTruthy();
 
 			expect(schema.isValid({
 				productType: 'Test'
 			}))
-			.toBeTruthy()
+			.toBeTruthy();
 
 			expect(schema.isValid({
 				productId: 1,
 				productName: 'Test',
 				productType: 'Test'
 			}))
-			.toBeTruthy()
-		})
+			.toBeTruthy();
+		});
 		it('same schema', () => {
 			const schema = object<{
 				productName?: string
@@ -317,24 +317,24 @@ describe('object', () => {
 			.compile();
 
 			expect(schema.isValid({ }))
-			.toBeFalsy()
+			.toBeFalsy();
 
 			expect(schema.isValid({
 				productName: 'Test'
 			}))
-			.toBeTruthy()
+			.toBeTruthy();
 
 			expect(schema.isValid({
 				productType: 'Test'
 			}))
-			.toBeTruthy()
+			.toBeTruthy();
 
 			expect(schema.isValid({
 				productName: 'Test',
 				productType: 'Test'
 			}))
-			.toBeTruthy()
-		})
+			.toBeTruthy();
+		});
 
 		it('multiple oneOf', () => {
 			const productSchema = object<{
@@ -344,7 +344,7 @@ describe('object', () => {
 				productName: string().notRequired(),
 				productType: string().notRequired()
 			})
-			.oneOf(['productName', 'productType'], string().required())
+			.oneOf(['productName', 'productType'], string().required());
 
 			const schema = object({
 				product1: productSchema,
@@ -356,7 +356,7 @@ describe('object', () => {
 				product1: {},
 				product2: {}
 			}))
-			.toBeFalsy()
+			.toBeFalsy();
 
 			expect(schema.isValid({
 				product1: {
@@ -364,7 +364,7 @@ describe('object', () => {
 				},
 				product2: {}
 			}))
-			.toBeFalsy()
+			.toBeFalsy();
 
 			expect(schema.isValid({
 				product1: { },
@@ -372,7 +372,7 @@ describe('object', () => {
 					productName: 'Test'
 				}
 			}))
-			.toBeFalsy()
+			.toBeFalsy();
 
 			expect(schema.isValid({
 				product1: {
@@ -382,8 +382,8 @@ describe('object', () => {
 					productName: 'Test'
 				}
 			}))
-			.toBeTruthy()
-		})
+			.toBeTruthy();
+		});
 
 		describe('should have a custom message', () => {
 			it('should all errors have the same custom message', () => {
@@ -411,13 +411,13 @@ describe('object', () => {
 						path: 'productType',
 						error: customMessage
 					}
-				])
+				]);
 
 				expect(schema.validate({
 					productName: 'Test547896'
 				}))
-				.toEqual([])
-			})
+				.toEqual([]);
+			});
 
 			it('should have one custom error', () => {
 				const customMessage = 'Custom Message';
@@ -443,13 +443,13 @@ describe('object', () => {
 						path: 'productName',
 						error: customMessage
 					}
-				])
+				]);
 
 				expect(schema.validate({
 					productName: 'Test'
 				}))
-				.toEqual([])
-			})
+				.toEqual([]);
+			});
 
 			it('should have multiple custom error', () => {
 				const customMessage = 'Custom Message';
@@ -495,13 +495,13 @@ describe('object', () => {
 						path: 'productType',
 						error: customMessage
 					}
-				])
+				]);
 
 				expect(schema.validate({
 					productName: 'Test'
 				}))
-				.toEqual([])
-			})
-		})
-	})
-})
+				.toEqual([]);
+			});
+		});
+	});
+});

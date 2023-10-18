@@ -1,4 +1,3 @@
-
 import { type Definitions } from '../core/Definitions';
 import { Schema } from '../core/schema';
 import { SchemaTypes } from '../utils/Utils';
@@ -7,12 +6,12 @@ export class AnySchema<
 	Input = any, 
 	Final = any
 > extends Schema<Input, Final> {
-	protected type: SchemaTypes = SchemaTypes.ARRAY
-	protected message: string = `{{key}} is not ${this.type}`
-	protected rule = () => true
+	protected type: SchemaTypes = SchemaTypes.ARRAY;
+	protected message: string = `{{key}} is not ${this.type}`;
+	protected rule = () => true;
 	
 	protected clone() {
-		return new AnySchema(this.message, this.def)
+		return new AnySchema(this.message, this.def);
 	}
 
 	constructor(message?: string, def?: Definitions) {
@@ -35,7 +34,7 @@ export class AnySchema<
 			is: (value) => !enumValues.includes(value),
 			message: message ?? ((messages) => messages.any.enum),
 			name: 'enumString'
-		}) as unknown as AnySchema<T[keyof T], Final>
+		}) as unknown as AnySchema<T[keyof T], Final>;
 	}
 }
 
@@ -44,4 +43,4 @@ export const any = <
 	Final = any,
 >(message?: string) => {
 	return new AnySchema<Input, Final>(message);
-}
+};

@@ -1,7 +1,7 @@
-import { type SchemaError } from '../types/types'
-import { Parameters } from '../utils/Utils'
+import { type SchemaError } from '../types/types';
+import { Parameters } from '../utils/Utils';
 
-import { BaseRule, type RuleSrcCodeConfig, type RuleTestConfig } from './BaseRule'
+import { BaseRule, type RuleSrcCodeConfig, type RuleTestConfig } from './BaseRule';
 
 /**
  * When test is "false" message appears
@@ -28,13 +28,13 @@ export class Rule<Value, T = any> extends BaseRule<Value, T, RuleMethod<Value, T
 			methodName,
 			parameters,
 			srcCode
-		} = this.getRuleSrcCode(config)
+		} = this.getRuleSrcCode(config);
 
 		return [
 			`const ${methodName}_isValid = ${Parameters.CONTEXT_KEY}.rules.${methodName}(${parameters.join(',')});`,
 			(this.isMethodError ? `if ( ${methodName}_isValid.length ) {` : `if ( ${methodName}_isValid ) {`),
 			...srcCode,
 			'}'
-		]
+		];
 	}
 }

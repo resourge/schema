@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/consistent-indexed-object-style */
-import { type Schema } from '../core/schema'
-import { type MessageType } from '../utils/messages'
+import { type Schema } from '../core/schema';
+import { type MessageType } from '../utils/messages';
 
 export type SchemaError = {
 	error: string

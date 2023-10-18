@@ -1,9 +1,9 @@
-import { type Schema } from '../core/schema'
-import { type CompileSchemaConfig } from '../types/types'
-import { type SchemaTypes } from '../utils/Utils'
+import { type Schema } from '../core/schema';
+import { type CompileSchemaConfig } from '../types/types';
+import { type SchemaTypes } from '../utils/Utils';
 
-import { type RuleBooleanMethod } from './Rule'
-import { WhenRule } from './WhenRule'
+import { type RuleBooleanMethod } from './Rule';
+import { WhenRule } from './WhenRule';
 
 export class NamedWhenRule<Value = any, T = any> extends WhenRule<Value, T> {
 	public namedValueKey: string;
@@ -47,15 +47,15 @@ export class NamedWhenRule<Value = any, T = any> extends WhenRule<Value, T> {
 				const arr = _key.split('.');
 				arr.pop();
 
-				_key = arr.join('.')
-				_valueKey = `value.${_key}.${this.namedValueKey}`
+				_key = arr.join('.');
+				_valueKey = `value.${_key}.${this.namedValueKey}`;
 			}
 			else {
-				_valueKey = `value.${this.namedValueKey}`
+				_valueKey = `value.${this.namedValueKey}`;
 			}
 		}
 		else if ( process.env.NODE_ENV === 'development' ) {
-			throw new Error('Cannot use "when" at the schema root.')
+			throw new Error('Cannot use "when" at the schema root.');
 		}
 		
 		return super.getWhenRule(
@@ -67,6 +67,6 @@ export class NamedWhenRule<Value = any, T = any> extends WhenRule<Value, T> {
 				path,
 				srcCode
 			}
-		)
+		);
 	}
 }

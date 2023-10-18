@@ -1,5 +1,5 @@
 import { number, object, string } from '..';
-import { array, ArraySchema } from '../ArraySchema'
+import { array, ArraySchema } from '../ArraySchema';
 
 describe('array', () => {
 	it('should be empty', () => {
@@ -8,10 +8,10 @@ describe('array', () => {
 		.compile();
 
 		expect(schema.isValid([]))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(schema.isValid([1]))
-		.toBeFalsy()
-	})
+		.toBeFalsy();
+	});
 
 	it('should be length', () => {
 		const schema = array(number())
@@ -19,19 +19,19 @@ describe('array', () => {
 		.compile();
 
 		expect(schema.isValid([]))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema.isValid([1]))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema.isValid([1, 2]))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(schema.isValid([1, 2, 3]))
-		.toBeFalsy()
+		.toBeFalsy();
 
 		expect(array(number())
 		.length(1)
 		.isValid([1, 2, 3]))
-		.toBeFalsy()
-	})
+		.toBeFalsy();
+	});
 
 	it('should be max', () => {
 		const schema = new ArraySchema(number())
@@ -39,19 +39,19 @@ describe('array', () => {
 		.compile();
 
 		expect(schema.isValid([]))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(schema.isValid([1]))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(schema.isValid([1, 2]))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(schema.isValid([1, 2, 3]))
-		.toBeFalsy()
+		.toBeFalsy();
 
 		expect(array(number())
 		.max(1)
 		.isValid([1, 2, 3]))
-		.toBeFalsy()
-	})
+		.toBeFalsy();
+	});
 
 	it('should be min', () => {
 		const schema = array(number())
@@ -59,19 +59,19 @@ describe('array', () => {
 		.compile();
 
 		expect(schema.isValid([]))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema.isValid([1]))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema.isValid([1, 2]))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(schema.isValid([1, 2, 3]))
-		.toBeTruthy()
+		.toBeTruthy();
 
 		expect(array(number())
 		.min(1)
 		.isValid([1, 2, 3]))
-		.toBeTruthy()
-	})
+		.toBeTruthy();
+	});
 	
 	describe('unique', () => {
 		it('should be unique number', () => {
@@ -80,11 +80,11 @@ describe('array', () => {
 			.compile();
 	
 			expect(schemaNumber.isValid([]))
-			.toBeTruthy()
+			.toBeTruthy();
 			expect(schemaNumber.isValid([1, 2]))
-			.toBeTruthy()
+			.toBeTruthy();
 			expect(schemaNumber.isValid([2, 2]))
-			.toBeFalsy()
+			.toBeFalsy();
 	
 			const schemaObject = array(
 				object({
@@ -96,14 +96,14 @@ describe('array', () => {
 			.compile();
 	
 			expect(schemaObject.isValid([]))
-			.toBeTruthy()
+			.toBeTruthy();
 			expect(schemaObject.isValid([
 				{
 					product: 1,
 					productName: 'Name'
 				}
 			]))
-			.toBeTruthy()
+			.toBeTruthy();
 			expect(schemaObject.isValid([
 				{
 					product: 1,
@@ -114,7 +114,7 @@ describe('array', () => {
 					productName: 'Name'
 				}
 			]))
-			.toBeTruthy()
+			.toBeTruthy();
 	
 			expect(
 				schemaObject.isValid([
@@ -128,8 +128,8 @@ describe('array', () => {
 					}
 				])
 			)
-			.toBeTruthy()
-		})
+			.toBeTruthy();
+		});
 
 		it('should be unique 2 types', () => {
 			const schemaNumber = array<Array<1 | 2>>(
@@ -139,13 +139,13 @@ describe('array', () => {
 			.compile();
 	
 			expect(schemaNumber.isValid([]))
-			.toBeTruthy()
+			.toBeTruthy();
 			expect(schemaNumber.isValid([1]))
-			.toBeTruthy()
+			.toBeTruthy();
 			expect(schemaNumber.isValid([2, 4]))
-			.toBeFalsy()
-		})
-	})
+			.toBeFalsy();
+		});
+	});
 
 	describe('should be uniqueby', () => {
 		it('key', () => {
@@ -159,14 +159,14 @@ describe('array', () => {
 			.compile();
 	
 			expect(schemaObject.isValid([]))
-			.toBeTruthy()
+			.toBeTruthy();
 			expect(schemaObject.isValid([
 				{
 					product: 1,
 					productName: 'Name'
 				}
 			]))
-			.toBeTruthy()
+			.toBeTruthy();
 			expect(schemaObject.isValid([
 				{
 					product: 1,
@@ -177,7 +177,7 @@ describe('array', () => {
 					productName: 'Name'
 				}
 			]))
-			.toBeTruthy()
+			.toBeTruthy();
 	
 			expect(
 				schemaObject.isValid([
@@ -191,8 +191,8 @@ describe('array', () => {
 					}
 				])
 			)
-			.toBeFalsy()
-		})
+			.toBeFalsy();
+		});
 
 		it('value', () => {
 			const schemaObject = array(
@@ -205,14 +205,14 @@ describe('array', () => {
 			.compile();
 	
 			expect(schemaObject.isValid([]))
-			.toBeTruthy()
+			.toBeTruthy();
 			expect(schemaObject.isValid([
 				{
 					product: 1,
 					productName: 'Name'
 				}
 			]))
-			.toBeTruthy()
+			.toBeTruthy();
 			expect(schemaObject.isValid([
 				{
 					product: 1,
@@ -223,7 +223,7 @@ describe('array', () => {
 					productName: 'Name'
 				}
 			]))
-			.toBeFalsy()
+			.toBeFalsy();
 	
 			expect(
 				schemaObject.isValid([
@@ -237,9 +237,9 @@ describe('array', () => {
 					}
 				])
 			)
-			.toBeFalsy()
-		})
-	})
+			.toBeFalsy();
+		});
+	});
 
 	it('should each schema be separated from previous', () => {
 		const schema = array(number())
@@ -250,24 +250,24 @@ describe('array', () => {
 	
 		// @ts-expect-error // To check protected values
 		expect(schema.isNullable)
-		.toBe(true)
+		.toBe(true);
 		// @ts-expect-error // To check protected values
 		expect(schema.isOptional)
-		.toBe(false)
+		.toBe(false);
 		// @ts-expect-error // To check protected values
 		expect(schema1.isNullable)
-		.toBe(true)
+		.toBe(true);
 		// @ts-expect-error // To check protected values
 		expect(schema1.isOptional)
-		.toBe(true)
+		.toBe(true);
 
 		// @ts-expect-error // To check protected values
 		expect(schema.def.normalRules.size)
-		.toBe(1)
+		.toBe(1);
 		// @ts-expect-error // To check protected values
 		expect(schema1.def.normalRules.size)
-		.toBe(2)
+		.toBe(2);
 		// @ts-expect-error // To check protected values
-		expect(schema.def.normalRules.size).not.toBe(schema1.def.normalRules.size)
-	})
-})
+		expect(schema.def.normalRules.size).not.toBe(schema1.def.normalRules.size);
+	});
+});

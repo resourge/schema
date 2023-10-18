@@ -11,14 +11,14 @@ describe('string', () => {
 		.compile();
 
 		expect(schema.isValid('11'))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(schema.isValid('_a'))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(schema.isValid('aaa'))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(schema.isValid('aaa3'))
-		.toBeFalsy()
-	})
+		.toBeFalsy();
+	});
 	
 	it('should be required', () => {
 		const schema = string()
@@ -27,15 +27,15 @@ describe('string', () => {
 
 		// @ts-expect-error // To force validation to be false
 		expect(schema.isValid(null))
-		.toBeFalsy()
+		.toBeFalsy();
 		// @ts-expect-error // To force validation to be false
 		expect(schema.isValid(undefined))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema.isValid(''))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema.isValid('a'))
-		.toBeTruthy()
-	})
+		.toBeTruthy();
+	});
 
 	it('should be equals', () => {
 		const schema = string()
@@ -52,12 +52,12 @@ describe('string', () => {
 		.compile();
 
 		expect(schema1.isValid('Name'))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(schema1.isValid('Age'))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(schema1.isValid('aaa3'))
-		.toBeFalsy()
-	})
+		.toBeFalsy();
+	});
 
 	it('should be alpha', () => {
 		const schema = string()
@@ -65,12 +65,12 @@ describe('string', () => {
 		.compile();
 
 		expect(schema.isValid('11'))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema.isValid('_a'))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema.isValid('aaa'))
-		.toBeTruthy()
-	})
+		.toBeTruthy();
+	});
 
 	it('should be alphadash', () => {
 		const schema = string()
@@ -78,16 +78,16 @@ describe('string', () => {
 		.compile();
 
 		expect(schema.isValid('//'))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema.isValid('aaa'))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(schema.isValid('11'))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(schema.isValid('aaa11'))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(schema.isValid('a__--aa11'))
-		.toBeTruthy()
-	})
+		.toBeTruthy();
+	});
 
 	it('should be alphanum', () => {
 		const schema = string()
@@ -95,16 +95,16 @@ describe('string', () => {
 		.compile();
 
 		expect(schema.isValid('//'))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema.isValid('aaa'))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(schema.isValid('11'))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(schema.isValid('aaa11'))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(schema.isValid('a__--aa11'))
-		.toBeFalsy()
-	})
+		.toBeFalsy();
+	});
 
 	it('should be base64', () => {
 		const schema = string()
@@ -112,12 +112,12 @@ describe('string', () => {
 		.compile();
 
 		expect(schema.isValid('//'))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema.isValid('aaa'))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema.isValid('TWFuIGlzIGRpc3Rpbmd1aXNoZWQsIG5vdCBvbmx5IGJ5IGhpcyByZWFzb24sIGJ1dCBieSB0aGlzIHNpbmd1bGFyIHBhc3Npb24gZnJvbSBvdGhlciBhbmltYWxzLCB3aGljaCBpcyBhIGx1c3Qgb2YgdGhlIG1pbmQsIHRoYXQgYnkgYSBwZXJzZXZlcmFuY2Ugb2YgZGVsaWdodCBpbiB0aGUgY29udGludWVkIGFuZCBpbmRlZmF0aWdhYmxlIGdlbmVyYXRpb24gb2Yga25vd2xlZGdlLCBleGNlZWRzIHRoZSBzaG9ydCB2ZWhlbWVuY2Ugb2YgYW55IGNhcm5hbCBwbGVhc3VyZS4='))
-		.toBeTruthy()
-	})
+		.toBeTruthy();
+	});
 
 	it('should contain', () => {
 		const schema = string()
@@ -125,16 +125,16 @@ describe('string', () => {
 		.compile();
 
 		expect(schema.isValid('//'))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema.isValid('aaa'))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema.isValid('aproductaa'))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(schema.isValid('aaaproduct'))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(schema.isValid('productaaaproduct'))
-		.toBeTruthy()
-	})
+		.toBeTruthy();
+	});
 
 	it('should be cuid', () => {
 		const schema = string()
@@ -142,10 +142,10 @@ describe('string', () => {
 		.compile();
 
 		expect(schema.isValid('//'))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema.isValid('cjld2cjxh0000qzrmn831i7rn'))
-		.toBeTruthy()
-	})
+		.toBeTruthy();
+	});
 
 	describe('should be email', () => {
 		it('and basic', () => {
@@ -154,25 +154,25 @@ describe('string', () => {
 			.compile();
 	
 			expect(schema.isValid('//'))
-			.toBeFalsy()
+			.toBeFalsy();
 			expect(schema.isValid('a{@a.a'))
-			.toBeTruthy()
+			.toBeTruthy();
 			expect(schema.isValid('a@a.a'))
-			.toBeTruthy()
-		})
+			.toBeTruthy();
+		});
 		it('and precise', () => {
 			const schema = string()
 			.email('precise')
 			.compile();
 	
 			expect(schema.isValid('//'))
-			.toBeFalsy()
+			.toBeFalsy();
 			expect(schema.isValid('a@a.a'))
-			.toBeFalsy()
+			.toBeFalsy();
 			expect(schema.isValid('a@a.pt'))
-			.toBeTruthy()
-		})
-	})
+			.toBeTruthy();
+		});
+	});
 
 	it('should be empty', () => {
 		const schema = string()
@@ -180,12 +180,12 @@ describe('string', () => {
 		.compile();
 
 		expect(schema.isValid('//'))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema.isValid(''))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(schema.isValid(' '))
-		.toBeFalsy()
-	})
+		.toBeFalsy();
+	});
 
 	it('should be hex', () => {
 		const schema = string()
@@ -193,16 +193,16 @@ describe('string', () => {
 		.compile();
 
 		expect(schema.isValid('//'))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema.isValid('000000'))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(schema.isValid('666FFF'))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(schema.isValid('FFFFFF'))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(schema.isValid('Q66FFF'))
-		.toBeFalsy()
-	})
+		.toBeFalsy();
+	});
 
 	it('should be length', () => {
 		const schema = string()
@@ -210,12 +210,12 @@ describe('string', () => {
 		.compile();
 
 		expect(schema.isValid('//'))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(schema.isValid('000000'))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema.isValid('0'))
-		.toBeFalsy()
-	})
+		.toBeFalsy();
+	});
 
 	it('should be max', () => {
 		const schema = string()
@@ -223,12 +223,12 @@ describe('string', () => {
 		.compile();
 
 		expect(schema.isValid('//'))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(schema.isValid('0'))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(schema.isValid('000000'))
-		.toBeFalsy()
-	})
+		.toBeFalsy();
+	});
 
 	it('should be min', () => {
 		const schema = string()
@@ -236,12 +236,12 @@ describe('string', () => {
 		.compile();
 
 		expect(schema.isValid('0'))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema.isValid('//'))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(schema.isValid('000000'))
-		.toBeTruthy()
-	})
+		.toBeTruthy();
+	});
 
 	it('should be numeric', () => {
 		const schema = string()
@@ -249,14 +249,14 @@ describe('string', () => {
 		.compile();
 
 		expect(schema.isValid('0'))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(schema.isValid('001'))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema.isValid('000000'))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema.isValid('//'))
-		.toBeFalsy()
-	})
+		.toBeFalsy();
+	});
 
 	it('should be pattern', () => {
 		const schema = string()
@@ -264,16 +264,16 @@ describe('string', () => {
 		.compile();
 	
 		expect(schema.isValid('0'))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema.isValid('001'))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema.isValid('000000'))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema.isValid('//'))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(schema.isValid('aaa'))
-		.toBeTruthy()
-	})
+		.toBeTruthy();
+	});
 	
 	it('should be url', () => {
 		const schema = string()
@@ -281,22 +281,22 @@ describe('string', () => {
 		.compile();
 
 		expect(schema.isValid('aaaa'))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema.isValid('/index.html'))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema.isValid('https://google'))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema.isValid('https://.pt'))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema.isValid('www.google.pt'))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(schema.isValid('http://www.google.pt'))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(schema.isValid('https://www.google.pt'))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(schema.isValid('https://google.pt'))
-		.toBeTruthy()
-	})
+		.toBeTruthy();
+	});
 
 	it('should be uuid', () => {
 		const schema = string()
@@ -304,14 +304,14 @@ describe('string', () => {
 		.compile();
 
 		expect(schema.isValid('0'))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema.isValid('000000'))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema.isValid('00000000-0000-0000-0000-000000000000'))
-		.toBeTruthy()
+		.toBeTruthy();
 		expect(schema.isValid('123e4567-e89b-12d3-a456-426614174000'))
-		.toBeTruthy()
-	})
+		.toBeTruthy();
+	});
 
 	it('should be postal code', () => {
 		const schema = string()
@@ -319,27 +319,27 @@ describe('string', () => {
 		.compile();
 
 		expect(schema.isValid('0'))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema.isValid('001'))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema.isValid('4999333'))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema.isValid('4999-333'))
-		.toBeTruthy()
+		.toBeTruthy();
 
 		const schema1 = string()
 		.postalCode(() => PostalCodes.PT)
 		.compile();
 
 		expect(schema1.isValid('0'))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema1.isValid('001'))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema1.isValid('4999333'))
-		.toBeFalsy()
+		.toBeFalsy();
 		expect(schema1.isValid('4999-333'))
-		.toBeTruthy()
-	})
+		.toBeTruthy();
+	});
 
 	it('should test enum types', () => {
 		enum FieldTypeEnum {
@@ -364,8 +364,8 @@ describe('string', () => {
 			// @ts-expect-error // To force validation to be false
 			productName: 'NOT ENUM VALUE' 
 		}))
-		.toBeFalsy()
-	})
+		.toBeFalsy();
+	});
 
 	it('should each schema be separated from previous', () => {
 		const schema = string()
@@ -376,26 +376,26 @@ describe('string', () => {
 	
 		// @ts-expect-error // To check private values
 		expect(schema.isNullable)
-		.toBe(true)
+		.toBe(true);
 		// @ts-expect-error // To check private values
 		expect(schema.isOptional)
-		.toBe(false)
+		.toBe(false);
 		// @ts-expect-error // To check private values
 		expect(schema1.isNullable)
-		.toBe(true)
+		.toBe(true);
 		// @ts-expect-error // To check private values
 		expect(schema1.isOptional)
-		.toBe(true)
+		.toBe(true);
 
 		// @ts-expect-error // To check protected values
 		expect(schema.def.normalRules.size)
-		.toBe(1)
+		.toBe(1);
 		// @ts-expect-error // To check protected values
 		expect(schema1.def.normalRules.size)
-		.toBe(2)
+		.toBe(2);
 		// @ts-expect-error // To check protected values
-		expect(schema.def.normalRules.size).not.toBe(schema1.def.normalRules.size)
-	})
+		expect(schema.def.normalRules.size).not.toBe(schema1.def.normalRules.size);
+	});
 
 	it('should when', () => {
 		const schema = string()
@@ -406,10 +406,10 @@ describe('string', () => {
 		.compile();
 
 		expect(schema.isValid('Test 10'))
-		.toBe(true)
+		.toBe(true);
 
 		expect(schema.isValid('Test 11'))
-		.toBe(false)
+		.toBe(false);
 
 		const schema1 = object({
 			product: number(),
@@ -428,12 +428,12 @@ describe('string', () => {
 			product: 10,
 			productName: '10101'
 		}))
-		.toBe(true)
+		.toBe(true);
 
 		expect(schema1.isValid({
 			product: 11,
 			productName: ''
 		}))
-		.toBe(true)
-	})
-})
+		.toBe(true);
+	});
+});

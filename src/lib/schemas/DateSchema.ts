@@ -6,11 +6,11 @@ import { type NullableType } from '../types/SchemaMap';
 import { SchemaTypes, createDate } from '../utils/Utils';
 
 const isToday = (someDate: Date): boolean => {
-	const today = new Date()
-	return someDate.getDate() === today.getDate() &&
-		someDate.getMonth() === today.getMonth() &&
-		someDate.getFullYear() === today.getFullYear()
-}
+	const today = new Date();
+	return someDate.getDate() === today.getDate()
+		&& someDate.getMonth() === today.getMonth()
+		&& someDate.getFullYear() === today.getFullYear();
+};
 
 type MinDateMethod<Form> = (parent: any, config: RuleTestConfig<Form>) => Date | undefined
 
@@ -18,12 +18,12 @@ export class DateSchema<
 	Input extends NullableType<Date> = Date,
 	Final = any
 > extends Schema<Input, Final> {
-	protected type: SchemaTypes = SchemaTypes.DATE
-	protected message: string = `{{key}} is not ${this.type}`
-	protected rule = (value: Date) => (value instanceof Date) && !isNaN((value as unknown as Date).getTime())
+	protected type: SchemaTypes = SchemaTypes.DATE;
+	protected message: string = `{{key}} is not ${this.type}`;
+	protected rule = (value: Date) => (value instanceof Date) && !isNaN((value as unknown as Date).getTime());
 
 	protected clone() {
-		return new DateSchema<Input, Final>(this.message, this.def)
+		return new DateSchema<Input, Final>(this.message, this.def);
 	}
 
 	constructor(message?: string, def?: Definitions) {
@@ -42,7 +42,7 @@ export class DateSchema<
 			is: (value: Date) => !isToday(value),
 			message: message ?? ((messages) => messages.date.today),
 			name: 'today'
-		})
+		});
 	}
 
 	private getIsFunction<Form = this['final']>(
@@ -58,24 +58,24 @@ export class DateSchema<
 					return false;
 				}
 				return cb(x, y);
-			} : cb
+			} : cb;
 
 		switch (format) {
 			case 'year':
-				getTime = (date: Date) => date.getFullYear()
+				getTime = (date: Date) => date.getFullYear();
 				break;
 			case 'month':
 				getTime = (date: Date) => createDate({
 					year: date.getFullYear(),
 					month: date.getMonth()
-				}).getTime()
+				}).getTime();
 				break;
 			case 'date':
 				getTime = (date: Date) => createDate({
 					year: date.getFullYear(),
 					month: date.getMonth(),
 					day: date.getDate()
-				}).getTime()
+				}).getTime();
 				break;
 			case 'hour': 
 				getTime = (date: Date) => createDate({
@@ -83,7 +83,7 @@ export class DateSchema<
 					month: date.getMonth(),
 					day: date.getDate(),
 					hour: date.getHours()
-				}).getTime()
+				}).getTime();
 				break;
 			case 'minute': 
 				getTime = (date: Date) => createDate({
@@ -92,7 +92,7 @@ export class DateSchema<
 					day: date.getDate(),
 					hour: date.getHours(),
 					minute: date.getMinutes()
-				}).getTime()
+				}).getTime();
 				break;
 			case 'second': 
 				getTime = (date: Date) => createDate({
@@ -102,7 +102,7 @@ export class DateSchema<
 					hour: date.getHours(),
 					minute: date.getMinutes(),
 					second: date.getSeconds()
-				}).getTime()
+				}).getTime();
 				break;
 			case 'time': 
 				getTime = (date: Date) => createDate({
@@ -110,10 +110,10 @@ export class DateSchema<
 					minute: date.getMinutes(),
 					second: date.getSeconds(),
 					millisecond: date.getSeconds()
-				}).getTime()
+				}).getTime();
 				break;
 			default: 
-				getTime = (date: Date) => date.getTime()
+				getTime = (date: Date) => date.getTime();
 				break;
 		}
 
@@ -122,16 +122,16 @@ export class DateSchema<
 				? (date: MinDateMethod<Form>, parent: any, config: RuleTestConfig<Form>) => {
 					const _date = date(parent, config);
 
-					return _date ? getTime(_date) : undefined
+					return _date ? getTime(_date) : undefined;
 				} : getTime
-		) as (date: Date | MinDateMethod<Form>, parent: any, config: RuleTestConfig<Form>) => number
+		) as (date: Date | MinDateMethod<Form>, parent: any, config: RuleTestConfig<Form>) => number;
 
 		return (value: Date, parent: any, config: RuleTestConfig<Form>) => {
 			return _cb(
 				getDate(date, parent, config), 
 				getTime(value)
-			)
-		}
+			);
+		};
 	}
 	
 	/**
@@ -151,7 +151,7 @@ export class DateSchema<
 			),
 			message: message ?? ((messages) => messages.date.minDate(minDate, format)),
 			name: 'minDate'
-		})
+		});
 	}
 	
 	/**
@@ -171,7 +171,7 @@ export class DateSchema<
 			),
 			message: message ?? ((messages) => messages.date.maxDate(maxDate, format)),
 			name: 'maxDate'
-		})
+		});
 	}
 	
 	/**
@@ -191,7 +191,7 @@ export class DateSchema<
 			),
 			message: message ?? ((messages) => messages.date.maxDate(date, format)),
 			name: 'maxDate'
-		})
+		});
 	}
 }
 
@@ -200,4 +200,4 @@ export const date = <
 	Final = any
 >(message?: string) => {
 	return new DateSchema<Input, Final>(message);
-}
+};

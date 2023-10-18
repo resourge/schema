@@ -1,4 +1,3 @@
-
 import { ArrayTypedSchema } from '../core/ArrayTypedSchema';
 import { type Definitions } from '../core/Definitions';
 import { type ObjectPropertiesSchema } from '../types/SchemaMap';
@@ -9,12 +8,12 @@ export class ArraySchema<
 	Final = any,
 	S extends ObjectPropertiesSchema<Input[number], Final> = ObjectPropertiesSchema<Input[number], Final>
 > extends ArrayTypedSchema<Input, Final, S> {
-	protected type: SchemaTypes = SchemaTypes.ARRAY
-	protected message: string = `{{key}} is not ${this.type}`
-	protected rule = (value: any[]) => Array.isArray(value)
+	protected type: SchemaTypes = SchemaTypes.ARRAY;
+	protected message: string = `{{key}} is not ${this.type}`;
+	protected rule = (value: any[]) => Array.isArray(value);
 
 	protected clone() {
-		return new ArraySchema<Input, Final, S>(this.schema as unknown as S, this.message, this.def)
+		return new ArraySchema<Input, Final, S>(this.schema as unknown as S, this.message, this.def);
 	}
 
 	constructor(schema: S, message?: string, def?: Definitions) {
@@ -33,7 +32,7 @@ export class ArraySchema<
 			is: (value: any) => !(value.length === 0),
 			message: message ?? ((messages) => messages.array.empty),
 			name: 'empty'
-		})
+		});
 	}
 
 	/**
@@ -47,7 +46,7 @@ export class ArraySchema<
 			is: (value: any) => !(minValue <= value.length),
 			message: message ?? ((messages) => messages.array.min(minValue)),
 			name: 'minArray'
-		})
+		});
 	}
 
 	/**
@@ -61,7 +60,7 @@ export class ArraySchema<
 			is: (value: any) => !(value.length <= maxValue),
 			message: message ?? ((messages) => messages.array.max(maxValue)),
 			name: 'maxArray'
-		})
+		});
 	}
 	
 	/**
@@ -75,7 +74,7 @@ export class ArraySchema<
 			is: (value: any) => !(value.length === length),
 			message: message ?? ((messages) => messages.array.length(length)),
 			name: 'lengthArray'
-		})
+		});
 	}
 
 	/**
@@ -91,7 +90,7 @@ export class ArraySchema<
 			is: (value: any) => !(value.length === (new Set(value)).size),
 			message: message ?? ((messages) => messages.array.unique),
 			name: 'uniqueArray'
-		})
+		});
 	}
 
 	/**
@@ -102,13 +101,13 @@ export class ArraySchema<
 	public uniqueBy(key: keyof Input[number] | ((val: Input[number]) => any), message?: string) {
 		const mapCb: (val: Input[number]) => any = (
 			typeof key === 'string' ? (val: any) => val[key] : key as (val: Input[number]) => any
-		)
+		);
 
 		return this.test({
 			is: (value: any) => !(value.length === (new Set(value.map(mapCb))).size),
 			message: message ?? ((messages) => messages.array.uniqueBy),
 			name: 'uniqueByArray'
-		})
+		});
 	}
 }
 
@@ -128,4 +127,4 @@ export const array = <
 	message?: string
 ): ArraySchema<Array<S['input']>, Final, S> => {
 	return new ArraySchema(schemas, message);
-}
+};

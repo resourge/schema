@@ -1,3 +1,11 @@
+## [1.11.2](https://github.com/resourge/schema/compare/v1.11.1...v1.11.2) (2023-10-19)
+
+
+### Bug Fixes
+
+* **__dev__:** replace __DEV__ for process.env.NODE_ENV === 'development' ([48348b8](https://github.com/resourge/schema/commit/48348b8af4fb6e54b90a6da14fb6fb7c3a5915ea))
+* **formkey:** prevent generic type circularly referencing ([92ed27d](https://github.com/resourge/schema/commit/92ed27d148df64dd5d4bc0c5d2baefae972a380a))
+
 ## [1.11.1](https://github.com/resourge/schema/compare/v1.11.0...v1.11.1) (2023-09-08)
 
 

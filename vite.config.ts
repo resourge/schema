@@ -1,6 +1,6 @@
 /// <reference types="vitest" />
 
-import react from '@vitejs/plugin-react'
+import react from '@vitejs/plugin-react';
 
 import { defineLibConfig } from './config/defineLibConfig';
 
@@ -9,4 +9,4 @@ export default defineLibConfig(() => ({
 	plugins: [
 		react()
 	]
-}))
+}));

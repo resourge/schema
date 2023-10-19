@@ -1,311 +1,8 @@
 diff --git a/node_modules/vite-plugin-dts/dist/index.mjs b/node_modules/vite-plugin-dts/dist/index.mjs
-index 70a9e60..6c0504c 100644
+index a26c2d5..cb59747 100644
 --- a/node_modules/vite-plugin-dts/dist/index.mjs
 +++ b/node_modules/vite-plugin-dts/dist/index.mjs
-@@ -24,325 +24,325 @@ import { PackageJsonLookup } from '@rushstack/node-core-library';
- 
- const dtsRE$1 = /\.d\.tsx?$/;
- function rollupDeclarationFiles({
--  root,
--  configPath,
--  compilerOptions,
--  outDir,
--  entryPath,
--  fileName,
--  libFolder,
--  bundledPackages
-+	root,
-+	configPath,
-+	compilerOptions,
-+	outDir,
-+	entryPath,
-+	fileName,
-+	libFolder,
-+	bundledPackages
- }) {
--  const configObjectFullPath = resolve$1(root, "api-extractor.json");
--  const packageJsonLookup = new PackageJsonLookup();
--  const packageJsonFullPath = packageJsonLookup.tryGetPackageJsonFilePathFor(configObjectFullPath);
--  if (!dtsRE$1.test(fileName)) {
--    fileName += ".d.ts";
--  }
--  const extractorConfig = ExtractorConfig.prepare({
--    configObject: {
--      projectFolder: root,
--      mainEntryPointFilePath: entryPath,
--      bundledPackages,
--      compiler: {
--        tsconfigFilePath: configPath,
--        overrideTsconfig: {
--          $schema: "http://json.schemastore.org/tsconfig",
--          compilerOptions: {
--            ...compilerOptions,
--            target: "ESNext"
--          }
--        }
--      },
--      apiReport: {
--        enabled: false,
--        reportFileName: "<unscopedPackageName>.api.md"
--      },
--      docModel: {
--        enabled: false
--      },
--      dtsRollup: {
--        enabled: true,
--        publicTrimmedFilePath: resolve$1(outDir, fileName)
--      },
--      tsdocMetadata: {
--        enabled: false
--      },
--      messages: {
--        compilerMessageReporting: {
--          default: {
--            logLevel: "none"
--          }
--        },
--        extractorMessageReporting: {
--          default: {
--            logLevel: "none"
--          }
--        }
--      }
--    },
--    configObjectFullPath,
--    packageJsonFullPath
--  });
--  const compilerState = CompilerState.create(extractorConfig, {
--    localBuild: false,
--    showVerboseMessages: false,
--    typescriptCompilerFolder: libFolder ? resolve$1(libFolder) : void 0
--  });
--  const sourceMapper = new SourceMapper();
--  const messageRouter = new MessageRouter({
--    workingPackageFolder: root,
--    messageCallback: void 0,
--    messagesConfig: extractorConfig.messages,
--    showVerboseMessages: false,
--    showDiagnostics: false,
--    tsdocConfiguration: extractorConfig.tsdocConfiguration,
--    sourceMapper
--  });
--  const collector = new Collector({
--    program: compilerState.program,
--    messageRouter,
--    extractorConfig,
--    sourceMapper
--  });
--  collector.analyze();
--  DtsRollupGenerator.writeTypingsFile(
--    collector,
--    extractorConfig.publicTrimmedFilePath,
--    DtsRollupKind.PublicRelease,
--    extractorConfig.newlineKind
--  );
-+	const configObjectFullPath = resolve$1(root, "api-extractor.json");
-+	const packageJsonLookup = new PackageJsonLookup();
-+	const packageJsonFullPath = packageJsonLookup.tryGetPackageJsonFilePathFor(configObjectFullPath);
-+	if (!dtsRE$1.test(fileName)) {
-+		fileName += ".d.ts";
-+	}
-+	const extractorConfig = ExtractorConfig.prepare({
-+		configObject: {
-+			projectFolder: root,
-+			mainEntryPointFilePath: entryPath,
-+			bundledPackages,
-+			compiler: {
-+				tsconfigFilePath: configPath,
-+				overrideTsconfig: {
-+					$schema: "http://json.schemastore.org/tsconfig",
-+					compilerOptions: {
-+						...compilerOptions,
-+						target: "ESNext"
-+					}
-+				}
-+			},
-+			apiReport: {
-+				enabled: false,
-+				reportFileName: "<unscopedPackageName>.api.md"
-+			},
-+			docModel: {
-+				enabled: false
-+			},
-+			dtsRollup: {
-+				enabled: true,
-+				publicTrimmedFilePath: resolve$1(outDir, fileName)
-+			},
-+			tsdocMetadata: {
-+				enabled: false
-+			},
-+			messages: {
-+				compilerMessageReporting: {
-+					default: {
-+						logLevel: "none"
-+					}
-+				},
-+				extractorMessageReporting: {
-+					default: {
-+						logLevel: "none"
-+					}
-+				}
-+			}
-+		},
-+		configObjectFullPath,
-+		packageJsonFullPath
-+	});
-+	const compilerState = CompilerState.create(extractorConfig, {
-+		localBuild: false,
-+		showVerboseMessages: false,
-+		typescriptCompilerFolder: libFolder ? resolve$1(libFolder) : void 0
-+	});
-+	const sourceMapper = new SourceMapper();
-+	const messageRouter = new MessageRouter({
-+		workingPackageFolder: root,
-+		messageCallback: void 0,
-+		messagesConfig: extractorConfig.messages,
-+		showVerboseMessages: false,
-+		showDiagnostics: false,
-+		tsdocConfiguration: extractorConfig.tsdocConfiguration,
-+		sourceMapper
-+	});
-+	const collector = new Collector({
-+		program: compilerState.program,
-+		messageRouter,
-+		extractorConfig,
-+		sourceMapper
-+	});
-+	collector.analyze();
-+	DtsRollupGenerator.writeTypingsFile(
-+		collector,
-+		extractorConfig.publicTrimmedFilePath,
-+		DtsRollupKind.PublicRelease,
-+		extractorConfig.newlineKind
-+	);
- }
- 
- const jsonRE = /\.json$/;
- function JsonResolver() {
--  return {
--    name: "json",
--    supports(id) {
--      return jsonRE.test(id);
--    },
--    transform({ id, root, program }) {
--      const sourceFile = program.getSourceFile(id);
--      if (!sourceFile)
--        return [];
--      return [
--        {
--          path: relative(root, `${id}.d.ts`),
--          content: `declare const _default: ${sourceFile.text};
-+	return {
-+		name: "json",
-+		supports(id) {
-+			return jsonRE.test(id);
-+		},
-+		transform({ id, root, program }) {
-+			const sourceFile = program.getSourceFile(id);
-+			if (!sourceFile)
-+				return [];
-+			return [
-+				{
-+					path: relative(root, `${id}.d.ts`),
-+					content: `declare const _default: ${sourceFile.text};
- 
- export default _default;
- `
--        }
--      ];
--    }
--  };
-+				}
-+			];
-+		}
-+	};
- }
- 
- const svelteRE = /\.svelte$/;
- function SvelteResolver() {
--  return {
--    name: "svelte",
--    supports(id) {
--      return svelteRE.test(id);
--    },
--    transform({ id, root }) {
--      return [
--        {
--          path: relative(root, `${id}.d.ts`),
--          content: "export { SvelteComponentTyped as default } from 'svelte';\n"
--        }
--      ];
--    }
--  };
-+	return {
-+		name: "svelte",
-+		supports(id) {
-+			return svelteRE.test(id);
-+		},
-+		transform({ id, root }) {
-+			return [
-+				{
-+					path: relative(root, `${id}.d.ts`),
-+					content: "export { SvelteComponentTyped as default } from 'svelte';\n"
-+				}
-+			];
-+		}
-+	};
- }
- 
- const vueRE = /\.vue$/;
- function VueResolver() {
--  return {
--    name: "vue",
--    supports(id) {
--      return vueRE.test(id);
--    },
--    transform({ id, program, service }) {
--      const sourceFile = program.getSourceFile(id) || program.getSourceFile(id + ".ts") || program.getSourceFile(id + ".js") || program.getSourceFile(id + ".tsx") || program.getSourceFile(id + ".jsx");
--      if (!sourceFile)
--        return [];
--      return service.getEmitOutput(sourceFile.fileName, true).outputFiles.map((file) => {
--        return {
--          path: file.name,
--          content: file.text
--        };
--      });
--    }
--  };
-+	return {
-+		name: "vue",
-+		supports(id) {
-+			return vueRE.test(id);
-+		},
-+		transform({ id, program, service }) {
-+			const sourceFile = program.getSourceFile(id) || program.getSourceFile(id + ".ts") || program.getSourceFile(id + ".js") || program.getSourceFile(id + ".tsx") || program.getSourceFile(id + ".jsx");
-+			if (!sourceFile)
-+				return [];
-+			return service.getEmitOutput(sourceFile.fileName, true).outputFiles.map((file) => {
-+				return {
-+					path: file.name,
-+					content: file.text
-+				};
-+			});
-+		}
-+	};
- }
- 
- function parseResolvers(resolvers) {
--  const nameMap = /* @__PURE__ */ new Map();
--  for (const resolver of resolvers) {
--    resolver.name && nameMap.set(resolver.name, resolver);
--  }
--  return Array.from(nameMap.values());
-+	const nameMap = /* @__PURE__ */ new Map();
-+	for (const resolver of resolvers) {
-+		resolver.name && nameMap.set(resolver.name, resolver);
-+	}
-+	return Array.from(nameMap.values());
- }
+@@ -19,394 +19,394 @@ import { ExtractorConfig, Extractor } from '@microsoft/api-extractor';
  
  const windowsSlashRE = /\\+/g;
  function slash(p) {
@@ -331,6 +28,10 @@ index 70a9e60..6c0504c 100644
  function isPromise(value) {
 -  return !!value && (typeof value === "function" || typeof value === "object") && typeof value.then === "function";
 +	return !!value && (typeof value === "function" || typeof value === "object") && typeof value.then === "function";
+ }
+ async function wrapPromise(maybePromise) {
+-  return isPromise(maybePromise) ? await maybePromise : maybePromise;
++	return isPromise(maybePromise) ? await maybePromise : maybePromise;
  }
  function ensureAbsolute(path, root) {
 -  return normalizePath(path ? isAbsolute(path) ? path : resolve(root, path) : root);
@@ -481,6 +182,423 @@ index 70a9e60..6c0504c 100644
 +	}
 +	return onlyHasDir;
  }
+ const BASE64_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".split("");
+ function base64Encode(number) {
+-  if (number >= 0 && number < BASE64_ALPHABET.length) {
+-    return BASE64_ALPHABET[number];
+-  }
+-  throw new TypeError("Base64 integer must be between 0 and 63: " + number);
++	if (number >= 0 && number < BASE64_ALPHABET.length) {
++		return BASE64_ALPHABET[number];
++	}
++	throw new TypeError("Base64 integer must be between 0 and 63: " + number);
+ }
+ const VLQ_BASE_SHIFT = 5;
+ const VLQ_BASE = 1 << VLQ_BASE_SHIFT;
+ const VLQ_BASE_MASK = VLQ_BASE - 1;
+ const VLQ_CONTINUATION_BIT = VLQ_BASE;
+ function toVLQSigned(number) {
+-  return number < 0 ? (-number << 1) + 1 : (number << 1) + 0;
++	return number < 0 ? (-number << 1) + 1 : (number << 1) + 0;
+ }
+ function base64VLQEncode(numbers) {
+-  let encoded = "";
+-  for (const number of numbers) {
+-    let vlq = toVLQSigned(number);
+-    let digit;
+-    do {
+-      digit = vlq & VLQ_BASE_MASK;
+-      vlq >>>= VLQ_BASE_SHIFT;
+-      if (vlq > 0) {
+-        digit |= VLQ_CONTINUATION_BIT;
+-      }
+-      encoded += base64Encode(digit);
+-    } while (vlq > 0);
+-  }
+-  return encoded;
++	let encoded = "";
++	for (const number of numbers) {
++		let vlq = toVLQSigned(number);
++		let digit;
++		do {
++			digit = vlq & VLQ_BASE_MASK;
++			vlq >>>= VLQ_BASE_SHIFT;
++			if (vlq > 0) {
++				digit |= VLQ_CONTINUATION_BIT;
++			}
++			encoded += base64Encode(digit);
++		} while (vlq > 0);
++	}
++	return encoded;
+ }
+ const pkgPathCache = /* @__PURE__ */ new Map();
+ function tryGetPkgPath(beginPath) {
+-  beginPath = normalizePath(beginPath);
+-  if (pkgPathCache.has(beginPath)) {
+-    return pkgPathCache.get(beginPath);
+-  }
+-  const pkgPath = resolve(beginPath, "package.json");
+-  if (existsSync(pkgPath)) {
+-    pkgPathCache.set(beginPath, pkgPath);
+-    return pkgPath;
+-  }
+-  const parentDir = normalizePath(dirname(beginPath));
+-  if (!parentDir || parentDir === beginPath) {
+-    pkgPathCache.set(beginPath, void 0);
+-    return;
+-  }
+-  return tryGetPkgPath(parentDir);
++	beginPath = normalizePath(beginPath);
++	if (pkgPathCache.has(beginPath)) {
++		return pkgPathCache.get(beginPath);
++	}
++	const pkgPath = resolve(beginPath, "package.json");
++	if (existsSync(pkgPath)) {
++		pkgPathCache.set(beginPath, pkgPath);
++		return pkgPath;
++	}
++	const parentDir = normalizePath(dirname(beginPath));
++	if (!parentDir || parentDir === beginPath) {
++		pkgPathCache.set(beginPath, void 0);
++		return;
++	}
++	return tryGetPkgPath(parentDir);
+ }
+ function toCapitalCase(value) {
+-  value = value.trim().replace(/\s+/g, "-");
+-  value = value.replace(/-+(\w)/g, (_, char) => char ? char.toUpperCase() : "");
+-  return (value.charAt(0).toLocaleUpperCase() + value.slice(1)).replace(
+-    /[^\w]/g,
+-    ""
+-  );
++	value = value.trim().replace(/\s+/g, "-");
++	value = value.replace(/-+(\w)/g, (_, char) => char ? char.toUpperCase() : "");
++	return (value.charAt(0).toLocaleUpperCase() + value.slice(1)).replace(
++		/[^\w]/g,
++		""
++	);
+ }
+ function fileTypesPath(...pkgs) {
+-  let path;
+-  for (const pkg of pkgs) {
+-    if (typeof pkg !== "object")
+-      continue;
+-    path = pkg.types || pkg.typings || pkg.exports?.["."]?.types || pkg.exports?.["./"]?.types;
+-    if (path)
+-      return path;
+-  }
++	let path;
++	for (const pkg of pkgs) {
++		if (typeof pkg !== "object")
++			continue;
++		path = pkg.types || pkg.typings || pkg.exports?.["."]?.types || pkg.exports?.["./"]?.types;
++		if (path)
++			return path;
++	}
+ }
+ 
+ const dtsRE$1 = /\.d\.tsx?$/;
+ function rollupDeclarationFiles({
+-  root,
+-  configPath,
+-  compilerOptions,
+-  outDir,
+-  entryPath,
+-  fileName,
+-  libFolder,
+-  rollupConfig = {},
+-  rollupOptions = {}
++	root,
++	configPath,
++	compilerOptions,
++	outDir,
++	entryPath,
++	fileName,
++	libFolder,
++	rollupConfig = {},
++	rollupOptions = {}
+ }) {
+-  const configObjectFullPath = resolve$1(root, "api-extractor.json");
+-  if (!dtsRE$1.test(fileName)) {
+-    fileName += ".d.ts";
+-  }
+-  const extractorConfig = ExtractorConfig.prepare({
+-    configObject: {
+-      ...rollupConfig,
+-      projectFolder: root,
+-      mainEntryPointFilePath: entryPath,
+-      compiler: {
+-        tsconfigFilePath: configPath,
+-        overrideTsconfig: {
+-          $schema: "http://json.schemastore.org/tsconfig",
+-          compilerOptions
+-        }
+-      },
+-      apiReport: {
+-        enabled: false,
+-        reportFileName: "<unscopedPackageName>.api.md",
+-        ...rollupConfig.apiReport
+-      },
+-      docModel: {
+-        enabled: false,
+-        ...rollupConfig.docModel
+-      },
+-      dtsRollup: {
+-        enabled: true,
+-        publicTrimmedFilePath: resolve$1(outDir, fileName)
+-      },
+-      tsdocMetadata: {
+-        enabled: false,
+-        ...rollupConfig.tsdocMetadata
+-      },
+-      messages: {
+-        compilerMessageReporting: {
+-          default: {
+-            logLevel: "none"
+-          }
+-        },
+-        extractorMessageReporting: {
+-          default: {
+-            logLevel: "none"
+-          }
+-        },
+-        ...rollupConfig.messages
+-      }
+-    },
+-    configObjectFullPath,
+-    packageJsonFullPath: tryGetPkgPath(configObjectFullPath)
+-  });
+-  const result = Extractor.invoke(extractorConfig, {
+-    localBuild: false,
+-    showVerboseMessages: false,
+-    showDiagnostics: false,
+-    typescriptCompilerFolder: libFolder ? resolve$1(libFolder) : void 0,
+-    ...rollupOptions
+-  });
+-  return result.succeeded;
++	const configObjectFullPath = resolve$1(root, "api-extractor.json");
++	if (!dtsRE$1.test(fileName)) {
++		fileName += ".d.ts";
++	}
++	const extractorConfig = ExtractorConfig.prepare({
++		configObject: {
++			...rollupConfig,
++			projectFolder: root,
++			mainEntryPointFilePath: entryPath,
++			compiler: {
++				tsconfigFilePath: configPath,
++				overrideTsconfig: {
++					$schema: "http://json.schemastore.org/tsconfig",
++					compilerOptions
++				}
++			},
++			apiReport: {
++				enabled: false,
++				reportFileName: "<unscopedPackageName>.api.md",
++				...rollupConfig.apiReport
++			},
++			docModel: {
++				enabled: false,
++				...rollupConfig.docModel
++			},
++			dtsRollup: {
++				enabled: true,
++				publicTrimmedFilePath: resolve$1(outDir, fileName)
++			},
++			tsdocMetadata: {
++				enabled: false,
++				...rollupConfig.tsdocMetadata
++			},
++			messages: {
++				compilerMessageReporting: {
++					default: {
++						logLevel: "none"
++					}
++				},
++				extractorMessageReporting: {
++					default: {
++						logLevel: "none"
++					}
++				},
++				...rollupConfig.messages
++			}
++		},
++		configObjectFullPath,
++		packageJsonFullPath: tryGetPkgPath(configObjectFullPath)
++	});
++	const result = Extractor.invoke(extractorConfig, {
++		localBuild: false,
++		showVerboseMessages: false,
++		showDiagnostics: false,
++		typescriptCompilerFolder: libFolder ? resolve$1(libFolder) : void 0,
++		...rollupOptions
++	});
++	return result.succeeded;
+ }
+ 
+ const jsonRE = /\.json$/;
+ function JsonResolver() {
+-  return {
+-    name: "json",
+-    supports(id) {
+-      return jsonRE.test(id);
+-    },
+-    transform({ id, root, program }) {
+-      const sourceFile = program.getSourceFile(id);
+-      if (!sourceFile)
+-        return [];
+-      return [
+-        {
+-          path: relative(root, `${id}.d.ts`),
+-          content: `declare const _default: ${sourceFile.text};
++	return {
++		name: "json",
++		supports(id) {
++			return jsonRE.test(id);
++		},
++		transform({ id, root, program }) {
++			const sourceFile = program.getSourceFile(id);
++			if (!sourceFile)
++				return [];
++			return [
++				{
++					path: relative(root, `${id}.d.ts`),
++					content: `declare const _default: ${sourceFile.text};
+ 
+ export default _default;
+ `
+-        }
+-      ];
+-    }
+-  };
++				}
++			];
++		}
++	};
+ }
+ 
+ const svelteRE = /\.svelte$/;
+ function SvelteResolver() {
+-  return {
+-    name: "svelte",
+-    supports(id) {
+-      return svelteRE.test(id);
+-    },
+-    transform({ id, root }) {
+-      return [
+-        {
+-          path: relative(root, `${id}.d.ts`),
+-          content: "export { SvelteComponentTyped as default } from 'svelte';\n"
+-        }
+-      ];
+-    }
+-  };
++	return {
++		name: "svelte",
++		supports(id) {
++			return svelteRE.test(id);
++		},
++		transform({ id, root }) {
++			return [
++				{
++					path: relative(root, `${id}.d.ts`),
++					content: "export { SvelteComponentTyped as default } from 'svelte';\n"
++				}
++			];
++		}
++	};
+ }
+ 
+ const vueRE = /\.vue$/;
+ function VueResolver() {
+-  return {
+-    name: "vue",
+-    supports(id) {
+-      return vueRE.test(id);
+-    },
+-    transform({ id, code, program, service }) {
+-      const sourceFile = program.getSourceFile(id) || program.getSourceFile(id + ".ts") || program.getSourceFile(id + ".js") || program.getSourceFile(id + ".tsx") || program.getSourceFile(id + ".jsx");
+-      if (!sourceFile)
+-        return [];
+-      const outputs = service.getEmitOutput(sourceFile.fileName, true).outputFiles.map((file) => {
+-        return {
+-          path: file.name,
+-          content: file.text
+-        };
+-      });
+-      if (!program.getCompilerOptions().declarationMap)
+-        return outputs;
+-      const [beforeScript] = code.split(/\s*<script.*>/);
+-      const beforeLines = beforeScript.split("\n").length;
+-      for (const output of outputs) {
+-        if (output.path.endsWith(".map")) {
+-          try {
+-            const sourceMap = JSON.parse(output.content);
+-            sourceMap.sources = sourceMap.sources.map(
+-              (source) => source.replace(/\.vue\.ts$/, ".vue")
+-            );
+-            if (beforeScript && beforeScript !== code && beforeLines) {
+-              sourceMap.mappings = `${base64VLQEncode([0, 0, beforeLines, 0])};${sourceMap.mappings}`;
+-            }
+-            output.content = JSON.stringify(sourceMap);
+-          } catch (e) {
+-          }
+-        }
+-      }
+-      return outputs;
+-    }
+-  };
++	return {
++		name: "vue",
++		supports(id) {
++			return vueRE.test(id);
++		},
++		transform({ id, code, program, service }) {
++			const sourceFile = program.getSourceFile(id) || program.getSourceFile(id + ".ts") || program.getSourceFile(id + ".js") || program.getSourceFile(id + ".tsx") || program.getSourceFile(id + ".jsx");
++			if (!sourceFile)
++				return [];
++			const outputs = service.getEmitOutput(sourceFile.fileName, true).outputFiles.map((file) => {
++				return {
++					path: file.name,
++					content: file.text
++				};
++			});
++			if (!program.getCompilerOptions().declarationMap)
++				return outputs;
++			const [beforeScript] = code.split(/\s*<script.*>/);
++			const beforeLines = beforeScript.split("\n").length;
++			for (const output of outputs) {
++				if (output.path.endsWith(".map")) {
++					try {
++						const sourceMap = JSON.parse(output.content);
++						sourceMap.sources = sourceMap.sources.map(
++							(source) => source.replace(/\.vue\.ts$/, ".vue")
++						);
++						if (beforeScript && beforeScript !== code && beforeLines) {
++							sourceMap.mappings = `${base64VLQEncode([0, 0, beforeLines, 0])};${sourceMap.mappings}`;
++						}
++						output.content = JSON.stringify(sourceMap);
++					} catch (e) {
++					}
++				}
++			}
++			return outputs;
++		}
++	};
+ }
+ 
+ function parseResolvers(resolvers) {
+-  const nameMap = /* @__PURE__ */ new Map();
+-  for (const resolver of resolvers) {
+-    resolver.name && nameMap.set(resolver.name, resolver);
+-  }
+-  return Array.from(nameMap.values());
++	const nameMap = /* @__PURE__ */ new Map();
++	for (const resolver of resolvers) {
++		resolver.name && nameMap.set(resolver.name, resolver);
++	}
++	return Array.from(nameMap.values());
+ }
  
  const globSuffixRE = /^((?:.*\.[^.]+)|(?:\*+))$/;
  function normalizeGlob(path) {
@@ -591,11 +709,11 @@ index 70a9e60..6c0504c 100644
  }
  const globalImportRE = /(?:(?:import|export)\s?(?:type)?\s?(?:(?:\{[^;\n]+\})|(?:[^;\n]+))\s?from\s?['"][^;\n]+['"])|(?:import\(['"][^;\n]+?['"]\))/g;
  const staticImportRE = /(?:import|export)\s?(?:type)?\s?\{?.+\}?\s?from\s?['"](.+)['"]/;
-@@ -350,37 +350,37 @@ const dynamicImportRE = /import\(['"]([^;\n]+?)['"]\)/;
+@@ -414,37 +414,37 @@ const dynamicImportRE = /import\(['"]([^;\n]+?)['"]\)/;
  const simpleStaticImportRE = /((?:import|export).+from\s?)['"](.+)['"]/;
  const simpleDynamicImportRE = /(import\()['"](.+)['"]\)/;
  function transformAliasImport(filePath, content, aliases, exclude = []) {
--  if (!aliases.length)
+-  if (!aliases?.length)
 -    return content;
 -  return content.replace(globalImportRE, (str) => {
 -    let matchResult = str.match(staticImportRE);
@@ -622,7 +740,7 @@ index 70a9e60..6c0504c 100644
 -    }
 -    return str;
 -  });
-+	if (!aliases.length)
++	if (!aliases?.length)
 +		return content;
 +	return content.replace(globalImportRE, (str) => {
 +		let matchResult = str.match(staticImportRE);
@@ -657,7 +775,7 @@ index 70a9e60..6c0504c 100644
  }
  
  const jsRE = /\.(m|c)?jsx?$/;
-@@ -394,447 +394,452 @@ const defaultIndex = "index.d.ts";
+@@ -458,502 +458,503 @@ const defaultIndex = "index.d.ts";
  const logPrefix = cyan("[vite:dts]");
  const bundleDebug = debug("vite-plugin-dts:bundle");
  const fixedCompilerOptions = {
@@ -692,10 +810,11 @@ index 70a9e60..6c0504c 100644
 -    cleanVueFileName = false,
 -    insertTypesEntry = false,
 -    rollupTypes = false,
--    bundledPackages = [],
 -    pathsToAliases = true,
 -    aliasesExclude = [],
+-    rollupOptions = {},
 -    copyDtsFiles = false,
+-    declarationOnly = false,
 -    strictOutput = true,
 -    afterDiagnostic = noop,
 -    beforeWriteFile = noop,
@@ -728,6 +847,8 @@ index 70a9e60..6c0504c 100644
 -  ]);
 -  const rootFiles = /* @__PURE__ */ new Set();
 -  const outputFiles = /* @__PURE__ */ new Map();
+-  const rollupConfig = { ...options.rollupConfig || {} };
+-  rollupConfig.bundledPackages = rollupConfig.bundledPackages || options.bundledPackages || [];
 -  return {
 -    name: "vite:dts",
 -    apply: "build",
@@ -771,8 +892,7 @@ index 70a9e60..6c0504c 100644
 -        }
 -      } else {
 -        logger.warn(
--          yellow(
--            `
+-          `
 +	const {
 +		tsconfigPath,
 +		logLevel,
@@ -781,10 +901,11 @@ index 70a9e60..6c0504c 100644
 +		cleanVueFileName = false,
 +		insertTypesEntry = false,
 +		rollupTypes = false,
-+		bundledPackages = [],
 +		pathsToAliases = true,
 +		aliasesExclude = [],
++		rollupOptions = {},
 +		copyDtsFiles = false,
++		declarationOnly = false,
 +		strictOutput = true,
 +		afterDiagnostic = noop,
 +		beforeWriteFile = noop,
@@ -817,6 +938,8 @@ index 70a9e60..6c0504c 100644
 +	]);
 +	const rootFiles = /* @__PURE__ */ new Set();
 +	const outputFiles = /* @__PURE__ */ new Map();
++	const rollupConfig = { ...options.rollupConfig || {} };
++	rollupConfig.bundledPackages = rollupConfig.bundledPackages || options.bundledPackages || [];
 +	return {
 +		name: "vite:dts",
 +		apply: "build",
@@ -860,15 +983,13 @@ index 70a9e60..6c0504c 100644
 +				}
 +			} else {
 +				logger.warn(
-+					yellow(
-+						`
- ${cyan(
--              "[vite:dts]"
--            )} You are building a library that may not need to generate declaration files.
-+							"[vite:dts]"
-+						)} You are building a library that may not need to generate declaration files.
++					`
+ ${logPrefix} ${yellow(
+-            "You are building a library that may not need to generate declaration files."
+-          )}
++						"You are building a library that may not need to generate declaration files."
++					)}
  `
--          )
 -        );
 -        libName = "_default";
 -        indexName = defaultIndex;
@@ -908,7 +1029,8 @@ index 70a9e60..6c0504c 100644
 -        ...content?.options || {},
 -        ...options.compilerOptions || {},
 -        ...fixedCompilerOptions,
--        outDir: "."
+-        outDir: ".",
+-        declarationDir: "."
 -      };
 -      rawCompilerOptions = content?.raw.compilerOptions || {};
 -      if (!outDirs) {
@@ -930,15 +1052,21 @@ index 70a9e60..6c0504c 100644
 -          });
 -        }
 -      }
--      include = ensureArray(options.include ?? content?.raw.include ?? "**/*").map(normalizeGlob);
--      exclude = ensureArray(options.exclude ?? content?.raw.exclude ?? "node_modules/**").map(
--        normalizeGlob
--      );
--      filter = createFilter(include, exclude, { resolve: root });
+-      const computeGlobs = (rootGlobs, tsGlobs, defaultGlob) => {
+-        if (rootGlobs?.length) {
+-          return ensureArray(rootGlobs).map((glob) => normalizeGlob(ensureAbsolute(glob, root)));
+-        }
+-        return ensureArray(tsGlobs?.length ? tsGlobs : defaultGlob).map(
+-          (glob) => normalizeGlob(ensureAbsolute(glob, configPath ? dirname(configPath) : root))
+-        );
+-      };
+-      include = computeGlobs(options.include, content?.raw.include, "**/*");
+-      exclude = computeGlobs(options.exclude, content?.raw.exclude, "node_modules/**");
+-      filter = createFilter(include, exclude);
 -      const rootNames = Object.values(entries).map((entry) => ensureAbsolute(entry, root)).concat(content?.fileNames.filter(filter) || []).map(normalizePath);
 -      host = ts.createCompilerHost(compilerOptions, true);
 -      program = createProgram({ host, rootNames, options: compilerOptions });
--      libName = libName || "_default";
+-      libName = toCapitalCase(libName || "_default");
 -      indexName = indexName || defaultIndex;
 -      const maybeEmitted = (sourceFile) => {
 -        return !(compilerOptions.noEmitForJsFiles && jsRE.test(sourceFile.fileName)) && !sourceFile.isDeclarationFile && !program.isSourceFileFromExternalLibrary(sourceFile);
@@ -954,8 +1082,7 @@ index 70a9e60..6c0504c 100644
 -        logger.error(ts.formatDiagnostics(diagnostics, host));
 -      }
 -      if (typeof afterDiagnostic === "function") {
--        const result = afterDiagnostic(diagnostics);
--        isPromise(result) && await result;
+-        await wrapPromise(afterDiagnostic(diagnostics));
 -      }
 -      rootNames.forEach((file) => {
 -        this.addWatchFile(file);
@@ -966,13 +1093,14 @@ index 70a9e60..6c0504c 100644
 -    },
 -    async transform(code, id) {
 -      let resolver;
--      id = normalizePath(id).split("?")[0];
+-      id = normalizePath(id);
 -      if (!host || !program || !filter(id) || !(resolver = resolvers.find((r) => r.supports(id))) && !tjsRE.test(id)) {
 -        return;
 -      }
 -      const startTime = Date.now();
 -      const outDir = outDirs[0];
 -      const service = program.__vue.languageService;
+-      id = id.split("?")[0];
 -      rootFiles.delete(id);
 -      if (resolver) {
 -        const result = await resolver.transform({
@@ -1007,11 +1135,12 @@ index 70a9e60..6c0504c 100644
 -      timeRecord += Date.now() - startTime;
 -    },
 -    watchChange(id) {
--      id = normalizePath(id).split("?")[0];
+-      id = normalizePath(id);
 -      if (!host || !program || !filter(id) || !resolvers.find((r) => r.supports(id)) && !tjsRE.test(id)) {
 -        return;
 -      }
--      const sourceFile = host.getSourceFile(normalizePath(id), ts.ScriptTarget.ESNext);
+-      id = id.split("?")[0];
+-      const sourceFile = host.getSourceFile(id, ts.ScriptTarget.ESNext);
 -      if (sourceFile) {
 -        rootFiles.add(sourceFile.fileName);
 -        program.__vue.projectVersion++;
@@ -1020,12 +1149,11 @@ index 70a9e60..6c0504c 100644
 -      }
 -    },
 -    async writeBundle() {
--      if (!program || bundled)
+-      if (!host || !program || bundled)
 -        return;
 -      bundled = true;
 -      bundleDebug("begin writeBundle");
 -      logger.info(green(`
-+					)
 +				);
 +				libName = "_default";
 +				indexName = defaultIndex;
@@ -1065,7 +1193,8 @@ index 70a9e60..6c0504c 100644
 +				...content?.options || {},
 +				...options.compilerOptions || {},
 +				...fixedCompilerOptions,
-+				outDir: "."
++				outDir: ".",
++				declarationDir: "."
 +			};
 +			rawCompilerOptions = content?.raw.compilerOptions || {};
 +			if (!outDirs) {
@@ -1087,15 +1216,21 @@ index 70a9e60..6c0504c 100644
 +					});
 +				}
 +			}
-+			include = ensureArray(options.include ?? content?.raw.include ?? "**/*").map(normalizeGlob);
-+			exclude = ensureArray(options.exclude ?? content?.raw.exclude ?? "node_modules/**").map(
-+				normalizeGlob
-+			);
-+			filter = createFilter(include, exclude, { resolve: root });
++			const computeGlobs = (rootGlobs, tsGlobs, defaultGlob) => {
++				if (rootGlobs?.length) {
++					return ensureArray(rootGlobs).map((glob) => normalizeGlob(ensureAbsolute(glob, root)));
++				}
++				return ensureArray(tsGlobs?.length ? tsGlobs : defaultGlob).map(
++					(glob) => normalizeGlob(ensureAbsolute(glob, configPath ? dirname(configPath) : root))
++				);
++			};
++			include = computeGlobs(options.include, content?.raw.include, "**/*");
++			exclude = computeGlobs(options.exclude, content?.raw.exclude, "node_modules/**");
++			filter = createFilter(include, exclude);
 +			const rootNames = Object.values(entries).map((entry) => ensureAbsolute(entry, root)).concat(content?.fileNames.filter(filter) || []).map(normalizePath);
 +			host = ts.createCompilerHost(compilerOptions, true);
 +			program = createProgram({ host, rootNames, options: compilerOptions });
-+			libName = libName || "_default";
++			libName = toCapitalCase(libName || "_default");
 +			indexName = indexName || defaultIndex;
 +			const maybeEmitted = (sourceFile) => {
 +				return !(compilerOptions.noEmitForJsFiles && jsRE.test(sourceFile.fileName)) && !sourceFile.isDeclarationFile && !program.isSourceFileFromExternalLibrary(sourceFile);
@@ -1111,8 +1246,7 @@ index 70a9e60..6c0504c 100644
 +				logger.error(ts.formatDiagnostics(diagnostics, host));
 +			}
 +			if (typeof afterDiagnostic === "function") {
-+				const result = afterDiagnostic(diagnostics);
-+				isPromise(result) && await result;
++				await wrapPromise(afterDiagnostic(diagnostics));
 +			}
 +			rootNames.forEach((file) => {
 +				this.addWatchFile(file);
@@ -1123,13 +1257,14 @@ index 70a9e60..6c0504c 100644
 +		},
 +		async transform(code, id) {
 +			let resolver;
-+			id = normalizePath(id).split("?")[0];
++			id = normalizePath(id);
 +			if (!host || !program || !filter(id) || !(resolver = resolvers.find((r) => r.supports(id))) && !tjsRE.test(id)) {
 +				return;
 +			}
 +			const startTime = Date.now();
 +			const outDir = outDirs[0];
 +			const service = program.__vue.languageService;
++			id = id.split("?")[0];
 +			rootFiles.delete(id);
 +			if (resolver) {
 +				const result = await resolver.transform({
@@ -1164,11 +1299,12 @@ index 70a9e60..6c0504c 100644
 +			timeRecord += Date.now() - startTime;
 +		},
 +		watchChange(id) {
-+			id = normalizePath(id).split("?")[0];
++			id = normalizePath(id);
 +			if (!host || !program || !filter(id) || !resolvers.find((r) => r.supports(id)) && !tjsRE.test(id)) {
 +				return;
 +			}
-+			const sourceFile = host.getSourceFile(normalizePath(id), ts.ScriptTarget.ESNext);
++			id = id.split("?")[0];
++			const sourceFile = host.getSourceFile(id, ts.ScriptTarget.ESNext);
 +			if (sourceFile) {
 +				rootFiles.add(sourceFile.fileName);
 +				program.__vue.projectVersion++;
@@ -1177,7 +1313,7 @@ index 70a9e60..6c0504c 100644
 +			}
 +		},
 +		async writeBundle() {
-+			if (!program || bundled)
++			if (!host || !program || bundled)
 +				return;
 +			bundled = true;
 +			bundleDebug("begin writeBundle");
@@ -1186,7 +1322,16 @@ index 70a9e60..6c0504c 100644
 -      const startTime = Date.now();
 -      const outDir = outDirs[0];
 -      const emittedFiles = /* @__PURE__ */ new Map();
--      const writeOutput = async (path, content, outDir2) => {
+-      const writeOutput = async (path, content, outDir2, record = true) => {
+-        if (typeof beforeWriteFile === "function") {
+-          const result = await wrapPromise(beforeWriteFile(path, content));
+-          if (result === false)
+-            return;
+-          if (result) {
+-            path = result.filePath || path;
+-            content = result.content ?? content;
+-          }
+-        }
 -        path = normalizePath(path);
 -        const dir = normalizePath(dirname(path));
 -        if (strictOutput && !dir.startsWith(normalizePath(outDir2))) {
@@ -1197,7 +1342,7 @@ index 70a9e60..6c0504c 100644
 -          await mkdir(dir, { recursive: true });
 -        }
 -        await writeFile(path, content, "utf-8");
--        emittedFiles.set(path, content);
+-        record && emittedFiles.set(path, content);
 -      };
 -      const service = program.__vue.languageService;
 -      const sourceFiles = program.getSourceFiles();
@@ -1218,11 +1363,13 @@ index 70a9e60..6c0504c 100644
 -        }
 -      }
 -      bundleDebug("emit output patch");
+-      const currentDir = host.getCurrentDirectory();
 -      await runParallel(
 -        cpus().length,
 -        Array.from(outputFiles.entries()),
 -        async ([path, content]) => {
 -          const isMapFile = path.endsWith(".map");
+-          const baseDir = dirname(path);
 -          if (!isMapFile && content) {
 -            content = clearPureImport ? removePureImport(content) : content;
 -            content = transformAliasImport(path, content, aliases, aliasesExclude);
@@ -1233,13 +1380,20 @@ index 70a9e60..6c0504c 100644
 -            relative(entryRoot, cleanVueFileName ? path.replace(".vue.d.ts", ".d.ts") : path)
 -          );
 -          content = cleanVueFileName ? content.replace(/['"](.+)\.vue['"]/g, '"$1"') : content;
--          if (typeof beforeWriteFile === "function") {
--            const result = beforeWriteFile(path, content);
--            if (result === false)
--              return;
--            if (result && isNativeObj(result)) {
--              path = result.filePath || path;
--              content = result.content ?? content;
+-          if (isMapFile) {
+-            try {
+-              const sourceMap = JSON.parse(content);
+-              sourceMap.sources = sourceMap.sources.map((source) => {
+-                return normalizePath(
+-                  relative(
+-                    dirname(path),
+-                    resolve(currentDir, relative(publicRoot, baseDir), source)
+-                  )
+-                );
+-              });
+-              content = JSON.stringify(sourceMap);
+-            } catch (e) {
+-              logger.warn(`${logPrefix} ${yellow("Processing source map fail:")} ${path}`);
 -            }
 -          }
 -          await writeOutput(path, content, outDir);
@@ -1247,28 +1401,32 @@ index 70a9e60..6c0504c 100644
 -      );
 -      bundleDebug("write output");
 -      if (insertTypesEntry || rollupTypes) {
--        const pkgPath = resolve(root, "package.json");
--        const pkg = existsSync(pkgPath) ? JSON.parse(await readFile(pkgPath, "utf-8")) : {};
+-        const pkgPath = tryGetPkgPath(root);
+-        let pkg;
+-        try {
+-          pkg = pkgPath && existsSync(pkgPath) ? JSON.parse(await readFile(pkgPath, "utf-8")) : {};
+-        } catch (e) {
+-        }
 -        const entryNames = Object.keys(entries);
--        const types = pkg.types || pkg.typings || pkg.publishConfig?.types || pkg.publishConfig?.typings || (pkg.exports?.["."] || pkg.exports?.["./"])?.types;
+-        const types = fileTypesPath(pkg.publishConfig, pkg);
 -        const multiple = entryNames.length > 1;
--        const typesPath = types ? resolve(root, types) : resolve(outDir, indexName);
--        for (const name of entryNames) {
--          let path = multiple ? resolve(outDir, `${name.replace(tsRE, "")}.d.ts`) : typesPath;
--          if (existsSync(path))
--            continue;
--          const index = resolve(
--            outDir,
--            relative(entryRoot, `${entries[name].replace(tsRE, "")}.d.ts`)
--          );
--          let fromPath = normalizePath(relative(dirname(path), index));
--          fromPath = fromPath.replace(dtsRE, "");
--          fromPath = fullRelativeRE.test(fromPath) ? fromPath : `./${fromPath}`;
--          let content = `export * from '${fromPath}'
+-        let typesPath = types ? resolve(root, types) : resolve(outDir, indexName);
+-        if (!multiple && !dtsRE.test(typesPath)) {
+-          logger.warn(
+-            `
 +			const startTime = Date.now();
 +			const outDir = outDirs[0];
 +			const emittedFiles = /* @__PURE__ */ new Map();
-+			const writeOutput = async (path, content, outDir2) => {
++			const writeOutput = async (path, content, outDir2, record = true) => {
++				if (typeof beforeWriteFile === "function") {
++					const result = await wrapPromise(beforeWriteFile(path, content));
++					if (result === false)
++						return;
++					if (result) {
++						path = result.filePath || path;
++						content = result.content ?? content;
++					}
++				}
 +				path = normalizePath(path);
 +				const dir = normalizePath(dirname(path));
 +				if (strictOutput && !dir.startsWith(normalizePath(outDir2))) {
@@ -1279,7 +1437,7 @@ index 70a9e60..6c0504c 100644
 +					await mkdir(dir, { recursive: true });
 +				}
 +				await writeFile(path, content, "utf-8");
-+				emittedFiles.set(path, content);
++				record && emittedFiles.set(path, content);
 +			};
 +			const service = program.__vue.languageService;
 +			const sourceFiles = program.getSourceFiles();
@@ -1300,11 +1458,13 @@ index 70a9e60..6c0504c 100644
 +				}
 +			}
 +			bundleDebug("emit output patch");
++			const currentDir = host.getCurrentDirectory();
 +			await runParallel(
 +				cpus().length,
 +				Array.from(outputFiles.entries()),
 +				async ([path, content]) => {
 +					const isMapFile = path.endsWith(".map");
++					const baseDir = dirname(path);
 +					if (!isMapFile && content) {
 +						content = clearPureImport ? removePureImport(content) : content;
 +						content = transformAliasImport(path, content, aliases, aliasesExclude);
@@ -1315,13 +1475,20 @@ index 70a9e60..6c0504c 100644
 +						relative(entryRoot, cleanVueFileName ? path.replace(".vue.d.ts", ".d.ts") : path)
 +					);
 +					content = cleanVueFileName ? content.replace(/['"](.+)\.vue['"]/g, '"$1"') : content;
-+					if (typeof beforeWriteFile === "function") {
-+						const result = beforeWriteFile(path, content);
-+						if (result === false)
-+							return;
-+						if (result && isNativeObj(result)) {
-+							path = result.filePath || path;
-+							content = result.content ?? content;
++					if (isMapFile) {
++						try {
++							const sourceMap = JSON.parse(content);
++							sourceMap.sources = sourceMap.sources.map((source) => {
++								return normalizePath(
++									relative(
++										dirname(path),
++										resolve(currentDir, relative(publicRoot, baseDir), source)
++									)
++								);
++							});
++							content = JSON.stringify(sourceMap);
++						} catch (e) {
++							logger.warn(`${logPrefix} ${yellow("Processing source map fail:")} ${path}`);
 +						}
 +					}
 +					await writeOutput(path, content, outDir);
@@ -1329,15 +1496,45 @@ index 70a9e60..6c0504c 100644
 +			);
 +			bundleDebug("write output");
 +			if (insertTypesEntry || rollupTypes) {
-+				const pkgPath = resolve(root, "package.json");
-+				const pkg = existsSync(pkgPath) ? JSON.parse(await readFile(pkgPath, "utf-8")) : {};
++				const pkgPath = tryGetPkgPath(root);
++				let pkg;
++				try {
++					pkg = pkgPath && existsSync(pkgPath) ? JSON.parse(await readFile(pkgPath, "utf-8")) : {};
++				} catch (e) {
++				}
 +				const entryNames = Object.keys(entries);
-+				const types = pkg.types || pkg.typings || pkg.publishConfig?.types || pkg.publishConfig?.typings || (pkg.exports?.["."] || pkg.exports?.["./"])?.types;
++				const types = fileTypesPath(pkg.publishConfig, pkg);
 +				const multiple = entryNames.length > 1;
-+				const typesPath = types ? resolve(root, types) : resolve(outDir, indexName);
++				let typesPath = types ? resolve(root, types) : resolve(outDir, indexName);
++				if (!multiple && !dtsRE.test(typesPath)) {
++					logger.warn(
++						`
+ ${logPrefix} ${yellow(
+-              "The resolved path of type entry is not ending with '.d.ts'."
+-            )}
++							"The resolved path of type entry is not ending with '.d.ts'."
++						)}
+ `
+-          );
+-          typesPath = `${typesPath.replace(tjsRE, "")}.d.${extPrefix(typesPath)}ts`;
+-        }
+-        for (const name of entryNames) {
+-          const path = multiple ? resolve(outDir, `${name.replace(tsRE, "")}.d.ts`) : typesPath;
+-          if (existsSync(path))
+-            continue;
+-          const index = resolve(
+-            outDir,
+-            relative(entryRoot, `${entries[name].replace(tsRE, "")}.d.ts`)
+-          );
+-          let fromPath = normalizePath(relative(dirname(path), index));
+-          fromPath = fromPath.replace(dtsRE, "");
+-          fromPath = fullRelativeRE.test(fromPath) ? fromPath : `./${fromPath}`;
+-          let content = `export * from '${fromPath}'
++					);
++					typesPath = `${typesPath.replace(tjsRE, "")}.d.${extPrefix(typesPath)}ts`;
++				}
 +				for (const name of entryNames) {
-+					let path = multiple ? resolve(outDir, `${name.replace(tsRE, "")}.d.ts`) : typesPath;
-+
++					const path = multiple ? resolve(outDir, `${name.replace(tsRE, "")}.d.ts`) : typesPath;
 +					if (existsSync(path))
 +						continue;
 +					const index = resolve(
@@ -1360,15 +1557,6 @@ index 70a9e60..6c0504c 100644
 +							content += `import ${libName} from '${fromPath}'
  export default ${libName}
  `;
--            }
--          }
--          if (typeof beforeWriteFile === "function") {
--            const result = beforeWriteFile(path, content);
--            if (result === false)
--              return;
--            if (result && isNativeObj(result)) {
--              path = result.filePath ?? path;
--              content = result.content ?? content;
 -            }
 -          }
 -          await writeOutput(path, content, outDir);
@@ -1397,7 +1585,8 @@ index 70a9e60..6c0504c 100644
 -                entryPath: path,
 -                fileName: basename(path),
 -                libFolder,
--                bundledPackages
+-                rollupConfig,
+-                rollupOptions
 -              });
 -              emittedFiles.delete(path);
 -              rollupFiles.add(path);
@@ -1411,7 +1600,8 @@ index 70a9e60..6c0504c 100644
 -              entryPath: typesPath,
 -              fileName: basename(typesPath),
 -              libFolder,
--              bundledPackages
+-              rollupConfig,
+-              rollupOptions
 -            });
 -            emittedFiles.delete(typesPath);
 -            rollupFiles.add(typesPath);
@@ -1430,28 +1620,33 @@ index 70a9e60..6c0504c 100644
 -        await runParallel(cpus().length, Array.from(emittedFiles), async ([wroteFile, content]) => {
 -          const relativePath = relative(outDir, wroteFile);
 -          await Promise.all(
--            extraOutDirs.map(async (outDir2) => {
--              await writeOutput(resolve(outDir2, relativePath), content, outDir2);
+-            extraOutDirs.map(async (targetOutDir) => {
+-              const path = resolve(targetOutDir, relativePath);
+-              if (wroteFile.endsWith(".map")) {
+-                const relativeOutDir = relative(outDir, targetOutDir);
+-                if (relativeOutDir) {
+-                  try {
+-                    const sourceMap = JSON.parse(content);
+-                    sourceMap.sources = sourceMap.sources.map((source) => {
+-                      return normalizePath(relative(relativeOutDir, source));
+-                    });
+-                    content = JSON.stringify(sourceMap);
+-                  } catch (e) {
+-                    logger.warn(`${logPrefix} ${yellow("Processing source map fail:")} ${path}`);
+-                  }
+-                }
+-              }
+-              await writeOutput(path, content, targetOutDir, false);
 -            })
 -          );
 -        });
 -      }
 -      if (typeof afterBuild === "function") {
--        const result = afterBuild();
--        isPromise(result) && await result;
+-        await wrapPromise(afterBuild());
 -      }
 -      bundleDebug("finish");
 -      logger.info(
 -        green(`${logPrefix} Declaration files built in ${timeRecord + Date.now() - startTime}ms.
-+						}
-+					}
-+					if (typeof beforeWriteFile === "function") {
-+						const result = beforeWriteFile(path, content);
-+						if (result === false)
-+							return;
-+						if (result && isNativeObj(result)) {
-+							path = result.filePath ?? path;
-+							content = result.content ?? content;
 +						}
 +					}
 +					await writeOutput(path, content, outDir);
@@ -1472,7 +1667,6 @@ index 70a9e60..6c0504c 100644
 +					if (multiple) {
 +						for (const name of entryNames) {
 +							const path = resolve(outDir, `${name.replace(tsRE, "")}.d.ts`);
-+
 +							rollupDeclarationFiles({
 +								root,
 +								configPath,
@@ -1481,14 +1675,13 @@ index 70a9e60..6c0504c 100644
 +								entryPath: path,
 +								fileName: path,
 +								libFolder,
-+								bundledPackages
++								rollupConfig,
++								rollupOptions
 +							});
 +							emittedFiles.delete(path);
 +							rollupFiles.add(path);
 +						}
 +					} else {
-+
-+
 +						rollupDeclarationFiles({
 +							root,
 +							configPath,
@@ -1497,7 +1690,8 @@ index 70a9e60..6c0504c 100644
 +							entryPath: typesPath,
 +							fileName: basename(typesPath),
 +							libFolder,
-+							bundledPackages
++							rollupConfig,
++							rollupOptions
 +						});
 +						emittedFiles.delete(typesPath);
 +						rollupFiles.add(typesPath);
@@ -1516,24 +1710,52 @@ index 70a9e60..6c0504c 100644
 +				await runParallel(cpus().length, Array.from(emittedFiles), async ([wroteFile, content]) => {
 +					const relativePath = relative(outDir, wroteFile);
 +					await Promise.all(
-+						extraOutDirs.map(async (outDir2) => {
-+							await writeOutput(resolve(outDir2, relativePath), content, outDir2);
++						extraOutDirs.map(async (targetOutDir) => {
++							const path = resolve(targetOutDir, relativePath);
++							if (wroteFile.endsWith(".map")) {
++								const relativeOutDir = relative(outDir, targetOutDir);
++								if (relativeOutDir) {
++									try {
++										const sourceMap = JSON.parse(content);
++										sourceMap.sources = sourceMap.sources.map((source) => {
++											return normalizePath(relative(relativeOutDir, source));
++										});
++										content = JSON.stringify(sourceMap);
++									} catch (e) {
++										logger.warn(`${logPrefix} ${yellow("Processing source map fail:")} ${path}`);
++									}
++								}
++							}
++							await writeOutput(path, content, targetOutDir, false);
 +						})
 +					);
 +				});
 +			}
 +			if (typeof afterBuild === "function") {
-+				const result = afterBuild();
-+				isPromise(result) && await result;
++				await wrapPromise(afterBuild());
 +			}
 +			bundleDebug("finish");
 +			logger.info(
 +				green(`${logPrefix} Declaration files built in ${timeRecord + Date.now() - startTime}ms.
  `)
 -      );
+-    },
+-    generateBundle(_, bundle) {
+-      if (declarationOnly) {
+-        for (const id of Object.keys(bundle)) {
+-          delete bundle[id];
+-        }
+-      }
 -    }
 -  };
 +			);
++		},
++		generateBundle(_, bundle) {
++			if (declarationOnly) {
++				for (const id of Object.keys(bundle)) {
++					delete bundle[id];
++				}
++			}
 +		}
 +	};
  }

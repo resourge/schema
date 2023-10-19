@@ -115,6 +115,9 @@ export const defineLibConfig = (
 					'./src/main.tsx',
 					'./src/setupTests.ts'
 				],
+				beforeWriteFile(file) {
+					console.log("file", file)
+				},
 				afterBuild
 			})
 		]

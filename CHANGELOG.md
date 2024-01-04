@@ -1,3 +1,10 @@
+## [1.11.3](https://github.com/resourge/schema/compare/v1.11.2...v1.11.3) (2024-01-04)
+
+
+### Bug Fixes
+
+* **compile schema:** fix references duplicating some validations ([1c36f4e](https://github.com/resourge/schema/commit/1c36f4e2df3acfa0a48f15157e90f4503712de95))
+
 ## [1.11.2](https://github.com/resourge/schema/compare/v1.11.1...v1.11.2) (2023-10-19)
 
 

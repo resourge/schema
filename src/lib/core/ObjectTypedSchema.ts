@@ -88,7 +88,7 @@ export abstract class ObjectTypedSchema<
 		path,
 		srcCode = []
 	}: CompileSchemaConfig) {
-		const schemaRules: string[] = srcCode;
+		const schemaRules: string[] = [...srcCode];
 		
 		this.shape.forEach((schema, childKey) => {
 			schemaRules.push(

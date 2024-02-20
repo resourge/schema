@@ -1,3 +1,10 @@
+## [1.11.4](https://github.com/resourge/schema/compare/v1.11.3...v1.11.4) (2024-02-20)
+
+
+### Bug Fixes
+
+* **string schema:** fix string schema not working with notRequired ([03b2550](https://github.com/resourge/schema/commit/03b2550c9314a671e642a701a7f594c044f985ed))
+
 ## [1.11.3](https://github.com/resourge/schema/compare/v1.11.2...v1.11.3) (2024-01-04)
 
 

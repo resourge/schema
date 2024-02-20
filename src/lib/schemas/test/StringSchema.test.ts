@@ -19,6 +19,21 @@ describe('string', () => {
 		expect(schema.isValid('aaa3'))
 		.toBeFalsy();
 	});
+	it('should be empty email', () => {
+		const schema = new StringSchema()
+		.notRequired()
+		.email('precise')
+		.compile();
+
+		// @ts-expect-error // To force validation to be true
+		expect(schema.isValid(null))
+		.toBeTruthy();
+		// @ts-expect-error // To force validation to be true
+		expect(schema.isValid(undefined))
+		.toBeTruthy();
+		expect(schema.isValid(''))
+		.toBeTruthy();
+	});
 	
 	it('should be required', () => {
 		const schema = string()

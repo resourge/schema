@@ -245,6 +245,9 @@ export abstract class Schema<Input = any, Final = any> {
 		}
 	}
 
+	protected getRequiredStringCondition = (valueKey: string) => `if ( ${valueKey} === null || ${valueKey} === undefined ){`;
+	protected getNotRequiredStringCondition = (valueKey: string) => `if ( ${valueKey} !== null && ${valueKey} !== undefined ){`;
+
 	protected getIsRequired(mandatoryRules: Array<(fnSrcCode: string[], valueKey: string) => string[]>, schema: Schema<any>, context: Context) {
 		const _isRequired = schema.def._isRequired ?? context.nullable;
 		if ( _isRequired !== undefined ) {
@@ -252,7 +255,7 @@ export abstract class Schema<Input = any, Final = any> {
 				schema.required();
 			
 				mandatoryRules.push((fnSrcCode: string[], valueKey: string) => [
-					`if ( ${valueKey} === null || ${valueKey} === undefined ){`,
+					this.getRequiredStringCondition(valueKey),
 					...schema.getErrorSyntax(this.def.messageRequired ?? context.messages.required),
 					'}',
 					'else {',
@@ -264,7 +267,7 @@ export abstract class Schema<Input = any, Final = any> {
 				schema.notRequired();
 
 				mandatoryRules.push((fnSrcCode: string[], valueKey: string) => [
-					`if ( ${valueKey} !== null && ${valueKey} !== undefined ){`,
+					this.getNotRequiredStringCondition(valueKey),
 					...fnSrcCode,
 					'}'
 				]);

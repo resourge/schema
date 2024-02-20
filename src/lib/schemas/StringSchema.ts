@@ -25,15 +25,6 @@ export class StringSchema<
 	protected type: SchemaTypes = SchemaTypes.STRING;
 	protected override message: string = `{{key}} is not ${this.type}`;
 	protected rule = (value: string) => typeof value === 'string';
-	protected minRequired: boolean = false;
-
-	protected onMinRequired = () => {
-		if ( this.minRequired ) {
-			this.minRequired = false;
-
-			this.def.normalRules.delete('minLength');
-		}
-	};
 
 	protected clone() {
 		return new StringSchema<Input, Final>(this.message, this.def);
@@ -45,49 +36,8 @@ export class StringSchema<
 		this.message = message ?? this.message;
 	}
 
-	public override required(message?: string): this {
-		if ( !this.def.normalRules.has('minLength') ) {
-			this.minRequired = true;
-			return super.required(message)
-			.test({
-				is: (value) => !value,
-				message: message ?? ((messages) => messages.required),
-				name: 'minLength'
-			}) as unknown as this;
-		}
-
-		return super.required(message);
-	}
-
-	public override notRequired(): this {
-		this.onMinRequired();
-		
-		return super.notRequired();
-	}
-
-	public override optional(): this {
-		this.onMinRequired();
-		
-		return super.optional();
-	}
-
-	public override notOptional(message?: string): this {
-		this.onMinRequired();
-		
-		return super.notOptional(message);
-	}
-
-	public override nullable(): this {
-		this.onMinRequired();
-		
-		return super.nullable();
-	}
-
-	public override notNullable(message?: string): this {
-		this.onMinRequired();
-		
-		return super.notNullable(message);
-	}
+	protected override getRequiredStringCondition = (valueKey: string) => `if ( ${valueKey} === null || ${valueKey} === undefined || ${valueKey} === '' ){`;
+	protected override getNotRequiredStringCondition = (valueKey: string) => `if ( ${valueKey} !== null && ${valueKey} !== undefined && ${valueKey} !== '' ){`;
 
 	/**
 	 * Checks if has a size bigger than minValue
@@ -96,7 +46,6 @@ export class StringSchema<
 	 * {{key}} will be replace with current key
 	 */
 	public min(minValue: number, message?: string) {
-		this.minRequired = false;
 		return this.test({
 			is: (value) => !(value.length >= minValue),
 			message: message ?? ((messages) => messages.string.min(minValue)),

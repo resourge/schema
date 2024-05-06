@@ -54,6 +54,7 @@ export const defineLibConfig = (
 		},
 		build: {
 			minify: false,
+			sourcemap: true,
 			lib: {
 				entry: {
 					index: entryLib,
@@ -75,7 +76,6 @@ export const defineLibConfig = (
 						obj[key] = globals[key];
 						return obj
 					}, {}),
-					sourcemap: true
 				},
 				external
 			}

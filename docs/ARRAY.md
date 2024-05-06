@@ -1,98 +1,265 @@
-# Array
+# Array methods
 
-## Example
+1. `empty`
+- Checks if the array is empty.
+	```typescript
+	empty(message?: string)
+	```
+- Parameters:
+	- `message` (optional) (string): Overrides the default error message.
+- Example:
+	```typescript
+	array({}).empty("Array must be empty");
+	```
 
-```Typescript
-import { number, array } from '@resourge/schema';
+2. `min`
+- Checks if the array has a minimum number of items.
+	```typescript
+	min(minValue: number, message?: string)
+	```
+- Parameters:
+	- `minValue`: Minimum number of items.
+	- `message` (optional): Overrides the default error message.
+- Example:
+	```typescript
+	array({}).min(3, "Array must have at least 3 items");
+	```
 
-array(<<Schema>>)
-// or
-array(<<Schema>>, 'Custom error message')
+3. `max`
+- Checks if the array has a maximum number of items.
+	```typescript
+	max(maxValue: number, message?: string)
+	```
+- Parameters:
+	- `maxValue`: Maximum number value.
+	- `message` (optional): Overrides the default error message.
+- Example:
+	```typescript
+	array({}).max(10, "Array cannot exceed 10 items");
+	```
 
-// Validate if array as at least 1 item
-array(number()).min(1)
-```
+4. `length`
+- Checks if the array has a specific length.
+	```typescript
+	length(length: number, message?: string)
+	```
+- Parameters:
+	- `length`: Value to compare with.
+	- `message` (optional): Overrides the default error message.
+- Example:
+	```typescript
+	array({}).length(5, "Array must have exactly 5 items");
+	```
 
-## Options
+5. `unique`
+- Checks if the array contains only unique elements.
+	```typescript
+	unique(message?: string)
+	```
+- Parameters:
+	- `message` (optional): Overrides the default error message.
+- Example:
+	```typescript
+	array({}).unique("Array must contain only unique items");
+	```
 
-### empty
+6. `uniqueBy`
+- Checks if the array contains only unique elements based on a specific key.
+	```typescript
+	uniqueBy(key: keyof Input[number] | ((val: Input[number]) => any), message?: string): this
+	```
+- Parameters:
+	- `key`: Key to use for uniqueness comparison.
+	- `message` (optional): Overrides the default error message.
+- Example:
+	```typescript
+	array({}).uniqueBy("id", "Array must contain unique items based on ID");
+	```
 
-Checks if array is empty
+7. `test`
 
-```Typescript
-array(number()).empty()
-// with custom message
-array(number()).empty('Custom error message')
-```
+- Allows you to define custom synchronous validation methods for the schema.
+	```typescript
+	test(method: TestMethodConfig<RuleBooleanMethod<Input, Form>>)
+	```
+- Parameters:
+	- `method`: Configuration object containing the validation method and error message.
+		- `is`: The validation method which returns a boolean indicating whether the value is valid.
+		- `message`: Error message to be displayed when validation fails.
+- Example
+	```typescript
+	import { number } from '@resourge/schema';
 
-### min
+	// Define an number schema
+	number().test({
+      is: (value) => value.length > 10,
+      message: "Age must be greater than 10"
+    });
+	```
 
-Checks if array has a minimal number of items in array
+8. `asyncTest`
 
-```Typescript
-array(number()).min(1)
-// with custom message
-array(number()).min(1, 'Custom error message')
-```
+- Enables the definition of custom asynchronous validation methods for the schema.
+	```typescript
+	asyncTest(method: TestMethodConfig<AsyncRuleBooleanMethod<Input, Form>>)
+	```
+- Parameters:
+	- `method`: Configuration object containing the asynchronous validation method and error message.
+		- `is`: The asynchronous validation method which returns a promise resolving to a boolean indicating whether the value is valid.
+		- `message`: Error message to be displayed when validation fails.
+- Example
+	```typescript
+	import { number } from '@resourge/schema';
 
-### max
+	// Define an number schema
+	number().asyncTest({
+      is: async (value) => Promise.resolve(value.length > 10),
+      message: "Age must be greater than 10"
+    });
+	```
 
-Checks if array has a maximal number of elements.
+9. `when`
 
-```Typescript
+- Facilitates conditional validation based on a specified condition.
+	```typescript
+	when(name: string, config: WhenConfig<S, Value, Form>)
+	when(config: WhenConfig<S, Value, Form>)
+	```
+- Parameters:
+	- `name` (optional): Name of the condition (if provided).
+    - `config`: Configuration object defining the condition and corresponding actions.
+      - `is`: The condition function which returns a boolean.
+      - `then`: A callback function to be executed if the condition is true.
+      - `otherwise`: A callback function to be executed if the condition is false.
+- Example
+	```typescript
+	import { number } from '@resourge/schema';
 
-array(number()).max(10)
-// with custom message
-array(number()).max(10, 'Custom error message')
-```
+	// Define an number schema
+	number().when({
+      is: (value) => value.length > 10,
+      then: (schema) => schema.required(),
+      otherwise: (schema) => schema.notOptional()
+    });
+	```
 
-### length
+10. `onlyOnTouch`
 
-Checks if array has length number of elements
+- Allows validation to occur only when a field is interacted with (touched).
+	```typescript
+	onlyOnTouch(onlyOnTouch?: (schema: this) => this)
+	```
+- Parameters:
+	- `onlyOnTouch` (optional): A custom callback function to define validation behavior when validation occurs only on touch.
+- Example
+	```typescript
+	import { number } from '@resourge/schema';
 
-```Typescript
-array(number()).length(1, 10)
-// with custom message
-array(number()).length(1, 10, 'Custom error message')
-```
+	// Define an number schema
+	number().onlyOnTouch();
+	```
 
-### unique
 
-Checks if array has only unique elements
+11. `notOnlyOnTouch`
 
-```Typescript
-array(number()).unique()
-// with custom message
-array(number()).unique('Custom error message')
-```
+- Disables the validation to occur only on touch, allowing validation on any interaction.
+	```typescript
+	notOnlyOnTouch()
+	```
+- Example
+	```typescript
+	import { number } from '@resourge/schema';
 
-### uniqueBy
+	// Define an number schema
+	number().notOnlyOnTouch();
+	```
 
-Checks if array has only unique elements by key
+12. `required`
 
-```Typescript
-array(
-	object({
-		productId: number(),
-		productName: string()
-	})
-).uniqueBy('productId')
-// with custom message
-array(
-	object({
-		productId: number(),
-		productName: string()
-	})
-).uniqueBy('productId', 'Custom error message')
-// with method instead of key
-array(
-	object({
-		productId: number(),
-		productName: string()
-	})
-).uniqueBy((obj) => obj.productName)
-```
+- Makes a field mandatory for validation.
+	```typescript
+	required(message?: string)
+	```
+- Parameters:
+	- `message` (optional): Custom error message to be displayed when the value is required but missing.
+- Example
+	```typescript
+	import { number } from '@resourge/schema';
 
-## Contribution
+	// Define an number schema
+	number().required("Value is required");
+	```
 
-In case you have different validations that you use, please tell us so we improve the library.
+13. `notRequired`
+
+- Marks a field as optional for validation.
+	```typescript
+	notRequired()
+	```
+- Example
+	```typescript
+	import { number } from '@resourge/schema';
+
+	// Define an number schema
+	number().notRequired();
+	```
+
+14. `optional`
+
+- Allows a field to be optional during validation.
+	```typescript
+	optional()
+	```
+- Example
+	```typescript
+	import { number } from '@resourge/schema';
+
+	// Define an number schema
+	number().optional();;
+	```
+
+15. `notOptional`
+
+- Ensures that a field is not optional for validation.
+	```typescript
+	notOptional(message?: string)
+	```
+- Parameters:
+	- `message` (optional): Custom error message to be displayed when the value is not optional but is missing.
+- Example
+	```typescript
+	import { number } from '@resourge/schema';
+
+	// Define an number schema
+	number().notOptional("Value is not optional");;
+	```
+
+16. `nullable`
+
+- Permits null values during validation.
+	```typescript
+	nullable()
+	```
+- Example
+	```typescript
+	import { number } from '@resourge/schema';
+
+	// Define an number schema
+	number().nullable();
+	```
+
+17. `notNullable`
+
+- Prohibits null values during validation.
+	```typescript
+	notNullable(message?: string)
+	```
+- Parameters:
+	- `message` (optional): Custom error message to be displayed when the value is not nullable but is null.
+- Example
+	```typescript
+	import { number } from '@resourge/schema';
+
+	// Define an number schema
+	number().notNullable("Value cannot be null");;
+	```

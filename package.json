@@ -64,7 +64,7 @@
 		"dev": "vite",
 		"build": "tsc && vite build",
 		"test": "vitest run && npm run test:typecheck",
-		"test:typecheck": "vitest typecheck --run",
+		"test:typecheck": "vitest --typecheck --run",
 		"test:watch": "vitest",
 		"coverage": "vitest run --coverage",
 		"semantic-release": "semantic-release"

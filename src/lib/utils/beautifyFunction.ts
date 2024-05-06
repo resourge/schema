@@ -1,22 +1,29 @@
+function countOccurrences(str: string, char: string): number {
+	let count = 0;
+	for (let i = 0; i < str.length; i++) {
+		if (str[i] === char) {
+			count++;
+		}
+	}
+	return count;
+}
+
 export const beautifyFunction = (funcArr: string[]): string => {
 	const normalize: string[] = [];
 	const identTab = '\t';
 	let countScope = 0;
 
 	funcArr
-	.filter((a) => a)
-	.map((a) => a.replace(/\t/g, '')
-	.trim())
 	.forEach((line) => {
-		if ( /\)\s{0,}{/g.test(line) || line.includes('promises.push(') ) {
-			normalize.push(`${identTab.repeat(countScope)}${line}`);
-			countScope += 1;
+		if ( line.includes('{') ) {
+			normalize.push(`${identTab.repeat(countScope < 0 ? 0 : countScope)}${line}`);
+			countScope += countOccurrences(line, '{');
 			return;
 		} 
-		else if ( /}(?!])/.test(line) || /^\);$/g.test(line) ) {
-			countScope -= 1;
+		if ( line.includes('}') ) {
+			countScope -= countOccurrences(line, '}');
 		} 
-		normalize.push(`${identTab.repeat(countScope)}${line}`);
+		normalize.push(`${identTab.repeat(countScope < 0 ? 0 : countScope)}${line}`);
 	});
 
 	return normalize.join('\n');

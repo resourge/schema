@@ -1,122 +1,310 @@
-# Number
+# Number methods
 
-## Example
+1. `min`
+- Checks if the number is greater than or equal to the specified minimum value.
+	```typescript
+	min(minValue: number, message?: string)
+	```
+- Parameters:
+	- `minValue`: Minimum number value.
+	- `message` (optional): Overrides the default error message.
+- Example:
+	```typescript
+	number().min(5, "Value must be at least 5");
+	```
 
-```Typescript
-import { number } from '@resourge/schema';
+2. `max`
+- Checks if the number is less than or equal to the specified maximum value.
+	```typescript
+	max(maxValue: number, message?: string)
+	```
+- Parameters:
+	- `maxValue`: Maximum number value.
+	- `message` (optional): Overrides the default error message.
+- Example:
+	```typescript
+	number().max(10, "Value cannot exceed 10");
+	```
 
-number()
-// or
-number('Custom error message')
+3. `between`
+- Checks if the number is within the specified range (inclusive).
+	```typescript
+	between(minValue: number, maxValue: number, message?: string)
+	```
+- Parameters:
+	- `minValue`: Minimum number value.
+	- `maxValue`: Maximum number value.
+	- `message` (optional): Overrides the default error message.
+- Example:
+	```typescript
+	number().between(5, 10, "Value must be between 5 and 10");
+	```
 
-// Validate if number is bigger than 1
-number().min(1)
-```
+4. `equals`
+- Checks if the number is equal to the specified value or within the specified array of values.
+	```typescript
+	equals(value: number, message?: string)
+	```
+- Parameters:
+	- `value`: Value to compare with.
+	- `message` (optional): Overrides the default error message.
+- Example:
+	```typescript
+	number().equals(5, "Value must be equal to 5");
+	```
 
-## Options
+5. `integer`
+- Checks if the number is an integer.
+	```typescript
+	integer(message?: string)
+	```
+- Parameters:
+	- `message` (optional): Overrides the default error message.
+- Example:
+	```typescript
+	number().integer("Value must be an integer");
+	```
 
-### min
+6. `decimal`
+- Checks if the number has a specified number of decimal places.
+	```typescript
+	decimal(decimal: number, message?: string)
+	```
+- Parameters:
+	- `decimal`: Number of decimal places.
+	- `message` (optional): Overrides the default error message.
+- Example:
+	```typescript
+	number().decimal(2, "Value must have 2 decimal places");
+	```
 
-Checks if number is bigger than minValue.
+7. `positive`
+- Checks if the number is a positive value (greater than or equal to zero).
+	```typescript
+	positive(message?: string)
+	```
+- Parameters:
+	- `message` (optional): Overrides the default error message.
+- Example:
+	```typescript
+	number().positive("Value must be positive");
+	```
 
-```Typescript
-number().min(1)
-// with custom message
-number().min(1, 'Custom error message')
-```
+8. `negative`
+- Checks if the number is a negative value.
+	```typescript
+	negative(message?: string)
+	```
+- Parameters:
+	- `message` (optional): Overrides the default error message.
+- Example:
+	```typescript
+	number().negative("Value must be negative");
+	```
 
-### max
+9. `enum`
+- Checks if the number is one of the values defined in the specified enum.
+	```typescript
+	enum(enumObject: { [name: string]: number }, message?: string)
+	```
+- Parameters:
+	- `enumObject`: Enum object containing allowed values.
+	- `message` (optional): Overrides the default error message.
+- Example:
+	```typescript
+	enum Color {
+      Red = 1,
+      Green = 2,
+      Blue = 3
+    }
 
-Checks if number is smaller than maxValue.
+    number().enum(Color, "Value must be a valid color");
+	```
 
-```Typescript
+10. `test`
 
-number().max(10)
-// with custom message
-number().max(10, 'Custom error message')
-```
+- Allows you to define custom synchronous validation methods for the schema.
+	```typescript
+	test(method: TestMethodConfig<RuleBooleanMethod<Input, Form>>)
+	```
+- Parameters:
+	- `method`: Configuration object containing the validation method and error message.
+		- `is`: The validation method which returns a boolean indicating whether the value is valid.
+		- `message`: Error message to be displayed when validation fails.
+- Example
+	```typescript
+	import { number } from '@resourge/schema';
 
-### between
+	// Define an number schema
+	number().test({
+      is: (value) => value.length > 10,
+      message: "Age must be greater than 10"
+    });
+	```
 
-Checks if number is between minValue and maxValue.
+11. `asyncTest`
 
-```Typescript
-number().between(1, 10)
-// with custom message
-number().between(1, 10, 'Custom error message')
-```
+- Enables the definition of custom asynchronous validation methods for the schema.
+	```typescript
+	asyncTest(method: TestMethodConfig<AsyncRuleBooleanMethod<Input, Form>>)
+	```
+- Parameters:
+	- `method`: Configuration object containing the asynchronous validation method and error message.
+		- `is`: The asynchronous validation method which returns a promise resolving to a boolean indicating whether the value is valid.
+		- `message`: Error message to be displayed when validation fails.
+- Example
+	```typescript
+	import { number } from '@resourge/schema';
 
-### equals
+	// Define an number schema
+	number().asyncTest({
+      is: async (value) => Promise.resolve(value.length > 10),
+      message: "Age must be greater than 10"
+    });
+	```
 
-Checks if number equal to value.
+12. `when`
 
-```Typescript
-number().equals(1)
-// with custom message
-number().equals(1, 'Custom error message')
+- Facilitates conditional validation based on a specified condition.
+	```typescript
+	when(name: string, config: WhenConfig<S, Value, Form>)
+	when(config: WhenConfig<S, Value, Form>)
+	```
+- Parameters:
+	- `name` (optional): Name of the condition (if provided).
+    - `config`: Configuration object defining the condition and corresponding actions.
+      - `is`: The condition function which returns a boolean.
+      - `then`: A callback function to be executed if the condition is true.
+      - `otherwise`: A callback function to be executed if the condition is false.
+- Example
+	```typescript
+	import { number } from '@resourge/schema';
 
-// or for multiple values
-number().equals([1, 10]) // Checks if number is 1 or 10
-// with custom message
-number().equals([1, 10], 'Custom error message')
-```
+	// Define an number schema
+	number().when({
+      is: (value) => value.length > 10,
+      then: (schema) => schema.required(),
+      otherwise: (schema) => schema.notOptional()
+    });
+	```
 
-### integer
+13. `onlyOnTouch`
 
-Checks if number is integer.
+- Allows validation to occur only when a field is interacted with (touched).
+	```typescript
+	onlyOnTouch(onlyOnTouch?: (schema: this) => this)
+	```
+- Parameters:
+	- `onlyOnTouch` (optional): A custom callback function to define validation behavior when validation occurs only on touch.
+- Example
+	```typescript
+	import { number } from '@resourge/schema';
 
-```Typescript
-number().integer()
-// with custom message
-number().integer('Custom error message')
-```
+	// Define an number schema
+	number().onlyOnTouch();
+	```
 
-### decimal
 
-Checks if number is decimal.
+14. `notOnlyOnTouch`
 
-```Typescript
-number().decimal()
-// with custom message
-number().decimal('Custom error message')
-```
+- Disables the validation to occur only on touch, allowing validation on any interaction.
+	```typescript
+	notOnlyOnTouch()
+	```
+- Example
+	```typescript
+	import { number } from '@resourge/schema';
 
-### positive
+	// Define an number schema
+	number().notOnlyOnTouch();
+	```
 
-Checks if number is a positive value.
+15. `required`
 
-```Typescript
-number().positive()
-// with custom message
-number().positive('Custom error message')
-```
+- Makes a field mandatory for validation.
+	```typescript
+	required(message?: string)
+	```
+- Parameters:
+	- `message` (optional): Custom error message to be displayed when the value is required but missing.
+- Example
+	```typescript
+	import { number } from '@resourge/schema';
 
-### negative
+	// Define an number schema
+	number().required("Value is required");
+	```
 
-Checks if number is a negative value.
+16. `notRequired`
 
-```Typescript
-number().negative()
-// with custom message
-number().negative('Custom error message')
-```
+- Marks a field as optional for validation.
+	```typescript
+	notRequired()
+	```
+- Example
+	```typescript
+	import { number } from '@resourge/schema';
 
-### enum
-Checks if number is a value of enum.
+	// Define an number schema
+	number().notRequired();
+	```
 
-```Typescript
+17. `optional`
 
-enum FieldTypeEnum {
-  FREE_TEXT = 1,
-  EXISTING_FIELD = 2,
-  SQL_EXPRESSION = 3,
-  SOURCE_FIELD = 4,
-}
-number().enum(FieldTypeEnum)
-// with custom message
-number().enum(FieldTypeEnum, 'Custom error message')
-```
+- Allows a field to be optional during validation.
+	```typescript
+	optional()
+	```
+- Example
+	```typescript
+	import { number } from '@resourge/schema';
 
-## Contribution
+	// Define an number schema
+	number().optional();;
+	```
 
-In case you have different validations that you use, please tell us so we improve the library.
+18. `notOptional`
+
+- Ensures that a field is not optional for validation.
+	```typescript
+	notOptional(message?: string)
+	```
+- Parameters:
+	- `message` (optional): Custom error message to be displayed when the value is not optional but is missing.
+- Example
+	```typescript
+	import { number } from '@resourge/schema';
+
+	// Define an number schema
+	number().notOptional("Value is not optional");;
+	```
+
+19. `nullable`
+
+- Permits null values during validation.
+	```typescript
+	nullable()
+	```
+- Example
+	```typescript
+	import { number } from '@resourge/schema';
+
+	// Define an number schema
+	number().nullable();
+	```
+
+20. `notNullable`
+
+- Prohibits null values during validation.
+	```typescript
+	notNullable(message?: string)
+	```
+- Parameters:
+	- `message` (optional): Custom error message to be displayed when the value is not nullable but is null.
+- Example
+	```typescript
+	import { number } from '@resourge/schema';
+
+	// Define an number schema
+	number().notNullable("Value cannot be null");;
+	```

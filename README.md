@@ -1,8 +1,8 @@
-# Schema Validation
+# @resourge/schema
 
-`@resourge/schema` is a schema validator to validate simple and complex forms.
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-Visit our website [resourge-schema-validator.netlify.app](https://resourge-schema-validator.netlify.app)
+`@resourge/schema` package is a comprehensive schema validation package tailored for developers working with diverse data schemas in modern applications. Designed with simplicity and efficiency in mind, `@resourge/schema` provides a set of utilities to effortlessly validate data against predefined schemas, ensuring accuracy, consistency, and compliance with specified standards.
 
 ## Features
 
@@ -15,13 +15,46 @@ Visit our website [resourge-schema-validator.netlify.app](https://resourge-schem
 - 100% coverage.
 - Includes validation for countries postal codes and phone numbers.
 
+## Table of Contents
+
+- [Installation](#installation)
+- [How it was done](#how-it-was-done)
+- [Benchmark](#benchmark)
+- [Usage](#usage)
+- [Rules](#rules)
+- [Object](#object)
+- [String](#string)
+- [Number](#number)
+- [Array](#array)
+- [Date](#date)
+- [Boolean](#boolean)
+- [Compile](#compile)
+- [Validate](#validate)
+- [Default Message](#default-messages)
+- [Documentation](#documentation)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
+
+## Installation
+
+Install using [Yarn](https://yarnpkg.com):
+
+```sh
+yarn add @resourge/schema
+```
+
+or NPM:
+
+```sh
+npm install @resourge/schema --save
+```
+
 ## How it was done
 
-Under the hood `@resourge/schema` creates the validation structure(only) using the Function constructor. No user input is involved in the creation.
+Beneath the surface, `@resourge/schema` meticulously constructs the validation framework solely through the Function constructor, entirely free from any user input. It's crucial to emphasize this distinction from the potential risks associated with Functions generated from user input, in this scenario, no user input factors into the creation process.
 
-It's important to distinguish this from the dangers of a user input generated Function, as in this case user input is not involved.
-
-`@resourge/schema` creates the structure as if the developer created the if's, else's and for's manually.
+Think of `@resourge/schema` as akin to a developer meticulously crafting the validation structure with hand-coded if-else statements and loops. Every element of the structure is meticulously crafted as if the developer manually wrote each condition and iteration.
 
 ## Benchmark
 
@@ -56,21 +89,7 @@ npm install
 npm run bench
 ```
 
-## Installation
-
-Install using [Yarn](https://yarnpkg.com):
-
-```sh
-yarn add @resourge/schema
-```
-
-or NPM:
-
-```sh
-npm install @resourge/schema --save
-```
-
-## Basic usage
+## Usage
 
 ```Typescript
 import { array, object, string } from '@resourge/schemas';
@@ -106,254 +125,372 @@ const schemaErrors = schema.validate(user)
 const isValidUser = schema.isValid(user)
 ```
 
-## Documentation
+# object
 
-### Rules
+`object` is used to define schemas for validating objects. 
 
-Exists 3 types of rules, [Normal Rules](#normalRules), [Mandatory Rules](#mandatoryRules) and [When Rules](#whenRules)
+## Parameters
 
-#### Mandatory Rules
+- `schemas`: An object containing validation schemas for object properties.
+- `message` (optional): A custom error message template for object validation failures.
 
-`Mandatory rules` are rules that come before [Normal Rules](#normalRules) and in case they fail [Normal Rules](#normalRules) will not be called.
+## Methods
 
-[See more](docs/MANDATORY_RULES.md)
+[Object schema](./docs/OBJECT.md)
 
-#### When Rules
+#### Example 
 
-- Are rules that come before [Mandatory Rules](#mandatoryRules).
-- Adjust the schema based in the validation `is` providing the `then` schema changes or `otherwise` schema changes.
-- Are additive, meaning they take the previous validations and add it to `then` or `otherwise`.
+Once you have created a schema using the `object` function, you can chain various validation methods to define your validation rules. For example:
 
-```Typescript
-number()
-.optional()
-.when({
-  is: (value) => value < 10 || value === null,
-  // required() will cancel optional()
-  // but in otherwise optional() will still be used
-  then: (schema) => schema.negative().required()
-});
+```typescript
+import { object, string, number } from '@resourge/schema';
 
-object({
-  productId: number(),
-  productTypeId: number().optional()
-  // "productId" here it will change the "value" from "is"
-  // "productId" will only affect the "is" "value"
-  .when('productId', {
-    is: (value) => value === 10,
-    then: (schema) => schema.required()
-  })
+const userSchema = object({
+    name: string().required("Name is required"),
+    age: number().min(18, "Age must be at least 18").max(100, "Age must be less than or equal to 100"),
+    email: string().email("Invalid email address")
 })
 .compile();
+
+userSchema.validate({
+    name: "John Doe",
+    age: 25,
+    email: "john.doe@example.com"
+});
 ```
 
-#### Normal Rule
+In this example, the schema validates that the object:
 
-`Normal rule` consist of 2 types of rules, [test](#test) and [asyncTest](#asyncTest).
+- Has a name property that is required.
+- Has an age property that is at least 18 and less than or equal to 100.
+- Has an email property that is a valid email address.
 
-Also exists some predefined normal rules: 
-- [Any](docs/ANY.md)
-- [Array](docs/ARRAY.md)
-- [Boolean](docs/BOOLEAN.md)
-- [Date](docs/DATE.md)
-- [Number](docs/ARRAY.md)
-- [Object](docs/OBJECT.md)
-- [String](docs/STRING.md)
 
-_NOTE: If you have rules that you normally use, please tell us so we can improve the package._
 
-#### test
+# string
 
-`test` is a normal sync validation.
+`string` is used to define validation rules for string values. You can chain multiple validation methods to create complex validation logic.
+
+## Parameters
+
+- `message` (optional)(string): Overrides the default error message for validation rules.
+
+## Methods
+
+[string schema](./docs/STRING.md)
+
+#### Example 
+
+Once you have created a schema using the `string` function, you can chain various validation methods to define your validation rules. For example:
 
 ```typescript
+import { string } from '@resourge/schema';
+
 string()
-// value is the string value
-// form is the original value
-// In this case, test is expected to return either true or an array of errors
-.test((value, parent, config) => [{
-  // path can be a empty string or a path
-  // In the case path is a empty string the system will replace it with original path
-  path: '', 
-  error: 'Custom error Message'
-}])
-// or
-.test({
-  // In this case, test is a mandatory a boolean
-  is: (value, parent, config) => true,
-  message: 'Custom error Message'
-})
+    .min(5, "Minimum length should be 5 characters")
+    .max(10, "Maximum length should be 10 characters")
+    .pattern(/[a-zA-Z]+/, "Should contain only alphabetic characters")
+	.compile();
 ```
 
-#### asyncTest
+In this example, the schema validates that the string:
 
-`asyncTest` is a normal async validation.
+- Has a minimum length of 5 characters.
+- Has a maximum length of 10 characters.
+- Contains only alphabetic characters.
+
+
+
+# number
+
+`number` is used to define validation rules for numbers values. You can chain multiple validation methods to create complex validation logic.
+
+## Parameters
+
+- `message` (optional)(string): Overrides the default error message for validation rules.
+
+## Methods
+
+[number schema](./docs/NUMBER.md)
+
+#### Example 
+
+Once you have created a schema using the `number` function, you can chain various validation methods to define your validation rules. For example:
 
 ```typescript
-string()
-// value is the string value
-// form is the original value
-// In this case, test is expected to return a promise containing either true or an array of errors
-.asyncTest(
-  (value, parent, config) => Promise.resolve([{
-    // path can be a empty string or a path
-    // In the case path is a empty string the system will replace it with original path
-    // NOTE: It does not handle the catch, it expect to always resolve the promise
-    path: '', 
-    error: 'Custom error Message'
-  }])
-)
-// or
-.asyncTest({
-  // In this case, test is a mandatory a boolean
-  // NOTE: It does not handle the catch, it expect to always resolve the promise
-  is: (value, parent, config) => Promise.resolve(true),
-  message: 'Custom error Message'
-})
+import { string } from '@resourge/schema';
+
+number()
+    .min(0, "Value should be greater than or equal to 0")
+    .max(100, "Value should be less than or equal to 100")
+    .integer("Value should be an integer")
+    .positive("Value should be positive")
+	.compile();
 ```
 
-### Compile
+In this example, the schema validates that the number:
 
-`compile` is a method to generate the schema (it's recommended to use in every schema. Otherwise `isValid` and `validate` will call it).
+- Is greater than or equal to 0.
+- Is less than or equal to 100.
+- Is an integer.
+- Is positive.
 
-```jsx
-import { array, object, string } from '@resourge/schemas';
+# array
 
-const schema = number().min(20).compile(); // calling compile
-const isValid = schema.isValid();
+`array` is used to define validation rules for array's. You can chain multiple validation methods to create complex validation logic.
+
+## Parameters
+
+- `message` (optional)(string): Overrides the default error message for validation rules.
+
+## Methods
+
+[array schema](./docs/ARRAY.md)
+
+#### Example 
+
+Once you have created a schema using the `array` function, you can chain various validation methods to define your validation rules. For example:
+
+```typescript
+import { array } from '@resourge/schema';
+
+// Create an array schema for validating arrays of objects
+const arraySchema = array({
+    id: number().positive("ID must be a positive number"),
+    name: string().required("Name is required"),
+    email: string().email("Invalid email address")
+}).compile();
+
+// Example data to validate
+const users = [
+    { id: 1, name: "John Doe", email: "john@example.com" },
+    { id: -2, name: "Alice", email: "alice@example" }, // Invalid email
+    { id: 3, name: "Bob", email: "bob@example.com" }
+];
+
+// Validate the array of users
+const validationResult = arraySchema.validate(users);
+
+if (validationResult.isValid) {
+    console.log("All users are valid!");
+} else {
+    console.log("Validation errors:");
+    console.log(validationResult.errors);
+}
 ```
 
-#### Compile Options
-| Name | Type | Required | Default | Description |
-| ---- | ---- | -------- | ------- | ----------- |
-| **debug** | `boolean` | false | false | Shows validation structure in a log. (only works in dev) |
-| **onlyOnTouch** | `boolean` | false | false | Set's default onlyOnTouch in every schema. |
-| **defaultOptional** | `boolean` | false | undefined | Set's default optional in every schema. (default undefined, meaning it will not validate if is optional or not) |
-| **defaultNullable** | `boolean` | false | undefined | Set's default nullable in every schema. (default undefined, meaning it will not validate if is nullable or not) |
-| **messages** | `object` | false |  | Object containing all default messages (expect the specific message for the schema). |
+In this example, the schema validates:
 
-### validate
+- Each object must have a:
+	- Positive id.
+	- Non-empty name property of type string.
+	- Valid email address in the email property.
 
-`validate` is a method to validate the data. Returns the errors.
+# date
+
+`date` is used to define validation rules for dates. You can chain multiple validation methods to create complex validation logic.
+
+## Parameters
+
+- `message` (optional)(string): Overrides the default error message for validation rules.
+
+## Methods
+
+[dates schema](./docs/DATE.md)
+
+#### Example 
+
+Once you have created a schema using the `date` function, you can chain various validation methods to define your validation rules. For example:
+
+```typescript
+import { date } from '@resourge/schema';
+
+// Create a date schema for validating arrays of objects
+const dateSchema = date()
+.minDate(new Date("2024-01-01"), "Date must be after 2024-01-01")
+.maxDate(new Date("2024-12-31"), "Date must be before 2024-12-31")
+.compile();
+
+// Example data to validate
+const eventDate = new Date("2024-06-15");
+
+// Validate the date
+const validationResult = dateSchema.validate(eventDate);
+
+if (validationResult.isValid) {
+    console.log("Event date is valid!");
+} else {
+    console.log("Validation errors:");
+    console.log(validationResult.errors);
+}
+```
+
+In this example, the schema validates:
+
+- Each object must have a:
+	- The date must be after January 1, 2024.
+	- The date must be before December 31, 2024.
+
+# boolean
+
+`boolean` is used to define validation rules for dates. You can chain multiple validation methods to create complex validation logic.
+
+## Parameters
+
+- `message` (optional)(string): Overrides the default error message for validation rules.
+
+## Methods
+
+[boolean schema](./docs/BOOLEAN.md)
+
+#### Example 
+
+Once you have created a schema using the `boolean` function, you can chain various validation methods to define your validation rules. For example:
+
+```typescript
+import { boolean } from '@resourge/schema';
+
+// Create a boolean schema for validating boolean values
+const booleanSchema = boolean();
+
+// Example data to validate
+const isEnabled = true;
+
+// Validate the boolean value
+const validationResult = booleanSchema.validate(isEnabled);
+
+if (validationResult.isValid) {
+    console.log("Boolean value is valid!");
+} else {
+    console.log("Validation errors:");
+    console.log(validationResult.errors);
+}
+```
+
+In this example, the schema validates:
+
+- Each object must have a:
+	- The value must be a boolean (true or false).
+
+# Compile
+
+`compile` is responsible for compiling the validation rules into executable code. The compiled code is then used to validate input data against the defined schema. (it's recommended to use in every schema. Otherwise `isValid` and `validate` will call it).
+
+## Parameters
+
+```typescript
+compile(config?: CompileConfig): this
+```
+- `config` (optional): An object containing configuration options for compilation.
+	- `debug` (optional): A boolean flag indicating whether to log the validation structure for debugging purposes. Default is false.
+	- `defaultNullable` (optional): A boolean flag indicating whether to make nullable default in the schemas. Default is undefined.
+	- `defaultOptional` (optional): A boolean flag indicating whether to make optional default in the schemas. Default is undefined.
+	- `messages` (optional): An object containing custom messages to be used during validation.
+	- `onlyOnTouch` (optional): A boolean flag indicating whether to make onlyOnTouch default in the schemas.
+
+#### Example
+
+```typescript
+import { object } from '@resourge/schema';
+
+// Compile the schema with default configuration
+object().compile();
+
+// Compile the schema with custom configuration
+object().compile({
+  debug: true,
+  defaultNullable: true,
+  messages: {
+    required: 'This field is required.',
+    notNullable: 'This field cannot be null.'
+  }
+});
+```
+
+
+# Validate
+
+`validate` is responsible for validating input data against the compiled schema. It returns an array of errors if any validation errors are encountered.
+
+## Usage
+
+```typescript
+validate(value: Input, onlyOnTouch?: OnlyOnTouch<Input>): SchemaError[] | Promise<SchemaError[]>
+```
+
+## Parameters
+
+- `value`: The input data to be validated against the schema.
+- `onlyOnTouch` (optional): An array of keys that inform the schema if a value was touched. Works only with the onlyOnTouch feature of the schema.
+
+#### Example
 
 ```Typescript
 import { array, object, string } from '@resourge/schemas';
 
 const schema = object({
-  age: number().min(20)
+  username: string().required(),
+  age: number().min(20).required()
+  email: string().email().required()
 }).compile();
 
-const errors = schema.validate({ age: 10 }) 
-/* errors will be
-[
-  { 
-    path: 'age',
-    error: 'Requires to have at least minimum size of 20'}
-  }
-]
-*/
+const inputData = {
+  username: 'John',
+  age: 30,
+  email: 'john@example.com'
+};
 
+const errors = schema.validate(inputData);
+if (errors.length > 0) {
+  console.log('Validation errors:', errors);
+} else {
+  console.log('Validation successful');
+}
 ```
 
-### isValid
+## isValid
 
-`isValid` is a method to validate the data. Returns true or false.
+`isValid` is responsible for validating input data against the compiled schema and returning a boolean indicating whether the data is valid or not.
+
+## Usage
+
+```typescript
+isValid(value: Input, onlyOnTouch?: OnlyOnTouch<Input>): Promise<boolean> | boolean
+```
+
+## Parameters
+
+- `value`: The input data to be validated against the schema.
+- `onlyOnTouch` (optional): An array of keys that inform the schema if a value was touched. Works only with the onlyOnTouch feature of the schema.
+
+#### Example
 
 ```Typescript
 import { array, object, string } from '@resourge/schemas';
 
 const schema = object({
-  age: number().min(20)
+  username: string().required(),
+  age: number().min(20).required()
+  email: string().email().required()
 }).compile();
 
-schema.isValid({ age: 10 }) // false
-schema.isValid({ age: 25 }) // true
+const inputData = {
+  username: 'John',
+  age: 30,
+  email: 'john@example.com'
+};
+
+schema.isValid(inputData).then((isValid) => {
+  if (isValid) {
+    console.log('Input data is valid');
+  } else {
+    console.log('Input data is not valid');
+  }
+});
 
 ```
 
-## Advance usage
-
-```Typescript
-import { number, object, string, array } from '@resourge/schemas';
-import { PostalCodes } from '@resourge/schemas/PostalCodes';
-import { PhoneNumbers } from '@resourge/schemas/PhoneNumbers';
-
-type User = {
-  name: string
-  age: number
-  phoneNumber: string
-  nif: string
-  gender: {
-    type: GenderEnum,
-    other?: string
-  }
-  location: {
-    city: string
-    address: string,
-    postalCode: string,
-    country: string
-  },
-  hobbies: string[]
-}
-
-enum GenderEnum {
-	MALE = 'male',
-	FEMALE = 'female',
-	OTHER = 'other'
-}
-
-const user: User = {
-  name: 'Rimuru',
-  age: 39,
-  phoneNumber: '',
-  nif: '',
-  gender: {
-	type: GenderEnum.MALE
-  }
-  location: {
-    city: 'Tempest',
-    address: 'Tempest',
-    postalCode: '4000-000',
-    country: 'Tempest'
-  },
-  hobbies: [
-	'Read',
-	'Nothing'
-  ]	
-}
-
-const schema = object<UserModel>({
-  name: string().min(5).required(),
-  age: number().min(18).required(),
-  nif: string().onlyOnTouch(
-    (schema) => schema.asyncTest({
-      is: (value, parent, config) => Promise.resolve(true),
-      message: 'Async error'
-    })
-  ),
-  phoneNumber: string().phoneNumber(PhoneNumbers.pt_PT).required(),
-  location: object({
-    city: string().required(),
-    address: string().required(),
-    postalCode: string().postalCode(PostalCodes.PT).required(),
-    country: string().min(3).required(),
-  }).required(),
-  gender: object({
-    type: string().enum(GenderEnum),
-    other: string().when('type', {
-	  is: (typeValue) => typeValue === GenderEnum.OTHER,
-	  then: (schema) => schema.required()
-    }) 
-	//
-  }),
-  hobbies: array(string().enum(HobbiesEnum)).min(1).required(),
-}).compile();
-
-const schemaErrors = schema.validate(user)
-const isValidUser = schema.isValid(user)
-```
-
-### Change default messages
+# Default messages
 
 `@resourge/schema`, by default, has default messages. This message can be changed globally.
 
@@ -373,11 +510,19 @@ const schema = string()
 
 ```
 
-## Contribution
+## Documentation
 
-We plan to add more validations, as they became necessary.
-In case you have different validations that you use, please tell us so we improve the library.
+For comprehensive documentation and usage examples, visit the [schema documentation](https://resourge.vercel.app/docs/schema/intro).
+
+## Contributing
+
+Contributions to `@resourge/schema` are welcome! To contribute, please follow the [contributing guidelines](CONTRIBUTING.md).
 
 ## License
 
-MIT Licensed.
+`@resourge/schema` is licensed under the [MIT License](LICENSE).
+
+## Contact
+
+For questions or support, please contact the maintainers:
+- GitHub: [Resourge](https://github.com/resourge)

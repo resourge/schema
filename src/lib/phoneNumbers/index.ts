@@ -4,7 +4,7 @@ export type PhoneNumberInfo = {
 	country: string
 	countryCode: string
 	regex: RegExp
-}
+};
 export const am_AM: PhoneNumberInfo = {
 	country: 'am',
 	countryCode: 'am_AM',

@@ -270,8 +270,8 @@ describe('Nested Schemas', () => {
 										value: '"'
 									},
 									{
-										label: "'",
-										value: "'"
+										label: '\'',
+										value: '\''
 									},
 									{
 										label: 'None',
@@ -1198,8 +1198,8 @@ describe('Nested Schemas', () => {
 									value: '"'
 								},
 								{
-									label: "'",
-									value: "'"
+									label: '\'',
+									value: '\''
 								},
 								{
 									label: 'None',

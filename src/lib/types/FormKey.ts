@@ -1,11 +1,10 @@
-type Primitive =
-  | null
-  | undefined
-  | string
-  | number
-  | boolean
-  | symbol
-  | bigint;
+type Primitive = null
+	| undefined
+	| string
+	| number
+	| boolean
+	| symbol
+	| bigint;
 
 type BrowserNativeObject = Date | FileList | File | Blob | Map<any, any> | Set<any> | Uint16Array | Uint32Array | Uint8Array;
 
@@ -27,4 +26,4 @@ export type RecursiveKeyOf<TObj extends object, TraversedTypes = TObj> = {
 
 export type FormKey<T extends Record<string, any> | any[]> = T extends Array<infer E>
 	? RecursiveKeyOfHandleValue<E, `[${number}]`, number>
-	: RecursiveKeyOf<T>
+	: RecursiveKeyOf<T>;

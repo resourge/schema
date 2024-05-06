@@ -5,12 +5,12 @@ import { type MessageType } from '../utils/messages';
 export type RuleMethod<Value, Final = any> = (
 	value: Value, 
 	form: Final
-) => SchemaError[] | false
+) => SchemaError[] | false;
 
 export type RuleTestConfig<T> = {
 	context: Context
 	form: T
-}
+};
 
 export type RuleSrcCodeConfig = Pick<Required<CompileSchemaConfig>, 'context' | 'path'> & {
 	errorParameterKey: string
@@ -19,7 +19,7 @@ export type RuleSrcCodeConfig = Pick<Required<CompileSchemaConfig>, 'context' | 
 	ruleType: string
 	valueKey: string
 	key?: string
-}
+};
 
 export abstract class BaseRule<Value, T = any, Method extends (...args: any[]) => any = RuleMethod<Value, T>> {
 	public type: 'METHOD_ERROR' | 'MESSAGE';
@@ -33,12 +33,12 @@ export abstract class BaseRule<Value, T = any, Method extends (...args: any[]) =
 	constructor(
 		type: 'METHOD_ERROR',
 		method: Method
-	)
+	);
 	constructor(
 		type: 'MESSAGE',
 		method: Method,
 		message: string | ((messages: MessageType) => string),
-	)
+	);
 	constructor(
 		type: 'METHOD_ERROR' | 'MESSAGE',
 		method: Method,
@@ -151,5 +151,5 @@ export abstract class BaseRule<Value, T = any, Method extends (...args: any[]) =
 		};
 	}
 
-	public abstract getRule(config: RuleSrcCodeConfig): string[]
+	public abstract getRule(config: RuleSrcCodeConfig): string[];
 }

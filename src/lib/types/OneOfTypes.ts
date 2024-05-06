@@ -3,9 +3,9 @@ import { type SchemaError } from './types';
 
 export type OneOf<Input extends NullableType<object> = object> = {
 	[Key in keyof Input]?: SchemaMap<Input>[Key]
-}
+};
 
-export type OneOfConfigMessage = string | SchemaError | SchemaError[]
+export type OneOfConfigMessage = string | SchemaError | SchemaError[];
 
 export type OneOfConfig = {
 	/**
@@ -19,4 +19,4 @@ export type OneOfConfig = {
 	 * If string, it will always put the message on the first key
 	 */
 	message?: OneOfConfigMessage
-}
+};

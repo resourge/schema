@@ -6,4 +6,4 @@ export type DateFormat =
 	'minute' | 
 	'second' | 
 	'dateTime' |
-	'time' 
+	'time'; 

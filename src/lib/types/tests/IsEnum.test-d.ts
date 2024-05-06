@@ -59,6 +59,6 @@ describe('should isEnum be true', () => {
 		type Test20 = ExpectFalse<IsEnum<1 | ''>>;
 		type Test21 = ExpectFalse<IsEnum<1 | '3'>>;
 		type Test22 = ExpectFalse<IsEnum<'1' | '5'>>;
-		type Test23 = ExpectFalse<IsEnum<'1' | boolean> >
+		type Test23 = ExpectFalse<IsEnum<'1' | boolean> >;
 	});
 });

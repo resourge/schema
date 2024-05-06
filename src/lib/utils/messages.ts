@@ -5,20 +5,20 @@ import { type PostalCodeInfo } from '../postalCodes';
 import { type DateFormat } from '../types/DateFormat';
 
 enum FormatInvalidTypeEnum {
-	'enum' = 'enum',
-	'numeric' = 'number',
-	'alpha' = 'text',
-	'alphanum' = 'alpha numeric',
-	'alphadash' = 'alpha dash',
-	'hexadecimal' = 'hexadecimal',
-	'hex' = 'hex',
-	'base64' = 'base64',
-	'uuid' = 'uuid',
-	'cuid' = 'cuid',
-	'url' = 'url',
-	'singleLine' = 'single line',
-	'email' = 'email',
-	'postalCode' = 'postal code', // TODO remove from this
+	enum = 'enum',
+	numeric = 'number',
+	alpha = 'text',
+	alphanum = 'alpha numeric',
+	alphadash = 'alpha dash',
+	hexadecimal = 'hexadecimal',
+	hex = 'hex',
+	base64 = 'base64',
+	uuid = 'uuid',
+	cuid = 'cuid',
+	url = 'url',
+	singleLine = 'single line',
+	email = 'email',
+	postalCode = 'postal code' // TODO remove from this
 }
 
 const getInvalidFormatMessage = (type: keyof typeof FormatInvalidTypeEnum) => {
@@ -85,7 +85,7 @@ export let defaultMessages = {
 	required: 'Required item'
 } as const;
 
-export type MessageType = typeof defaultMessages
+export type MessageType = typeof defaultMessages;
 
 type DeepPartial<T> = T extends (...args: any[]) => any 
 	? T

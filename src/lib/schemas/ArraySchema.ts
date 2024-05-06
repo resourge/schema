@@ -117,11 +117,10 @@ export const array = <
 	S extends ObjectPropertiesSchema<
 		Input[number], 
 		Final
-	> = 
-	ObjectPropertiesSchema<
+	> = ObjectPropertiesSchema<
 		Input[number], 
 		Final
-	>,
+	>
 >(
 	schemas: S,
 	message?: string

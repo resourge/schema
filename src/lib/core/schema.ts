@@ -33,7 +33,8 @@ export type OldTestMethodConfig<Method extends (...args: any[]) => any> = {
 	 * Servers to make validation unique, otherwise method cannot be changed
 	 */
 	name?: string
-}
+};
+
 export type TestMethodConfig<Method extends (...args: any[]) => any> = {
 	/**
 	 * When is is "true" errors shows
@@ -48,7 +49,7 @@ export type TestMethodConfig<Method extends (...args: any[]) => any> = {
 	 * @deprecated When test is "false" errors shows
 	 */
 	test?: Method
-}
+};
 
 export abstract class Schema<Input = any, Final = any> {
 	public input!: Input;
@@ -73,11 +74,11 @@ export abstract class Schema<Input = any, Final = any> {
 	private get isRequired(): boolean {
 		return this.def._isRequired ?? false;
 	}
-	protected abstract clone(): any
+	protected abstract clone(): any;
 
-	protected abstract type: SchemaTypes
-	protected abstract message: string
-	protected abstract rule: RuleBooleanMethod<any, any>
+	protected abstract type: SchemaTypes;
+	protected abstract message: string;
+	protected abstract rule: RuleBooleanMethod<any, any>;
 
 	constructor(def?: Definitions<Input, Final>) {
 		if ( def ) {
@@ -335,13 +336,13 @@ export abstract class Schema<Input = any, Final = any> {
 	 */
 	public test<Form = this['final']>(
 		method: TestMethodConfig<RuleBooleanMethod<Input, Form>>
-	): ObjectPropertiesSchema<Input, Form>
+	): ObjectPropertiesSchema<Input, Form>;
 	public test<Form = this['final']>(
 		method: RuleMethodSchemaError<Input, Form>
-	): ObjectPropertiesSchema<Input, Form>
+	): ObjectPropertiesSchema<Input, Form>;
 	public test<Form = this['final']>(
 		method: OldTestMethodConfig<RuleBooleanMethod<Input, Form>>
-	): ObjectPropertiesSchema<Input, Form>
+	): ObjectPropertiesSchema<Input, Form>;
 	public test<Form = this['final']>(
 		method: TestMethodConfig<RuleBooleanMethod<Input, Form>> | 
 		OldTestMethodConfig<RuleBooleanMethod<Input, Form>> | 
@@ -378,13 +379,13 @@ export abstract class Schema<Input = any, Final = any> {
 	 */
 	public asyncTest<Form = this['final']>(
 		method: TestMethodConfig<AsyncRuleBooleanMethod<Input, Form>>
-	): this
+	): this;
 	public asyncTest<Form = this['final']>(
 		method: AsyncRuleMethodSchemaError<Input, Form>,
-	): this
+	): this;
 	public asyncTest<Form = this['final']>(
 		method: OldTestMethodConfig<AsyncRuleBooleanMethod<Input, Form>>
-	): this
+	): this;
 	public asyncTest<Form = this['final']>(
 		method: AsyncRuleMethodSchemaError<Input, Form> | TestMethodConfig<AsyncRuleBooleanMethod<Input, Form>> | OldTestMethodConfig<AsyncRuleBooleanMethod<Input, Form>>
 	): this {
@@ -464,10 +465,10 @@ export abstract class Schema<Input = any, Final = any> {
 	public when<Value = any, Form = any, S extends Schema<any> = this>(
 		name: string,
 		config: WhenConfig<S, Value, Form>
-	): this
+	): this;
 	public when<Value = any, Form = any, S extends Schema<any> = this>(
 		config: WhenConfig<S, Value, Form>
-	): this
+	): this;
 	public when<Value = any, Form = any, S extends Schema<any> = this>(
 		name: WhenConfig<S, Value, Form> | string,
 		config?: WhenConfig<S, Value, Form>
@@ -478,8 +479,8 @@ export abstract class Schema<Input = any, Final = any> {
 				thenSchema,
 				otherwiseSchema
 			} = this._when<S>(
-				(config as WhenConfig<S, Value, Form>).then,
-				(config as WhenConfig<S, Value, Form>).otherwise
+				(config!).then,
+				(config!).otherwise
 			);
 
 			_this.def.whenRules.push(
@@ -487,7 +488,7 @@ export abstract class Schema<Input = any, Final = any> {
 					name,
 					'custom_when',
 					this.type,
-					(config as WhenConfig<S, Value, Form>).is,
+					(config!).is,
 					false,
 					thenSchema,
 					otherwiseSchema

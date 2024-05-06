@@ -8,7 +8,7 @@ import { type RuleBooleanMethod } from './Rule';
 export type WhenConfig<
 	T,
 	Input, 
-	Final = Input,
+	Final = Input
 > = {
 	/**
 	 * When "is" returns true "then", when false "otherwise"
@@ -16,7 +16,7 @@ export type WhenConfig<
 	is: RuleBooleanMethod<Input, Final>
 	then: (schema: T) => T
 	otherwise?: (schema: T) => T
-}
+};
 
 export class WhenRule<Value = any, T = any> extends BaseRule<Value, T, RuleBooleanMethod<Value, T>> {
 	public name: string;

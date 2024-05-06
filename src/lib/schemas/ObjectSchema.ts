@@ -60,12 +60,12 @@ export class ObjectSchema<
 	public oneOf(
 		oneOfKey: OneOf<Input>,
 		oneOfConfig?: OneOfConfigMessage
-	): this
+	): this;
 	public oneOf<Key extends keyof Input>(
 		oneOfKey: Key[],
 		schema: SchemaMap<Input>[Key],
 		oneOfConfig?: OneOfConfigMessage
-	): this
+	): this;
 	public oneOf<Key extends keyof Input>(
 		oneOfKey: OneOf<Input> | Key[],
 		schema?: SchemaMap<Input>[Key] | OneOfConfigMessage,
@@ -98,7 +98,7 @@ export class ObjectSchema<
 	}
 }
 export const object = <
-	Input extends object = object,
+	Input extends object = object
 >(
 	schemas: SchemaMap<Input> = {},
 	message?: string

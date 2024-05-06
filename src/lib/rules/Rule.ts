@@ -10,7 +10,7 @@ export type RuleBooleanMethod<Value, T = any> = (
 	value: NonNullable<Value>, 
 	parent: any,
 	config: RuleTestConfig<T>
-) => boolean
+) => boolean;
 /**
  * When test is "false" message appears
  */
@@ -18,9 +18,9 @@ export type RuleMethodSchemaError<Value, T = any> = (
 	value: NonNullable<Value>, 
 	parent: any,
 	config: RuleTestConfig<T>
-) => SchemaError[] | true
+) => SchemaError[] | true;
 
-export type RuleMethod<Value, T = any> = RuleBooleanMethod<Value, T> | RuleMethodSchemaError<Value, T>
+export type RuleMethod<Value, T = any> = RuleBooleanMethod<Value, T> | RuleMethodSchemaError<Value, T>;
 
 export class Rule<Value, T = any> extends BaseRule<Value, T, RuleMethod<Value, T>> {
 	public getRule(config: RuleSrcCodeConfig) {

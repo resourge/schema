@@ -40,7 +40,7 @@ export class AnySchema<
 
 export const any = <
 	Input = any,
-	Final = any,
+	Final = any
 >(message?: string) => {
 	return new AnySchema<Input, Final>(message);
 };

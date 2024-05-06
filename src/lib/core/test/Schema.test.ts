@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { number, object } from 'src/lib/schemas';
 
 describe('Schema', () => {

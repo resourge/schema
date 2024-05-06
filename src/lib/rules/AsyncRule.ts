@@ -9,7 +9,7 @@ export type AsyncRuleBooleanMethod<Value, T = any> = (
 	value: NonNullable<Value>, 
 	parent: any,
 	config: RuleTestConfig<T>
-) => Promise<boolean>
+) => Promise<boolean>;
 /**
  * When test is "false" message appears
  */
@@ -17,9 +17,9 @@ export type AsyncRuleMethodSchemaError<Value, T = any> = (
 	value: NonNullable<Value>, 
 	parent: any,
 	config: RuleTestConfig<T>
-) => Promise<SchemaError[] | true>
+) => Promise<SchemaError[] | true>;
 
-export type AsyncRuleMethod<Value, T = any> = AsyncRuleBooleanMethod<Value, T> | AsyncRuleMethodSchemaError<Value, T>
+export type AsyncRuleMethod<Value, T = any> = AsyncRuleBooleanMethod<Value, T> | AsyncRuleMethodSchemaError<Value, T>;
 
 export class AsyncRule<Value, T = any> extends BaseRule<Value, T, AsyncRuleMethod<Value, T>> {
 	public override getRule(config: RuleSrcCodeConfig) {

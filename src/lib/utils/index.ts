@@ -1,3 +1,1 @@
-import { setupDefaultMessage } from './messages';
-
-export { setupDefaultMessage };
+export { setupDefaultMessage } from './messages';

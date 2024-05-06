@@ -12,7 +12,7 @@ const isToday = (someDate: Date): boolean => {
 		&& someDate.getFullYear() === today.getFullYear();
 };
 
-type MinDateMethod<Form> = (parent: any, config: RuleTestConfig<Form>) => Date | undefined
+type MinDateMethod<Form> = (parent: any, config: RuleTestConfig<Form>) => Date | undefined;
 
 export class DateSchema<
 	Input extends NullableType<Date> = Date,

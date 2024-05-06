@@ -1,6 +1,6 @@
-type Primitive = string | number | bigint | boolean | null | undefined
+type Primitive = string | number | bigint | boolean | null | undefined;
 
-type IsStringUnion<T> = `${T extends Primitive ? T : ''}` extends T ? true : false
+type IsStringUnion<T> = `${T extends Primitive ? T : ''}` extends T ? true : false;
 
 enum GenericEnum {}
 
@@ -16,4 +16,4 @@ export type IsEnum<E> = E extends any[]
 				? false
 				: keyof E extends 'toString' | 'valueOf' | 'toFixed' | 'toExponential' | 'toPrecision' | 'toLocaleString'
 					? true
-					: false
+					: false;

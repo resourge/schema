@@ -6,7 +6,7 @@ export enum Parameters {
 	OBJECT_KEY = 'object',
 
 	VALUE = 'value',
-	RECURSIVE_KEY = 'recursiveKey',
+	RECURSIVE_KEY = 'recursiveKey'
 }
 
 export enum SchemaTypes {

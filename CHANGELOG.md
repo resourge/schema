@@ -1,3 +1,10 @@
+## [1.11.5](https://github.com/resourge/schema/compare/v1.11.4...v1.11.5) (2024-05-06)
+
+
+### Bug Fixes
+
+* **package:** fix postinstall not working because of patch-package ([a1dd465](https://github.com/resourge/schema/commit/a1dd465bc38011a3bff6783bb84b0cad644179aa))
+
 ## [1.11.4](https://github.com/resourge/schema/compare/v1.11.3...v1.11.4) (2024-02-20)
 
 

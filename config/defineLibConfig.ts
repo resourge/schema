@@ -102,7 +102,6 @@ export const defineLibConfig = (
 			}),
 			dts({
 				insertTypesEntry: true,
-				rollupTypes: true,
 
 				bundledPackages: packagesNames,
 				compilerOptions: {

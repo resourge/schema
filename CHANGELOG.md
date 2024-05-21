@@ -1,3 +1,10 @@
+## [1.11.6](https://github.com/resourge/schema/compare/v1.11.5...v1.11.6) (2024-05-21)
+
+
+### Bug Fixes
+
+* **index.d.ts:** fix index.d.ts type ([7d19507](https://github.com/resourge/schema/commit/7d195078f9349e505f7667aaa342a38026392d22))
+
 ## [1.11.5](https://github.com/resourge/schema/compare/v1.11.4...v1.11.5) (2024-05-06)
 
 

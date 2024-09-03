@@ -1,3 +1,5 @@
+import { type SchemaError } from 'src/lib/types';
+
 import { date } from '../DateSchema';
 import { number } from '../NumberSchema';
 import { object, ObjectSchema } from '../ObjectSchema';
@@ -13,12 +15,12 @@ describe('object', () => {
 		.compile();
 	
 		// @ts-expect-error // To be able to check
-		expect(schema.isValid(undefined))
+		expect((schema.validate(undefined) as SchemaError[]).length === 0)
 		.toBeTruthy();
-		expect(schema.isValid({
+		expect((schema.validate({
 			productId: 1,
 			productName: 'Product Name'
-		}))
+		}) as SchemaError[]).length === 0)
 		.toBeTruthy();
 	
 		const schema2 = new ObjectSchema({
@@ -28,24 +30,24 @@ describe('object', () => {
 		.compile();
 	
 		// @ts-expect-error // To be able to check
-		expect(schema2.isValid(undefined))
+		expect((schema2.validate(undefined) as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema2.isValid({
+		expect((schema2.validate({
 			// @ts-expect-error // To be able to check
 			productId: '1',
 			productName: 'Product Name'
-		}))
+		}) as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema2.isValid({
+		expect((schema2.validate({
 			productId: 1,
 			// @ts-expect-error // To be able to check
 			productName: 1
-		}))
+		}) as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema2.isValid({
+		expect((schema2.validate({
 			productId: 1,
 			productName: 'Product Name'
-		}))
+		}) as SchemaError[]).length === 0)
 		.toBeTruthy();
 	});
 
@@ -60,10 +62,10 @@ describe('object', () => {
 		.compile();
 		
 		expect(
-			schema.isValid({
+			(schema.validate({
 				productId: 1,
 				productName: 'Product Name'
-			})
+			}) as SchemaError[]).length === 0
 		)
 		.toBeTruthy();
 
@@ -150,11 +152,12 @@ describe('object', () => {
 		.toEqual(errors);
 
 		expect(
-			schema.isValid({
+			(schema.validate({
 				productId: 2,
 				productName: 'Product Name'
 			}, 
-			['productId'])
+			['productId']
+			) as SchemaError[]).length === 0
 		)
 		.toBeTruthy();
 	});
@@ -167,10 +170,12 @@ describe('object', () => {
 		.optional()
 		.compile();
 	
-		expect(schema.isValid({
-			productId: 1,
-			productName: 'Product Name'
-		}))
+		expect((
+			schema.validate({
+				productId: 1,
+				productName: 'Product Name'
+			}) as SchemaError[]
+		).length === 0)
 		.toBeTruthy();
 
 		const schema2 = schema.extend<{ 
@@ -183,23 +188,26 @@ describe('object', () => {
 		})
 		.compile();
 
-		expect(schema.isValid({
+		expect((schema.validate({
 			productId: 1,
 			productName: 'Product Name'
-		}))
+		}) as SchemaError[]
+		).length === 0)
 		.toBeTruthy();
 
-		expect(schema2.isValid({
+		expect((schema2.validate({
 			productId: 1,
 			productName: 'Product Name'
-		}))
+		}) as SchemaError[]
+		).length === 0)
 		.toBeFalsy();
 
-		expect(schema2.isValid({
+		expect((schema2.validate({
 			productId: 1,
 			productName: 'Product Name',
 			productCategory: 'Product Category'
-		}))
+		}) as SchemaError[]
+		).length === 0)
 		.toBeTruthy();
 	});
 
@@ -221,19 +229,19 @@ describe('object', () => {
 		.toBe(0);
 
 		// @ts-expect-error // To check private values
-		expect(schema.isNullable)
+		expect(schema.def._isNullable)
 		.toBe(true);
 
 		// @ts-expect-error // To check private values
-		expect(schema.isOptional)
-		.toBe(false);
+		expect(schema.def._isOptional)
+		.toBeUndefined();
 
 		// @ts-expect-error // To check private values
-		expect(schema1.isNullable)
+		expect(schema1.def._isNullable)
 		.toBe(true);
 
 		// @ts-expect-error // To check private values
-		expect(schema1.isOptional)
+		expect(schema1.def._isOptional)
 		.toBe(true);
 	});
 
@@ -244,21 +252,24 @@ describe('object', () => {
 		})
 		.compile();
 		
-		expect(schema.isValid({
+		expect((schema.validate({
 		// @ts-expect-error To test if is valid
 			productDate: 10
-		}))
+		}) as SchemaError[]
+		).length === 0)
 		.toBeFalsy();
 
-		expect(schema.isValid({
+		expect((schema.validate({
 			productDate: new Date()
-		}))
+		}) as SchemaError[]
+		).length === 0)
 		.toBeTruthy();
 	
-		expect(schema.isValid({
+		expect((schema.validate({
 		// @ts-expect-error To test if is valid
 			productDate: undefined
-		}))
+		}) as SchemaError[]
+		).length === 0)
 		.toBeTruthy();
 	});
 
@@ -280,29 +291,31 @@ describe('object', () => {
 			})
 			.compile();
 
-			expect(schema.isValid({ }))
+			expect((schema.validate({ }) as SchemaError[]).length === 0)
 			.toBeFalsy();
 
-			expect(schema.isValid({
+			expect((schema.validate({
 				productId: 1
-			}))
+			}) as SchemaError[]
+			).length === 0)
 			.toBeTruthy();
 
-			expect(schema.isValid({
+			expect((schema.validate({
 				productName: 'Test'
-			}))
+			}) as SchemaError[]
+			).length === 0)
 			.toBeTruthy();
 
-			expect(schema.isValid({
+			expect((schema.validate({
 				productType: 'Test'
-			}))
+			}) as SchemaError[]).length === 0)
 			.toBeTruthy();
 
-			expect(schema.isValid({
+			expect((schema.validate({
 				productId: 1,
 				productName: 'Test',
 				productType: 'Test'
-			}))
+			}) as SchemaError[]).length === 0)
 			.toBeTruthy();
 		});
 		it('same schema', () => {
@@ -316,23 +329,23 @@ describe('object', () => {
 			.oneOf(['productName', 'productType'], string().required())
 			.compile();
 
-			expect(schema.isValid({ }))
+			expect((schema.validate({ }) as SchemaError[]).length === 0)
 			.toBeFalsy();
 
-			expect(schema.isValid({
+			expect((schema.validate({
 				productName: 'Test'
-			}))
+			}) as SchemaError[]).length === 0)
 			.toBeTruthy();
 
-			expect(schema.isValid({
+			expect((schema.validate({
 				productType: 'Test'
-			}))
+			}) as SchemaError[]).length === 0)
 			.toBeTruthy();
 
-			expect(schema.isValid({
+			expect((schema.validate({
 				productName: 'Test',
 				productType: 'Test'
-			}))
+			}) as SchemaError[]).length === 0)
 			.toBeTruthy();
 		});
 
@@ -352,36 +365,36 @@ describe('object', () => {
 			})
 			.compile();
 
-			expect(schema.isValid({ 
+			expect((schema.validate({ 
 				product1: {},
 				product2: {}
-			}))
+			}) as SchemaError[]).length === 0)
 			.toBeFalsy();
 
-			expect(schema.isValid({
+			expect((schema.validate({
 				product1: {
 					productName: 'Test'
 				},
 				product2: {}
-			}))
+			}) as SchemaError[]).length === 0)
 			.toBeFalsy();
 
-			expect(schema.isValid({
+			expect((schema.validate({
 				product1: { },
 				product2: {
 					productName: 'Test'
 				}
-			}))
+			}) as SchemaError[]).length === 0)
 			.toBeFalsy();
 
-			expect(schema.isValid({
+			expect((schema.validate({
 				product1: {
 					productName: 'Test'
 				},
 				product2: {
 					productName: 'Test'
 				}
-			}))
+			}) as SchemaError[]).length === 0)
 			.toBeTruthy();
 		});
 

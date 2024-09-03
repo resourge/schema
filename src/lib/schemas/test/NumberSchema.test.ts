@@ -1,3 +1,5 @@
+import { type SchemaError } from 'src/lib/types';
+
 import { number, NumberSchema } from '../NumberSchema';
 import { object } from '../ObjectSchema';
 
@@ -6,7 +8,7 @@ describe('number', () => {
 		const schema = number()
 		.compile();
 	
-		const validate = (value: any) => schema.isValid(value);
+		const validate = (value: any) => (schema.validate(value) as SchemaError[]).length === 0;
 		
 		expect(validate('10'))
 		.toBeFalsy();
@@ -19,7 +21,7 @@ describe('number', () => {
 		.min(20)
 		.compile();
 	
-		const validate = (value: any) => schema.isValid(value);
+		const validate = (value: any) => (schema.validate(value) as SchemaError[]).length === 0;
 		
 		expect(validate(10))
 		.toBeFalsy();
@@ -32,7 +34,7 @@ describe('number', () => {
 		.max(20)
 		.compile();
 	
-		const validate = (value: any) => schema.isValid(value);
+		const validate = (value: any) => (schema.validate(value) as SchemaError[]).length === 0;
 		
 		expect(validate(10))
 		.toBeTruthy();
@@ -45,7 +47,7 @@ describe('number', () => {
 		.between(10, 15)
 		.compile();
 	
-		const validate = (value: any) => schema.isValid(value);
+		const validate = (value: any) => (schema.validate(value) as SchemaError[]).length === 0;
 		
 		expect(validate(10))
 		.toBeTruthy();
@@ -58,7 +60,7 @@ describe('number', () => {
 		.decimal(2)
 		.compile();
 	
-		const validate = (value: any) => schema.isValid(value);
+		const validate = (value: any) => (schema.validate(value) as SchemaError[]).length === 0;
 		
 		expect(validate(10))
 		.toBeFalsy();
@@ -76,7 +78,7 @@ describe('number', () => {
 			.equals(10)
 			.compile();
 	
-			const validate = (value: any) => schema.isValid(value);
+			const validate = (value: any) => (schema.validate(value) as SchemaError[]).length === 0;
 		
 			expect(validate(10))
 			.toBeTruthy();
@@ -89,7 +91,7 @@ describe('number', () => {
 			.equals([10, 11])
 			.compile();
 	
-			const validate = (value: any) => schema.isValid(value);
+			const validate = (value: any) => (schema.validate(value) as SchemaError[]).length === 0;
 		
 			expect(validate(10))
 			.toBeTruthy();
@@ -107,7 +109,7 @@ describe('number', () => {
 		.integer()
 		.compile();
 	
-		const validate = (value: any) => schema.isValid(value);
+		const validate = (value: any) => (schema.validate(value) as SchemaError[]).length === 0;
 		
 		expect(validate(10))
 		.toBeTruthy();
@@ -120,7 +122,7 @@ describe('number', () => {
 		.negative()
 		.compile();
 	
-		const validate = (value: any) => schema.isValid(value);
+		const validate = (value: any) => (schema.validate(value) as SchemaError[]).length === 0;
 		
 		expect(validate(-10))
 		.toBeTruthy();
@@ -133,7 +135,7 @@ describe('number', () => {
 		.notNullable()
 		.compile();
 	
-		const validate = (value: any) => schema.isValid(value);
+		const validate = (value: any) => (schema.validate(value) as SchemaError[]).length === 0;
 		
 		expect(validate(10))
 		.toBeTruthy();
@@ -146,7 +148,7 @@ describe('number', () => {
 		.notOptional()
 		.compile();
 	
-		const validate = (value: any) => schema.isValid(value);
+		const validate = (value: any) => (schema.validate(value) as SchemaError[]).length === 0;
 		
 		expect(validate(10))
 		.toBeTruthy();
@@ -161,7 +163,7 @@ describe('number', () => {
 		.notRequired()
 		.compile();
 	
-		const validate = (value: any) => schema.isValid(value);
+		const validate = (value: any) => (schema.validate(value) as SchemaError[]).length === 0;
 		
 		expect(validate(10))
 		.toBeTruthy();
@@ -178,7 +180,7 @@ describe('number', () => {
 		.nullable()
 		.compile();
 	
-		const validate = (value: any) => schema.isValid(value);
+		const validate = (value: any) => (schema.validate(value) as SchemaError[]).length === 0;
 		
 		expect(validate(10))
 		.toBeTruthy();
@@ -194,7 +196,7 @@ describe('number', () => {
 		.onlyOnTouch()
 		.compile();
 	
-		const validate = (value: any) => schema.isValid(value);
+		const validate = (value: any) => (schema.validate(value) as SchemaError[]).length === 0;
 		
 		expect(validate(10))
 		.toBeTruthy();
@@ -205,7 +207,7 @@ describe('number', () => {
 		expect(validate(undefined))
 		.toBeTruthy();
 
-		const validate2 = (value: any) => schema.isValid(value, ['']);
+		const validate2 = (value: any) => (schema.validate(value, ['']) as SchemaError[]).length === 0;
 		
 		expect(validate2(10))
 		.toBeFalsy();
@@ -229,7 +231,7 @@ describe('number', () => {
 		.optional()
 		.compile();
 	
-		const validate = (value: any) => schema.isValid(value);
+		const validate = (value: any) => (schema.validate(value) as SchemaError[]).length === 0;
 		
 		expect(validate(10))
 		.toBeTruthy();
@@ -246,7 +248,7 @@ describe('number', () => {
 		.positive()
 		.compile();
 	
-		const validate = (value: any) => schema.isValid(value);
+		const validate = (value: any) => (schema.validate(value) as SchemaError[]).length === 0;
 		
 		expect(validate(10))
 		.toBeTruthy();
@@ -259,7 +261,7 @@ describe('number', () => {
 		.required()
 		.compile();
 	
-		const validate = (value: any) => schema.isValid(value);
+		const validate = (value: any) => (schema.validate(value) as SchemaError[]).length === 0;
 		
 		expect(validate(10))
 		.toBeTruthy();
@@ -282,7 +284,7 @@ describe('number', () => {
 		})
 		.compile();
 	
-		const validate = (value: any) => schema.isValid(value);
+		const validate = (value: any) => (schema.validate(value) as SchemaError[]).length === 0;
 		
 		expect(validate(-9))
 		.toBeTruthy();
@@ -299,12 +301,11 @@ describe('number', () => {
 		const schema = number()
 		.test({
 			is: (value) => value !== 10,
-			message: 'Requires to be 10',
-			name: ''
+			message: 'Requires to be 10'
 		})
 		.compile();
 	
-		const validate = (value: any) => schema.isValid(value);
+		const validate = (value: any) => (schema.validate(value) as SchemaError[]).length === 0;
 		
 		expect(validate(10))
 		.toBeTruthy();
@@ -320,19 +321,19 @@ describe('number', () => {
 		.max(10);
 
 		// @ts-expect-error // To check private values
-		expect(schema.isNullable)
+		expect(schema.def._isNullable)
 		.toBe(true);
 
 		// @ts-expect-error // To check private values
-		expect(schema.isOptional)
-		.toBe(false);
+		expect(schema.def._isOptional)
+		.toBeUndefined();
 
 		// @ts-expect-error // To check private values
-		expect(schema1.isNullable)
+		expect(schema1.def._isNullable)
 		.toBe(true);
 
 		// @ts-expect-error // To check private values
-		expect(schema1.isOptional)
+		expect(schema1.def._isOptional)
 		.toBe(true);
 
 		// @ts-expect-error // To check protected values
@@ -360,13 +361,13 @@ describe('number', () => {
 		})
 		.compile();
 
-		expect(schema.isValid({
+		expect((schema.validate({
 			productName: FieldTypeEnum.EXISTING_FIELD 
-		}))
+		}) as SchemaError[]).length === 0)
 		.toBeTruthy();
-		expect(schema.isValid({
+		expect((schema.validate({
 			productName: 6 as FieldTypeEnum
-		}))
+		}) as SchemaError[]).length === 0)
 		.toBeFalsy();
 	});
 });

@@ -1,14 +1,12 @@
 import { type Definitions } from '../core/Definitions';
 import { Schema } from '../core/schema';
 import { type NullableType } from '../types/SchemaMap';
-import { SchemaTypes } from '../utils/Utils';
 
 export class BooleanSchema<
 	Input extends NullableType<boolean> = boolean,
 	Final = Input
 > extends Schema<Input, Final> {
-	protected type: SchemaTypes = SchemaTypes.BOOLEAN;
-	protected message: string = `{{key}} is not ${this.type}`;
+	protected message: string = '{{key}} is not boolean';
 	protected rule = (value: Input) => typeof value === 'boolean';
 	
 	protected clone() {
@@ -32,7 +30,7 @@ export class BooleanSchema<
 		return this.test({
 			is: (value: any) => _mustBeValue !== value.toString(),
 			message: message ?? ((messages) => messages.array.empty),
-			name: 'mustBe'
+			name: `mustBe_${mustBeValue}_${message}`
 		});
 	}
 }

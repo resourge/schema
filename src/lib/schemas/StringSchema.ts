@@ -4,7 +4,6 @@ import { Schema } from '../core/schema';
 import type { PhoneNumberInfo } from '../phoneNumbers';
 import type { PostalCodeInfo } from '../postalCodes';
 import { type NullableType } from '../types/SchemaMap';
-import { SchemaTypes } from '../utils/Utils';
 
 const NUMERIC_PATTERN = /^[-]?([1-9]\d*|0)(\.\d+)?$/;
 const ALPHA_PATTERN = /^[a-zA-Z]+$/;
@@ -22,8 +21,7 @@ export class StringSchema<
 	Input extends NullableType<string> = string,
 	Final = any
 > extends Schema<Input, Final> {
-	protected type: SchemaTypes = SchemaTypes.STRING;
-	protected override message: string = `{{key}} is not ${this.type}`;
+	protected override message: string = '{{key}} is not string';
 	protected rule = (value: string) => typeof value === 'string';
 
 	protected clone() {
@@ -47,9 +45,9 @@ export class StringSchema<
 	 */
 	public min(minValue: number, message?: string) {
 		return this.test({
-			is: (value) => !(value.length >= minValue),
+			is: (value) => value.length < minValue,
 			message: message ?? ((messages) => messages.string.min(minValue)),
-			name: 'minLength'
+			name: `minLength_${minValue}_${message}`
 		});
 	}
 
@@ -63,7 +61,7 @@ export class StringSchema<
 		return this.test({
 			is: (value) => !(value.length <= maxValue),
 			message: message ?? ((messages) => messages.string.max(maxValue)),
-			name: 'maxLength'
+			name: `maxLength_${maxValue}_${message}`
 		});
 	}
 
@@ -78,7 +76,7 @@ export class StringSchema<
 		return this.test({
 			is: (value) => !((value ).length >= minValue && (value ).length <= maxValue),
 			message: message ?? ((messages) => messages.number.between(minValue, maxValue)),
-			name: 'betweenNumber'
+			name: `betweenNumber_${minValue}_${maxValue}_${message}`
 		});
 	}
 
@@ -92,7 +90,7 @@ export class StringSchema<
 		return this.test({
 			is: (value) => !(value.length === length),
 			message: message ?? ((messages) => messages.string.length(length)),
-			name: 'length'
+			name: `length_${length}_${message}`
 		});
 	}
 
@@ -111,7 +109,7 @@ export class StringSchema<
 		return this.test({
 			is: is as any,
 			message: message ?? ((messages) => messages.string.equals(value)),
-			name: 'equalsString'
+			name: `equalsString_${Array.isArray(value) ? value.join('_') : value}_${message}`
 		});
 	}
 
@@ -138,7 +136,7 @@ export class StringSchema<
 		return this.test({
 			is: (value) => !(value.length === 0),
 			message: message ?? ((messages) => messages.string.empty),
-			name: 'empty'
+			name: `empty_${message}`
 		});
 	}
 
@@ -152,7 +150,7 @@ export class StringSchema<
 		return this.test({
 			is: (val: any) => !val.includes(value),
 			message: message ?? ((messages) => messages.string.contains(value)),
-			name: 'contains'
+			name: `contains_${value}_${message}`
 		});
 	}
 
@@ -165,7 +163,7 @@ export class StringSchema<
 		return this.test({
 			is: (value) => !(!value || NUMERIC_PATTERN.test(value)),
 			message: message ?? ((messages) => messages.string.numeric),
-			name: 'numeric'
+			name: `numeric_${message}`
 		});
 	}
 
@@ -178,7 +176,7 @@ export class StringSchema<
 		return this.test({
 			is: (value) => !ALPHA_PATTERN.test(value),
 			message: message ?? ((messages) => messages.string.alpha),
-			name: 'alpha'
+			name: `alpha_${message}`
 		});
 	}
 
@@ -191,7 +189,7 @@ export class StringSchema<
 		return this.test({
 			is: (value) => !ALPHANUM_PATTERN.test(value),
 			message: message ?? ((messages) => messages.string.alphanum),
-			name: 'alphanum'
+			name: `alphanum_${message}`
 		});
 	}
 
@@ -204,7 +202,7 @@ export class StringSchema<
 		return this.test({
 			is: (value) => !ALPHADASH_PATTERN.test(value),
 			message: message ?? ((messages) => messages.string.alphadash),
-			name: 'alphadash'
+			name: `alphadash_${message}`
 		});
 	}
 
@@ -217,7 +215,7 @@ export class StringSchema<
 		return this.test({
 			is: (value) => !(value.length % 2 === 0 && HEX_PATTERN.test(value)),
 			message: message ?? ((messages) => messages.string.hex),
-			name: 'hex'
+			name: `hex_${message}`
 		});
 	}
 
@@ -230,7 +228,7 @@ export class StringSchema<
 		return this.test({
 			is: (value) => !BASE64_PATTERN.test(value),
 			message: message ?? ((messages) => messages.string.base64),
-			name: 'base64'
+			name: `base64_${message}`
 		});
 	}
 
@@ -243,7 +241,7 @@ export class StringSchema<
 		return this.test({
 			is: (value) => !UUID_PATTERN.test(value),
 			message: message ?? ((messages) => messages.string.uuid),
-			name: 'uuid'
+			name: `uuid_${message}`
 		});
 	}
 
@@ -256,7 +254,7 @@ export class StringSchema<
 		return this.test({
 			is: (value) => !URL_PATTERN.test(value),
 			message: message ?? ((messages) => messages.string.url),
-			name: 'url'
+			name: `url_${message}`
 		});
 	}
 
@@ -269,7 +267,7 @@ export class StringSchema<
 		return this.test({
 			is: (value) => !CUID_PATTERN.test(value),
 			message: message ?? ((messages) => messages.string.cuid),
-			name: 'cuid'
+			name: `cuid_${message}`
 		});
 	}
 
@@ -285,7 +283,7 @@ export class StringSchema<
 		return this.test({
 			is: (value) => !pattern.test(value),
 			message: message ?? ((messages) => messages.string.email),
-			name: 'email'
+			name: `email_${mode}_${message}`
 		});
 	}
 
@@ -318,7 +316,7 @@ export class StringSchema<
 		return this.test({
 			is: (value) => !postalCode.regex.test(value),
 			message: message ?? ((messages) => messages.string.postalCode(postalCode)),
-			name: 'postalCode'
+			name: `postalCode_${postalCode.country}_${message}`
 		});
 	}
 
@@ -351,7 +349,7 @@ export class StringSchema<
 		return this.test({
 			is: (value) => !phoneNumber.regex.test(value),
 			message: message ?? ((messages) => messages.string.phoneNumber(phoneNumber)),
-			name: 'phoneNumber'
+			name: `phoneNumber_${phoneNumber.country}_${message}`
 		});
 	}
 
@@ -367,8 +365,8 @@ export class StringSchema<
 
 		return this.test({
 			is: (value) => !enumValues.includes(value),
-			message: message ?? ((messages) => messages.string.enum),
-			name: 'enumString'
+			message: message ?? ((messages) => messages.string.enum)
+			// name: 'enumString'
 		}) as unknown as StringSchema<T[keyof T], Final>;
 	}
 }

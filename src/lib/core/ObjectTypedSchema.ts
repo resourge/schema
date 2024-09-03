@@ -1,7 +1,7 @@
 import { type OneOfConfig } from '../types/OneOfTypes';
 import { type SchemaMap } from '../types/SchemaMap';
 import { type CompileSchemaConfig, type PrivateSchema } from '../types/types';
-import { createOneOfFunctionName } from '../utils/Utils';
+import { createOneOfFunctionName, Parameters } from '../utils/Utils';
 
 import { type Definitions } from './Definitions';
 import { Schema } from './schema';
@@ -30,7 +30,7 @@ export abstract class ObjectTypedSchema<
 		key, 
 		path
 	}: CompileSchemaConfig) {
-		const srcCode = [];
+		const srcCode: string[] = [];
 		const errorParameterKey = createOneOfFunctionName();
 		const errorParameterKeyCondition = createOneOfFunctionName();
 
@@ -67,13 +67,13 @@ export abstract class ObjectTypedSchema<
 			`if ( ${errorParameterKeyCondition} ) {`,
 			(
 				!this.oneOfConfig.message 
-					? `${errorParameterKey}.forEach((error) => { errors.push(error); })`
+					? `${errorParameterKey}.forEach((error) => { ${Parameters.ERRORS_KEY}.push(error); })`
 					: (
 						typeof this.oneOfConfig.message === 'string' 
-							? `${errorParameterKey}.forEach((error) => { error.error = '${this.oneOfConfig.message}'; errors.push(error); })`
+							? `${errorParameterKey}.forEach((error) => { error.error = '${this.oneOfConfig.message}'; ${Parameters.ERRORS_KEY}.push(error); })`
 							: Array.isArray(this.oneOfConfig.message)
-								? `${JSON.stringify(this.oneOfConfig.message)}.forEach((error) => { errors.push(error); })`
-								: `errors.push(${JSON.stringify(this.oneOfConfig.message)}); `
+								? `${JSON.stringify(this.oneOfConfig.message)}.forEach((error) => { ${Parameters.ERRORS_KEY}.push(error); })`
+								: `${Parameters.ERRORS_KEY}.push(${JSON.stringify(this.oneOfConfig.message)}); `
 					)
 			),
 			'}'

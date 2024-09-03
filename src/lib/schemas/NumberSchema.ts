@@ -1,14 +1,12 @@
 import { type Definitions } from '../core/Definitions';
 import { Schema } from '../core/schema';
 import { type NullableType } from '../types/SchemaMap';
-import { SchemaTypes } from '../utils/Utils';
 
 export class NumberSchema<
 	Input extends NullableType<number> = number,
 	Final = any
 > extends Schema<Input, Final> {
-	protected type: SchemaTypes = SchemaTypes.NUMBER;
-	protected message: string = `{{key}} is not ${this.type}`;
+	protected message: string = '{{key}} is not number';
 	protected rule = (value: number) => typeof value === 'number';
 
 	protected clone() {
@@ -29,9 +27,9 @@ export class NumberSchema<
 	 */
 	public min(minValue: number, message?: string) {
 		return this.test({
-			is: (value: number) => !(value >= minValue),
+			is: (value: number) => value < minValue,
 			message: message ?? ((messages) => messages.number.min(minValue)),
-			name: 'minNumber'
+			name: `minNumber_${minValue}_${message}`
 		});
 	}
 
@@ -45,7 +43,7 @@ export class NumberSchema<
 		return this.test({
 			is: (value) => !(value <= maxValue),
 			message: message ?? ((messages) => messages.number.max(maxValue)),
-			name: 'maxNumber'
+			name: `maxNumber_${maxValue}_${message}`
 		});
 	}
 
@@ -60,7 +58,7 @@ export class NumberSchema<
 		return this.test({
 			is: (value) => !(value >= minValue && value <= maxValue),
 			message: message ?? ((messages) => messages.number.between(minValue, maxValue)),
-			name: 'betweenNumber'
+			name: `betweenNumber_${minValue}_${maxValue}_${message}`
 		});
 	}
 
@@ -79,7 +77,7 @@ export class NumberSchema<
 		return this.test({
 			is,
 			message: message ?? ((messages) => messages.number.equals(value)),
-			name: 'equalsNumber'
+			name: `equalsNumber_${Array.isArray(value) ? value.join('_') : value}_${message}`
 		});
 	}
 
@@ -92,7 +90,7 @@ export class NumberSchema<
 		return this.test({
 			is: (val) => !(val % 1 === 0),
 			message: message ?? ((messages) => messages.number.integer),
-			name: 'integer'
+			name: `integer_${message}`
 		});
 	}
 
@@ -105,7 +103,7 @@ export class NumberSchema<
 		return this.test({
 			is: (val) => !(val.toFixed(decimal) === val.toString()),
 			message: message ?? ((messages) => messages.number.decimal(decimal)),
-			name: 'decimal'
+			name: `decimal_${decimal}_${message}`
 		});
 	}
 
@@ -118,7 +116,7 @@ export class NumberSchema<
 		return this.test({
 			is: (val) => !(val >= 0),
 			message: message ?? ((messages) => messages.number.positive),
-			name: 'positive'
+			name: `positive_${message}`
 		});
 	}
 
@@ -131,7 +129,7 @@ export class NumberSchema<
 		return this.test({
 			is: (val) => !(val < 0),
 			message: message ?? ((messages) => messages.number.negative),
-			name: 'negative'
+			name: `negative_${message}`
 		});
 	}
 
@@ -147,8 +145,8 @@ export class NumberSchema<
 
 		return this.test({
 			is: (value: any) => !enumValues.includes(value),
-			message: message ?? ((messages) => messages.number.enum),
-			name: 'enumNumber'
+			message: message ?? ((messages) => messages.number.enum)
+			// name: 'enumNumber'
 		}) as unknown as NumberSchema<T[keyof T], Final>;
 	}
 }

@@ -1,4 +1,5 @@
 import { PostalCodes } from 'src/lib/postalCodes';
+import { type SchemaError } from 'src/lib/types';
 
 import { number } from '../NumberSchema';
 import { object } from '../ObjectSchema';
@@ -10,13 +11,13 @@ describe('string', () => {
 		.between(2, 3)
 		.compile();
 
-		expect(schema.isValid('11'))
+		expect((schema.validate('11') as SchemaError[]).length === 0)
 		.toBeTruthy();
-		expect(schema.isValid('_a'))
+		expect((schema.validate('_a') as SchemaError[]).length === 0)
 		.toBeTruthy();
-		expect(schema.isValid('aaa'))
+		expect((schema.validate('aaa') as SchemaError[]).length === 0)
 		.toBeTruthy();
-		expect(schema.isValid('aaa3'))
+		expect((schema.validate('aaa3') as SchemaError[]).length === 0)
 		.toBeFalsy();
 	});
 	it('should be empty email', () => {
@@ -26,12 +27,12 @@ describe('string', () => {
 		.compile();
 
 		// @ts-expect-error // To force validation to be true
-		expect(schema.isValid(null))
+		expect((schema.validate(null) as SchemaError[]).length === 0)
 		.toBeTruthy();
 		// @ts-expect-error // To force validation to be true
-		expect(schema.isValid(undefined))
+		expect((schema.validate(undefined) as SchemaError[]).length === 0)
 		.toBeTruthy();
-		expect(schema.isValid(''))
+		expect((schema.validate('') as SchemaError[]).length === 0)
 		.toBeTruthy();
 	});
 	
@@ -41,14 +42,14 @@ describe('string', () => {
 		.compile();
 
 		// @ts-expect-error // To force validation to be false
-		expect(schema.isValid(null))
+		expect((schema.validate(null) as SchemaError[]).length === 0)
 		.toBeFalsy();
 		// @ts-expect-error // To force validation to be false
-		expect(schema.isValid(undefined))
+		expect((schema.validate(undefined) as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema.isValid(''))
+		expect((schema.validate('') as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema.isValid('a'))
+		expect((schema.validate('a') as SchemaError[]).length === 0)
 		.toBeTruthy();
 	});
 
@@ -57,20 +58,20 @@ describe('string', () => {
 		.equals('Name')
 		.compile();
 
-		expect(schema.isValid('Name'))
+		expect((schema.validate('Name') as SchemaError[]).length === 0)
 		.toBeTruthy();
-		expect(schema.isValid('_Name'))
+		expect((schema.validate('_Name') as SchemaError[]).length === 0)
 		.toBeFalsy();
 
 		const schema1 = string()
 		.equals(['Name', 'Age'])
 		.compile();
 
-		expect(schema1.isValid('Name'))
+		expect((schema1.validate('Name') as SchemaError[]).length === 0)
 		.toBeTruthy();
-		expect(schema1.isValid('Age'))
+		expect((schema1.validate('Age') as SchemaError[]).length === 0)
 		.toBeTruthy();
-		expect(schema1.isValid('aaa3'))
+		expect((schema1.validate('aaa3') as SchemaError[]).length === 0)
 		.toBeFalsy();
 	});
 
@@ -79,11 +80,11 @@ describe('string', () => {
 		.alpha()
 		.compile();
 
-		expect(schema.isValid('11'))
+		expect((schema.validate('11') as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema.isValid('_a'))
+		expect((schema.validate('_a') as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema.isValid('aaa'))
+		expect((schema.validate('aaa') as SchemaError[]).length === 0)
 		.toBeTruthy();
 	});
 
@@ -92,15 +93,15 @@ describe('string', () => {
 		.alphadash()
 		.compile();
 
-		expect(schema.isValid('//'))
+		expect((schema.validate('//') as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema.isValid('aaa'))
+		expect((schema.validate('aaa') as SchemaError[]).length === 0)
 		.toBeTruthy();
-		expect(schema.isValid('11'))
+		expect((schema.validate('11') as SchemaError[]).length === 0)
 		.toBeTruthy();
-		expect(schema.isValid('aaa11'))
+		expect((schema.validate('aaa11') as SchemaError[]).length === 0)
 		.toBeTruthy();
-		expect(schema.isValid('a__--aa11'))
+		expect((schema.validate('a__--aa11') as SchemaError[]).length === 0)
 		.toBeTruthy();
 	});
 
@@ -109,15 +110,15 @@ describe('string', () => {
 		.alphanum()
 		.compile();
 
-		expect(schema.isValid('//'))
+		expect((schema.validate('//') as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema.isValid('aaa'))
+		expect((schema.validate('aaa') as SchemaError[]).length === 0)
 		.toBeTruthy();
-		expect(schema.isValid('11'))
+		expect((schema.validate('11') as SchemaError[]).length === 0)
 		.toBeTruthy();
-		expect(schema.isValid('aaa11'))
+		expect((schema.validate('aaa11') as SchemaError[]).length === 0)
 		.toBeTruthy();
-		expect(schema.isValid('a__--aa11'))
+		expect((schema.validate('a__--aa11') as SchemaError[]).length === 0)
 		.toBeFalsy();
 	});
 
@@ -126,11 +127,11 @@ describe('string', () => {
 		.base64()
 		.compile();
 
-		expect(schema.isValid('//'))
+		expect((schema.validate('//') as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema.isValid('aaa'))
+		expect((schema.validate('aaa') as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema.isValid('TWFuIGlzIGRpc3Rpbmd1aXNoZWQsIG5vdCBvbmx5IGJ5IGhpcyByZWFzb24sIGJ1dCBieSB0aGlzIHNpbmd1bGFyIHBhc3Npb24gZnJvbSBvdGhlciBhbmltYWxzLCB3aGljaCBpcyBhIGx1c3Qgb2YgdGhlIG1pbmQsIHRoYXQgYnkgYSBwZXJzZXZlcmFuY2Ugb2YgZGVsaWdodCBpbiB0aGUgY29udGludWVkIGFuZCBpbmRlZmF0aWdhYmxlIGdlbmVyYXRpb24gb2Yga25vd2xlZGdlLCBleGNlZWRzIHRoZSBzaG9ydCB2ZWhlbWVuY2Ugb2YgYW55IGNhcm5hbCBwbGVhc3VyZS4='))
+		expect((schema.validate('TWFuIGlzIGRpc3Rpbmd1aXNoZWQsIG5vdCBvbmx5IGJ5IGhpcyByZWFzb24sIGJ1dCBieSB0aGlzIHNpbmd1bGFyIHBhc3Npb24gZnJvbSBvdGhlciBhbmltYWxzLCB3aGljaCBpcyBhIGx1c3Qgb2YgdGhlIG1pbmQsIHRoYXQgYnkgYSBwZXJzZXZlcmFuY2Ugb2YgZGVsaWdodCBpbiB0aGUgY29udGludWVkIGFuZCBpbmRlZmF0aWdhYmxlIGdlbmVyYXRpb24gb2Yga25vd2xlZGdlLCBleGNlZWRzIHRoZSBzaG9ydCB2ZWhlbWVuY2Ugb2YgYW55IGNhcm5hbCBwbGVhc3VyZS4=') as SchemaError[]).length === 0)
 		.toBeTruthy();
 	});
 
@@ -139,15 +140,15 @@ describe('string', () => {
 		.contains('product')
 		.compile();
 
-		expect(schema.isValid('//'))
+		expect((schema.validate('//') as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema.isValid('aaa'))
+		expect((schema.validate('aaa') as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema.isValid('aproductaa'))
+		expect((schema.validate('aproductaa') as SchemaError[]).length === 0)
 		.toBeTruthy();
-		expect(schema.isValid('aaaproduct'))
+		expect((schema.validate('aaaproduct') as SchemaError[]).length === 0)
 		.toBeTruthy();
-		expect(schema.isValid('productaaaproduct'))
+		expect((schema.validate('productaaaproduct') as SchemaError[]).length === 0)
 		.toBeTruthy();
 	});
 
@@ -156,9 +157,9 @@ describe('string', () => {
 		.cuid()
 		.compile();
 
-		expect(schema.isValid('//'))
+		expect((schema.validate('//') as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema.isValid('cjld2cjxh0000qzrmn831i7rn'))
+		expect((schema.validate('cjld2cjxh0000qzrmn831i7rn') as SchemaError[]).length === 0)
 		.toBeTruthy();
 	});
 
@@ -168,11 +169,11 @@ describe('string', () => {
 			.email('basic')
 			.compile();
 	
-			expect(schema.isValid('//'))
+			expect((schema.validate('//') as SchemaError[]).length === 0)
 			.toBeFalsy();
-			expect(schema.isValid('a{@a.a'))
+			expect((schema.validate('a{@a.a') as SchemaError[]).length === 0)
 			.toBeTruthy();
-			expect(schema.isValid('a@a.a'))
+			expect((schema.validate('a@a.a') as SchemaError[]).length === 0)
 			.toBeTruthy();
 		});
 		it('and precise', () => {
@@ -180,11 +181,11 @@ describe('string', () => {
 			.email('precise')
 			.compile();
 	
-			expect(schema.isValid('//'))
+			expect((schema.validate('//') as SchemaError[]).length === 0)
 			.toBeFalsy();
-			expect(schema.isValid('a@a.a'))
+			expect((schema.validate('a@a.a') as SchemaError[]).length === 0)
 			.toBeFalsy();
-			expect(schema.isValid('a@a.pt'))
+			expect((schema.validate('a@a.pt') as SchemaError[]).length === 0)
 			.toBeTruthy();
 		});
 	});
@@ -194,11 +195,11 @@ describe('string', () => {
 		.empty()
 		.compile();
 
-		expect(schema.isValid('//'))
+		expect((schema.validate('//') as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema.isValid(''))
+		expect((schema.validate('') as SchemaError[]).length === 0)
 		.toBeTruthy();
-		expect(schema.isValid(' '))
+		expect((schema.validate(' ') as SchemaError[]).length === 0)
 		.toBeFalsy();
 	});
 
@@ -207,15 +208,15 @@ describe('string', () => {
 		.hex()
 		.compile();
 
-		expect(schema.isValid('//'))
+		expect((schema.validate('//') as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema.isValid('000000'))
+		expect((schema.validate('000000') as SchemaError[]).length === 0)
 		.toBeTruthy();
-		expect(schema.isValid('666FFF'))
+		expect((schema.validate('666FFF') as SchemaError[]).length === 0)
 		.toBeTruthy();
-		expect(schema.isValid('FFFFFF'))
+		expect((schema.validate('FFFFFF') as SchemaError[]).length === 0)
 		.toBeTruthy();
-		expect(schema.isValid('Q66FFF'))
+		expect((schema.validate('Q66FFF') as SchemaError[]).length === 0)
 		.toBeFalsy();
 	});
 
@@ -224,11 +225,11 @@ describe('string', () => {
 		.length(2)
 		.compile();
 
-		expect(schema.isValid('//'))
+		expect((schema.validate('//') as SchemaError[]).length === 0)
 		.toBeTruthy();
-		expect(schema.isValid('000000'))
+		expect((schema.validate('000000') as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema.isValid('0'))
+		expect((schema.validate('0') as SchemaError[]).length === 0)
 		.toBeFalsy();
 	});
 
@@ -237,11 +238,11 @@ describe('string', () => {
 		.max(2)
 		.compile();
 
-		expect(schema.isValid('//'))
+		expect((schema.validate('//') as SchemaError[]).length === 0)
 		.toBeTruthy();
-		expect(schema.isValid('0'))
+		expect((schema.validate('0') as SchemaError[]).length === 0)
 		.toBeTruthy();
-		expect(schema.isValid('000000'))
+		expect((schema.validate('000000') as SchemaError[]).length === 0)
 		.toBeFalsy();
 	});
 
@@ -250,11 +251,11 @@ describe('string', () => {
 		.min(2)
 		.compile();
 
-		expect(schema.isValid('0'))
+		expect((schema.validate('0') as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema.isValid('//'))
+		expect((schema.validate('//') as SchemaError[]).length === 0)
 		.toBeTruthy();
-		expect(schema.isValid('000000'))
+		expect((schema.validate('000000') as SchemaError[]).length === 0)
 		.toBeTruthy();
 	});
 
@@ -263,13 +264,13 @@ describe('string', () => {
 		.numeric()
 		.compile();
 
-		expect(schema.isValid('0'))
+		expect((schema.validate('0') as SchemaError[]).length === 0)
 		.toBeTruthy();
-		expect(schema.isValid('001'))
+		expect((schema.validate('001') as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema.isValid('000000'))
+		expect((schema.validate('000000') as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema.isValid('//'))
+		expect((schema.validate('//') as SchemaError[]).length === 0)
 		.toBeFalsy();
 	});
 
@@ -278,15 +279,15 @@ describe('string', () => {
 		.pattern(/\D/)
 		.compile();
 	
-		expect(schema.isValid('0'))
+		expect((schema.validate('0') as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema.isValid('001'))
+		expect((schema.validate('001') as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema.isValid('000000'))
+		expect((schema.validate('000000') as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema.isValid('//'))
+		expect((schema.validate('//') as SchemaError[]).length === 0)
 		.toBeTruthy();
-		expect(schema.isValid('aaa'))
+		expect((schema.validate('aaa') as SchemaError[]).length === 0)
 		.toBeTruthy();
 	});
 	
@@ -295,21 +296,21 @@ describe('string', () => {
 		.url()
 		.compile();
 
-		expect(schema.isValid('aaaa'))
+		expect((schema.validate('aaaa') as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema.isValid('/index.html'))
+		expect((schema.validate('/index.html') as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema.isValid('https://google'))
+		expect((schema.validate('https://google') as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema.isValid('https://.pt'))
+		expect((schema.validate('https://.pt') as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema.isValid('www.google.pt'))
+		expect((schema.validate('www.google.pt') as SchemaError[]).length === 0)
 		.toBeTruthy();
-		expect(schema.isValid('http://www.google.pt'))
+		expect((schema.validate('http://www.google.pt') as SchemaError[]).length === 0)
 		.toBeTruthy();
-		expect(schema.isValid('https://www.google.pt'))
+		expect((schema.validate('https://www.google.pt') as SchemaError[]).length === 0)
 		.toBeTruthy();
-		expect(schema.isValid('https://google.pt'))
+		expect((schema.validate('https://google.pt') as SchemaError[]).length === 0)
 		.toBeTruthy();
 	});
 
@@ -318,13 +319,13 @@ describe('string', () => {
 		.uuid()
 		.compile();
 
-		expect(schema.isValid('0'))
+		expect((schema.validate('0') as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema.isValid('000000'))
+		expect((schema.validate('000000') as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema.isValid('00000000-0000-0000-0000-000000000000'))
+		expect((schema.validate('00000000-0000-0000-0000-000000000000') as SchemaError[]).length === 0)
 		.toBeTruthy();
-		expect(schema.isValid('123e4567-e89b-12d3-a456-426614174000'))
+		expect((schema.validate('123e4567-e89b-12d3-a456-426614174000') as SchemaError[]).length === 0)
 		.toBeTruthy();
 	});
 
@@ -333,26 +334,26 @@ describe('string', () => {
 		.postalCode(PostalCodes.PT)
 		.compile();
 
-		expect(schema.isValid('0'))
+		expect((schema.validate('0') as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema.isValid('001'))
+		expect((schema.validate('001') as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema.isValid('4999333'))
+		expect((schema.validate('4999333') as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema.isValid('4999-333'))
+		expect((schema.validate('4999-333') as SchemaError[]).length === 0)
 		.toBeTruthy();
 
 		const schema1 = string()
 		.postalCode(() => PostalCodes.PT)
 		.compile();
 
-		expect(schema1.isValid('0'))
+		expect((schema1.validate('0') as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema1.isValid('001'))
+		expect((schema1.validate('001') as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema1.isValid('4999333'))
+		expect((schema1.validate('4999333') as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema1.isValid('4999-333'))
+		expect((schema1.validate('4999-333') as SchemaError[]).length === 0)
 		.toBeTruthy();
 	});
 
@@ -371,14 +372,14 @@ describe('string', () => {
 		})
 		.compile();
 
-		expect(schema.isValid({
+		expect((schema.validate({
 			productName: FieldTypeEnum.EXISTING_FIELD 
-		}))
+		}) as SchemaError[]).length === 0)
 		.toBeTruthy();
-		expect(schema.isValid({
+		expect((schema.validate({
 			// @ts-expect-error // To force validation to be false
 			productName: 'NOT ENUM VALUE' 
-		}))
+		}) as SchemaError[]).length === 0)
 		.toBeFalsy();
 	});
 
@@ -390,16 +391,16 @@ describe('string', () => {
 		.max(10);
 	
 		// @ts-expect-error // To check private values
-		expect(schema.isNullable)
+		expect(schema.def._isNullable)
 		.toBe(true);
 		// @ts-expect-error // To check private values
-		expect(schema.isOptional)
-		.toBe(false);
+		expect(schema.def._isOptional)
+		.toBeUndefined();
 		// @ts-expect-error // To check private values
-		expect(schema1.isNullable)
+		expect(schema1.def._isNullable)
 		.toBe(true);
 		// @ts-expect-error // To check private values
-		expect(schema1.isOptional)
+		expect(schema1.def._isOptional)
 		.toBe(true);
 
 		// @ts-expect-error // To check protected values
@@ -420,10 +421,10 @@ describe('string', () => {
 		})
 		.compile();
 
-		expect(schema.isValid('Test 10'))
+		expect((schema.validate('Test 10') as SchemaError[]).length === 0)
 		.toBe(true);
 
-		expect(schema.isValid('Test 11'))
+		expect((schema.validate('Test 11') as SchemaError[]).length === 0)
 		.toBe(false);
 
 		const schema1 = object({
@@ -439,16 +440,16 @@ describe('string', () => {
 		})
 		.compile();
 
-		expect(schema1.isValid({
+		expect((schema1.validate({
 			product: 10,
 			productName: '10101'
-		}))
+		}) as SchemaError[]).length === 0)
 		.toBe(true);
 
-		expect(schema1.isValid({
+		expect((schema1.validate({
 			product: 11,
 			productName: ''
-		}))
+		}) as SchemaError[]).length === 0)
 		.toBe(true);
 	});
 });

@@ -8,6 +8,15 @@ export type SchemaError = {
 };
 export type PrivateSchema = Schema<any, any> & { compileSchema: Schema<any, any>['compileSchema'] };
 
+export type ExcludeByValueType<T, ValueType> = keyof { 
+	[Key in keyof T as ValueType extends T[Key] ? never : Key]: T[Key] 
+};
+
+export type LiteralUnion<
+	LiteralType,
+	BaseType
+> = LiteralType | (BaseType & Record<never, never>);
+
 export type Context = {
 	index: number
 	messages: MessageType
@@ -52,3 +61,9 @@ export type CompileConfig = {
 	 */
 	onlyOnTouch?: boolean
 };
+
+export type DeepPartial<T> = T extends (...args: any[]) => any 
+	? T
+	: T extends object ? {
+		[P in keyof T]?: DeepPartial<T[P]>;
+	} : T;

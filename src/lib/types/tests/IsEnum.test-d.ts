@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { describe, it } from 'vitest';
+
 import { type IsEnum } from '../IsEnum';
 
 describe('should isEnum be true', () => {

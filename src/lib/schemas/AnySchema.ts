@@ -1,13 +1,11 @@
 import { type Definitions } from '../core/Definitions';
 import { Schema } from '../core/schema';
-import { SchemaTypes } from '../utils/Utils';
 
 export class AnySchema<
 	Input = any, 
 	Final = any
 > extends Schema<Input, Final> {
-	protected type: SchemaTypes = SchemaTypes.ARRAY;
-	protected message: string = `{{key}} is not ${this.type}`;
+	protected message: string = '{{key}} is not array';
 	protected rule = () => true;
 	
 	protected clone() {
@@ -32,8 +30,8 @@ export class AnySchema<
 
 		return this.test({
 			is: (value) => !enumValues.includes(value),
-			message: message ?? ((messages) => messages.any.enum),
-			name: 'enumString'
+			message: message ?? ((messages) => messages.any.enum)
+			// name: 'enumString'
 		}) as unknown as AnySchema<T[keyof T], Final>;
 	}
 }

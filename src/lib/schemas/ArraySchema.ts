@@ -1,15 +1,13 @@
 import { ArrayTypedSchema } from '../core/ArrayTypedSchema';
 import { type Definitions } from '../core/Definitions';
 import { type ObjectPropertiesSchema } from '../types/SchemaMap';
-import { SchemaTypes } from '../utils/Utils';
 
 export class ArraySchema<
 	Input extends any[] = any[], 
 	Final = any,
 	S extends ObjectPropertiesSchema<Input[number], Final> = ObjectPropertiesSchema<Input[number], Final>
 > extends ArrayTypedSchema<Input, Final, S> {
-	protected type: SchemaTypes = SchemaTypes.ARRAY;
-	protected message: string = `{{key}} is not ${this.type}`;
+	protected message: string = '{{key}} is not array';
 	protected rule = (value: any[]) => Array.isArray(value);
 
 	protected clone() {
@@ -31,7 +29,7 @@ export class ArraySchema<
 		return this.test({
 			is: (value: any) => !(value.length === 0),
 			message: message ?? ((messages) => messages.array.empty),
-			name: 'empty'
+			name: `empty_${message}`
 		});
 	}
 
@@ -45,7 +43,7 @@ export class ArraySchema<
 		return this.test({
 			is: (value: any) => !(minValue <= value.length),
 			message: message ?? ((messages) => messages.array.min(minValue)),
-			name: 'minArray'
+			name: `minArray_${minValue}_${message}`
 		});
 	}
 
@@ -59,7 +57,7 @@ export class ArraySchema<
 		return this.test({
 			is: (value: any) => !(value.length <= maxValue),
 			message: message ?? ((messages) => messages.array.max(maxValue)),
-			name: 'maxArray'
+			name: `maxArray_${maxValue}_${message}`
 		});
 	}
 	
@@ -73,7 +71,7 @@ export class ArraySchema<
 		return this.test({
 			is: (value: any) => !(value.length === length),
 			message: message ?? ((messages) => messages.array.length(length)),
-			name: 'lengthArray'
+			name: `lengthArray_${length}_${message}`
 		});
 	}
 
@@ -89,7 +87,7 @@ export class ArraySchema<
 		return this.test({
 			is: (value: any) => !(value.length === (new Set(value)).size),
 			message: message ?? ((messages) => messages.array.unique),
-			name: 'uniqueArray'
+			name: `uniqueArray_${message}`
 		});
 	}
 
@@ -106,7 +104,7 @@ export class ArraySchema<
 		return this.test({
 			is: (value: any) => !(value.length === (new Set(value.map(mapCb))).size),
 			message: message ?? ((messages) => messages.array.uniqueBy),
-			name: 'uniqueByArray'
+			name: typeof key !== 'function' ? `uniqueByArray_${key.toString()}_${message}` : undefined
 		});
 	}
 }

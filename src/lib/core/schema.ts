@@ -13,7 +13,7 @@ import {
 	type Context,
 	type SchemaError
 } from '../types/types';
-import { Parameters, type SchemaTypes } from '../utils/Utils';
+import { Parameters } from '../utils/Utils';
 import { beautifyFunction } from '../utils/beautifyFunction';
 import { getOnlyOnTouchSrcCode } from '../utils/getOnlyOnTouchSrcCode';
 import { defaultMessages, type MessageType } from '../utils/messages';
@@ -59,24 +59,9 @@ export abstract class Schema<Input = any, Final = any> {
 	private readonly errorParameterKey: string = Parameters.ERRORS_KEY;
 
 	protected def: Definitions<Input, Final> = new Definitions<Input, Final>();
-	private get isOnlyOnTouch(): boolean {
-		return this.def._isOnlyOnTouch ?? false;
-	}
 
-	private get isOptional(): boolean {
-		return this.def._isOptional ?? false;
-	}
-
-	private get isNullable(): boolean {
-		return this.def._isNullable ?? false;
-	}
-
-	private get isRequired(): boolean {
-		return this.def._isRequired ?? false;
-	}
 	protected abstract clone(): any;
 
-	protected abstract type: SchemaTypes;
 	protected abstract message: string;
 	protected abstract rule: RuleBooleanMethod<any, any>;
 
@@ -91,15 +76,11 @@ export abstract class Schema<Input = any, Final = any> {
 		return `${Parameters.VALUE}${key ? `${key.indexOf('[') === 0 ? '' : '.'}${key}` : ''}`;
 	}
 
-	protected getMessage(message: string): string {
-		return `\`${message.replace('{{key}}', this.def.path)}\``;
-	}
-	
 	protected getErrorSyntax(message: string) {
 		return [
 			`${this.errorParameterKey}.push({`,
 			`	path: \`${this.def.path}\`,`,
-			`	error: ${this.getMessage(message)}`,
+			`	error: \`${message.replace('{{key}}', this.def.path)}\``,
 			'});'
 		];
 	}
@@ -116,11 +97,9 @@ export abstract class Schema<Input = any, Final = any> {
 					context, 
 					path: this.def.path,
 					onlyOnTouch: Boolean(this.def._isOnlyOnTouch ?? context.onlyOnTouch),
-					ruleMethodName: key,
-					ruleType: this.type,
+					ruleMethodName: key.startsWith('_test_') ? `test_${context.index = context.index + 1}` : key,
 					valueKey,
-					errorParameterKey: this.errorParameterKey,
-					key
+					errorParameterKey: this.errorParameterKey
 				})
 			);
 		});
@@ -146,7 +125,6 @@ export abstract class Schema<Input = any, Final = any> {
 		valueKey: string,
 		{
 			context,
-			key,
 			srcCode = []
 		}: CompileSchemaConfig
 	) {
@@ -158,7 +136,6 @@ export abstract class Schema<Input = any, Final = any> {
 		
 		// Order is important for mandatoryRules
 		const mandatoryRules = this.getMandatoryRules(this, context);
-
 		const {
 			methodName,
 			parameters,
@@ -167,11 +144,9 @@ export abstract class Schema<Input = any, Final = any> {
 			context,
 			path: this.def.path,
 			onlyOnTouch: Boolean(this.def._isOnlyOnTouch ?? context.onlyOnTouch),
-			ruleMethodName: `is_${this.type}`,
-			ruleType: this.type,
+			ruleMethodName: Object.getPrototypeOf(this).constructor.name,
 			valueKey,
-			errorParameterKey: this.errorParameterKey,
-			key
+			errorParameterKey: this.errorParameterKey
 		});
 
 		const rulesSrcCode = this.compileNormalRules(context, valueKey);
@@ -193,7 +168,7 @@ export abstract class Schema<Input = any, Final = any> {
 		];
 
 		return mandatoryRules
-		.reduce((fnSrcCode, rule) => rule(fnSrcCode, valueKey), fnSrcCode);
+		.reduce((code, rule) => rule(code, valueKey), fnSrcCode);
 	}
 
 	protected getIsOptional(mandatoryRules: Array<(fnSrcCode: string[], valueKey: string) => string[]>, schema: Schema<any>, context: Context) {
@@ -352,7 +327,7 @@ export abstract class Schema<Input = any, Final = any> {
 
 		if ( typeof method === 'object' ) {
 			_this.def.normalRules.set(
-				method.name ?? `test_${this.def.normalRules.size}`,
+				method.name ?? `_test_${this.def.normalRules.size}`,
 				new Rule(
 					'MESSAGE',
 					(method as TestMethodConfig<RuleBooleanMethod<Input, Form>>).is ?? ((...args) => !(method as OldTestMethodConfig<RuleBooleanMethod<Input, Form>>).test(...args)),
@@ -364,7 +339,7 @@ export abstract class Schema<Input = any, Final = any> {
 		}
 
 		_this.def.normalRules.set(
-			`test_${this.def.normalRules.size}`,
+			`_test_${this.def.normalRules.size}`,
 			new Rule(
 				'METHOD_ERROR',
 				method
@@ -484,15 +459,14 @@ export abstract class Schema<Input = any, Final = any> {
 			);
 
 			_this.def.whenRules.push(
-				new NamedWhenRule(
-					name,
-					'custom_when',
-					this.type,
-					(config!).is,
-					false,
-					thenSchema,
-					otherwiseSchema
-				)
+				new NamedWhenRule({
+					namedValueKey: name,
+					name: 'custom_when',
+					method: (config!).is,
+					onlyOnTouch: false,
+					then: thenSchema,
+					otherwise: otherwiseSchema
+				})
 			);
 
 			return _this;
@@ -508,14 +482,13 @@ export abstract class Schema<Input = any, Final = any> {
 		);
 
 		_this.def.whenRules.push(
-			new WhenRule(
-				'custom_when',
-				this.type,
-				name.is,
-				false,
-				thenSchema,
-				otherwiseSchema
-			)
+			new WhenRule({
+				name: 'custom_when',
+				method: name.is,
+				onlyOnTouch: false,
+				then: thenSchema,
+				otherwise: otherwiseSchema
+			})
 		);
 
 		return _this;
@@ -555,13 +528,12 @@ export abstract class Schema<Input = any, Final = any> {
 
 		_this.def.normalRules.set(
 			'onlyOnTouchRule',
-			new WhenRule(
-				'onlyOnTouchRule',
-				this.type,
-				() => true,
-				true,
-				thenClone
-			)
+			new WhenRule({
+				name: 'onlyOnTouchRule',
+				method: () => true,
+				onlyOnTouch: true,
+				then: thenClone
+			})
 		);
 
 		return _this;
@@ -697,12 +669,29 @@ export abstract class Schema<Input = any, Final = any> {
 		}
 
 		/* c8 ignore start */ // this is for better debugging no need to test coverage
-		if ( process.env.NODE_ENV === 'development' ) {
-			if ( debug ) {
-				/* eslint-disable no-console */
-				console.log('method', beautifyFunction(srcCode));
-			}
+		// if ( process.env.NODE_ENV === 'development' ) {
+		if ( debug ) {
+			/* eslint-disable no-console */
+			console.log('method', beautifyFunction(srcCode));
 		}
+		// }
+
+		function minifyJavaScript(jsCode: string) {
+			// Remove single-line comments (//...)
+			jsCode = jsCode.replace(/\/\/.*$/gm, '');
+			
+			// Remove multi-line comments (/* ... */)
+			jsCode = jsCode.replace(/\/\*[\s\S]*?\*\//g, '');
+			
+			// Remove unnecessary whitespace and line breaks
+			jsCode = jsCode.replace(/\s+/g, ' ') // Collapse whitespace to a single space
+			.replace(/\s*([{};:,])\s*/g, '$1') // Remove spaces around {}, ;, :, and ,
+			.trim(); // Remove leading and trailing whitespace
+
+			return jsCode;
+		}
+
+		console.log('a', minifyJavaScript(srcCode.join('\t')));
 
 		/* c8 ignore stop */ // this is for better debugging no need to test coverage
 		const validate = new Function(
@@ -710,7 +699,7 @@ export abstract class Schema<Input = any, Final = any> {
 			Parameters.CONTEXT_KEY,
 			Parameters.OBJECT_KEY,
 			Parameters.ONLY_ON_TOUCH,
-			srcCode.join('\t')
+			minifyJavaScript(srcCode.join(''))
 		);
 
 		this.def._validate = (value: any, onlyOnTouch?: OnlyOnTouch<Input>): typeof this.async extends true ? Promise<SchemaError[]> : SchemaError[] => {
@@ -733,19 +722,5 @@ export abstract class Schema<Input = any, Final = any> {
 		}
 
 		return this.def._validate!(value, onlyOnTouch);
-	}
-
-	/**
-	 * Validates form and returns a boolean.
-	 * @param value - form input
-	 * @param onlyOnTouch - array of keys that inform the schema if a value
-	 * was touched. Works with only with {@link Schema#onlyOnTouch} 
-	 * @returns {boolean}
-	 */
-	public isValid(value: Input, onlyOnTouch: OnlyOnTouch<Input> = []): Promise<boolean> | boolean {
-		if ( this.async ) {
-			return (this.validate(value, onlyOnTouch) as Promise<SchemaError[]>).then((res) => res.length === 0);
-		}
-		return (this.validate(value, onlyOnTouch) as SchemaError[]).length === 0;
 	}
 }

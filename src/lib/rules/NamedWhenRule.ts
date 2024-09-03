@@ -1,32 +1,26 @@
 import { type Schema } from '../core/schema';
 import { type CompileSchemaConfig } from '../types/types';
-import { type SchemaTypes } from '../utils/Utils';
+import { Parameters } from '../utils/Utils';
 
 import { type RuleBooleanMethod } from './Rule';
 import { WhenRule } from './WhenRule';
 
+export type NamedWhenRuleParameter<Value = any, T = any> = {
+	method: RuleBooleanMethod<Value, T>
+	name: string
+	namedValueKey: string
+	onlyOnTouch: boolean
+	then: Schema<any, any>
+	otherwise?: Schema<any, any>
+};
+
 export class NamedWhenRule<Value = any, T = any> extends WhenRule<Value, T> {
 	public namedValueKey: string;
 
-	constructor(
-		namedValueKey: string,
-		name: string,
-		schemaType: SchemaTypes,
-		method: RuleBooleanMethod<Value, T>,
-		onlyOnTouch: boolean,
-		then: Schema<any, any>,
-		otherwise?: Schema<any, any>
-	) {
-		super(
-			name,
-			schemaType,
-			method,
-			onlyOnTouch,
-			then,
-			otherwise
-		);
+	constructor(config: NamedWhenRuleParameter) {
+		super(config);
 
-		this.namedValueKey = namedValueKey;
+		this.namedValueKey = config.namedValueKey;
 	}
 
 	public override getWhenRule(
@@ -48,10 +42,10 @@ export class NamedWhenRule<Value = any, T = any> extends WhenRule<Value, T> {
 				arr.pop();
 
 				_key = arr.join('.');
-				_valueKey = `value.${_key}.${this.namedValueKey}`;
+				_valueKey = `${Parameters.VALUE}.${_key}.${this.namedValueKey}`;
 			}
 			else {
-				_valueKey = `value.${this.namedValueKey}`;
+				_valueKey = `${Parameters.VALUE}.${this.namedValueKey}`;
 			}
 		}
 		else if ( process.env.NODE_ENV === 'development' ) {

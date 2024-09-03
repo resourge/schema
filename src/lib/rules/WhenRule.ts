@@ -1,6 +1,6 @@
 import { type Schema } from '../core/schema';
 import { type CompileSchemaConfig, type PrivateSchema } from '../types/types';
-import { Parameters, type SchemaTypes } from '../utils/Utils';
+import { Parameters } from '../utils/Utils';
 
 import { BaseRule, type RuleSrcCodeConfig } from './BaseRule';
 import { type RuleBooleanMethod } from './Rule';
@@ -18,31 +18,32 @@ export type WhenConfig<
 	otherwise?: (schema: T) => T
 };
 
+export type WhenParameter<Value = any, T = any> = {
+	method: RuleBooleanMethod<Value, T>
+	name: string
+	onlyOnTouch: boolean
+	then: Schema<any, any>
+	otherwise?: Schema<any, any>
+};
+
 export class WhenRule<Value = any, T = any> extends BaseRule<Value, T, RuleBooleanMethod<Value, T>> {
 	public name: string;
-	public schemaType: SchemaTypes;
 	public then: PrivateSchema;
 	public otherwise?: PrivateSchema;
 	public onlyOnTouch: boolean;
 
 	constructor(
-		name: string,
-		schemaType: SchemaTypes,
-		method: RuleBooleanMethod<Value, T>,
-		onlyOnTouch: boolean,
-		then: Schema<any, any>,
-		otherwise?: Schema<any, any>
+		config: WhenParameter<Value, T>
 	) {
 		super(
 			'METHOD_ERROR',
-			method
+			config.method
 		);
 
-		this.schemaType = schemaType;
-		this.name = name;
-		this.onlyOnTouch = onlyOnTouch;
-		this.then = then as unknown as PrivateSchema;
-		this.otherwise = otherwise as unknown as PrivateSchema;
+		this.name = config.name;
+		this.onlyOnTouch = config.onlyOnTouch;
+		this.then = config.then as unknown as PrivateSchema;
+		this.otherwise = config.otherwise as unknown as PrivateSchema;
 	}
 
 	public getWhenRule(
@@ -60,10 +61,8 @@ export class WhenRule<Value = any, T = any> extends BaseRule<Value, T, RuleBoole
 			path: path ?? '',
 			onlyOnTouch: false,
 			valueKey,
-			ruleType: this.schemaType,
-			ruleMethodName: this.name,
-			errorParameterKey,
-			key
+			ruleMethodName: `${this.name}_${context.index = context.index + 1}`,
+			errorParameterKey
 		});
 
 		const thenSrcCode = this.then.compileSchema({
@@ -84,27 +83,21 @@ export class WhenRule<Value = any, T = any> extends BaseRule<Value, T, RuleBoole
 			path
 		});
 
-		const whenSrcCode = [
+		return [
 			`const ${methodName}_isValid = ${Parameters.CONTEXT_KEY}.rules.${methodName}(${parameters.join(',')});`,
 			`if ( ${methodName}_isValid ) {`,
 			...thenSrcCode,
-			'}'
-		];
-
-		return [
-			...whenSrcCode,
+			'}',
 			'else {',
 			...otherwiseSrcCode,
 			'}'
 		];
 	}
 
-	public getRule(
-		{
-			context, 
-			path
-		}: RuleSrcCodeConfig
-	): string[] {
+	public getRule({
+		context, 
+		path
+	}: RuleSrcCodeConfig): string[] {
 		// @ts-expect-error // Because the camp that is changing is protected
 		this.then.def._isOnlyOnTouch = this.onlyOnTouch;
 		

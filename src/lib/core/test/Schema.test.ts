@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { number, object } from 'src/lib/schemas';
+import { type SchemaError } from 'src/lib/types';
 
 describe('Schema', () => {
 	it('when', () => {
@@ -12,7 +13,7 @@ describe('Schema', () => {
 		})
 		.compile();
 	
-		const validate = (value: any) => schema.isValid(value);
+		const validate = (value: any) => (schema.validate(value) as SchemaError[]).length === 0;
 		
 		expect(validate(-9))
 		.toBeTruthy();
@@ -35,24 +36,24 @@ describe('Schema', () => {
 		})
 		.compile();
 
-		expect(namedWhenSchema.isValid({
+		expect((namedWhenSchema.validate({
 			productId: 1,
 			// @ts-expect-error // To force validation
 			productTypeId: undefined
-		}))
+		}) as SchemaError[]).length === 0)
 		.toBeTruthy();
 
-		expect(namedWhenSchema.isValid({
+		expect((namedWhenSchema.validate({
 			productId: 1,
 			productTypeId: 1
-		}))
+		}) as SchemaError[]).length === 0)
 		.toBeTruthy();
 
-		expect(namedWhenSchema.isValid({
+		expect((namedWhenSchema.validate({
 			productId: 10,
 			// @ts-expect-error // To force validation
 			productTypeId: undefined
-		}))
+		}) as SchemaError[]).length === 0)
 		.toBeFalsy();
 	});
 
@@ -69,7 +70,7 @@ describe('Schema', () => {
 		})
 		.compile();
 
-		const validate = async (value: any) => await schema.isValid(value);
+		const validate = async (value: any) => (await schema.validate(value)).length === 0;
 	
 		await expect(validate(-9)).resolves.toBeTruthy();
 
@@ -84,36 +85,36 @@ describe('Schema', () => {
 		.compile();
 	
 		// @ts-expect-error // To check private values
-		expect(schema.isNullable)
+		expect(schema.def._isNullable)
 		.toBeFalsy();
 		// @ts-expect-error // To check private values
-		expect(schema.isOnlyOnTouch)
+		expect(schema.def._isOnlyOnTouch)
 		.toBeFalsy();
 		// @ts-expect-error // To check private values
-		expect(schema.isOptional)
+		expect(schema.def._isOptional)
 		.toBeFalsy();
 		// @ts-expect-error // To check private values
-		expect(schema.isRequired)
+		expect(schema.def._isRequired)
 		.toBeFalsy();
 
 		const newSchema = schema.nullable();
 		// @ts-expect-error // To check private values
-		expect(newSchema.isNullable)
+		expect(newSchema.def._isNullable)
 		.toBeTruthy();
 
 		const newSchema1 = schema.onlyOnTouch();
 		// @ts-expect-error // To check private values
-		expect(newSchema1.isOnlyOnTouch)
+		expect(newSchema1.def._isOnlyOnTouch)
 		.toBeTruthy();
 
 		const newSchema2 = schema.optional();
 		// @ts-expect-error // To check private values
-		expect(newSchema2.isOptional)
+		expect(newSchema2.def._isOptional)
 		.toBeTruthy();
 
 		const newSchema3 = schema.required();
 		// @ts-expect-error // To check private values
-		expect(newSchema3.isRequired)
+		expect(newSchema3.def._isRequired)
 		.toBeTruthy();
 
 		schema.test({
@@ -161,13 +162,13 @@ describe('Schema', () => {
 		})
 		.compile();
 
-		expect(schema.isValid(0))
+		expect((schema.validate(0) as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema.isValid(1))
+		expect((schema.validate(1) as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema.isValid(2))
+		expect((schema.validate(2) as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema.isValid(11))
+		expect((schema.validate(11) as SchemaError[]).length === 0)
 		.toBeFalsy();
 	});
 
@@ -177,13 +178,13 @@ describe('Schema', () => {
 		.onlyOnTouch((schema) => schema.max(10))
 		.compile();
 
-		expect(schema.isValid(0))
+		expect((schema.validate(0) as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema.isValid(1))
+		expect((schema.validate(1) as SchemaError[]).length === 0)
 		.toBeTruthy();
-		expect(schema.isValid(11))
+		expect((schema.validate(11) as SchemaError[]).length === 0)
 		.toBeTruthy();
-		expect(schema.isValid(11, ['']))
+		expect((schema.validate(11, ['']) as SchemaError[]).length === 0)
 		.toBeFalsy();
 	});
 });

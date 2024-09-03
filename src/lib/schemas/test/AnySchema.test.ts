@@ -1,3 +1,5 @@
+import { type SchemaError } from 'src/lib/types';
+
 import { any, AnySchema } from '../AnySchema';
 import { object } from '../ObjectSchema';
 
@@ -7,17 +9,17 @@ describe('any', () => {
 		.optional()
 		.compile();
 	
-		expect(schema.isValid(undefined))
+		expect((schema.validate(undefined) as SchemaError[]).length === 0)
 		.toBeTruthy();
-		expect(schema.isValid(true))
+		expect((schema.validate(true) as SchemaError[]).length === 0)
 		.toBeTruthy();
-		expect(schema.isValid(false))
+		expect((schema.validate(false) as SchemaError[]).length === 0)
 		.toBeTruthy();
 	
 		const schema1 = new AnySchema()
 		.compile();
 	
-		expect(schema1.isValid(true))
+		expect((schema1.validate(true) as SchemaError[]).length === 0)
 		.toBeTruthy();
 	});
 
@@ -27,16 +29,16 @@ describe('any', () => {
 		const schema1 = schema.optional();
 	
 		// @ts-expect-error // To check private values
-		expect(schema.isNullable)
+		expect(schema.def._isNullable)
 		.toBe(true);
 		// @ts-expect-error // To check private values
-		expect(schema.isOptional)
-		.toBe(false);
+		expect(schema.def._isOptional)
+		.toBeUndefined();
 		// @ts-expect-error // To check private values
-		expect(schema1.isNullable)
+		expect(schema1.def._isNullable)
 		.toBe(true);
 		// @ts-expect-error // To check private values
-		expect(schema1.isOptional)
+		expect(schema1.def._isOptional)
 		.toBe(true);
 	});
 
@@ -55,13 +57,13 @@ describe('any', () => {
 		})
 		.compile();
 
-		expect(schema.isValid({
+		expect((schema.validate({
 			productName: FieldTypeEnum.EXISTING_FIELD 
-		}))
+		}) as SchemaError[]).length === 0)
 		.toBeTruthy();
-		expect(schema.isValid({
+		expect((schema.validate({
 			productName: 6 as FieldTypeEnum
-		}))
+		}) as SchemaError[]).length === 0)
 		.toBeFalsy();
 	});
 });

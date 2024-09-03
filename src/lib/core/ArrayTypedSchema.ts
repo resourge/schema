@@ -21,29 +21,23 @@ export abstract class ArrayTypedSchema<
 		key, 
 		path
 	}: CompileSchemaConfig) {
-		const valueKey = this.getValueKey(key);
-
-		const index = context.index = context.index + 1;
-
-		const iKey = `i${index}`;
-
-		const schemaRules = this.schema.compileSchema({
-			context, 
-			key: `${key ?? ''}[${iKey}]`, 
-			path: `${path ?? ''}[\${${iKey}}]`
-		});
-
-		const arraySchemaRules = [
-			`const l = ${valueKey}.length;`,
-			`for (var ${iKey} = 0; ${iKey} < l; ${iKey}++) {`,
-			...schemaRules,
-			'}'
-		];
+		const iKey = `i${context.index = context.index + 1}`;
 
 		return super.compileSchema({
 			context, 
 			key, 
-			srcCode: arraySchemaRules, 
+			srcCode: [
+				`const l = ${this.getValueKey(key)}.length;`,
+				`for (var ${iKey} = 0; ${iKey} < l; ${iKey}++) {`,
+				...(
+					this.schema.compileSchema({
+						context, 
+						key: `${key ?? ''}[${iKey}]`, 
+						path: `${path ?? ''}[\${${iKey}}]`
+					})
+				),
+				'}'
+			], 
 			path
 		});
 	}

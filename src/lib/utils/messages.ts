@@ -3,27 +3,9 @@ import deepmerge from '@fastify/deepmerge';
 import { type PhoneNumberInfo } from '../phoneNumbers';
 import { type PostalCodeInfo } from '../postalCodes';
 import { type DateFormat } from '../types/DateFormat';
+import { type DeepPartial } from '../types/types';
 
-enum FormatInvalidTypeEnum {
-	enum = 'enum',
-	numeric = 'number',
-	alpha = 'text',
-	alphanum = 'alpha numeric',
-	alphadash = 'alpha dash',
-	hexadecimal = 'hexadecimal',
-	hex = 'hex',
-	base64 = 'base64',
-	uuid = 'uuid',
-	cuid = 'cuid',
-	url = 'url',
-	singleLine = 'single line',
-	email = 'email',
-	postalCode = 'postal code' // TODO remove from this
-}
-
-const getInvalidFormatMessage = (type: keyof typeof FormatInvalidTypeEnum) => {
-	return `Invalid ${FormatInvalidTypeEnum[type]} format`;
-};
+const getInvalidFormatMessage = (type: string) => `Invalid ${type} format`;
 
 export let defaultMessages = {
 	any: {
@@ -31,9 +13,9 @@ export let defaultMessages = {
 	},
 	array: {
 		empty: 'Requires to be empty',
-		min: (minValue: number) => minValue === 1 ? `Requires at least ${minValue} item` : `Requires at least ${minValue} items`,
-		max: (maxValue: number) => maxValue === 1 ? `Requires maximum of ${maxValue} item` : `Requires maximum of ${maxValue} items`,
-		length: (length: number) => length === 1 ? `Requires ${length} item` : `Requires ${length} items`,
+		min: (minValue: number) => `Requires at least ${minValue} item${minValue === 1 ? 's' : ''}`,
+		max: (maxValue: number) => `Requires maximum of ${maxValue} item${maxValue === 1 ? 's' : ''}`,
+		length: (length: number) => `Requires ${length} item${length === 1 ? 's' : ''}`,
 		unique: 'Requires to be unique',
 		uniqueBy: 'Requires to be unique'
 	},
@@ -65,16 +47,16 @@ export let defaultMessages = {
 		pattern: (_reg: RegExp) => 'Invalid format',
 		empty: 'Requires string to be empty',
 		contains: (value: string) => `Requires ${value}`,
-		numeric: getInvalidFormatMessage('numeric'),
-		alpha: getInvalidFormatMessage('alpha'),
-		alphanum: getInvalidFormatMessage('alphanum'),
-		alphadash: getInvalidFormatMessage('alphadash'),
+		numeric: getInvalidFormatMessage('number'),
+		alpha: getInvalidFormatMessage('text'),
+		alphanum: getInvalidFormatMessage('alpha numeric'),
+		alphadash: getInvalidFormatMessage('alpha dash'),
 		hex: getInvalidFormatMessage('hexadecimal'),
 		base64: getInvalidFormatMessage('base64'),
 		uuid: getInvalidFormatMessage('uuid'),
 		cuid: getInvalidFormatMessage('cuid'),
 		url: getInvalidFormatMessage('url'),
-		singleLine: getInvalidFormatMessage('singleLine'),
+		singleLine: getInvalidFormatMessage('single line'),
 		email: getInvalidFormatMessage('email'),
 		enum: getInvalidFormatMessage('enum'),
 		postalCode: ({ format }: PostalCodeInfo) => `Invalid format needs to be like ${format}`,
@@ -86,12 +68,6 @@ export let defaultMessages = {
 } as const;
 
 export type MessageType = typeof defaultMessages;
-
-type DeepPartial<T> = T extends (...args: any[]) => any 
-	? T
-	: T extends object ? {
-		[P in keyof T]?: DeepPartial<T[P]>;
-	} : T;
 
 const deepMerge = deepmerge();
 

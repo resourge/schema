@@ -1,22 +1,11 @@
 export enum Parameters {
-	ERRORS_KEY = 'errors',
-	PROMISE_KEY = 'promises',
-	CONTEXT_KEY = 'context',
-	ONLY_ON_TOUCH = 'onlyOnTouch',
-	OBJECT_KEY = 'object',
+	ERRORS_KEY = 't',
+	PROMISE_KEY = 'p',
+	CONTEXT_KEY = 'k',
+	ONLY_ON_TOUCH = 's',
+	OBJECT_KEY = 'a',
 
-	VALUE = 'value',
-	RECURSIVE_KEY = 'recursiveKey'
-}
-
-export enum SchemaTypes {
-	STRING = 'string',
-	BOOLEAN = 'boolean',
-	NUMBER = 'number',
-	ANY = 'any',
-	ARRAY = 'array',
-	OBJECT = 'object',
-	DATE = 'date'
+	VALUE = 'e'
 }
 
 let oneOfFunctionIndex = 0;

@@ -2,14 +2,12 @@ import { type Definitions } from '../core/Definitions';
 import { ObjectTypedSchema } from '../core/ObjectTypedSchema';
 import { type OneOf, type OneOfConfigMessage } from '../types/OneOfTypes';
 import { type NullableType, type SchemaMap } from '../types/SchemaMap';
-import { SchemaTypes } from '../utils/Utils';
 
 export class ObjectSchema<
 	Input extends NullableType<object> = object,
 	Final = any
 > extends ObjectTypedSchema<Input, Final> {
-	protected type: SchemaTypes = SchemaTypes.OBJECT;
-	protected message: string = `{{key}} is not ${this.type}`;
+	protected message: string = '{{key}} is not object';
 	protected rule = (value: any) => typeof value === 'object';
 
 	protected clone() {
@@ -73,25 +71,21 @@ export class ObjectSchema<
 	): this {
 		const _this = this.clone();
 
-		const _oneOfConfig = !Array.isArray(oneOfKey) ? (schema as OneOfConfigMessage) : oneOfConfigMessage;
-
-		const message = _oneOfConfig;
+		const message = !Array.isArray(oneOfKey) ? (schema as OneOfConfigMessage) : oneOfConfigMessage;
 
 		_this.oneOfConfig = {
 			includeAllErrors: !(message && typeof message !== 'string'),
 			message
 		};
 
-		const schemasEntries: Array<[string, SchemaMap<Input, true>[any]]> = Array.isArray(oneOfKey) 
-			? (oneOfKey as string[]).map((key) => [key, schema])
-			: (Object.entries(oneOfKey));
-
-		schemasEntries
+		((
+			Array.isArray(oneOfKey) 
+				? oneOfKey.map((key) => [key, schema])
+				: Object.entries(oneOfKey)
+		) as Array<[string, SchemaMap<Input, true>[any]]>)
 		.forEach(([key, schema]) => {
 			// @ts-expect-error To be only accessible for the developer
-			const _schema = schema.clone();
-			
-			_this.oneOfRules.set(key, _schema);
+			_this.oneOfRules.set(key, schema.clone());
 		});
 
 		return _this as this;

@@ -6,22 +6,22 @@ import { object } from '../ObjectSchema';
 
 describe('date', () => {
 	it('should be today', () => {
-		const schema = date()
+		const schema = date<Date>()
 		.today()
 		.compile();
 
-		expect(schema.isValid(new Date('2001-01-01')))
+		expect((schema.validate(new Date('2001-01-01')) as SchemaError[]).length === 0)
 		.toBeFalsy();
-		expect(schema.isValid(new Date()))
+		expect((schema.validate(new Date()) as SchemaError[]).length === 0)
 		.toBeTruthy();
-		expect(schema.isValid(new Date('test')))
+		expect((schema.validate(new Date('test')) as SchemaError[]).length === 0)
 		.toBeFalsy();
 
 		const _date = new Date();
 
 		_date.setHours(10);
 
-		expect(schema.isValid(_date))
+		expect((schema.validate(_date) as SchemaError[]).length === 0)
 		.toBeTruthy();
 
 		const newMessage = 'New Message';
@@ -34,7 +34,7 @@ describe('date', () => {
 		}];
 
 		expect(
-			schemaMessage.validate(new Date('2001-01-01'))
+			schemaMessage.validate(new Date('2001-01-01') as Date & string)
 		)
 		.toEqual(errors);
 	});
@@ -46,16 +46,16 @@ describe('date', () => {
 		.today();
 	
 		// @ts-expect-error // To check protected values
-		expect(schema.isNullable)
+		expect(schema.def._isNullable)
 		.toBe(true);
 		// @ts-expect-error // To check protected values
-		expect(schema.isOptional)
-		.toBe(false);
+		expect(schema.def._isOptional)
+		.toBeUndefined();
 		// @ts-expect-error // To check protected values
-		expect(schema1.isNullable)
+		expect(schema1.def._isNullable)
 		.toBe(true);
 		// @ts-expect-error // To check protected values
-		expect(schema1.isOptional)
+		expect(schema1.def._isOptional)
 		.toBe(true);
 
 		// @ts-expect-error // To check protected values
@@ -73,10 +73,10 @@ describe('date', () => {
 		.notRequired();
 
 		// @ts-expect-error To test if is valid
-		expect(schema.isValid(undefined))
+		expect((schema.validate(undefined) as SchemaError[]).length === 0)
 		.toBe(true);
 		// @ts-expect-error To test if is valid
-		expect(schema.isValid(null))
+		expect((schema.validate(null) as SchemaError[]).length === 0)
 		.toBe(true);
 	});
 
@@ -85,7 +85,7 @@ describe('date', () => {
 			const dateBiggerYear = createDate({
 				year: 2001
 			});
-			expect(schema.isValid(dateBiggerYear))
+			expect((schema.validate(dateBiggerYear) as SchemaError[]).length === 0)
 			.toBeTruthy();
 		}
 
@@ -94,7 +94,7 @@ describe('date', () => {
 				year: 2000,
 				month: 4
 			});
-			expect(schema.isValid(dateBiggerMonth))
+			expect((schema.validate(dateBiggerMonth) as SchemaError[]).length === 0)
 			.toBeTruthy();
 		}
 
@@ -104,7 +104,7 @@ describe('date', () => {
 				month: 3,
 				day: 2
 			});
-			expect(schema.isValid(dateBiggerDay))
+			expect((schema.validate(dateBiggerDay) as SchemaError[]).length === 0)
 			.toBeTruthy();
 		}
 
@@ -115,7 +115,7 @@ describe('date', () => {
 				day: 1,
 				hour: 11
 			});
-			expect(schema.isValid(dateBiggerHour))
+			expect((schema.validate(dateBiggerHour) as SchemaError[]).length === 0)
 			.toBeTruthy();
 		}
 
@@ -127,7 +127,7 @@ describe('date', () => {
 				hour: 10,
 				minute: 11
 			});
-			expect(schema.isValid(dateBiggerMinute))
+			expect((schema.validate(dateBiggerMinute) as SchemaError[]).length === 0)
 			.toBeTruthy();
 		}
 
@@ -140,12 +140,12 @@ describe('date', () => {
 				minute: 10,
 				second: 11
 			});
-			expect(schema.isValid(dateBiggerSecond))
+			expect((schema.validate(dateBiggerSecond) as SchemaError[]).length === 0)
 			.toBeTruthy();
 		}
 
 		function expectSame(date: Date, schema: DateSchema<Date, any>) {
-			expect(schema.isValid(date))
+			expect((schema.validate(date) as SchemaError[]).length === 0)
 			.toBeFalsy();
 		}
 
@@ -166,14 +166,14 @@ describe('date', () => {
 				year: 2000,
 				month: 4
 			});
-			expect(schema.isValid(dateBiggerMonth))
+			expect((schema.validate(dateBiggerMonth) as SchemaError[]).length === 0)
 			.toBeFalsy();
 
 			const dateSmallYear = createDate({
 				year: 1991,
 				month: 1
 			});
-			expect(schema.isValid(dateSmallYear))
+			expect((schema.validate(dateSmallYear) as SchemaError[]).length === 0)
 			.toBeFalsy();
 		});
 
@@ -197,14 +197,14 @@ describe('date', () => {
 				year: 2000,
 				month: 1
 			});
-			expect(schema.isValid(dateSmallerMonth))
+			expect((schema.validate(dateSmallerMonth) as SchemaError[]).length === 0)
 			.toBeFalsy();
 
 			const dateSmallYear = createDate({
 				year: 1991,
 				month: 10
 			});
-			expect(schema.isValid(dateSmallYear))
+			expect((schema.validate(dateSmallYear) as SchemaError[]).length === 0)
 			.toBeFalsy();
 		});
 
@@ -231,14 +231,14 @@ describe('date', () => {
 				year: 2000,
 				month: 1
 			});
-			expect(schema.isValid(dateSmallerMonth))
+			expect((schema.validate(dateSmallerMonth) as SchemaError[]).length === 0)
 			.toBeFalsy();
 
 			const dateSmallYear = createDate({
 				year: 1991,
 				month: 10
 			});
-			expect(schema.isValid(dateSmallYear))
+			expect((schema.validate(dateSmallYear) as SchemaError[]).length === 0)
 			.toBeFalsy();
 		});
 
@@ -268,14 +268,14 @@ describe('date', () => {
 				year: 2000,
 				month: 1
 			});
-			expect(schema.isValid(dateSmallerMonth))
+			expect((schema.validate(dateSmallerMonth) as SchemaError[]).length === 0)
 			.toBeFalsy();
 
 			const dateSmallYear = createDate({
 				year: 1991,
 				month: 10
 			});
-			expect(schema.isValid(dateSmallYear))
+			expect((schema.validate(dateSmallYear) as SchemaError[]).length === 0)
 			.toBeFalsy();
 		});
 
@@ -308,14 +308,14 @@ describe('date', () => {
 				year: 2000,
 				month: 1
 			});
-			expect(schema.isValid(dateSmallerMonth))
+			expect((schema.validate(dateSmallerMonth) as SchemaError[]).length === 0)
 			.toBeFalsy();
 
 			const dateSmallYear = createDate({
 				year: 1991,
 				month: 10
 			});
-			expect(schema.isValid(dateSmallYear))
+			expect((schema.validate(dateSmallYear) as SchemaError[]).length === 0)
 			.toBeFalsy();
 		});
 
@@ -351,14 +351,14 @@ describe('date', () => {
 				year: 2000,
 				month: 1
 			});
-			expect(schema.isValid(dateSmallerMonth))
+			expect((schema.validate(dateSmallerMonth) as SchemaError[]).length === 0)
 			.toBeFalsy();
 
 			const dateSmallYear = createDate({
 				year: 1991,
 				month: 10
 			});
-			expect(schema.isValid(dateSmallYear))
+			expect((schema.validate(dateSmallYear) as SchemaError[]).length === 0)
 			.toBeFalsy();
 		});
 
@@ -398,7 +398,7 @@ describe('date', () => {
 				second: 10,
 				millisecond: 11
 			});
-			expect(schema.isValid(dateBiggerMillisecond))
+			expect((schema.validate(dateBiggerMillisecond) as SchemaError[]).length === 0)
 			.toBeTruthy();
 
 			expectSame(minDate, schema);
@@ -407,14 +407,14 @@ describe('date', () => {
 				year: 2000,
 				month: 1
 			});
-			expect(schema.isValid(dateSmallerMonth))
+			expect((schema.validate(dateSmallerMonth) as SchemaError[]).length === 0)
 			.toBeFalsy();
 
 			const dateSmallYear = createDate({
 				year: 1991,
 				month: 10
 			});
-			expect(schema.isValid(dateSmallYear))
+			expect((schema.validate(dateSmallYear) as SchemaError[]).length === 0)
 			.toBeFalsy();
 		});
 
@@ -442,7 +442,7 @@ describe('date', () => {
 				second: 10,
 				millisecond: 10
 			});
-			expect(schema.isValid(dateBiggerYearSameTime))
+			expect((schema.validate(dateBiggerYearSameTime) as SchemaError[]).length === 0)
 			.toBeFalsy();
 
 			const dateSameTimeAndDate = createDate({
@@ -454,7 +454,7 @@ describe('date', () => {
 				second: 10,
 				millisecond: 10
 			});
-			expect(schema.isValid(dateSameTimeAndDate))
+			expect((schema.validate(dateSameTimeAndDate) as SchemaError[]).length === 0)
 			.toBeFalsy();
 		});
 	});
@@ -464,7 +464,7 @@ describe('date', () => {
 			const dateSmallerYear = createDate({
 				year: 2001
 			});
-			expect(schema.isValid(dateSmallerYear))
+			expect((schema.validate(dateSmallerYear) as SchemaError[]).length === 0)
 			.toBeTruthy();
 		}
 
@@ -473,7 +473,7 @@ describe('date', () => {
 				year: 2002,
 				month: 4
 			});
-			expect(schema.isValid(dateBiggerMonth))
+			expect((schema.validate(dateBiggerMonth) as SchemaError[]).length === 0)
 			.toBeTruthy();
 		}
 
@@ -483,7 +483,7 @@ describe('date', () => {
 				month: 3,
 				day: 2
 			});
-			expect(schema.isValid(dateBiggerDay))
+			expect((schema.validate(dateBiggerDay) as SchemaError[]).length === 0)
 			.toBeTruthy();
 		}
 
@@ -494,7 +494,7 @@ describe('date', () => {
 				day: 1,
 				hour: 11
 			});
-			expect(schema.isValid(dateBiggerHour))
+			expect((schema.validate(dateBiggerHour) as SchemaError[]).length === 0)
 			.toBeTruthy();
 		}
 
@@ -506,7 +506,7 @@ describe('date', () => {
 				hour: 10,
 				minute: 11
 			});
-			expect(schema.isValid(dateBiggerMinute))
+			expect((schema.validate(dateBiggerMinute) as SchemaError[]).length === 0)
 			.toBeTruthy();
 		}
 
@@ -519,12 +519,12 @@ describe('date', () => {
 				minute: 10,
 				second: 11
 			});
-			expect(schema.isValid(dateBiggerSecond))
+			expect((schema.validate(dateBiggerSecond) as SchemaError[]).length === 0)
 			.toBeTruthy();
 		}
 
 		function expectSame(date: Date, schema: DateSchema<Date, any>) {
-			expect(schema.isValid(date))
+			expect((schema.validate(date) as SchemaError[]).length === 0)
 			.toBeFalsy();
 		}
 
@@ -534,20 +534,20 @@ describe('date', () => {
 				maxDate: date().minDate((parent) => parent.minDate)
 			}).compile();
 
-			expect(
+			expect((
 				schema
-				.isValid({ 
+				.validate({ 
 					minDate: new Date(2001, 1, 1, 0, 0, 0, 0), 
 					maxDate: new Date(2001, 1, 2, 0, 0, 0, 0)
-				})
+				}) as SchemaError[]).length === 0
 			).toBeTruthy();
 
-			expect(
+			expect((
 				schema
-				.isValid({ 
+				.validate({ 
 					minDate: new Date(2001, 1, 3, 0, 0, 0, 0), 
 					maxDate: new Date(2001, 1, 2, 0, 0, 0, 0)
-				})
+				}) as SchemaError[]).length === 0
 			).toBeFalsy();
 		});
 
@@ -716,7 +716,7 @@ describe('date', () => {
 				second: 10,
 				millisecond: 11
 			});
-			expect(schema.isValid(dateBiggerMillisecond))
+			expect((schema.validate(dateBiggerMillisecond) as SchemaError[]).length === 0)
 			.toBeTruthy();
 
 			expectSame(maxDate, schema);
@@ -746,7 +746,7 @@ describe('date', () => {
 				second: 10,
 				millisecond: 10
 			});
-			expect(schema.isValid(dateBiggerYearSameTime))
+			expect((schema.validate(dateBiggerYearSameTime) as SchemaError[]).length === 0)
 			.toBeTruthy();
 
 			const dateSameTimeAndDate = createDate({
@@ -758,7 +758,7 @@ describe('date', () => {
 				second: 20,
 				millisecond: 20
 			});
-			expect(schema.isValid(dateSameTimeAndDate))
+			expect((schema.validate(dateSameTimeAndDate) as SchemaError[]).length === 0)
 			.toBeFalsy();
 		});
 	});

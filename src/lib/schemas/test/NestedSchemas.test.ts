@@ -182,10 +182,12 @@ describe('Nested Schemas', () => {
 			)
 			.min(1)
 		})
-		.compile();
+		.compile({
+			debug: true 
+		});
 
 		expect(
-			schema.isValid({
+			(schema.validate({
 				finalTables: [
 					{
 						index: 0,
@@ -1225,7 +1227,7 @@ describe('Nested Schemas', () => {
 						}
 					}
 				}
-			})
+			}) as SchemaError[]).length === 0
 		)
 		.toBeTruthy();
 	});

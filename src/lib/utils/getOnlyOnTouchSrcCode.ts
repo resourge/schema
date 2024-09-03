@@ -7,10 +7,10 @@ export const getOnlyOnTouchSrcCode = (
 	return [
 		`if ( ${Parameters.ONLY_ON_TOUCH}.some((key) => key.includes(\`${path}\`) || \`${path}\`.includes(key)) ){`,
 		...srcCode,
-		`context.onlyOnTouchErrors[\`${path}\`] = errors.filter((error) => error.path === \`${path}\`);`,
+		`${Parameters.CONTEXT_KEY}.onlyOnTouchErrors[\`${path}\`] = ${Parameters.ERRORS_KEY}.filter((error) => error.path === \`${path}\`);`,
 		'}',
-		`else if ( context.onlyOnTouchErrors[\`${path}\`] ){`,
-		`context.onlyOnTouchErrors[\`${path}\`].forEach((error) => errors.push(error))`,
+		`else if ( ${Parameters.CONTEXT_KEY}.onlyOnTouchErrors[\`${path}\`] ){`,
+		`${Parameters.CONTEXT_KEY}.onlyOnTouchErrors[\`${path}\`].forEach((error) => ${Parameters.ERRORS_KEY}.push(error))`,
 		'}'
 	];
 };

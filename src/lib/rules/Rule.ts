@@ -1,4 +1,5 @@
-import { type Context, type SchemaError } from '../types/types';
+import { type Schema } from '../core/schema';
+import { type PrivateSchema, type Context, type SchemaError } from '../types/types';
 import { PARAMETERS } from '../utils/Utils';
 import { type MessageType } from '../utils/messages';
 
@@ -67,96 +68,109 @@ const getContent = (
 
 export type RuleType = 'METHOD_ERROR' | 'MESSAGE';
 
-export type RuleConfig<Value, T = any> = {
+export type RuleConfig<Value = any, T = any> = {
 	isAsync: boolean
 	isMethodError: boolean
-} & BaseRuleConfig<Value, T, RuleMethod<Value, T> | AsyncRuleMethod<Value, T>>;
+} & BaseRuleConfig<'Rule', Value, T, RuleMethod<Value, T> | AsyncRuleMethod<Value, T>>;
 
-export class Rule<Value, T = any> {
-	public method: RuleMethod<Value, T> | AsyncRuleMethod<Value, T>;
-	public message?: string | ((messages: MessageType) => string);
-	public isAsync: boolean = false;
-	public isMethodError: boolean;
-
-	constructor(config: RuleConfig<Value, T>) {
-		this.method = config.method;
-		this.message = config.message;
-		this.isMethodError = config.isMethodError;
-		this.isAsync = config.isAsync;
-	}
-
-	public getRuleSrcCode({
+export function getRuleSrcCode<Value, T = any>(
+	config: RuleConfig<Value, T>,
+	{
 		context,
 		path,
 		onlyOnTouch,
 		ruleMethodName,
 		valueKey
-	}: RuleSrcCodeConfig) {
-		const methodName = addRuleToContextRules(
-			ruleMethodName,
-			this.method,
-			context
-		);
+	}: RuleSrcCodeConfig
+) {
+	const methodName = addRuleToContextRules(
+		ruleMethodName,
+		config.method,
+		context
+	);
 
-		const isAsyncOrOnlyOnTouch = context.async && onlyOnTouch;
+	const isAsyncOrOnlyOnTouch = context.async && onlyOnTouch;
 
-		const content = getContent(
-			path, 
-			context,
-			this.isMethodError,
-			this.message
-		);
+	const content = getContent(
+		path, 
+		context,
+		config.isMethodError,
+		config.message
+	);
 
-		return {
-			methodName,
-			parameters: getFnParameters(valueKey, path),
-			srcCode: [
-				this.isMethodError ? `${methodName}_isValid.forEach((error) => {` : '',
-				...(
-					isAsyncOrOnlyOnTouch
-						? [
-							`const ${methodName}_error = ${content};`,
-							`${PARAMETERS.ERRORS_KEY}.push(${methodName}_error);`,
-							`(${PARAMETERS.CONTEXT_KEY}.onlyOnTouchErrors[\`${path}\`] = ${PARAMETERS.CONTEXT_KEY}.onlyOnTouchErrors[\`${path}\`] || []).push(${methodName}_error);`
-						] : [
-							`${PARAMETERS.ERRORS_KEY}.push(${content});`
-						]
-				),
-				this.isMethodError ? '})' : ''
-			]
-		};
-	}
-
-	public getRule(config: RuleSrcCodeConfig) {
-		const { context } = config;
-		context.async = this.isAsync;
-
-		const {
-			methodName,
-			parameters,
-			srcCode
-		} = this.getRuleSrcCode(config);
-
-		return [
-			(
-				this.isAsync
+	return {
+		methodName,
+		parameters: getFnParameters(valueKey, path),
+		srcCode: [
+			config.isMethodError ? `${methodName}_isValid.forEach((error) => {` : '',
+			...(
+				isAsyncOrOnlyOnTouch
 					? [
-						`${PARAMETERS.PROMISE_KEY}.push(`,
-						`${PARAMETERS.CONTEXT_KEY}.rules.${methodName}(${parameters.join(',')})`,
-						`.then((${methodName}_isValid) => {`
-					] : `const ${methodName}_isValid = ${PARAMETERS.CONTEXT_KEY}.rules.${methodName}(${parameters.join(',')});`
+						`const ${methodName}_error = ${content};`,
+						`${PARAMETERS.ERRORS_KEY}.push(${methodName}_error);`,
+						`(${PARAMETERS.CONTEXT_KEY}.onlyOnTouchErrors[\`${path}\`] = ${PARAMETERS.CONTEXT_KEY}.onlyOnTouchErrors[\`${path}\`] || []).push(${methodName}_error);`
+					] : [
+						`${PARAMETERS.ERRORS_KEY}.push(${content});`
+					]
 			),
-			(this.isMethodError ? `if ( ${methodName}_isValid.length ) {` : `if ( ${methodName}_isValid ) {`),
-			...srcCode,
-			'}',
-			(
-				this.isAsync
-					? [
-						'})',
-						');'
-					] : ''
-			)
+			config.isMethodError ? '})' : ''
 		]
-		.flat();
-	}
+	};
+}
+
+export function getRule<Value, T = any>(
+	config: RuleConfig<Value, T>,
+	srcCodeConfig: RuleSrcCodeConfig
+) {
+	srcCodeConfig.context.async = config.isAsync;
+
+	const {
+		methodName,
+		parameters,
+		srcCode
+	} = getRuleSrcCode(config, srcCodeConfig);
+
+	return [
+		(
+			config.isAsync
+				? [
+					`${PARAMETERS.PROMISE_KEY}.push(`,
+					`${PARAMETERS.CONTEXT_KEY}.rules.${methodName}(${parameters.join(',')})`,
+					`.then((${methodName}_isValid) => {`
+				] : `const ${methodName}_isValid = ${PARAMETERS.CONTEXT_KEY}.rules.${methodName}(${parameters.join(',')});`
+		),
+		(config.isMethodError ? `if ( ${methodName}_isValid.length ) {` : `if ( ${methodName}_isValid ) {`),
+		...srcCode,
+		'}',
+		(
+			config.isAsync
+				? [
+					'})',
+					');'
+				] : ''
+		)
+	]
+	.flat();
+}
+
+export type OnlyOnTouchRuleConfig = {
+	then: Schema<any, any>
+	type: 'OnlyOnTouchRule'
+};
+
+export function getOnlyTouchRule(
+	config: OnlyOnTouchRuleConfig,
+	{
+		context, 
+		path
+	}: RuleSrcCodeConfig
+): string[] {
+	// @ts-expect-error // Because the camp that is changing is protected
+	config.then.def._isOnlyOnTouch = true;
+	
+	return (config.then as PrivateSchema).compileSchema({
+		context,
+		key: path,
+		path
+	});
 }

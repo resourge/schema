@@ -2,12 +2,7 @@ import { type Schema } from '../core/schema';
 import { type CompileSchemaConfig, type PrivateSchema } from '../types/types';
 import { PARAMETERS } from '../utils/Utils';
 
-import {
-	addRuleToContextRules,
-	type BaseRuleConfig,
-	getFnParameters,
-	type RuleSrcCodeConfig
-} from './BaseRule';
+import { addRuleToContextRules, type BaseRuleConfig, getFnParameters } from './BaseRule';
 import { type RuleBooleanMethod } from './Rule';
 
 export type WhenConfig<
@@ -23,88 +18,57 @@ export type WhenConfig<
 	otherwise?: (schema: T) => T
 };
 
-export type WhenParameter<Value = any, T = any> = {
+export type WhenParameter<Value = any, T = any, Type extends string = 'WhenRule'> = {
 	name: string
-	onlyOnTouch: boolean
 	then: Schema<any, any>
 	otherwise?: Schema<any, any>
-} & BaseRuleConfig<Value, T, RuleBooleanMethod<Value, T>>;
+} & BaseRuleConfig<Type, Value, T, RuleBooleanMethod<Value, T>>;
 
-export class WhenRule<Value = any, T = any> {
-	public name: string;
-	public then: PrivateSchema;
-	public otherwise?: PrivateSchema;
-	public onlyOnTouch: boolean;
-	public method: RuleBooleanMethod<Value, T>;
-
-	constructor(config: WhenParameter<Value, T>) {
-		this.method = config.method;
-		this.name = config.name;
-		this.onlyOnTouch = config.onlyOnTouch;
-		this.then = config.then as unknown as PrivateSchema;
-		this.otherwise = config.otherwise as unknown as PrivateSchema;
-	}
-
-	public getWhenRule(
-		valueKey: string,
-		{
-			context, 
-			key,
-			path,
-			srcCode
-		}: CompileSchemaConfig
-	): string[] {
-		const methodName = addRuleToContextRules(
-			`${this.name}_${context.index = context.index + 1}`,
-			this.method,
-			context
-		);
-
-		const parameters = getFnParameters(
-			valueKey,
-			path ?? ''
-		);
-
-		const thenSrcCode = this.then.compileSchema({
-			context,
-			key,
-			path,
-			srcCode
-		});
-
-		// This will never be undefined because when 
-		// creating whenRules otherwise is inserted by default
-		// Only when whenRule is a normalRule will otherwise be undefined 
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		const otherwiseSrcCode = this.otherwise!.compileSchema({
-			context,
-			srcCode,
-			key,
-			path
-		});
-
-		return [
-			`const ${methodName}_isValid = ${PARAMETERS.CONTEXT_KEY}.rules.${methodName}(${parameters.join(',')});`,
-			`if ( ${methodName}_isValid ) {`,
-			...thenSrcCode,
-			'}',
-			'else {',
-			...otherwiseSrcCode,
-			'}'
-		];
-	}
-
-	public getRule({
+export function getWhenRule<Value = any, T = any, Type extends string = 'WhenRule'>(
+	config: WhenParameter<Value, T, Type>,
+	valueKey: string,
+	{
 		context, 
+		key,
+		path,
+		srcCode
+	}: CompileSchemaConfig
+): string[] {
+	const methodName = addRuleToContextRules(
+		`${config.name}_${context.index = context.index + 1}`,
+		config.method,
+		context
+	);
+
+	const parameters = getFnParameters(
+		valueKey,
+		path ?? ''
+	);
+
+	const thenSrcCode = (config.then as unknown as PrivateSchema).compileSchema({
+		context,
+		key,
+		path,
+		srcCode
+	});
+
+	// This will never be undefined because when 
+	// creating whenRules otherwise is inserted by default
+	// Only when whenRule is a normalRule will otherwise be undefined 
+	const otherwiseSrcCode = (config.otherwise as unknown as PrivateSchema).compileSchema({
+		context,
+		srcCode,
+		key,
 		path
-	}: RuleSrcCodeConfig): string[] {
-		// @ts-expect-error // Because the camp that is changing is protected
-		this.then.def._isOnlyOnTouch = this.onlyOnTouch;
-		
-		return this.then.compileSchema({
-			context,
-			key: path,
-			path
-		});
-	}
+	});
+
+	return [
+		`const ${methodName}_isValid = ${PARAMETERS.CONTEXT_KEY}.rules.${methodName}(${parameters.join(',')});`,
+		`if ( ${methodName}_isValid ) {`,
+		...thenSrcCode,
+		'}',
+		'else {',
+		...otherwiseSrcCode,
+		'}'
+	];
 }

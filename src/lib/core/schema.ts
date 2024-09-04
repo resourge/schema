@@ -2,15 +2,18 @@
 /* eslint-disable @typescript-eslint/no-implied-eval */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
-import { NamedWhenRule } from '../rules/NamedWhenRule';
+import { getNamedWhenRule } from '../rules/NamedWhenRule';
 import {
 	type AsyncRuleBooleanMethod,
 	type AsyncRuleMethodSchemaError,
-	Rule,
+	getOnlyTouchRule,
+	getRule,
+	getRuleSrcCode,
 	type RuleBooleanMethod,
+	type RuleConfig,
 	type RuleMethodSchemaError
 } from '../rules/Rule';
-import { type WhenConfig, WhenRule } from '../rules/WhenRule';
+import { getWhenRule, type WhenConfig } from '../rules/WhenRule';
 import { type ObjectPropertiesSchema } from '../types/SchemaMap';
 import {
 	type CompileConfig,
@@ -92,15 +95,25 @@ export abstract class Schema<Input = any, Final = any> {
 		this.def.normalRules
 		.forEach((rule, key) => {
 			srcCode.push(
-				rule.getRule({
-					context, 
-					path: this.def.path,
-					onlyOnTouch: Boolean(this.def._isOnlyOnTouch ?? context.onlyOnTouch),
-					ruleMethodName: key.startsWith('_test_') 
-						? `${(rule as Rule<Input, Final>).isAsync ? PARAMETERS.FN_ASYNC_TEST : PARAMETERS.FN_TEST}_${context.index = context.index + 1}` 
-						: key,
-					valueKey
-				})
+				rule.type === 'OnlyOnTouchRule'
+					? getOnlyTouchRule(rule, {
+						context, 
+						path: this.def.path,
+						onlyOnTouch: Boolean(this.def._isOnlyOnTouch ?? context.onlyOnTouch),
+						ruleMethodName: key.startsWith('_test_') 
+							? `${PARAMETERS.FN_TEST}_${context.index = context.index + 1}` 
+							: key,
+						valueKey
+					})
+					: getRule(rule, {
+						context, 
+						path: this.def.path,
+						onlyOnTouch: Boolean(this.def._isOnlyOnTouch ?? context.onlyOnTouch),
+						ruleMethodName: key.startsWith('_test_') 
+							? `${(rule).isAsync ? PARAMETERS.FN_ASYNC_TEST : PARAMETERS.FN_TEST}_${context.index = context.index + 1}` 
+							: key,
+						valueKey
+					})
 			);
 		});
 
@@ -111,7 +124,11 @@ export abstract class Schema<Input = any, Final = any> {
 	// #region When Rules
 	protected compileWhenSchema(config: CompileSchemaConfig) {
 		return this.def.whenRules
-		.map((rule) => rule.getWhenRule(this.getValueKey(config.key), config))
+		.map((rule) => (
+			rule.type === 'WhenRule'
+				? getWhenRule(rule, this.getValueKey(config.key), config)
+				: getNamedWhenRule(rule, this.getValueKey(config.key), config)
+		))
 		.flat();
 	}
 	// #endregion When Rules
@@ -123,12 +140,13 @@ export abstract class Schema<Input = any, Final = any> {
 			srcCode = []
 		}: CompileSchemaConfig
 	) {
-		const rule = new Rule({
+		const config: RuleConfig = {
 			isAsync: false,
 			isMethodError: false,
 			method: this.rule,
-			message: this.message
-		});
+			message: this.message,
+			type: 'Rule'
+		};
 		
 		// Order is important for mandatoryRules
 		const mandatoryRules = this.getMandatoryRules(this, context);
@@ -136,13 +154,16 @@ export abstract class Schema<Input = any, Final = any> {
 			methodName,
 			parameters,
 			srcCode: errorsSyntax
-		} = rule.getRuleSrcCode({
-			context,
-			path: this.def.path,
-			onlyOnTouch: Boolean(this.def._isOnlyOnTouch ?? context.onlyOnTouch),
-			ruleMethodName: Object.getPrototypeOf(this).constructor.name,
-			valueKey
-		});
+		} = getRuleSrcCode(
+			config, 
+			{
+				context,
+				path: this.def.path,
+				onlyOnTouch: Boolean(this.def._isOnlyOnTouch ?? context.onlyOnTouch),
+				ruleMethodName: Object.getPrototypeOf(this).constructor.name,
+				valueKey
+			}
+		);
 
 		const rulesSrcCode = this.compileNormalRules(context, valueKey);
 
@@ -302,12 +323,13 @@ export abstract class Schema<Input = any, Final = any> {
 		if ( typeof method === 'object' ) {
 			_this.def.normalRules.set(
 				method.name ?? `_test_${this.def.normalRules.size}`,
-				new Rule({
+				{
 					isAsync,
 					isMethodError: false,
 					method: (method as TestMethodConfig<RuleBooleanMethod<Input, Form>>).is ?? ((...args) => !(method as OldTestMethodConfig<RuleBooleanMethod<Input, Form>>).test(...args)),
-					message: method.message
-				})
+					message: method.message,
+					type: 'Rule'
+				}
 			);
 
 			return _this;
@@ -315,11 +337,12 @@ export abstract class Schema<Input = any, Final = any> {
 
 		_this.def.normalRules.set(
 			`_test_${this.def.normalRules.size}`,
-			new Rule({
+			{
 				isAsync,
 				isMethodError: true,
-				method
-			})
+				method,
+				type: 'Rule'
+			}
 		);
 
 		return _this;
@@ -431,16 +454,15 @@ export abstract class Schema<Input = any, Final = any> {
 				(config!).otherwise
 			);
 
-			_this.def.whenRules.push(
-				new NamedWhenRule({
-					namedValueKey: name,
-					name: 'custom_when',
-					method: (config!).is,
-					onlyOnTouch: false,
-					then: thenSchema,
-					otherwise: otherwiseSchema
-				})
-			);
+			_this.def.whenRules.push({
+				namedValueKey: name,
+				name: 'custom_when',
+				method: (config!).is,
+				onlyOnTouch: false,
+				then: thenSchema,
+				otherwise: otherwiseSchema,
+				type: 'NamedWhenRule'
+			});
 
 			return _this;
 		}
@@ -454,15 +476,14 @@ export abstract class Schema<Input = any, Final = any> {
 			name.otherwise
 		);
 
-		_this.def.whenRules.push(
-			new WhenRule({
-				name: 'custom_when',
-				method: name.is,
-				onlyOnTouch: false,
-				then: thenSchema,
-				otherwise: otherwiseSchema
-			})
-		);
+		_this.def.whenRules.push({
+			name: 'custom_when',
+			method: name.is,
+			onlyOnTouch: false,
+			then: thenSchema,
+			otherwise: otherwiseSchema,
+			type: 'WhenRule'
+		});
 
 		return _this;
 	} 
@@ -500,13 +521,11 @@ export abstract class Schema<Input = any, Final = any> {
 		/* c8 ignore end */
 
 		_this.def.normalRules.set(
-			'onlyOnTouchRule',
-			new WhenRule({
-				name: 'onlyOnTouchRule',
-				method: () => true,
-				onlyOnTouch: true,
-				then: thenClone
-			})
+			`_test_${this.def.normalRules.size}`,
+			{
+				then: thenClone,
+				type: 'OnlyOnTouchRule'
+			}
 		);
 
 		return _this;

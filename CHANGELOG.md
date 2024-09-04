@@ -1,3 +1,10 @@
+# [1.12.0](https://github.com/resourge/schema/compare/v1.11.6...v1.12.0) (2024-09-04)
+
+
+### Features
+
+* **schema:** reduce memory use ([a4a3ef0](https://github.com/resourge/schema/commit/a4a3ef00a21ee34b6a67d3cc1c15cfc4eb81432f))
+
 ## [1.11.6](https://github.com/resourge/schema/compare/v1.11.5...v1.11.6) (2024-05-21)
 
 

@@ -125,7 +125,7 @@ export abstract class Schema<Input = any, Final = any> {
 	) {
 		const rule = new Rule({
 			isAsync: false,
-			type: 'MESSAGE',
+			isMethodError: false,
 			method: this.rule,
 			message: this.message
 		});
@@ -304,7 +304,7 @@ export abstract class Schema<Input = any, Final = any> {
 				method.name ?? `_test_${this.def.normalRules.size}`,
 				new Rule({
 					isAsync,
-					type: 'MESSAGE',
+					isMethodError: false,
 					method: (method as TestMethodConfig<RuleBooleanMethod<Input, Form>>).is ?? ((...args) => !(method as OldTestMethodConfig<RuleBooleanMethod<Input, Form>>).test(...args)),
 					message: method.message
 				})
@@ -317,7 +317,7 @@ export abstract class Schema<Input = any, Final = any> {
 			`_test_${this.def.normalRules.size}`,
 			new Rule({
 				isAsync,
-				type: 'METHOD_ERROR',
+				isMethodError: true,
 				method
 			})
 		);

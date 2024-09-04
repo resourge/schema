@@ -48,11 +48,6 @@ export type AsyncRuleMethodSchemaError<Value, T = any> = (
 
 export type AsyncRuleMethod<Value, T = any> = AsyncRuleBooleanMethod<Value, T> | AsyncRuleMethodSchemaError<Value, T>;
 
-export type RuleConfig<Value, T = any> = {
-	isAsync: boolean
-	type: RuleType
-} & BaseRuleConfig<Value, T, RuleMethod<Value, T> | AsyncRuleMethod<Value, T>>;
-
 const getContent = (
 	path: string,
 	context: Context,
@@ -72,16 +67,21 @@ const getContent = (
 
 export type RuleType = 'METHOD_ERROR' | 'MESSAGE';
 
+export type RuleConfig<Value, T = any> = {
+	isAsync: boolean
+	isMethodError: boolean
+} & BaseRuleConfig<Value, T, RuleMethod<Value, T> | AsyncRuleMethod<Value, T>>;
+
 export class Rule<Value, T = any> {
 	public method: RuleMethod<Value, T> | AsyncRuleMethod<Value, T>;
 	public message?: string | ((messages: MessageType) => string);
 	public isAsync: boolean = false;
-	public type: RuleType;
+	public isMethodError: boolean;
 
 	constructor(config: RuleConfig<Value, T>) {
 		this.method = config.method;
 		this.message = config.message;
-		this.type = config.type;
+		this.isMethodError = config.isMethodError;
 		this.isAsync = config.isAsync;
 	}
 
@@ -92,7 +92,6 @@ export class Rule<Value, T = any> {
 		ruleMethodName,
 		valueKey
 	}: RuleSrcCodeConfig) {
-		const isMethodError = this.type === 'METHOD_ERROR';
 		const methodName = addRuleToContextRules(
 			ruleMethodName,
 			this.method,
@@ -104,7 +103,7 @@ export class Rule<Value, T = any> {
 		const content = getContent(
 			path, 
 			context,
-			isMethodError,
+			this.isMethodError,
 			this.message
 		);
 
@@ -112,7 +111,7 @@ export class Rule<Value, T = any> {
 			methodName,
 			parameters: getFnParameters(valueKey, path),
 			srcCode: [
-				isMethodError ? `${methodName}_isValid.forEach((error) => {` : '',
+				this.isMethodError ? `${methodName}_isValid.forEach((error) => {` : '',
 				...(
 					isAsyncOrOnlyOnTouch
 						? [
@@ -123,7 +122,7 @@ export class Rule<Value, T = any> {
 							`${PARAMETERS.ERRORS_KEY}.push(${content});`
 						]
 				),
-				isMethodError ? '})' : ''
+				this.isMethodError ? '})' : ''
 			]
 		};
 	}
@@ -131,7 +130,6 @@ export class Rule<Value, T = any> {
 	public getRule(config: RuleSrcCodeConfig) {
 		const { context } = config;
 		context.async = this.isAsync;
-		const isMethodError = this.type === 'METHOD_ERROR';
 
 		const {
 			methodName,
@@ -148,7 +146,7 @@ export class Rule<Value, T = any> {
 						`.then((${methodName}_isValid) => {`
 					] : `const ${methodName}_isValid = ${PARAMETERS.CONTEXT_KEY}.rules.${methodName}(${parameters.join(',')});`
 			),
-			(isMethodError ? `if ( ${methodName}_isValid.length ) {` : `if ( ${methodName}_isValid ) {`),
+			(this.isMethodError ? `if ( ${methodName}_isValid.length ) {` : `if ( ${methodName}_isValid ) {`),
 			...srcCode,
 			'}',
 			(

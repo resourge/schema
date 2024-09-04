@@ -19,7 +19,11 @@ export type RuleSrcCodeConfig = Pick<Required<CompileSchemaConfig>, 'context' | 
 	valueKey: string
 };
 
-export type BaseRuleConfig<Value, T = any, Method extends (...args: any[]) => any = RuleMethod<Value, T>> = {
+export type BaseRuleConfig<
+	Value, 
+	T = any, 
+	Method extends (...args: any[]) => any = RuleMethod<Value, T>
+> = {
 	method: Method
 	message?: string | ((messages: MessageType) => string)
 };

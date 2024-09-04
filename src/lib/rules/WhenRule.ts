@@ -2,7 +2,12 @@ import { type Schema } from '../core/schema';
 import { type CompileSchemaConfig, type PrivateSchema } from '../types/types';
 import { PARAMETERS } from '../utils/Utils';
 
-import { addRuleToContextRules, getFnParameters, type RuleSrcCodeConfig } from './BaseRule';
+import {
+	addRuleToContextRules,
+	type BaseRuleConfig,
+	getFnParameters,
+	type RuleSrcCodeConfig
+} from './BaseRule';
 import { type RuleBooleanMethod } from './Rule';
 
 export type WhenConfig<
@@ -19,12 +24,11 @@ export type WhenConfig<
 };
 
 export type WhenParameter<Value = any, T = any> = {
-	method: RuleBooleanMethod<Value, T>
 	name: string
 	onlyOnTouch: boolean
 	then: Schema<any, any>
 	otherwise?: Schema<any, any>
-};
+} & BaseRuleConfig<Value, T, RuleBooleanMethod<Value, T>>;
 
 export class WhenRule<Value = any, T = any> {
 	public name: string;

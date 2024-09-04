@@ -1,7 +1,7 @@
-import { type OneOfConfig } from '../types/OneOfTypes';
+import { type OneOfConfigMessage } from '../types/OneOfTypes';
 import { type SchemaMap } from '../types/SchemaMap';
 import { type CompileSchemaConfig, type PrivateSchema } from '../types/types';
-import { createOneOfFunctionName, Parameters } from '../utils/Utils';
+import { createOneOfFunctionName, PARAMETERS } from '../utils/Utils';
 
 import { type Definitions } from './Definitions';
 import { Schema } from './schema';
@@ -14,7 +14,7 @@ export abstract class ObjectTypedSchema<
 	protected shape: Map<string, PrivateSchema>;
 
 	protected oneOfRules = new Map<string, PrivateSchema>();
-	protected oneOfConfig: OneOfConfig = {};
+	protected oneOfConfigMessage: OneOfConfigMessage | undefined;
 
 	constructor(schemas: SchemaMap<Input>, def?: Definitions) {
 		super(def);
@@ -30,56 +30,60 @@ export abstract class ObjectTypedSchema<
 		key, 
 		path
 	}: CompileSchemaConfig) {
-		const srcCode: string[] = [];
-		const errorParameterKey = createOneOfFunctionName();
-		const errorParameterKeyCondition = createOneOfFunctionName();
+		const srcCode: Array<string | string[]> = [];
+		const functionName = createOneOfFunctionName();
+		const functionNameErrors = `${functionName}_${PARAMETERS.ERRORS_KEY}`;
 
 		srcCode.push(
-			`let ${errorParameterKey} = [];`,
-			`let ${errorParameterKeyCondition} = true;`,
-			this.oneOfConfig.includeAllErrors ? `let _${errorParameterKey} = [];` : ''
+			`function ${functionName}() {`,
+			`let ${PARAMETERS.ERRORS_KEY} = [];`,
+			`let ${functionNameErrors} = [];`
 		);
 
 		this.oneOfRules.forEach((schema, childKey ) => {
-			// @ts-expect-error To be only accessible for the developer
-			schema.errorParameterKey = errorParameterKey;
-
 			srcCode.push(
-				this.oneOfConfig.includeAllErrors 
-					? `_${errorParameterKey} = Array.prototype.slice.call(${errorParameterKey});` 
-					: `${errorParameterKey} = [];`,
-				`if ( ${errorParameterKeyCondition} ) {`,
-				...schema.compileSchema({
+				schema.compileSchema({
 					context, 
 					key: `${key ? `${key}.` : ''}${childKey}`, 
 					path: `${path ? `${path}.` : ''}${childKey}`
 				}),
-				this.oneOfConfig.includeAllErrors 
-					? `if ( ${errorParameterKey}.length === _${errorParameterKey}.length ) {` 
-					: `if ( ${errorParameterKey}.length === 0 ) {`,
-				`${errorParameterKeyCondition} = false;`,
-				'}',
+				`if ( ${PARAMETERS.ERRORS_KEY}.length === 0 ) {`,
+				'return []',
 				'}'
 			);
+			srcCode.push(
+				`${functionNameErrors}.push(...${PARAMETERS.ERRORS_KEY});`,
+				`${PARAMETERS.ERRORS_KEY} = [];`
+			);
 		});
-		
+
 		srcCode.push(
-			`if ( ${errorParameterKeyCondition} ) {`,
-			(
-				!this.oneOfConfig.message 
-					? `${errorParameterKey}.forEach((error) => { ${Parameters.ERRORS_KEY}.push(error); })`
-					: (
-						typeof this.oneOfConfig.message === 'string' 
-							? `${errorParameterKey}.forEach((error) => { error.error = '${this.oneOfConfig.message}'; ${Parameters.ERRORS_KEY}.push(error); })`
-							: Array.isArray(this.oneOfConfig.message)
-								? `${JSON.stringify(this.oneOfConfig.message)}.forEach((error) => { ${Parameters.ERRORS_KEY}.push(error); })`
-								: `${Parameters.ERRORS_KEY}.push(${JSON.stringify(this.oneOfConfig.message)}); `
-					)
-			),
+			`return ${functionNameErrors};`,
 			'}'
 		);
+		
+		srcCode.push(
+			!this.oneOfConfigMessage
+				? `${functionName}().forEach((error) => { ${PARAMETERS.ERRORS_KEY}.push(error); })`
+				: (
+					typeof this.oneOfConfigMessage === 'string' 
+						? `${functionName}().forEach((error) => { error.error = '${this.oneOfConfigMessage}'; ${PARAMETERS.ERRORS_KEY}.push(error); })`
+						: (
+							[
+								`if ( ${functionName}().length ) {`,
+								(
+									Array.isArray(this.oneOfConfigMessage)
+										? `${JSON.stringify(this.oneOfConfigMessage)}.forEach((error) => { ${PARAMETERS.ERRORS_KEY}.push(error); })`
+										: `${PARAMETERS.ERRORS_KEY}.push(${JSON.stringify(this.oneOfConfigMessage)});`
+								),
+								'}'
+							]
+						)
+						
+				)
+		);
 
-		return srcCode;
+		return srcCode.flat();
 	}
 
 	protected override compileSchema({
@@ -88,11 +92,11 @@ export abstract class ObjectTypedSchema<
 		path,
 		srcCode = []
 	}: CompileSchemaConfig) {
-		const schemaRules: string[] = [...srcCode];
+		const schemaRules: string[][] = [srcCode];
 		
 		this.shape.forEach((schema, childKey) => {
 			schemaRules.push(
-				...schema.compileSchema({
+				schema.compileSchema({
 					context, 
 					key: `${key ? `${key}.` : ''}${childKey}`, 
 					path: `${path ? `${path}.` : ''}${childKey}`
@@ -102,7 +106,7 @@ export abstract class ObjectTypedSchema<
 
 		if ( this.oneOfRules.size ) {
 			schemaRules.push(
-				...this.compileOneOfRules({
+				this.compileOneOfRules({
 					context, 
 					key, 
 					path,
@@ -114,7 +118,7 @@ export abstract class ObjectTypedSchema<
 		return super.compileSchema({
 			context, 
 			key, 
-			srcCode: schemaRules, 
+			srcCode: schemaRules.flat(), 
 			path
 		});
 	}

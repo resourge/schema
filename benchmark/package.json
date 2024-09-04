@@ -1,20 +1,20 @@
 {
-  "name": "benchmark",
-  "version": "0.0.0",
-  "main": "benchmark.ts",
-  "scripts": {
-    "benchmark": "ts-node --project tsconfig.json benchmark.ts",
-    "heavy:benchmark": "ts-node heavyBenchmark.ts"
-  },
-  "dependencies": {
-    "benchmark": "^2.1.4",
-    "fastest-validator": "^1.12.0",
-    "joi": "^17.6.0",
-    "yup": "^0.32.11",
-    "zod": "^3.17.3"
-  },
-  "devDependencies": {
-    "@types/benchmark": "^2.1.1",
-    "ts-node": "^10.8.0"
-  }
+	"name": "benchmark",
+	"version": "0.0.0",
+	"main": "benchmark.ts",
+	"scripts": {
+		"benchmark": "ts-node --project tsconfig.json benchmark.ts",
+		"heavy:benchmark": "ts-node heavyBenchmark.ts"
+	},
+	"dependencies": {
+		"benchmark": "^2.1.4",
+		"fastest-validator": "^1.19.0",
+		"joi": "^17.13.3",
+		"yup": "^1.4.0",
+		"zod": "^3.23.8"
+	},
+	"devDependencies": {
+		"@types/benchmark": "^2.1.1",
+		"ts-node": "^10.8.0"
+	}
 }

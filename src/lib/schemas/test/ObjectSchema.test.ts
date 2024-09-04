@@ -164,8 +164,8 @@ describe('object', () => {
 
 	it('should extend schema', () => {
 		const schema = object({
-			productId: number(),
-			productName: string()
+			productId: number().optional(),
+			productName: string().optional()
 		})
 		.optional()
 		.compile();
@@ -183,10 +183,14 @@ describe('object', () => {
 			productName: string
 			productCategory?: string 
 		}>({
+			productId: number()
+			.required(),
 			productCategory: string()
 			.required()
 		})
-		.compile();
+		.compile({
+			debug: true 
+		});
 
 		expect((schema.validate({
 			productId: 1,
@@ -460,6 +464,11 @@ describe('object', () => {
 
 				expect(schema.validate({
 					productName: 'Test'
+				}))
+				.toEqual([]);
+
+				expect(schema.validate({
+					productType: 'Test'
 				}))
 				.toEqual([]);
 			});

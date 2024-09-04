@@ -746,7 +746,7 @@ export const fa_AF: PhoneNumberInfo = {
 	regex: /^(\+93|0)?(2{1}[0-8]{1}|[3-5]{1}[0-4]{1})(\d{7})$/
 }; 
 
-export const PhoneNumbers = {
+export default {
 	am_AM,
 	ar_AE,
 	ar_BH,
@@ -896,5 +896,3 @@ export const PhoneNumbers = {
 	ar_EH,
 	fa_AF
 } as const;
-
-export type PhoneNumber = typeof PhoneNumbers;

@@ -71,12 +71,7 @@ export class ObjectSchema<
 	): this {
 		const _this = this.clone();
 
-		const message = !Array.isArray(oneOfKey) ? (schema as OneOfConfigMessage) : oneOfConfigMessage;
-
-		_this.oneOfConfig = {
-			includeAllErrors: !(message && typeof message !== 'string'),
-			message
-		};
+		_this.oneOfConfigMessage = !Array.isArray(oneOfKey) ? (schema as OneOfConfigMessage) : oneOfConfigMessage;
 
 		((
 			Array.isArray(oneOfKey) 

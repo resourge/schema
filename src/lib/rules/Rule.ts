@@ -1,5 +1,5 @@
 import { type SchemaError } from '../types/types';
-import { Parameters } from '../utils/Utils';
+import { PARAMETERS } from '../utils/Utils';
 
 import { BaseRule, type RuleSrcCodeConfig, type RuleTestConfig } from './BaseRule';
 
@@ -31,7 +31,7 @@ export class Rule<Value, T = any> extends BaseRule<Value, T, RuleMethod<Value, T
 		} = this.getRuleSrcCode(config);
 
 		return [
-			`const ${methodName}_isValid = ${Parameters.CONTEXT_KEY}.rules.${methodName}(${parameters.join(',')});`,
+			`const ${methodName}_isValid = ${PARAMETERS.CONTEXT_KEY}.rules.${methodName}(${parameters.join(',')});`,
 			(this.isMethodError ? `if ( ${methodName}_isValid.length ) {` : `if ( ${methodName}_isValid ) {`),
 			...srcCode,
 			'}'

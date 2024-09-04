@@ -1,4 +1,4 @@
-import { PostalCodes } from '../index';
+import PostalCodes from '../index';
 import * as PostalCodesRest from '../index';
 
 const postalCodesExamples = {

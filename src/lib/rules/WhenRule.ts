@@ -1,6 +1,6 @@
 import { type Schema } from '../core/schema';
 import { type CompileSchemaConfig, type PrivateSchema } from '../types/types';
-import { Parameters } from '../utils/Utils';
+import { PARAMETERS } from '../utils/Utils';
 
 import { BaseRule, type RuleSrcCodeConfig } from './BaseRule';
 import { type RuleBooleanMethod } from './Rule';
@@ -48,7 +48,6 @@ export class WhenRule<Value = any, T = any> extends BaseRule<Value, T, RuleBoole
 
 	public getWhenRule(
 		valueKey: string,
-		errorParameterKey: string,
 		{
 			context, 
 			key,
@@ -61,8 +60,7 @@ export class WhenRule<Value = any, T = any> extends BaseRule<Value, T, RuleBoole
 			path: path ?? '',
 			onlyOnTouch: false,
 			valueKey,
-			ruleMethodName: `${this.name}_${context.index = context.index + 1}`,
-			errorParameterKey
+			ruleMethodName: `${this.name}_${context.index = context.index + 1}`
 		});
 
 		const thenSrcCode = this.then.compileSchema({
@@ -84,7 +82,7 @@ export class WhenRule<Value = any, T = any> extends BaseRule<Value, T, RuleBoole
 		});
 
 		return [
-			`const ${methodName}_isValid = ${Parameters.CONTEXT_KEY}.rules.${methodName}(${parameters.join(',')});`,
+			`const ${methodName}_isValid = ${PARAMETERS.CONTEXT_KEY}.rules.${methodName}(${parameters.join(',')});`,
 			`if ( ${methodName}_isValid ) {`,
 			...thenSrcCode,
 			'}',

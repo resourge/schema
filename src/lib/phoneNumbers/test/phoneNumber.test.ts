@@ -1,4 +1,4 @@
-import { PhoneNumbers } from '../index';
+import PhoneNumbers from '../index';
 
 test('phoneNumbers object', () => {
 	// pt_PT

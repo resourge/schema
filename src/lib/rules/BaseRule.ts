@@ -1,5 +1,5 @@
 import { type CompileSchemaConfig, type Context, type SchemaError } from '../types/types';
-import { Parameters } from '../utils/Utils';
+import { PARAMETERS } from '../utils/Utils';
 import { type MessageType } from '../utils/messages';
 
 export type RuleMethod<Value, Final = any> = (
@@ -14,7 +14,6 @@ export type RuleTestConfig<T> = {
 };
 
 export type RuleSrcCodeConfig = Pick<Required<CompileSchemaConfig>, 'context' | 'path'> & {
-	errorParameterKey: string
 	onlyOnTouch: boolean
 	ruleMethodName: string
 	valueKey: string
@@ -23,7 +22,7 @@ export type RuleSrcCodeConfig = Pick<Required<CompileSchemaConfig>, 'context' | 
 export abstract class BaseRule<Value, T = any, Method extends (...args: any[]) => any = RuleMethod<Value, T>> {
 	public type: 'METHOD_ERROR' | 'MESSAGE';
 	public method: Method;
-	protected getErrorMessage: (methodName: string, path: string, onlyOnTouch: boolean, errorParameterKey: string, context: Context) => string[];
+	protected getErrorMessage: (methodName: string, path: string, onlyOnTouch: boolean, context: Context) => string[];
 
 	public get isMethodError(): boolean {
 		return this.type === 'METHOD_ERROR';  
@@ -43,76 +42,48 @@ export abstract class BaseRule<Value, T = any, Method extends (...args: any[]) =
 		method: Method,
 		message?: string | ((messages: MessageType) => string)
 	) {
+		const getContent = (
+			path: string,
+			context: Context
+		) => {
+			if ( this.isMethodError ) {
+				return `${PARAMETERS.FN_GET_ERROR}(error.path ? error.path : \`${path}\`, error.error)`;
+			}
+
+			const _message: string | ((messages: MessageType) => string) = typeof message === 'string' 
+				? message 
+				: (message as ((messages: MessageType) => string))(context.messages);
+
+			return `${PARAMETERS.FN_GET_ERROR}(\`${path}\`, \`${_message.replace('{{key}}', path)}\`)`;
+		};
+
 		this.type = type;
 		this.method = method;
-		this.getErrorMessage = this.isMethodError
-			? (
-				methodName: string, 
-				path: string, 
-				onlyOnTouch: boolean,
-				errorParameterKey: string, 
-				context: Context
-			) => {
-				const isAsyncOrOnlyOnTouch = context.async && onlyOnTouch;
+		this.getErrorMessage = (
+			methodName: string, 
+			path: string, 
+			onlyOnTouch: boolean,
+			context: Context
+		) => {
+			const isAsyncOrOnlyOnTouch = context.async && onlyOnTouch;
 
-				const content = [
-					'{',
-					`path: error.path ? error.path : \`${path}\`,`,
-					'error: error.error',
-					'}'
-				];
+			const content = getContent(path, context);
 
-				return [
-					`${methodName}_isValid.forEach((error) => {`,
-					...(
-						isAsyncOrOnlyOnTouch
-							? [
-								`const ${methodName}_error = `,
-								...content,
-								';',
-								`${errorParameterKey}.push(${methodName}_error);`,
-								`(${Parameters.CONTEXT_KEY}.onlyOnTouchErrors[\`${path}\`] = ${Parameters.CONTEXT_KEY}.onlyOnTouchErrors[\`${path}\`] || []).push(${methodName}_error);`
-							] : [
-								`${errorParameterKey}.push(`,
-								...content,
-								');'
-							]
-					),
-					'})'
-				];
-			} : (
-				methodName: string, 
-				path: string, 
-				onlyOnTouch: boolean,
-				errorParameterKey: string, 
-				context: Context
-			) => {
-				const isAsyncOrOnlyOnTouch = context.async && onlyOnTouch;
-
-				const _message: string | ((messages: MessageType) => string) = typeof message === 'string' 
-					? message 
-					: (message as ((messages: MessageType) => string))(context.messages);
-
-				const content = [
-					'{',
-					`path: \`${path}\`,`,
-					`error: \`${_message.replace('{{key}}', path)}\``,
-					'}'
-				];
-
-				return isAsyncOrOnlyOnTouch
-					? [
-						`const ${methodName}_error = `,
-						...content,
-						';',
-						`${errorParameterKey}.push(${methodName}_error);`,
-						`(${Parameters.CONTEXT_KEY}.onlyOnTouchErrors[\`${path}\`] = ${Parameters.CONTEXT_KEY}.onlyOnTouchErrors[\`${path}\`] || []).push(${methodName}_error);`
-					] : [
-						`${errorParameterKey}.push(`,
-						...content,
-						');'
-					];
-			};
+			return [
+				this.isMethodError ? `${methodName}_isValid.forEach((error) => {` : '',
+				...(
+					isAsyncOrOnlyOnTouch
+						? [
+							`const ${methodName}_error = ${content};`,
+							`${PARAMETERS.ERRORS_KEY}.push(${methodName}_error);`,
+							`(${PARAMETERS.CONTEXT_KEY}.onlyOnTouchErrors[\`${path}\`] = ${PARAMETERS.CONTEXT_KEY}.onlyOnTouchErrors[\`${path}\`] || []).push(${methodName}_error);`
+						] : [
+							`${PARAMETERS.ERRORS_KEY}.push(${content});`
+						]
+				),
+				this.isMethodError ? '})' : ''
+			];
+		};
 	}
 
 	public addRule(
@@ -121,6 +92,7 @@ export abstract class BaseRule<Value, T = any, Method extends (...args: any[]) =
 		context: Context
 	) {
 		const ruleFnName = `${name}`
+		.replace(/\s+/g, '_')
 		.replace(/[^a-zA-Z0-9_]/g, '_')
 		.replace(/\s+/g, '_')
 		.normalize('NFC')
@@ -136,8 +108,7 @@ export abstract class BaseRule<Value, T = any, Method extends (...args: any[]) =
 		path,
 		onlyOnTouch,
 		ruleMethodName,
-		valueKey,
-		errorParameterKey
+		valueKey
 	}: RuleSrcCodeConfig) {
 		const methodName = this.addRule(
 			ruleMethodName,
@@ -152,11 +123,7 @@ export abstract class BaseRule<Value, T = any, Method extends (...args: any[]) =
 		const parameters: string[] = [
 			valueKey, 
 			parentKey,
-			`{ 
-				context: ${Parameters.CONTEXT_KEY},
-				form: ${Parameters.OBJECT_KEY},
-				path: \`${path}\`
-			}`
+			`${PARAMETERS.FN_CONTEXT}(${path ? `\`${path}\`` : '\'\''})`
 		];
 
 		// eslint-disable-next-line @typescript-eslint/no-this-alias
@@ -170,7 +137,6 @@ export abstract class BaseRule<Value, T = any, Method extends (...args: any[]) =
 					methodName,
 					path,
 					onlyOnTouch,
-					errorParameterKey,
 					context
 				);
 			}

@@ -1,6 +1,7 @@
 import { type Schema } from '../core/schema';
 import { type CompileSchemaConfig } from '../types/types';
-import { Parameters } from '../utils/Utils';
+import { PARAMETERS } from '../utils/Utils';
+import { IS_DEV } from '../utils/constants';
 
 import { type RuleBooleanMethod } from './Rule';
 import { WhenRule } from './WhenRule';
@@ -25,7 +26,6 @@ export class NamedWhenRule<Value = any, T = any> extends WhenRule<Value, T> {
 
 	public override getWhenRule(
 		valueKey: string,
-		errorParameterKey: string,
 		{
 			context, 
 			key,
@@ -42,19 +42,18 @@ export class NamedWhenRule<Value = any, T = any> extends WhenRule<Value, T> {
 				arr.pop();
 
 				_key = arr.join('.');
-				_valueKey = `${Parameters.VALUE}.${_key}.${this.namedValueKey}`;
+				_valueKey = `${PARAMETERS.VALUE}.${_key}.${this.namedValueKey}`;
 			}
 			else {
-				_valueKey = `${Parameters.VALUE}.${this.namedValueKey}`;
+				_valueKey = `${PARAMETERS.VALUE}.${this.namedValueKey}`;
 			}
 		}
-		else if ( process.env.NODE_ENV === 'development' ) {
+		else if ( IS_DEV ) {
 			throw new Error('Cannot use "when" at the schema root.');
 		}
 		
 		return super.getWhenRule(
 			_valueKey,
-			errorParameterKey,
 			{
 				context, 
 				key,

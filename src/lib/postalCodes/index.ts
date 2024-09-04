@@ -939,7 +939,8 @@ export const ZM: PostalCodeInfo = {
 	format: '#####',
 	regex: /^[0-9]{5}$/i
 };
-export const PostalCodes = {
+
+export default {
 	AF,
 	AX,
 	AL,
@@ -1128,5 +1129,3 @@ export const PostalCodes = {
 	WF,
 	ZM
 } as const;
-
-export type PostalCode = typeof PostalCodes;

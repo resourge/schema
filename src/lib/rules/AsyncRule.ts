@@ -1,5 +1,5 @@
 import { type SchemaError } from '../types/types';
-import { Parameters } from '../utils/Utils';
+import { PARAMETERS } from '../utils/Utils';
 
 import { BaseRule, type RuleSrcCodeConfig, type RuleTestConfig } from './BaseRule';
 /**
@@ -33,8 +33,8 @@ export class AsyncRule<Value, T = any> extends BaseRule<Value, T, AsyncRuleMetho
 		} = this.getRuleSrcCode(config);
 
 		return [
-			`${Parameters.PROMISE_KEY}.push(`,
-			`${Parameters.CONTEXT_KEY}.rules.${methodName}(${parameters.join(',')})`,
+			`${PARAMETERS.PROMISE_KEY}.push(`,
+			`${PARAMETERS.CONTEXT_KEY}.rules.${methodName}(${parameters.join(',')})`,
 			`.then((${methodName}_isValid) => {`,
 			(this.isMethodError ? `if ( ${methodName}_isValid.length ) {` : `if ( ${methodName}_isValid ) {`),
 			...srcCode,

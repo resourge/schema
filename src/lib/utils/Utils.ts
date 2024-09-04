@@ -1,16 +1,20 @@
-export enum Parameters {
-	ERRORS_KEY = 't',
-	PROMISE_KEY = 'p',
-	CONTEXT_KEY = 'k',
-	ONLY_ON_TOUCH = 's',
-	OBJECT_KEY = 'a',
+import { IS_DEV } from './constants';
 
-	VALUE = 'e'
-}
+export const PARAMETERS = {
+	ERRORS_KEY: IS_DEV ? 'errors' : 'e',
+	PROMISE_KEY: IS_DEV ? 'promises' : 'p',
+	CONTEXT_KEY: IS_DEV ? 'context' : 'c',
+	ONLY_ON_TOUCH: IS_DEV ? 'onlyOnTouch' : 'o',
+	OBJECT_KEY: IS_DEV ? 'form' : 'f',
+	VALUE: IS_DEV ? 'value' : 'v',
+	FN_CONTEXT: IS_DEV ? 'getContext' : 'gC',
+	FN_GET_ERROR: IS_DEV ? 'getError' : 'gE',
+	ONE_OF: IS_DEV ? 'one_of' : 'oo'
+} as const;
 
 let oneOfFunctionIndex = 0;
 export function createOneOfFunctionName() {
-	return `${Parameters.ERRORS_KEY}_one_of_${oneOfFunctionIndex++}`;
+	return `${PARAMETERS.ONE_OF}${oneOfFunctionIndex++}`;
 }
 
 export function createDate({

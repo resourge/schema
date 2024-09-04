@@ -182,9 +182,7 @@ describe('Nested Schemas', () => {
 			)
 			.min(1)
 		})
-		.compile({
-			debug: true 
-		});
+		.compile();
 
 		expect(
 			(schema.validate({

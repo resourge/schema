@@ -13,10 +13,11 @@ import {
 	type Context,
 	type SchemaError
 } from '../types/types';
-import { Parameters } from '../utils/Utils';
-import { beautifyFunction } from '../utils/beautifyFunction';
+import { PARAMETERS } from '../utils/Utils';
+import { IS_DEV } from '../utils/constants';
 import { getOnlyOnTouchSrcCode } from '../utils/getOnlyOnTouchSrcCode';
 import { defaultMessages, type MessageType } from '../utils/messages';
+import { minifyJavaScript } from '../utils/minifyJavaScript';
 
 import { Definitions, type OnlyOnTouch } from './Definitions';
 
@@ -56,8 +57,6 @@ export abstract class Schema<Input = any, Final = any> {
 	public final!: Final;
 	protected async: boolean = false;
 
-	private readonly errorParameterKey: string = Parameters.ERRORS_KEY;
-
 	protected def: Definitions<Input, Final> = new Definitions<Input, Final>();
 
 	protected abstract clone(): any;
@@ -69,20 +68,14 @@ export abstract class Schema<Input = any, Final = any> {
 		if ( def ) {
 			this.def = def.clone();
 		}
-		this.errorParameterKey = Parameters.ERRORS_KEY;
 	}
 
 	protected getValueKey(key?: string) {
-		return `${Parameters.VALUE}${key ? `${key.indexOf('[') === 0 ? '' : '.'}${key}` : ''}`;
+		return `${PARAMETERS.VALUE}${key ? `${key.indexOf('[') === 0 ? '' : '.'}${key}` : ''}`;
 	}
 
 	protected getErrorSyntax(message: string) {
-		return [
-			`${this.errorParameterKey}.push({`,
-			`	path: \`${this.def.path}\`,`,
-			`	error: \`${message.replace('{{key}}', this.def.path)}\``,
-			'});'
-		];
+		return `${PARAMETERS.ERRORS_KEY}.push(${PARAMETERS.FN_GET_ERROR}(\`${this.def.path}\`, \`${message.replace('{{key}}', this.def.path)}\`));`;
 	}
 
 	// #region Normal Rules
@@ -90,34 +83,29 @@ export abstract class Schema<Input = any, Final = any> {
 		context: Context, 
 		valueKey: string
 	): string[] {
-		const srcCode: string[] = [];
-		this.def.normalRules.forEach((rule, key) => {
+		const srcCode: string[][] = [];
+		this.def.normalRules
+		.forEach((rule, key) => {
 			srcCode.push(
-				...rule.getRule({
+				rule.getRule({
 					context, 
 					path: this.def.path,
 					onlyOnTouch: Boolean(this.def._isOnlyOnTouch ?? context.onlyOnTouch),
 					ruleMethodName: key.startsWith('_test_') ? `test_${context.index = context.index + 1}` : key,
-					valueKey,
-					errorParameterKey: this.errorParameterKey
+					valueKey
 				})
 			);
 		});
-		return srcCode;
+
+		return srcCode.flat();
 	}
 	// #endregion Normal Rules
 
 	// #region When Rules
 	protected compileWhenSchema(config: CompileSchemaConfig) {
-		const srcCode: string[] = [];
-		this.def.whenRules.forEach((rule) => {
-			const valueKey = this.getValueKey(config.key);
-
-			srcCode.push(
-				...rule.getWhenRule(valueKey, this.errorParameterKey, config)
-			);
-		});
-		return srcCode;
+		return this.def.whenRules
+		.map((rule) => rule.getWhenRule(this.getValueKey(config.key), config))
+		.flat();
 	}
 	// #endregion When Rules
 
@@ -145,13 +133,12 @@ export abstract class Schema<Input = any, Final = any> {
 			path: this.def.path,
 			onlyOnTouch: Boolean(this.def._isOnlyOnTouch ?? context.onlyOnTouch),
 			ruleMethodName: Object.getPrototypeOf(this).constructor.name,
-			valueKey,
-			errorParameterKey: this.errorParameterKey
+			valueKey
 		});
 
 		const rulesSrcCode = this.compileNormalRules(context, valueKey);
 
-		const fn = `${Parameters.CONTEXT_KEY}.rules.${methodName}(${parameters.join(',')})`;
+		const fn = `${PARAMETERS.CONTEXT_KEY}.rules.${methodName}(${parameters.join(',')})`;
 
 		const fnSrcCode = rulesSrcCode.length > 0 || srcCode.length > 0 ? [
 			`if (${fn}) {`,
@@ -171,7 +158,12 @@ export abstract class Schema<Input = any, Final = any> {
 		.reduce((code, rule) => rule(code, valueKey), fnSrcCode);
 	}
 
-	protected getIsOptional(mandatoryRules: Array<(fnSrcCode: string[], valueKey: string) => string[]>, schema: Schema<any>, context: Context) {
+	protected getRequiredStringCondition = (valueKey: string) => `if ( ${valueKey} === null || ${valueKey} === undefined ){`;
+	protected getNotRequiredStringCondition = (valueKey: string) => `if ( ${valueKey} !== null && ${valueKey} !== undefined ){`;
+
+	protected getMandatoryRules(schema: Schema<any>, context: Context) {
+		const mandatoryRules: Array<(fnSrcCode: string[], valueKey: string) => string[]> = [];
+
 		const isOptional = schema.def._isOptional ?? context.optional;
 		if ( isOptional !== undefined ) {
 			if ( isOptional ) {
@@ -186,7 +178,7 @@ export abstract class Schema<Input = any, Final = any> {
 				schema.notOptional();
 				mandatoryRules.push((fnSrcCode: string[], valueKey: string) => [
 					`if ( ${valueKey} === undefined ){`,
-					...schema.getErrorSyntax(this.def.messageOptional ?? context.messages.notOptional),
+					schema.getErrorSyntax(this.def.messageOptional ?? context.messages.notOptional),
 					'}',
 					'else {',
 					...fnSrcCode,
@@ -194,9 +186,7 @@ export abstract class Schema<Input = any, Final = any> {
 				]);
 			}
 		}
-	}
 
-	protected getIsNullable(mandatoryRules: Array<(fnSrcCode: string[], valueKey: string) => string[]>, schema: Schema<any>, context: Context) {
 		const isNullable = schema.def._isNullable ?? context.nullable;
 		if ( isNullable !== undefined ) {
 			if ( isNullable ) {
@@ -211,7 +201,7 @@ export abstract class Schema<Input = any, Final = any> {
 				schema.notNullable();
 				mandatoryRules.push((fnSrcCode: string[], valueKey: string) => [
 					`if ( ${valueKey} === null ){`,
-					...schema.getErrorSyntax(this.def.messageNullable ?? context.messages.notNullable),
+					schema.getErrorSyntax(this.def.messageNullable ?? context.messages.notNullable),
 					'}',
 					'else {',
 					...fnSrcCode,
@@ -219,12 +209,7 @@ export abstract class Schema<Input = any, Final = any> {
 				]);
 			}
 		}
-	}
 
-	protected getRequiredStringCondition = (valueKey: string) => `if ( ${valueKey} === null || ${valueKey} === undefined ){`;
-	protected getNotRequiredStringCondition = (valueKey: string) => `if ( ${valueKey} !== null && ${valueKey} !== undefined ){`;
-
-	protected getIsRequired(mandatoryRules: Array<(fnSrcCode: string[], valueKey: string) => string[]>, schema: Schema<any>, context: Context) {
 		const _isRequired = schema.def._isRequired ?? context.nullable;
 		if ( _isRequired !== undefined ) {
 			if ( _isRequired ) {
@@ -232,7 +217,7 @@ export abstract class Schema<Input = any, Final = any> {
 			
 				mandatoryRules.push((fnSrcCode: string[], valueKey: string) => [
 					this.getRequiredStringCondition(valueKey),
-					...schema.getErrorSyntax(this.def.messageRequired ?? context.messages.required),
+					schema.getErrorSyntax(this.def.messageRequired ?? context.messages.required),
 					'}',
 					'else {',
 					...fnSrcCode,
@@ -249,9 +234,7 @@ export abstract class Schema<Input = any, Final = any> {
 				]);
 			}
 		}
-	}
 
-	protected getIsOnlyOnTouch(mandatoryRules: Array<(fnSrcCode: string[], valueKey: string) => string[]>, schema: Schema<any>, context: Context) {
 		const isOnlyOnTouch = schema.def._isOnlyOnTouch ?? context.onlyOnTouch;
 		if ( isOnlyOnTouch !== undefined ) { 
 			if ( isOnlyOnTouch ) {
@@ -265,15 +248,6 @@ export abstract class Schema<Input = any, Final = any> {
 				schema.notOnlyOnTouch();
 			}
 		}
-	}
-
-	protected getMandatoryRules(schema: Schema<any>, context: Context) {
-		const mandatoryRules: Array<(fnSrcCode: string[], valueKey: string) => string[]> = [];
-
-		this.getIsOptional(mandatoryRules, schema, context);
-		this.getIsNullable(mandatoryRules, schema, context);
-		this.getIsRequired(mandatoryRules, schema, context);
-		this.getIsOnlyOnTouch(mandatoryRules, schema, context);
 
 		return mandatoryRules;
 	}
@@ -284,7 +258,6 @@ export abstract class Schema<Input = any, Final = any> {
 		srcCode = [],
 		path
 	}: CompileSchemaConfig) {
-		const valueKey = this.getValueKey(key);
 		this.def.path = path ?? key ?? '';
 
 		if ( this.def.whenRules && this.def.whenRules.length ) {
@@ -296,7 +269,8 @@ export abstract class Schema<Input = any, Final = any> {
 			});
 		}
 
-		return this.compileNormalSchema(valueKey, 
+		return this.compileNormalSchema(
+			this.getValueKey(key), 
 			{
 				context, 
 				key, 
@@ -517,7 +491,7 @@ export abstract class Schema<Input = any, Final = any> {
 		thenClone = onlyOnTouch(thenClone);
 
 		/* c8 ignore start */
-		if ( process.env.NODE_ENV === 'development' ) {
+		if ( IS_DEV ) {
 			thenClone.def.normalRules.forEach((_, key) => {
 				if ( this.def.normalRules.has(key) ) {
 					throw new Error(`Method ${key} already exists outside of 'onlyOnTouch'. To prevent confusion decide if you want '${key}' outside or inside 'onlyOnTouch'`);
@@ -651,55 +625,38 @@ export abstract class Schema<Input = any, Final = any> {
 		});
 
 		this.async = context.async ?? false;
-	
-		let srcCode = [
-			`const ${this.errorParameterKey} = [];`,
-			...schemasSrcCode,
-			`return ${this.errorParameterKey}`
-		];
 
-		if ( this.async ) {
-			srcCode = [
-				`const ${this.errorParameterKey} = [];`,
-				`const ${Parameters.PROMISE_KEY} = [];`,
-				...schemasSrcCode,
-				`return Promise.all(${Parameters.PROMISE_KEY})`,
-				`.then(() => ${this.errorParameterKey})`
-			];
-		}
+		const code = minifyJavaScript(
+			[
+				`function ${PARAMETERS.FN_GET_ERROR}(path, error) { return { error: error, path: path } };`,
+				`function ${PARAMETERS.FN_CONTEXT}(path) { return { context: ${PARAMETERS.CONTEXT_KEY}, form: ${PARAMETERS.OBJECT_KEY}, path: path } };`,
+				`const ${PARAMETERS.ERRORS_KEY} = [];`,
+				this.async ? `const ${PARAMETERS.PROMISE_KEY} = [];` : '',
+				schemasSrcCode,
+				this.async ? [
+					`return Promise.all(${PARAMETERS.PROMISE_KEY})`,
+					`.then(() => ${PARAMETERS.ERRORS_KEY})`
+				] : `return ${PARAMETERS.ERRORS_KEY}`
+			]
+			.flat()
+			.join('')
+		);
 
 		/* c8 ignore start */ // this is for better debugging no need to test coverage
-		// if ( process.env.NODE_ENV === 'development' ) {
-		if ( debug ) {
+		if ( IS_DEV ) {
+			if ( debug ) {
 			/* eslint-disable no-console */
-			console.log('method', beautifyFunction(srcCode));
+				console.log('code', code);
+			}
 		}
-		// }
-
-		function minifyJavaScript(jsCode: string) {
-			// Remove single-line comments (//...)
-			jsCode = jsCode.replace(/\/\/.*$/gm, '');
-			
-			// Remove multi-line comments (/* ... */)
-			jsCode = jsCode.replace(/\/\*[\s\S]*?\*\//g, '');
-			
-			// Remove unnecessary whitespace and line breaks
-			jsCode = jsCode.replace(/\s+/g, ' ') // Collapse whitespace to a single space
-			.replace(/\s*([{};:,])\s*/g, '$1') // Remove spaces around {}, ;, :, and ,
-			.trim(); // Remove leading and trailing whitespace
-
-			return jsCode;
-		}
-
-		console.log('a', minifyJavaScript(srcCode.join('\t')));
 
 		/* c8 ignore stop */ // this is for better debugging no need to test coverage
 		const validate = new Function(
-			Parameters.VALUE,
-			Parameters.CONTEXT_KEY,
-			Parameters.OBJECT_KEY,
-			Parameters.ONLY_ON_TOUCH,
-			minifyJavaScript(srcCode.join(''))
+			PARAMETERS.VALUE,
+			PARAMETERS.CONTEXT_KEY,
+			PARAMETERS.OBJECT_KEY,
+			PARAMETERS.ONLY_ON_TOUCH,
+			code
 		);
 
 		this.def._validate = (value: any, onlyOnTouch?: OnlyOnTouch<Input>): typeof this.async extends true ? Promise<SchemaError[]> : SchemaError[] => {

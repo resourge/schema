@@ -2,9 +2,14 @@
 /* eslint-disable @typescript-eslint/no-implied-eval */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
-import { AsyncRule, type AsyncRuleBooleanMethod, type AsyncRuleMethodSchemaError } from '../rules/AsyncRule';
 import { NamedWhenRule } from '../rules/NamedWhenRule';
-import { Rule, type RuleBooleanMethod, type RuleMethodSchemaError } from '../rules/Rule';
+import {
+	type AsyncRuleBooleanMethod,
+	type AsyncRuleMethodSchemaError,
+	Rule,
+	type RuleBooleanMethod,
+	type RuleMethodSchemaError
+} from '../rules/Rule';
 import { type WhenConfig, WhenRule } from '../rules/WhenRule';
 import { type ObjectPropertiesSchema } from '../types/SchemaMap';
 import {
@@ -91,7 +96,9 @@ export abstract class Schema<Input = any, Final = any> {
 					context, 
 					path: this.def.path,
 					onlyOnTouch: Boolean(this.def._isOnlyOnTouch ?? context.onlyOnTouch),
-					ruleMethodName: key.startsWith('_test_') ? `test_${context.index = context.index + 1}` : key,
+					ruleMethodName: key.startsWith('_test_') 
+						? `${(rule as Rule<Input, Final>).isAsync ? PARAMETERS.FN_ASYNC_TEST : PARAMETERS.FN_TEST}_${context.index = context.index + 1}` 
+						: key,
 					valueKey
 				})
 			);
@@ -116,11 +123,12 @@ export abstract class Schema<Input = any, Final = any> {
 			srcCode = []
 		}: CompileSchemaConfig
 	) {
-		const rule = new Rule(
-			'MESSAGE',
-			this.rule,
-			this.message
-		);
+		const rule = new Rule({
+			isAsync: false,
+			type: 'MESSAGE',
+			method: this.rule,
+			message: this.message
+		});
 		
 		// Order is important for mandatoryRules
 		const mandatoryRules = this.getMandatoryRules(this, context);
@@ -280,6 +288,43 @@ export abstract class Schema<Input = any, Final = any> {
 		);
 	}
 
+	private addTest<Form = this['final']>(
+		isAsync: boolean,
+		method: TestMethodConfig<RuleBooleanMethod<Input, Form>> | 
+		OldTestMethodConfig<RuleBooleanMethod<Input, Form>> | 
+		RuleMethodSchemaError<Input, Form> | 
+		AsyncRuleMethodSchemaError<Input, Form> | 
+		TestMethodConfig<AsyncRuleBooleanMethod<Input, Form>> | 
+		OldTestMethodConfig<AsyncRuleBooleanMethod<Input, Form>>
+	) {
+		const _this = this.clone();
+
+		if ( typeof method === 'object' ) {
+			_this.def.normalRules.set(
+				method.name ?? `_test_${this.def.normalRules.size}`,
+				new Rule({
+					isAsync,
+					type: 'MESSAGE',
+					method: (method as TestMethodConfig<RuleBooleanMethod<Input, Form>>).is ?? ((...args) => !(method as OldTestMethodConfig<RuleBooleanMethod<Input, Form>>).test(...args)),
+					message: method.message
+				})
+			);
+
+			return _this;
+		}
+
+		_this.def.normalRules.set(
+			`_test_${this.def.normalRules.size}`,
+			new Rule({
+				isAsync,
+				type: 'METHOD_ERROR',
+				method
+			})
+		);
+
+		return _this;
+	}
+
 	/**
 	 * Method for custom validation
 	 */
@@ -297,30 +342,7 @@ export abstract class Schema<Input = any, Final = any> {
 		OldTestMethodConfig<RuleBooleanMethod<Input, Form>> | 
 		RuleMethodSchemaError<Input, Form>
 	): ObjectPropertiesSchema<Input, Form> {
-		const _this = this.clone();
-
-		if ( typeof method === 'object' ) {
-			_this.def.normalRules.set(
-				method.name ?? `_test_${this.def.normalRules.size}`,
-				new Rule(
-					'MESSAGE',
-					(method as TestMethodConfig<RuleBooleanMethod<Input, Form>>).is ?? ((...args) => !(method as OldTestMethodConfig<RuleBooleanMethod<Input, Form>>).test(...args)),
-					method.message
-				)
-			);
-
-			return _this;
-		}
-
-		_this.def.normalRules.set(
-			`_test_${this.def.normalRules.size}`,
-			new Rule(
-				'METHOD_ERROR',
-				method
-			)
-		);
-
-		return _this;
+		return this.addTest(false, method);
 	}
 
 	/**
@@ -338,30 +360,7 @@ export abstract class Schema<Input = any, Final = any> {
 	public asyncTest<Form = this['final']>(
 		method: AsyncRuleMethodSchemaError<Input, Form> | TestMethodConfig<AsyncRuleBooleanMethod<Input, Form>> | OldTestMethodConfig<AsyncRuleBooleanMethod<Input, Form>>
 	): this {
-		const _this = this.clone();
-
-		if ( typeof method === 'object' ) {
-			_this.def.normalRules.set(
-				method.name ?? `asyncTest_${this.def.normalRules.size}`,
-				new AsyncRule(
-					'MESSAGE',
-					(method as TestMethodConfig<AsyncRuleBooleanMethod<Input, Form>>).is ?? (async (...args) => !(await (method as OldTestMethodConfig<AsyncRuleBooleanMethod<Input, Form>>).test(...args))),
-					method.message
-				)
-			);
-
-			return _this;
-		}
-
-		_this.def.normalRules.set(
-			`asyncTest${this.def.normalRules.size}`,
-			new AsyncRule(
-				'METHOD_ERROR',
-				method
-			)
-		);
-
-		return _this;
+		return this.addTest(true, method);
 	}
 
 	private _when<S extends Schema<any> = this>(

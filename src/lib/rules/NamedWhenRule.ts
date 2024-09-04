@@ -1,18 +1,11 @@
-import { type Schema } from '../core/schema';
 import { type CompileSchemaConfig } from '../types/types';
 import { PARAMETERS } from '../utils/Utils';
 import { IS_DEV } from '../utils/constants';
 
-import { type RuleBooleanMethod } from './Rule';
-import { WhenRule } from './WhenRule';
+import { type WhenParameter, WhenRule } from './WhenRule';
 
-export type NamedWhenRuleParameter<Value = any, T = any> = {
-	method: RuleBooleanMethod<Value, T>
-	name: string
+export type NamedWhenRuleParameter<Value = any, T = any> = WhenParameter<Value, T> & {
 	namedValueKey: string
-	onlyOnTouch: boolean
-	then: Schema<any, any>
-	otherwise?: Schema<any, any>
 };
 
 export class NamedWhenRule<Value = any, T = any> extends WhenRule<Value, T> {

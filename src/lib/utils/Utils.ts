@@ -9,6 +9,8 @@ export const PARAMETERS = {
 	VALUE: IS_DEV ? 'value' : 'v',
 	FN_CONTEXT: IS_DEV ? 'getContext' : 'gC',
 	FN_GET_ERROR: IS_DEV ? 'getError' : 'gE',
+	FN_TEST: IS_DEV ? 'test' : 't',
+	FN_ASYNC_TEST: IS_DEV ? 'async_test' : 'at',
 	ONE_OF: IS_DEV ? 'one_of' : 'oo'
 } as const;
 

@@ -1,4 +1,4 @@
-import { type BaseRule } from '../rules/BaseRule';
+import { type Rule } from '../rules/Rule';
 import { type WhenRule } from '../rules/WhenRule';
 import { type FormKey } from '../types/FormKey';
 import { type SchemaError } from '../types/types';
@@ -21,7 +21,7 @@ export class Definitions<Input = any, Final = any> {
 	 * Path for current value
 	 */
 	public path: string = '';
-	public normalRules = new Map<string, BaseRule<Input, Final, (...args: any[]) => any>>();
+	public normalRules = new Map<string, Rule<Input, Final> | WhenRule<Input, Final>>();
 	public whenRules: WhenRule[] = [];
 
 	public _validate: ((value: any, onlyOnTouch?: OnlyOnTouch<Input>) => Promise<SchemaError[]> | SchemaError[]) | undefined;

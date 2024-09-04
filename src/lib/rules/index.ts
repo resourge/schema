@@ -1,7 +1,4 @@
-export {
-	type AsyncRuleBooleanMethod, type AsyncRuleMethodSchemaError, type AsyncRuleMethod 
-} from './AsyncRule';
-export {
-	type RuleBooleanMethod, type RuleMethodSchemaError, type RuleMethod 
+export type {
+	RuleBooleanMethod, RuleMethodSchemaError, RuleMethod, AsyncRuleMethodSchemaError, AsyncRuleMethod, AsyncRuleBooleanMethod
 } from './Rule';
 export { type WhenConfig } from './WhenRule';

@@ -2,7 +2,7 @@ import { type Schema } from '../core/schema';
 import { type CompileSchemaConfig, type PrivateSchema } from '../types/types';
 import { PARAMETERS } from '../utils/Utils';
 
-import { BaseRule, type RuleSrcCodeConfig } from './BaseRule';
+import { addRuleToContextRules, getFnParameters, type RuleSrcCodeConfig } from './BaseRule';
 import { type RuleBooleanMethod } from './Rule';
 
 export type WhenConfig<
@@ -26,20 +26,15 @@ export type WhenParameter<Value = any, T = any> = {
 	otherwise?: Schema<any, any>
 };
 
-export class WhenRule<Value = any, T = any> extends BaseRule<Value, T, RuleBooleanMethod<Value, T>> {
+export class WhenRule<Value = any, T = any> {
 	public name: string;
 	public then: PrivateSchema;
 	public otherwise?: PrivateSchema;
 	public onlyOnTouch: boolean;
+	public method: RuleBooleanMethod<Value, T>;
 
-	constructor(
-		config: WhenParameter<Value, T>
-	) {
-		super(
-			'METHOD_ERROR',
-			config.method
-		);
-
+	constructor(config: WhenParameter<Value, T>) {
+		this.method = config.method;
 		this.name = config.name;
 		this.onlyOnTouch = config.onlyOnTouch;
 		this.then = config.then as unknown as PrivateSchema;
@@ -55,12 +50,13 @@ export class WhenRule<Value = any, T = any> extends BaseRule<Value, T, RuleBoole
 			srcCode
 		}: CompileSchemaConfig
 	): string[] {
-		const methodName = this.addRule(
+		const methodName = addRuleToContextRules(
 			`${this.name}_${context.index = context.index + 1}`,
+			this.method,
 			context
 		);
 
-		const parameters = this.getParameters(
+		const parameters = getFnParameters(
 			valueKey,
 			path ?? ''
 		);

@@ -1,4 +1,3 @@
-import { type Definitions } from '../core/Definitions';
 import { Schema } from '../core/schema';
 
 export class AnySchema<
@@ -8,16 +7,6 @@ export class AnySchema<
 	protected message: string = '{{key}} is not array';
 	protected rule = () => true;
 	
-	protected clone() {
-		return new AnySchema(this.message, this.def);
-	}
-
-	constructor(message?: string, def?: Definitions) {
-		super(def);
-
-		this.message = message ?? this.message;
-	}
-
 	/**
 	 * Checks if is a value of enum.
 	 * @param enumObject enum
@@ -31,14 +20,8 @@ export class AnySchema<
 		return this.test({
 			is: (value) => !enumValues.includes(value),
 			message: message ?? ((messages) => messages.any.enum)
-			// name: 'enumString'
 		}) as unknown as AnySchema<T[keyof T], Final>;
 	}
 }
 
-export const any = <
-	Input = any,
-	Final = any
->(message?: string) => {
-	return new AnySchema<Input, Final>(message);
-};
+export const any = < Input = any, Final = any>(message?: string) => new AnySchema<Input, Final>(message);

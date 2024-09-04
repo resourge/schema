@@ -67,12 +67,15 @@ export abstract class Schema<Input = any, Final = any> {
 
 	protected def: Definitions<Input, Final> = new Definitions<Input, Final>();
 
-	protected abstract clone(): any;
+	protected clone(): any {
+		return new (this.constructor as new(...args: any[]) => any)(this.message, this.def);
+	};
 
-	protected abstract message: string;
+	protected message: string = '';
 	protected abstract rule: RuleBooleanMethod<any, any>;
 
-	constructor(def?: Definitions<Input, Final>) {
+	constructor(message?: string, def?: Definitions<Input, Final>) {
+		this.message = message ?? this.message;
 		if ( def ) {
 			this.def = def.clone();
 		}
@@ -99,7 +102,7 @@ export abstract class Schema<Input = any, Final = any> {
 					? getOnlyTouchRule(rule, {
 						context, 
 						path: this.def.path,
-						onlyOnTouch: Boolean(this.def._isOnlyOnTouch ?? context.onlyOnTouch),
+						onlyOnTouch: Boolean(this.def.isOnlyOnTouch ?? context.onlyOnTouch),
 						ruleMethodName: key.startsWith('_test_') 
 							? `${PARAMETERS.FN_TEST}_${context.index = context.index + 1}` 
 							: key,
@@ -108,7 +111,7 @@ export abstract class Schema<Input = any, Final = any> {
 					: getRule(rule, {
 						context, 
 						path: this.def.path,
-						onlyOnTouch: Boolean(this.def._isOnlyOnTouch ?? context.onlyOnTouch),
+						onlyOnTouch: Boolean(this.def.isOnlyOnTouch ?? context.onlyOnTouch),
 						ruleMethodName: key.startsWith('_test_') 
 							? `${(rule).isAsync ? PARAMETERS.FN_ASYNC_TEST : PARAMETERS.FN_TEST}_${context.index = context.index + 1}` 
 							: key,
@@ -159,7 +162,7 @@ export abstract class Schema<Input = any, Final = any> {
 			{
 				context,
 				path: this.def.path,
-				onlyOnTouch: Boolean(this.def._isOnlyOnTouch ?? context.onlyOnTouch),
+				onlyOnTouch: Boolean(this.def.isOnlyOnTouch ?? context.onlyOnTouch),
 				ruleMethodName: Object.getPrototypeOf(this).constructor.name,
 				valueKey
 			}
@@ -193,7 +196,7 @@ export abstract class Schema<Input = any, Final = any> {
 	protected getMandatoryRules(schema: Schema<any>, context: Context) {
 		const mandatoryRules: Array<(fnSrcCode: string[], valueKey: string) => string[]> = [];
 
-		const isOptional = schema.def._isOptional ?? context.optional;
+		const isOptional = schema.def.isOptional ?? context.optional;
 		if ( isOptional !== undefined ) {
 			if ( isOptional ) {
 				schema.optional();
@@ -216,7 +219,7 @@ export abstract class Schema<Input = any, Final = any> {
 			}
 		}
 
-		const isNullable = schema.def._isNullable ?? context.nullable;
+		const isNullable = schema.def.isNullable ?? context.nullable;
 		if ( isNullable !== undefined ) {
 			if ( isNullable ) {
 				schema.nullable();
@@ -239,9 +242,9 @@ export abstract class Schema<Input = any, Final = any> {
 			}
 		}
 
-		const _isRequired = schema.def._isRequired ?? context.nullable;
-		if ( _isRequired !== undefined ) {
-			if ( _isRequired ) {
+		const isRequired = schema.def.isRequired ?? context.nullable;
+		if ( isRequired !== undefined ) {
+			if ( isRequired ) {
 				schema.required();
 			
 				mandatoryRules.push((fnSrcCode: string[], valueKey: string) => [
@@ -264,7 +267,7 @@ export abstract class Schema<Input = any, Final = any> {
 			}
 		}
 
-		const isOnlyOnTouch = schema.def._isOnlyOnTouch ?? context.onlyOnTouch;
+		const isOnlyOnTouch = schema.def.isOnlyOnTouch ?? context.onlyOnTouch;
 		if ( isOnlyOnTouch !== undefined ) { 
 			if ( isOnlyOnTouch ) {
 				schema.onlyOnTouch();
@@ -496,15 +499,15 @@ export abstract class Schema<Input = any, Final = any> {
 	public onlyOnTouch(onlyOnTouch?: (schema: this) => this): this {
 		const _this = this.clone() as this;
 		if ( onlyOnTouch === undefined ) {
-			_this.def._isOnlyOnTouch = true;
+			_this.def.isOnlyOnTouch = true;
 			return _this;
 		}
 
 		let thenClone = this.clone() as this;
-		thenClone.def._isOnlyOnTouch = undefined;
-		thenClone.def._isOptional = undefined;
-		thenClone.def._isNullable = undefined;
-		thenClone.def._isRequired = undefined;
+		thenClone.def.isOnlyOnTouch = undefined;
+		thenClone.def.isOptional = undefined;
+		thenClone.def.isNullable = undefined;
+		thenClone.def.isRequired = undefined;
 		thenClone.def.whenRules = [];
 		thenClone.def.normalRules = new Map();
 
@@ -538,7 +541,7 @@ export abstract class Schema<Input = any, Final = any> {
 	 */
 	public notOnlyOnTouch(): this {
 		const _this = this.clone();
-		_this.def._isOnlyOnTouch = false;
+		_this.def.isOnlyOnTouch = false;
 
 		return _this;
 	}
@@ -548,9 +551,9 @@ export abstract class Schema<Input = any, Final = any> {
 	 */
 	public required(message?: string): this {
 		const _this = this.clone();
-		_this.def._isOptional = undefined;
-		_this.def._isNullable = undefined;
-		_this.def._isRequired = true;
+		_this.def.isOptional = undefined;
+		_this.def.isNullable = undefined;
+		_this.def.isRequired = true;
 		_this.def.messageRequired = message;
 
 		return _this;
@@ -561,9 +564,9 @@ export abstract class Schema<Input = any, Final = any> {
 	 */
 	public notRequired(): this {
 		const _this = this.clone();
-		_this.def._isOptional = undefined;
-		_this.def._isNullable = undefined;
-		_this.def._isRequired = false;
+		_this.def.isOptional = undefined;
+		_this.def.isNullable = undefined;
+		_this.def.isRequired = false;
 
 		return _this;
 	}
@@ -573,8 +576,8 @@ export abstract class Schema<Input = any, Final = any> {
 	 */
 	public optional(): this {
 		const _this = this.clone();
-		_this.def._isOptional = true;
-		_this.def._isRequired = undefined;
+		_this.def.isOptional = true;
+		_this.def.isRequired = undefined;
 
 		return _this;
 	}
@@ -584,8 +587,8 @@ export abstract class Schema<Input = any, Final = any> {
 	 */
 	public notOptional(message?: string): this {
 		const _this = this.clone();
-		_this.def._isOptional = false;
-		_this.def._isRequired = undefined;
+		_this.def.isOptional = false;
+		_this.def.isRequired = undefined;
 		_this.def.messageOptional = message;
 
 		return _this;
@@ -596,8 +599,8 @@ export abstract class Schema<Input = any, Final = any> {
 	 */
 	public nullable(): this {
 		const _this = this.clone();
-		_this.def._isNullable = true;
-		_this.def._isRequired = undefined;
+		_this.def.isNullable = true;
+		_this.def.isRequired = undefined;
 
 		return _this;
 	}
@@ -607,8 +610,8 @@ export abstract class Schema<Input = any, Final = any> {
 	 */
 	public notNullable(message?: string): this {
 		const _this = this.clone();
-		_this.def._isNullable = false;
-		_this.def._isRequired = undefined;
+		_this.def.isNullable = false;
+		_this.def.isRequired = undefined;
 		_this.def.messageNullable = message;
 
 		return _this;
@@ -620,7 +623,6 @@ export abstract class Schema<Input = any, Final = any> {
 	 */
 	public compile({ 
 		debug, 
-		messages = {},
 		onlyOnTouch = false,
 		defaultNullable,
 		defaultOptional
@@ -630,10 +632,7 @@ export abstract class Schema<Input = any, Final = any> {
 			onlyOnTouch,
 			optional: defaultOptional,
 			nullable: defaultNullable,
-			messages: {
-				...defaultMessages,
-				...messages
-			},
+			messages: defaultMessages,
 			rules: {},
 			onlyOnTouchErrors: {}
 		};

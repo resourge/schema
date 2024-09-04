@@ -1,5 +1,4 @@
 import { ArrayTypedSchema } from '../core/ArrayTypedSchema';
-import { type Definitions } from '../core/Definitions';
 import { type ObjectPropertiesSchema } from '../types/SchemaMap';
 
 export class ArraySchema<
@@ -10,14 +9,8 @@ export class ArraySchema<
 	protected message: string = '{{key}} is not array';
 	protected rule = (value: any[]) => Array.isArray(value);
 
-	protected clone() {
+	protected override clone() {
 		return new ArraySchema<Input, Final, S>(this.schema as unknown as S, this.message, this.def);
-	}
-
-	constructor(schema: S, message?: string, def?: Definitions) {
-		super(schema, def);
-
-		this.message = message ?? this.message;
 	}
 
 	/**
@@ -27,9 +20,9 @@ export class ArraySchema<
 	 */
 	public empty(message?: string) {
 		return this.test({
-			is: (value: any) => !(value.length === 0),
+			is: (value: any) => value.length !== 0,
 			message: message ?? ((messages) => messages.array.empty),
-			name: `empty_${message}`
+			name: `emptyArray_${message}`
 		});
 	}
 
@@ -41,7 +34,7 @@ export class ArraySchema<
 	 */
 	public min(minValue: number, message?: string) {
 		return this.test({
-			is: (value: any) => !(minValue <= value.length),
+			is: (value: any) => minValue > value.length,
 			message: message ?? ((messages) => messages.array.min(minValue)),
 			name: `minArray_${minValue}_${message}`
 		});
@@ -55,7 +48,7 @@ export class ArraySchema<
 	 */
 	public max(maxValue: number, message?: string) {
 		return this.test({
-			is: (value: any) => !(value.length <= maxValue),
+			is: (value: any) => value.length > maxValue,
 			message: message ?? ((messages) => messages.array.max(maxValue)),
 			name: `maxArray_${maxValue}_${message}`
 		});
@@ -69,7 +62,7 @@ export class ArraySchema<
 	 */
 	public length(length: number, message?: string) {
 		return this.test({
-			is: (value: any) => !(value.length === length),
+			is: (value: any) => value.length !== length,
 			message: message ?? ((messages) => messages.array.length(length)),
 			name: `lengthArray_${length}_${message}`
 		});
@@ -85,7 +78,7 @@ export class ArraySchema<
 	 */
 	public unique(message?: string) {
 		return this.test({
-			is: (value: any) => !(value.length === (new Set(value)).size),
+			is: (value: any) => value.length !== (new Set(value)).size,
 			message: message ?? ((messages) => messages.array.unique),
 			name: `uniqueArray_${message}`
 		});
@@ -102,7 +95,7 @@ export class ArraySchema<
 		);
 
 		return this.test({
-			is: (value: any) => !(value.length === (new Set(value.map(mapCb))).size),
+			is: (value: any) => value.length !== (new Set(value.map(mapCb))).size,
 			message: message ?? ((messages) => messages.array.uniqueBy),
 			name: typeof key !== 'function' ? `uniqueByArray_${key.toString()}_${message}` : undefined
 		});
@@ -122,6 +115,4 @@ export const array = <
 >(
 	schemas: S,
 	message?: string
-): ArraySchema<Array<S['input']>, Final, S> => {
-	return new ArraySchema(schemas, message);
-};
+): ArraySchema<Array<S['input']>, Final, S> => new ArraySchema(schemas, message);

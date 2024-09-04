@@ -1,4 +1,3 @@
-import { type Definitions } from '../core/Definitions';
 import { ObjectTypedSchema } from '../core/ObjectTypedSchema';
 import { type OneOf, type OneOfConfigMessage } from '../types/OneOfTypes';
 import { type NullableType, type SchemaMap } from '../types/SchemaMap';
@@ -10,7 +9,7 @@ export class ObjectSchema<
 	protected message: string = '{{key}} is not object';
 	protected rule = (value: any) => typeof value === 'object';
 
-	protected clone() {
+	protected override clone() {
 		const schema = new ObjectSchema<Input, Final>(
 			this.schemas, 
 			this.message, 
@@ -20,12 +19,6 @@ export class ObjectSchema<
 		schema.oneOfRules = new Map(this.oneOfRules.entries());
 
 		return schema;
-	}
-
-	constructor(schemas: SchemaMap<Input>, message?: string, def?: Definitions) {
-		super(schemas, def);
-
-		this.message = message ?? this.message;
 	}
 
 	/**
@@ -71,7 +64,7 @@ export class ObjectSchema<
 	): this {
 		const _this = this.clone();
 
-		_this.oneOfConfigMessage = !Array.isArray(oneOfKey) ? (schema as OneOfConfigMessage) : oneOfConfigMessage;
+		_this.oneOfConfigMessage = Array.isArray(oneOfKey) ? oneOfConfigMessage : (schema as OneOfConfigMessage);
 
 		((
 			Array.isArray(oneOfKey) 
@@ -91,6 +84,4 @@ export const object = <
 >(
 	schemas: SchemaMap<Input> = {},
 	message?: string
-) => {
-	return new ObjectSchema<Input>(schemas, message);
-};
+) => new ObjectSchema<Input>(schemas, message);

@@ -1,4 +1,3 @@
-import { type Definitions } from '../core/Definitions';
 import { Schema } from '../core/schema';
 import { type RuleTestConfig } from '../rules/BaseRule';
 import { type DateFormat } from '../types/DateFormat';
@@ -36,16 +35,6 @@ export class DateSchema<
 > extends Schema<Input, Final> {
 	protected message: string = '{{key}} is not date';
 	protected rule = isDate;
-
-	protected clone() {
-		return new DateSchema<Input, Final>(this.message, this.def);
-	}
-
-	constructor(message?: string, def?: Definitions) {
-		super(def);
-
-		this.message = message ?? this.message;
-	}
 
 	/**
 	 * Checks if is today

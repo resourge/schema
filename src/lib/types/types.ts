@@ -53,10 +53,6 @@ export type CompileConfig = {
 	 */
 	defaultOptional?: boolean
 	/**
-	 * Object containing messages.
-	 */
-	messages?: Partial<MessageType>
-	/**
 	 * Makes onlyOnTouch default in the schemas.
 	 */
 	onlyOnTouch?: boolean

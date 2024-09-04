@@ -153,6 +153,7 @@ export function getRule<Value, T = any>(
 	.flat();
 }
 
+// #region OnlyOnTouchRule
 export type OnlyOnTouchRuleConfig = {
 	then: Schema<any, any>
 	type: 'OnlyOnTouchRule'
@@ -166,7 +167,7 @@ export function getOnlyTouchRule(
 	}: RuleSrcCodeConfig
 ): string[] {
 	// @ts-expect-error // Because the camp that is changing is protected
-	config.then.def._isOnlyOnTouch = true;
+	config.then.def.isOnlyOnTouch = true;
 	
 	return (config.then as PrivateSchema).compileSchema({
 		context,
@@ -174,3 +175,4 @@ export function getOnlyTouchRule(
 		path
 	});
 }
+// #endregion OnlyOnTouchRule

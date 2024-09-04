@@ -1,4 +1,3 @@
-import { type Definitions } from '../core/Definitions';
 import { Schema } from '../core/schema';
 import { type NullableType } from '../types/SchemaMap';
 
@@ -8,16 +7,6 @@ export class BooleanSchema<
 > extends Schema<Input, Final> {
 	protected message: string = '{{key}} is not boolean';
 	protected rule = (value: Input) => typeof value === 'boolean';
-	
-	protected clone() {
-		return new BooleanSchema<Input, Final>(this.message, this.def);
-	}
-
-	constructor(message?: string, def?: Definitions) {
-		super(def);
-
-		this.message = message ?? this.message;
-	}
 
 	/**
 	 * Checks if is true or false
@@ -38,6 +27,4 @@ export class BooleanSchema<
 export const boolean = <
 	Input extends boolean = boolean,
 	Final = any
->(message?: string) => {
-	return new BooleanSchema<Input, Final>(message);
-};
+>(message?: string) => new BooleanSchema<Input, Final>(message);

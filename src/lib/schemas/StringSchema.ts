@@ -1,5 +1,4 @@
 /* eslint-disable no-useless-escape */
-import type { Definitions } from '../core/Definitions';
 import { Schema } from '../core/schema';
 import type { PhoneNumberInfo } from '../phoneNumbers';
 import type { PostalCodeInfo } from '../postalCodes';
@@ -21,21 +20,11 @@ export class StringSchema<
 	Input extends NullableType<string> = string,
 	Final = any
 > extends Schema<Input, Final> {
-	protected override message: string = '{{key}} is not string';
+	protected message: string = '{{key}} is not string';
 	protected rule = (value: string) => typeof value === 'string';
 
-	protected clone() {
-		return new StringSchema<Input, Final>(this.message, this.def);
-	}
-
-	constructor(message?: string, def?: Definitions) {
-		super(def);
-
-		this.message = message ?? this.message;
-	}
-
-	protected override getRequiredStringCondition = (valueKey: string) => `if ( ${valueKey} === null || ${valueKey} === undefined || ${valueKey} === '' ){`;
-	protected override getNotRequiredStringCondition = (valueKey: string) => `if ( ${valueKey} !== null && ${valueKey} !== undefined && ${valueKey} !== '' ){`;
+	protected getRequiredStringCondition = (valueKey: string) => `if ( ${valueKey} === null || ${valueKey} === undefined || ${valueKey} === '' ){`;
+	protected getNotRequiredStringCondition = (valueKey: string) => `if ( ${valueKey} !== null && ${valueKey} !== undefined && ${valueKey} !== '' ){`;
 
 	/**
 	 * Checks if has a size bigger than minValue
@@ -59,7 +48,7 @@ export class StringSchema<
 	 */
 	public max(maxValue: number, message?: string) {
 		return this.test({
-			is: (value) => !(value.length <= maxValue),
+			is: (value) => value.length > maxValue,
 			message: message ?? ((messages) => messages.string.max(maxValue)),
 			name: `maxLength_${maxValue}_${message}`
 		});
@@ -74,9 +63,9 @@ export class StringSchema<
 	 */
 	public between(minValue: number, maxValue: number, message?: string) {
 		return this.test({
-			is: (value) => !((value ).length >= minValue && (value ).length <= maxValue),
+			is: (value) => value.length < minValue || value.length > maxValue,
 			message: message ?? ((messages) => messages.number.between(minValue, maxValue)),
-			name: `betweenNumber_${minValue}_${maxValue}_${message}`
+			name: `betweenString_${minValue}_${maxValue}_${message}`
 		});
 	}
 
@@ -88,7 +77,7 @@ export class StringSchema<
 	 */
 	public length(length: number, message?: string) {
 		return this.test({
-			is: (value) => !(value.length === length),
+			is: (value) => value.length !== length,
 			message: message ?? ((messages) => messages.string.length(length)),
 			name: `length_${length}_${message}`
 		});
@@ -101,7 +90,7 @@ export class StringSchema<
 	 * {{key}} will be replace with current key
 	 */
 	public equals(value: string | string[], message?: string) {
-		let is = (val: string) => !(val === value);
+		let is = (val: string) => val !== value;
 		if ( Array.isArray(value) ) {
 			is = (val: string) => !value.includes(val);
 		}
@@ -134,7 +123,7 @@ export class StringSchema<
 	 */
 	public empty(message?: string) {
 		return this.test({
-			is: (value) => !(value.length === 0),
+			is: (value) => value.length !== 0,
 			message: message ?? ((messages) => messages.string.empty),
 			name: `empty_${message}`
 		});
@@ -161,7 +150,7 @@ export class StringSchema<
 	 */
 	public numeric(message?: string) {
 		return this.test({
-			is: (value) => !(!value || NUMERIC_PATTERN.test(value)),
+			is: (value) => value && !NUMERIC_PATTERN.test(value),
 			message: message ?? ((messages) => messages.string.numeric),
 			name: `numeric_${message}`
 		});
@@ -213,7 +202,7 @@ export class StringSchema<
 	 */
 	public hex(message?: string) {
 		return this.test({
-			is: (value) => !(value.length % 2 === 0 && HEX_PATTERN.test(value)),
+			is: (value) => value.length % 2 !== 0 || !HEX_PATTERN.test(value),
 			message: message ?? ((messages) => messages.string.hex),
 			name: `hex_${message}`
 		});
@@ -366,7 +355,6 @@ export class StringSchema<
 		return this.test({
 			is: (value) => !enumValues.includes(value),
 			message: message ?? ((messages) => messages.string.enum)
-			// name: 'enumString'
 		}) as unknown as StringSchema<T[keyof T], Final>;
 	}
 }
@@ -374,6 +362,4 @@ export class StringSchema<
 export const string = <
 	Input extends string = string,
 	Final = any
->(message?: string) => {
-	return new StringSchema<Input, Final>(message); ;
-};
+>(message?: string) => new StringSchema<Input, Final>(message);

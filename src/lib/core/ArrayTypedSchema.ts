@@ -11,8 +11,8 @@ export abstract class ArrayTypedSchema<
 > extends Schema<Input, Final> {
 	protected schema: PrivateSchema;
 
-	constructor(schema: S, def?: Definitions) {
-		super(def);
+	constructor(schema: S, message?: string, def?: Definitions) {
+		super(message, def);
 		this.schema = schema as unknown as PrivateSchema;
 	}
 
@@ -21,21 +21,17 @@ export abstract class ArrayTypedSchema<
 		key, 
 		path
 	}: CompileSchemaConfig) {
-		const iKey = `i${context.index = context.index + 1}`;
-
 		return super.compileSchema({
 			context, 
 			key, 
 			srcCode: [
 				`const l = ${this.getValueKey(key)}.length;`,
-				`for (var ${iKey} = 0; ${iKey} < l; ${iKey}++) {`,
-				...(
-					this.schema.compileSchema({
-						context, 
-						key: `${key ?? ''}[${iKey}]`, 
-						path: `${path ?? ''}[\${${iKey}}]`
-					})
-				),
+				'for (let i = 0; i < l; i++) {',
+				...this.schema.compileSchema({
+					context, 
+					key: `${key ?? ''}[i]`, 
+					path: `${path ?? ''}[\${i}]`
+				}),
 				'}'
 			], 
 			path

@@ -321,19 +321,19 @@ describe('number', () => {
 		.max(10);
 
 		// @ts-expect-error // To check private values
-		expect(schema.def._isNullable)
+		expect(schema.def.isNullable)
 		.toBe(true);
 
 		// @ts-expect-error // To check private values
-		expect(schema.def._isOptional)
+		expect(schema.def.isOptional)
 		.toBeUndefined();
 
 		// @ts-expect-error // To check private values
-		expect(schema1.def._isNullable)
+		expect(schema1.def.isNullable)
 		.toBe(true);
 
 		// @ts-expect-error // To check private values
-		expect(schema1.def._isOptional)
+		expect(schema1.def.isOptional)
 		.toBe(true);
 
 		// @ts-expect-error // To check protected values

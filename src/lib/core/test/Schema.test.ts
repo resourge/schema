@@ -85,36 +85,36 @@ describe('Schema', () => {
 		.compile();
 	
 		// @ts-expect-error // To check private values
-		expect(schema.def._isNullable)
+		expect(schema.def.isNullable)
 		.toBeFalsy();
 		// @ts-expect-error // To check private values
-		expect(schema.def._isOnlyOnTouch)
+		expect(schema.def.isOnlyOnTouch)
 		.toBeFalsy();
 		// @ts-expect-error // To check private values
-		expect(schema.def._isOptional)
+		expect(schema.def.isOptional)
 		.toBeFalsy();
 		// @ts-expect-error // To check private values
-		expect(schema.def._isRequired)
+		expect(schema.def.isRequired)
 		.toBeFalsy();
 
 		const newSchema = schema.nullable();
 		// @ts-expect-error // To check private values
-		expect(newSchema.def._isNullable)
+		expect(newSchema.def.isNullable)
 		.toBeTruthy();
 
 		const newSchema1 = schema.onlyOnTouch();
 		// @ts-expect-error // To check private values
-		expect(newSchema1.def._isOnlyOnTouch)
+		expect(newSchema1.def.isOnlyOnTouch)
 		.toBeTruthy();
 
 		const newSchema2 = schema.optional();
 		// @ts-expect-error // To check private values
-		expect(newSchema2.def._isOptional)
+		expect(newSchema2.def.isOptional)
 		.toBeTruthy();
 
 		const newSchema3 = schema.required();
 		// @ts-expect-error // To check private values
-		expect(newSchema3.def._isRequired)
+		expect(newSchema3.def.isRequired)
 		.toBeTruthy();
 
 		schema.test({

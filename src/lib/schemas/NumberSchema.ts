@@ -1,4 +1,3 @@
-import { type Definitions } from '../core/Definitions';
 import { Schema } from '../core/schema';
 import { type NullableType } from '../types/SchemaMap';
 
@@ -9,16 +8,6 @@ export class NumberSchema<
 	protected message: string = '{{key}} is not number';
 	protected rule = (value: number) => typeof value === 'number';
 
-	protected clone() {
-		return new NumberSchema(this.message, this.def);
-	}
-
-	constructor(message?: string, def?: Definitions) {
-		super(def);
-
-		this.message = message ?? this.message;
-	}
-	
 	/**
 	 * Checks if is bigger than minValue.
 	 * @param minValue min number value
@@ -41,7 +30,7 @@ export class NumberSchema<
 	 */
 	public max(maxValue: number, message?: string) {
 		return this.test({
-			is: (value) => !(value <= maxValue),
+			is: (value) => value > maxValue,
 			message: message ?? ((messages) => messages.number.max(maxValue)),
 			name: `maxNumber_${maxValue}_${message}`
 		});
@@ -56,7 +45,7 @@ export class NumberSchema<
 	 */
 	public between(minValue: number, maxValue: number, message?: string) {
 		return this.test({
-			is: (value) => !(value >= minValue && value <= maxValue),
+			is: (value) => value < minValue || value > maxValue,
 			message: message ?? ((messages) => messages.number.between(minValue, maxValue)),
 			name: `betweenNumber_${minValue}_${maxValue}_${message}`
 		});
@@ -69,7 +58,7 @@ export class NumberSchema<
 	 * {{key}} will be replace with current key
 	 */
 	public equals(value: number | number[], message?: string) {
-		let is = (val: number) => !(val === value);
+		let is = (val: number) => val !== value;
 		if ( Array.isArray(value) ) {
 			is = (val: number) => !value.includes(val);
 		}
@@ -88,7 +77,7 @@ export class NumberSchema<
 	 */
 	public integer(message?: string) {
 		return this.test({
-			is: (val) => !(val % 1 === 0),
+			is: (val) => val % 1 !== 0,
 			message: message ?? ((messages) => messages.number.integer),
 			name: `integer_${message}`
 		});
@@ -101,7 +90,7 @@ export class NumberSchema<
 	 */
 	public decimal(decimal: number, message?: string) {
 		return this.test({
-			is: (val) => !(val.toFixed(decimal) === val.toString()),
+			is: (val) => val.toFixed(decimal) !== val.toString(),
 			message: message ?? ((messages) => messages.number.decimal(decimal)),
 			name: `decimal_${decimal}_${message}`
 		});
@@ -114,7 +103,7 @@ export class NumberSchema<
 	 */
 	public positive(message?: string) {
 		return this.test({
-			is: (val) => !(val >= 0),
+			is: (val) => val < 0,
 			message: message ?? ((messages) => messages.number.positive),
 			name: `positive_${message}`
 		});
@@ -127,7 +116,7 @@ export class NumberSchema<
 	 */
 	public negative(message?: string) {
 		return this.test({
-			is: (val) => !(val < 0),
+			is: (val) => val >= 0,
 			message: message ?? ((messages) => messages.number.negative),
 			name: `negative_${message}`
 		});
@@ -154,6 +143,4 @@ export class NumberSchema<
 export const number = <
 	Input extends number = number,
 	Final = any
->(message?: string) => {
-	return new NumberSchema<Input, Final>(message);
-};
+>(message?: string) => new NumberSchema<Input, Final>(message);

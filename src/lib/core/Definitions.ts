@@ -7,15 +7,15 @@ import { type SchemaError } from '../types/types';
 export type OnlyOnTouch<Input> = Array<Input extends any[] | Record<string, any> ? FormKey<Input> : string>;
 
 export class Definitions<Input = any, Final = any> {
-	public _isOnlyOnTouch?: boolean;
+	public isOnlyOnTouch?: boolean;
 
-	public _isOptional?: boolean;
+	public isOptional?: boolean;
 	public messageOptional?: string;
 
-	public _isNullable?: boolean;
+	public isNullable?: boolean;
 	public messageNullable?: string;
 
-	public _isRequired?: boolean;
+	public isRequired?: boolean;
 	public messageRequired?: string;
 
 	/**
@@ -30,12 +30,12 @@ export class Definitions<Input = any, Final = any> {
 	public clone(): Definitions<Input, Final> {
 		const newDefinitions = new Definitions();
 
-		newDefinitions._isOnlyOnTouch = this._isOnlyOnTouch;
-		newDefinitions._isOptional = this._isOptional;
+		newDefinitions.isOnlyOnTouch = this.isOnlyOnTouch;
+		newDefinitions.isOptional = this.isOptional;
 		newDefinitions.messageOptional = this.messageOptional;
-		newDefinitions._isNullable = this._isNullable;
+		newDefinitions.isNullable = this.isNullable;
 		newDefinitions.messageNullable = this.messageNullable;
-		newDefinitions._isRequired = this._isRequired;
+		newDefinitions.isRequired = this.isRequired;
 		newDefinitions.messageRequired = this.messageRequired;
 		newDefinitions.path = this.path;
 		newDefinitions.normalRules = new Map(this.normalRules);

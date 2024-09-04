@@ -16,8 +16,8 @@ export abstract class ObjectTypedSchema<
 	protected oneOfRules = new Map<string, PrivateSchema>();
 	protected oneOfConfigMessage: OneOfConfigMessage | undefined;
 
-	constructor(schemas: SchemaMap<Input>, def?: Definitions) {
-		super(def);
+	constructor(schemas: SchemaMap<Input>, message?: string, def?: Definitions) {
+		super(message, def);
 
 		this.schemas = {
 			...schemas 

@@ -288,13 +288,6 @@ export function ConstructJsonSchema(schemaValue: JsonSchemaType): AnyJsonSchema 
 				schemaValue.validation
 			);
 			break;
-		/* default:
-			TODO schema = ConstructJsonSchema({
-				type: Array.isArray(schemaValue.properties) ? 'array' : 'object',
-				properties: schemaValue.properties,
-				validation: schemaValue.validation
-			});
-			break; */
 	}
 
 	if ( schemaValue.validation ) {

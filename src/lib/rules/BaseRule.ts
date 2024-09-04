@@ -88,7 +88,6 @@ export abstract class BaseRule<Value, T = any, Method extends (...args: any[]) =
 
 	public addRule(
 		name: string,
-		method: (...args: any[]) => any,
 		context: Context
 	) {
 		const ruleFnName = `${name}`
@@ -98,9 +97,22 @@ export abstract class BaseRule<Value, T = any, Method extends (...args: any[]) =
 		.normalize('NFC')
 		.toLowerCase();
 	
-		context.rules[ruleFnName] = method;
+		context.rules[ruleFnName] = this.method;
 	
 		return ruleFnName;
+	}
+
+	public getParameters(
+		valueKey: string,
+		path: string
+	) {
+		const lastIndex = valueKey.lastIndexOf('.');
+
+		return [
+			valueKey, 
+			lastIndex > -1 ? valueKey.substring(0, lastIndex) : valueKey,
+			`${PARAMETERS.FN_CONTEXT}(${path ? `\`${path}\`` : '\'\''})`
+		];
 	}
 
 	public getRuleSrcCode({
@@ -112,34 +124,18 @@ export abstract class BaseRule<Value, T = any, Method extends (...args: any[]) =
 	}: RuleSrcCodeConfig) {
 		const methodName = this.addRule(
 			ruleMethodName,
-			this.method,
 			context
 		);
 
-		const lastIndex = valueKey.lastIndexOf('.');
-
-		const parentKey = lastIndex > -1 ? valueKey.substring(0, lastIndex) : valueKey;
-		
-		const parameters: string[] = [
-			valueKey, 
-			parentKey,
-			`${PARAMETERS.FN_CONTEXT}(${path ? `\`${path}\`` : '\'\''})`
-		];
-
-		// eslint-disable-next-line @typescript-eslint/no-this-alias
-		const ruleThis = this;
-
 		return {
 			methodName,
-			parameters,
-			get srcCode(): string[] {
-				return ruleThis.getErrorMessage(
-					methodName,
-					path,
-					onlyOnTouch,
-					context
-				);
-			}
+			parameters: this.getParameters(valueKey, path),
+			srcCode: this.getErrorMessage(
+				methodName,
+				path,
+				onlyOnTouch,
+				context
+			)
 		};
 	}
 

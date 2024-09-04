@@ -55,13 +55,15 @@ export class WhenRule<Value = any, T = any> extends BaseRule<Value, T, RuleBoole
 			srcCode
 		}: CompileSchemaConfig
 	): string[] {
-		const { methodName, parameters } = this.getRuleSrcCode({
-			context,
-			path: path ?? '',
-			onlyOnTouch: false,
+		const methodName = this.addRule(
+			`${this.name}_${context.index = context.index + 1}`,
+			context
+		);
+
+		const parameters = this.getParameters(
 			valueKey,
-			ruleMethodName: `${this.name}_${context.index = context.index + 1}`
-		});
+			path ?? ''
+		);
 
 		const thenSrcCode = this.then.compileSchema({
 			context,

@@ -90,10 +90,9 @@ export class StringSchema<
 	 * {{key}} will be replace with current key
 	 */
 	public equals(value: string | string[], message?: string) {
-		let is = (val: string) => val !== value;
-		if ( Array.isArray(value) ) {
-			is = (val: string) => !value.includes(val);
-		}
+		const is = Array.isArray(value)
+			? (val: string) => !value.includes(val)
+			: (val: string) => val !== value;
 		
 		return this.test({
 			is: is as any,

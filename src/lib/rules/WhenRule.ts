@@ -35,7 +35,7 @@ export function getWhenRule<Value = any, T = any, Type extends string = 'WhenRul
 	}: CompileSchemaConfig
 ): string[] {
 	const methodName = addRuleToContextRules(
-		`${config.name}_${context.index = context.index + 1}`,
+		`${config.name}_${context.index++}`,
 		config.method,
 		context
 	);

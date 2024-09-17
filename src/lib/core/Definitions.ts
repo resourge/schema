@@ -28,16 +28,8 @@ export class Definitions<Input = any, Final = any> {
 	public _validate: ((value: any, onlyOnTouch?: OnlyOnTouch<Input>) => Promise<SchemaError[]> | SchemaError[]) | undefined;
 
 	public clone(): Definitions<Input, Final> {
-		const newDefinitions = new Definitions();
+		const newDefinitions = Object.assign<Definitions, this>(Object.create(Object.getPrototypeOf(this)), this);
 
-		newDefinitions.isOnlyOnTouch = this.isOnlyOnTouch;
-		newDefinitions.isOptional = this.isOptional;
-		newDefinitions.messageOptional = this.messageOptional;
-		newDefinitions.isNullable = this.isNullable;
-		newDefinitions.messageNullable = this.messageNullable;
-		newDefinitions.isRequired = this.isRequired;
-		newDefinitions.messageRequired = this.messageRequired;
-		newDefinitions.path = this.path;
 		newDefinitions.normalRules = new Map(this.normalRules);
 		newDefinitions.whenRules = [...this.whenRules];
 

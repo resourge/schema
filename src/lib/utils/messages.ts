@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import deepmerge from '@fastify/deepmerge';
 
 import { type PhoneNumberInfo } from '../phoneNumbers';
@@ -44,7 +45,7 @@ export let defaultMessages = {
 		max: (maxValue: number) => `Requires to have maximum size of ${maxValue}`,
 		length: (equalsValue: number) => `Requires string to have size ${equalsValue}`,
 		equals: (equalsValue: string | string[]) => `Needs to be the same as ${Array.isArray(equalsValue) ? equalsValue.join(' or ') : equalsValue}`,
-		pattern: (_reg: RegExp) => 'Invalid format',
+		pattern: (reg: RegExp) => 'Invalid format',
 		empty: 'Requires string to be empty',
 		contains: (value: string) => `Requires ${value}`,
 		numeric: getInvalidFormatMessage('number'),

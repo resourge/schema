@@ -64,13 +64,7 @@ export abstract class Schema<Input = any, Final = any> {
 	public input!: Input;
 	public final!: Final;
 	protected async: boolean = false;
-
 	protected def: Definitions<Input, Final> = new Definitions<Input, Final>();
-
-	protected clone(): any {
-		return new (this.constructor as new(...args: any[]) => any)(this.message, this.def);
-	};
-
 	protected message: string = '';
 	protected abstract rule: RuleBooleanMethod<any, any>;
 
@@ -80,6 +74,10 @@ export abstract class Schema<Input = any, Final = any> {
 			this.def = def.clone();
 		}
 	}
+
+	protected clone(): any {
+		return new (this.constructor as new(...args: any[]) => any)(this.message, this.def);
+	};
 
 	protected getValueKey(key?: string) {
 		return `${PARAMETERS.VALUE}${key ? `${key.indexOf('[') === 0 ? '' : '.'}${key}` : ''}`;
@@ -97,25 +95,24 @@ export abstract class Schema<Input = any, Final = any> {
 		const srcCode: string[][] = [];
 		this.def.normalRules
 		.forEach((rule, key) => {
+			const isAsync = (rule as RuleConfig<Input, Final>).isAsync ? PARAMETERS.FN_ASYNC_TEST : PARAMETERS.FN_TEST;
+			const ruleMethodName = key.startsWith('_test_') ? `${isAsync}_${context.index++}` : key;
+
 			srcCode.push(
 				rule.type === 'OnlyOnTouchRule'
 					? getOnlyTouchRule(rule, {
-						context, 
+						context,
 						path: this.def.path,
 						onlyOnTouch: Boolean(this.def.isOnlyOnTouch ?? context.onlyOnTouch),
-						ruleMethodName: key.startsWith('_test_') 
-							? `${PARAMETERS.FN_TEST}_${context.index = context.index + 1}` 
-							: key,
-						valueKey
+						ruleMethodName,
+						valueKey 
 					})
 					: getRule(rule, {
-						context, 
+						context,
 						path: this.def.path,
 						onlyOnTouch: Boolean(this.def.isOnlyOnTouch ?? context.onlyOnTouch),
-						ruleMethodName: key.startsWith('_test_') 
-							? `${(rule).isAsync ? PARAMETERS.FN_ASYNC_TEST : PARAMETERS.FN_TEST}_${context.index = context.index + 1}` 
-							: key,
-						valueKey
+						ruleMethodName,
+						valueKey 
 					})
 			);
 		});
@@ -143,22 +140,18 @@ export abstract class Schema<Input = any, Final = any> {
 			srcCode = []
 		}: CompileSchemaConfig
 	) {
-		const config: RuleConfig = {
-			isAsync: false,
-			isMethodError: false,
-			method: this.rule,
-			message: this.message,
-			type: 'Rule'
-		};
-		
-		// Order is important for mandatoryRules
-		const mandatoryRules = this.getMandatoryRules(this, context);
 		const {
 			methodName,
 			parameters,
 			srcCode: errorsSyntax
 		} = getRuleSrcCode(
-			config, 
+			{
+				isAsync: false,
+				isMethodError: false,
+				method: this.rule,
+				message: this.message,
+				type: 'Rule'
+			}, 
 			{
 				context,
 				path: this.def.path,
@@ -169,7 +162,6 @@ export abstract class Schema<Input = any, Final = any> {
 		);
 
 		const rulesSrcCode = this.compileNormalRules(context, valueKey);
-
 		const fn = `${PARAMETERS.CONTEXT_KEY}.rules.${methodName}(${parameters.join(',')})`;
 
 		const fnSrcCode = rulesSrcCode.length > 0 || srcCode.length > 0 ? [
@@ -186,7 +178,7 @@ export abstract class Schema<Input = any, Final = any> {
 			'}'
 		];
 
-		return mandatoryRules
+		return this.getMandatoryRules(this, context)
 		.reduce((code, rule) => rule(code, valueKey), fnSrcCode);
 	}
 
@@ -194,21 +186,21 @@ export abstract class Schema<Input = any, Final = any> {
 	protected getNotRequiredStringCondition = (valueKey: string) => `if ( ${valueKey} !== null && ${valueKey} !== undefined ){`;
 
 	protected getMandatoryRules(schema: Schema<any>, context: Context) {
-		const mandatoryRules: Array<(fnSrcCode: string[], valueKey: string) => string[]> = [];
+		const rules: Array<(fnSrcCode: string[], valueKey: string) => string[]> = [];
+		const {
+			isOptional, isNullable, isRequired, isOnlyOnTouch 
+		} = schema.def;
 
-		const isOptional = schema.def.isOptional ?? context.optional;
 		if ( isOptional !== undefined ) {
 			if ( isOptional ) {
-				schema.optional();
-				mandatoryRules.push((fnSrcCode: string[], valueKey: string) => [
+				rules.push((fnSrcCode: string[], valueKey: string) => [
 					`if ( ${valueKey} !== undefined ){`,
 					...fnSrcCode,
 					'}'
 				]);
 			}
 			else {
-				schema.notOptional();
-				mandatoryRules.push((fnSrcCode: string[], valueKey: string) => [
+				rules.push((fnSrcCode: string[], valueKey: string) => [
 					`if ( ${valueKey} === undefined ){`,
 					schema.getErrorSyntax(this.def.messageOptional ?? context.messages.notOptional),
 					'}',
@@ -219,19 +211,16 @@ export abstract class Schema<Input = any, Final = any> {
 			}
 		}
 
-		const isNullable = schema.def.isNullable ?? context.nullable;
 		if ( isNullable !== undefined ) {
 			if ( isNullable ) {
-				schema.nullable();
-				mandatoryRules.push((fnSrcCode: string[], valueKey: string) => [
+				rules.push((fnSrcCode: string[], valueKey: string) => [
 					`if ( ${valueKey} !== null ){`,
 					...fnSrcCode,
 					'}'
 				]);
 			}
 			else {
-				schema.notNullable();
-				mandatoryRules.push((fnSrcCode: string[], valueKey: string) => [
+				rules.push((fnSrcCode: string[], valueKey: string) => [
 					`if ( ${valueKey} === null ){`,
 					schema.getErrorSyntax(this.def.messageNullable ?? context.messages.notNullable),
 					'}',
@@ -242,12 +231,9 @@ export abstract class Schema<Input = any, Final = any> {
 			}
 		}
 
-		const isRequired = schema.def.isRequired ?? context.nullable;
 		if ( isRequired !== undefined ) {
 			if ( isRequired ) {
-				schema.required();
-			
-				mandatoryRules.push((fnSrcCode: string[], valueKey: string) => [
+				rules.push((fnSrcCode: string[], valueKey: string) => [
 					this.getRequiredStringCondition(valueKey),
 					schema.getErrorSyntax(this.def.messageRequired ?? context.messages.required),
 					'}',
@@ -257,9 +243,7 @@ export abstract class Schema<Input = any, Final = any> {
 				]);
 			}
 			else {
-				schema.notRequired();
-
-				mandatoryRules.push((fnSrcCode: string[], valueKey: string) => [
+				rules.push((fnSrcCode: string[], valueKey: string) => [
 					this.getNotRequiredStringCondition(valueKey),
 					...fnSrcCode,
 					'}'
@@ -267,85 +251,52 @@ export abstract class Schema<Input = any, Final = any> {
 			}
 		}
 
-		const isOnlyOnTouch = schema.def.isOnlyOnTouch ?? context.onlyOnTouch;
-		if ( isOnlyOnTouch !== undefined ) { 
-			if ( isOnlyOnTouch ) {
-				schema.onlyOnTouch();
-				mandatoryRules.push((fnSrcCode: string[]) => getOnlyOnTouchSrcCode(
-					schema.def.path,
-					fnSrcCode
-				));
-			}
-			else {
-				schema.notOnlyOnTouch();
-			}
+		if ( isOnlyOnTouch ) { 
+			rules.push((fnSrcCode: string[]) => getOnlyOnTouchSrcCode(
+				schema.def.path,
+				fnSrcCode
+			));
 		}
 
-		return mandatoryRules;
+		return rules;
 	}
 
-	protected compileSchema({
-		context, 
-		key, 
-		srcCode = [],
-		path
-	}: CompileSchemaConfig) {
-		this.def.path = path ?? key ?? '';
+	protected compileSchema(config: CompileSchemaConfig) {
+		this.def.path = config.path ?? config.key ?? '';
 
-		if ( this.def.whenRules && this.def.whenRules.length ) {
-			return this.compileWhenSchema({
-				context, 
-				key, 
-				srcCode,
-				path
-			});
-		}
-
-		return this.compileNormalSchema(
-			this.getValueKey(key), 
-			{
-				context, 
-				key, 
-				srcCode,
-				path
-			}
-		);
+		return this.def.whenRules.length
+			? this.compileWhenSchema(config)
+			: this.compileNormalSchema(this.getValueKey(config.key), config);
 	}
 
 	private addTest<Form = this['final']>(
 		isAsync: boolean,
 		method: TestMethodConfig<RuleBooleanMethod<Input, Form>> | 
-		OldTestMethodConfig<RuleBooleanMethod<Input, Form>> | 
-		RuleMethodSchemaError<Input, Form> | 
-		AsyncRuleMethodSchemaError<Input, Form> | 
-		TestMethodConfig<AsyncRuleBooleanMethod<Input, Form>> | 
-		OldTestMethodConfig<AsyncRuleBooleanMethod<Input, Form>>
+			OldTestMethodConfig<RuleBooleanMethod<Input, Form>> | 
+			RuleMethodSchemaError<Input, Form> | 
+			AsyncRuleMethodSchemaError<Input, Form> | 
+			TestMethodConfig<AsyncRuleBooleanMethod<Input, Form>> | 
+			OldTestMethodConfig<AsyncRuleBooleanMethod<Input, Form>>
 	) {
 		const _this = this.clone();
 
-		if ( typeof method === 'object' ) {
-			_this.def.normalRules.set(
-				method.name ?? `_test_${this.def.normalRules.size}`,
-				{
+		_this.def.normalRules.set(
+			typeof method === 'object' 
+				? method.name ?? `_test_${this.def.normalRules.size}`
+				: `_test_${this.def.normalRules.size}`,
+			typeof method === 'object' 
+				? {
 					isAsync,
 					isMethodError: false,
 					method: (method as TestMethodConfig<RuleBooleanMethod<Input, Form>>).is ?? ((...args) => !(method as OldTestMethodConfig<RuleBooleanMethod<Input, Form>>).test(...args)),
 					message: method.message,
 					type: 'Rule'
+				} : {
+					isAsync,
+					isMethodError: true,
+					method,
+					type: 'Rule'
 				}
-			);
-
-			return _this;
-		}
-
-		_this.def.normalRules.set(
-			`_test_${this.def.normalRules.size}`,
-			{
-				isAsync,
-				isMethodError: true,
-				method,
-				type: 'Rule'
-			}
 		);
 
 		return _this;
@@ -365,8 +316,8 @@ export abstract class Schema<Input = any, Final = any> {
 	): ObjectPropertiesSchema<Input, Form>;
 	public test<Form = this['final']>(
 		method: TestMethodConfig<RuleBooleanMethod<Input, Form>> | 
-		OldTestMethodConfig<RuleBooleanMethod<Input, Form>> | 
-		RuleMethodSchemaError<Input, Form>
+			OldTestMethodConfig<RuleBooleanMethod<Input, Form>> | 
+			RuleMethodSchemaError<Input, Form>
 	): ObjectPropertiesSchema<Input, Form> {
 		return this.addTest(false, method);
 	}
@@ -393,30 +344,20 @@ export abstract class Schema<Input = any, Final = any> {
 		then: (schema: S) => S,
 		otherwise?: ((schema: S) => S)
 	) {
-		const _this = this.clone();
-
 		const thenThis = this.clone();
 
 		thenThis.def.whenRules = [];
-		thenThis.def.normalRules = new Map(this.def.normalRules);
 
-		const thenSchema = then(thenThis);
-
-		const otherwiseThis = this.clone();
+		let otherwiseThis = this.clone();
 		otherwiseThis.def.whenRules = [];
-		otherwiseThis.def.normalRules = new Map(this.def.normalRules);
-		let otherwiseSchema: S | undefined = otherwiseThis;
-
-		_this.def.normalRules = new Map();
 		
 		if ( otherwise ) {
-			otherwiseSchema = otherwise(otherwiseThis);
+			otherwiseThis = otherwise(otherwiseThis);
 		}
 
 		return {
-			_this,
-			thenSchema,
-			otherwiseSchema
+			thenSchema: then(thenThis),
+			otherwiseSchema: otherwiseThis
 		};
 	} 
 
@@ -447,45 +388,36 @@ export abstract class Schema<Input = any, Final = any> {
 		name: WhenConfig<S, Value, Form> | string,
 		config?: WhenConfig<S, Value, Form>
 	): this {
-		if ( typeof name === 'string' ) {
-			const {
-				_this,
-				thenSchema,
-				otherwiseSchema
-			} = this._when<S>(
-				(config!).then,
-				(config!).otherwise
-			);
-
-			_this.def.whenRules.push({
-				namedValueKey: name,
-				name: 'custom_when',
-				method: (config!).is,
-				onlyOnTouch: false,
-				then: thenSchema,
-				otherwise: otherwiseSchema,
-				type: 'NamedWhenRule'
-			});
-
-			return _this;
-		}
+		const _this = this.clone();
+		
+		_this.def.normalRules = new Map();
 
 		const {
-			_this,
+			then, otherwise, is 
+		} = typeof name === 'string'
+			? {
+				then: config!.then,
+				otherwise: config!.otherwise,
+				is: config!.is
+			}
+			: name;
+
+		const {
 			thenSchema,
 			otherwiseSchema
 		} = this._when<S>(
-			name.then,
-			name.otherwise
+			then,
+			otherwise
 		);
 
 		_this.def.whenRules.push({
+			namedValueKey: typeof name === 'string' ? name : undefined,
 			name: 'custom_when',
-			method: name.is,
+			method: is,
 			onlyOnTouch: false,
 			then: thenSchema,
 			otherwise: otherwiseSchema,
-			type: 'WhenRule'
+			type: typeof name === 'string' ? 'NamedWhenRule' : 'WhenRule'
 		});
 
 		return _this;

@@ -49,41 +49,32 @@ export class DateSchema<
 		});
 	}
 
-	private getIsFunction<Form = this['final']>(
+	private getComparisonFunction<Form = this['final']>(
 		date: Date | MinDateMethod<Form> | string,
 		format: DateFormat,
-		cb: (x: number, y: number) => boolean
+		compareFn: (x: number, y: number) => boolean
 	) {
-		let getTime: (date: Date) => number;
-
-		const _cb = typeof date === 'function'
-			? (x: number | undefined, y: number) => {
-				if (x === undefined) {
-					return false;
-				}
-				return cb(x, y);
-			}
-			: cb;
+		let extractTime: (date: Date) => number;
 
 		switch (format) {
 			case 'year':
-				getTime = (date: Date) => date.getFullYear();
+				extractTime = (date: Date) => date.getFullYear();
 				break;
 			case 'month':
-				getTime = (date: Date) => createDate({
+				extractTime = (date: Date) => createDate({
 					year: date.getFullYear(),
 					month: date.getMonth()
 				}).getTime();
 				break;
 			case 'date':
-				getTime = (date: Date) => createDate({
+				extractTime = (date: Date) => createDate({
 					year: date.getFullYear(),
 					month: date.getMonth(),
 					day: date.getDate()
 				}).getTime();
 				break;
 			case 'hour':
-				getTime = (date: Date) => createDate({
+				extractTime = (date: Date) => createDate({
 					year: date.getFullYear(),
 					month: date.getMonth(),
 					day: date.getDate(),
@@ -91,7 +82,7 @@ export class DateSchema<
 				}).getTime();
 				break;
 			case 'minute':
-				getTime = (date: Date) => createDate({
+				extractTime = (date: Date) => createDate({
 					year: date.getFullYear(),
 					month: date.getMonth(),
 					day: date.getDate(),
@@ -100,7 +91,7 @@ export class DateSchema<
 				}).getTime();
 				break;
 			case 'second':
-				getTime = (date: Date) => createDate({
+				extractTime = (date: Date) => createDate({
 					year: date.getFullYear(),
 					month: date.getMonth(),
 					day: date.getDate(),
@@ -110,7 +101,7 @@ export class DateSchema<
 				}).getTime();
 				break;
 			case 'time':
-				getTime = (date: Date) => createDate({
+				extractTime = (date: Date) => createDate({
 					hour: date.getHours(),
 					minute: date.getMinutes(),
 					second: date.getSeconds(),
@@ -118,7 +109,7 @@ export class DateSchema<
 				}).getTime();
 				break;
 			default:
-				getTime = (date: Date) => date.getTime();
+				extractTime = (date: Date) => date.getTime();
 				break;
 		}
 
@@ -131,17 +122,29 @@ export class DateSchema<
 				) => {
 					const _date = date(parent, config);
 
-					return _date ? getTime(_date) : undefined;
+					return _date ? extractTime(_date) : undefined;
 				}
-				: getTime
+				: extractTime
 		) as (
 			date: Date | MinDateMethod<Form>,
 			parent: any,
 			config: RuleTestConfig<Form>
 		) => number;
 
+		const _cb = typeof date === 'function'
+			? (x: number | undefined, y: number) => {
+				if (x === undefined) {
+					return false;
+				}
+				return compareFn(x, y);
+			}
+			: compareFn;
+
 		return (value: Date | string, parent: any, config: RuleTestConfig<Form>) => {
-			return _cb(getDate(typeof date === 'string' ? new Date(date) : date, parent, config), getTime(typeof value === 'string' ? new Date(value) : value));
+			return _cb(
+				getDate(typeof date === 'string' ? new Date(date) : date, parent, config), 
+				extractTime(typeof value === 'string' ? new Date(value) : value)
+			);
 		};
 	}
 
@@ -158,18 +161,18 @@ export class DateSchema<
 		format: DateFormat = 'date',
 		message?: string
 	) {
-		const _minDate = typeof minDate === 'string' ? new Date(minDate) : minDate;
+		const minDateValue = typeof minDate === 'string' ? new Date(minDate) : minDate;
 		return this.test({
-			is: this.getIsFunction(
-				_minDate,
+			is: this.getComparisonFunction(
+				minDateValue,
 				format,
 				(x, y) => x >= y
 			),
 			message: message ?? ((messages) => messages.date.minDate(
-				typeof minDate === 'string' ? new Date(minDate) : minDate,
+				minDateValue,
 				format
 			)),
-			name: _minDate instanceof Date ? `minDate_${_minDate.toISOString()}_${format}_${message}` : undefined
+			name: minDateValue instanceof Date ? `minDate_${minDateValue.toISOString()}_${format}_${message}` : undefined
 		});
 	}
 
@@ -186,19 +189,19 @@ export class DateSchema<
 		format: DateFormat = 'date',
 		message?: string
 	) {
-		const _maxDate = typeof maxDate === 'string' ? new Date(maxDate) : maxDate;
+		const maxDateValue = typeof maxDate === 'string' ? new Date(maxDate) : maxDate;
 
 		return this.test({
-			is: this.getIsFunction(
-				_maxDate,
+			is: this.getComparisonFunction(
+				maxDateValue,
 				format,
 				(x, y) => x <= y
 			),
 			message: message ?? ((messages) => messages.date.maxDate(
-				typeof maxDate === 'string' ? new Date(maxDate) : maxDate,
+				maxDateValue,
 				format
 			)),
-			name: _maxDate instanceof Date ? `maxDate_${_maxDate.toISOString()}_${format}_${message}` : undefined
+			name: maxDateValue instanceof Date ? `maxDate_${maxDateValue.toISOString()}_${format}_${message}` : undefined
 		});
 	}
 
@@ -215,19 +218,19 @@ export class DateSchema<
 		format: DateFormat = 'date',
 		message?: string
 	) {
-		const _equalsDate = typeof date === 'string' ? new Date(date) : date;
+		const equalsDateValue = typeof date === 'string' ? new Date(date) : date;
 
 		return this.test({
-			is: this.getIsFunction(
-				_equalsDate,
+			is: this.getComparisonFunction(
+				equalsDateValue,
 				format,
 				(x, y) => x === y
 			),
 			message: message ?? ((messages) => messages.date.equals(
-				typeof date === 'string' ? new Date(date) : date,
+				equalsDateValue,
 				format
 			)),
-			name: _equalsDate instanceof Date ? `equals_${_equalsDate.toISOString()}_${format}_${message}` : undefined
+			name: equalsDateValue instanceof Date ? `equals_${equalsDateValue.toISOString()}_${format}_${message}` : undefined
 		});
 	}
 }

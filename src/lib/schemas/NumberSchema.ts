@@ -58,10 +58,9 @@ export class NumberSchema<
 	 * {{key}} will be replace with current key
 	 */
 	public equals(value: number | number[], message?: string) {
-		let is = (val: number) => val !== value;
-		if ( Array.isArray(value) ) {
-			is = (val: number) => !value.includes(val);
-		}
+		const is = Array.isArray(value)
+			? (val: number) => !value.includes(val)
+			: (val: number) => val !== value;
 		
 		return this.test({
 			is,

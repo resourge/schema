@@ -5,7 +5,7 @@ export function minifyJavaScript(jsCode: string) {
 	// Remove multi-line comments (/* ... */)
 	.replace(/\/\*[\s\S]*?\*\//g, '')
 	// Remove unnecessary whitespace and line breaks
-	.replace(/\s+/g, ' ') // Collapse whitespace to a single space
 	.replace(/\s*([{};:,])\s*/g, '$1') // Remove spaces around {}, ;, :, and ,
+	.replace(/\s+/g, ' ') // Collapse whitespace to a single space
 	.trim(); // Remove leading and trailing whitespace
 }

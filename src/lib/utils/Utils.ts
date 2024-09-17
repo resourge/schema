@@ -20,8 +20,8 @@ export function createOneOfFunctionName() {
 }
 
 export function createDate({
-	year, month, day,
-	hour, minute, second, millisecond
+	year = 0, month = 1, day = 1,
+	hour = 0, minute = 0, second = 0, millisecond = 0
 }: {
 	day?: number
 	hour?: number
@@ -32,12 +32,12 @@ export function createDate({
 	year?: number
 }) {
 	return new Date(
-		year ?? 0, 
-		month ?? 1, 
-		day ?? 1,
-		hour ?? 0, 
-		minute ?? 0, 
-		second ?? 0, 
-		millisecond ?? 0
+		year,
+		month,
+		day,
+		hour,
+		minute,
+		second,
+		millisecond
 	);
 }

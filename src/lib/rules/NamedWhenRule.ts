@@ -23,11 +23,10 @@ export function getNamedWhenRule<Value = any, T = any>(
 		
 	if ( _key ) {
 		if ( _key.includes('.') ) {
-			const arr = _key.split('.');
-			arr.pop();
+			const baseKey = _key.substring(0, _key.lastIndexOf('.'));
 
-			_key = arr.join('.');
-			_valueKey = `${PARAMETERS.VALUE}.${_key}.${config.namedValueKey}`;
+			_key = baseKey;
+			_valueKey = `${PARAMETERS.VALUE}.${baseKey}.${config.namedValueKey}`;
 		}
 		else {
 			_valueKey = `${PARAMETERS.VALUE}.${config.namedValueKey}`;

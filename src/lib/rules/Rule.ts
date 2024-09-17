@@ -56,7 +56,7 @@ const getContent = (
 	message?: string | ((messages: MessageType) => string)
 ) => {
 	if ( isMethodError ) {
-		return `${PARAMETERS.FN_GET_ERROR}(error.path ? error.path : \`${path}\`, error.error)`;
+		return `${PARAMETERS.FN_GET_ERROR}(error.path || \`${path}\`, error.error)`;
 	}
 
 	const _message: string | ((messages: MessageType) => string) = typeof message === 'string' 

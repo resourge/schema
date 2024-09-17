@@ -1,5 +1,4 @@
-import { type SchemaError } from 'src/lib/types';
-
+import { type SchemaError } from '../../types';
 import { boolean, BooleanSchema } from '../BooleanSchema';
 
 describe('boolean', () => {

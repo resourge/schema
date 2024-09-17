@@ -1,5 +1,4 @@
-import { string } from 'src/lib/schemas';
-
+import { string } from '../../schemas';
 import { setupDefaultMessage } from '../messages';
 
 test('beautifyFunction', () => {

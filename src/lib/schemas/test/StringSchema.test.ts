@@ -1,6 +1,5 @@
-import PostalCodes from 'src/lib/postalCodes';
-import { type SchemaError } from 'src/lib/types';
-
+import PostalCodes from '../../postalCodes';
+import { type SchemaError } from '../../types';
 import { number } from '../NumberSchema';
 import { object } from '../ObjectSchema';
 import { string, StringSchema } from '../StringSchema';

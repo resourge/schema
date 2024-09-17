@@ -1,5 +1,4 @@
-import { type SchemaError } from 'src/lib/types';
-
+import { type SchemaError } from '../../types';
 import { date } from '../DateSchema';
 import { number } from '../NumberSchema';
 import { object, ObjectSchema } from '../ObjectSchema';

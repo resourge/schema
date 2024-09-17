@@ -1,7 +1,8 @@
-import { type SchemaError } from 'src/lib/types';
-
-import { number, object, string } from '..';
+import { type SchemaError } from '../../types';
 import { array, ArraySchema } from '../ArraySchema';
+import { number } from '../NumberSchema';
+import { object } from '../ObjectSchema';
+import { string } from '../StringSchema';
 
 describe('array', () => {
 	it('should be empty', () => {

@@ -1,3 +1,10 @@
+## [1.12.1](https://github.com/resourge/schema/compare/v1.12.0...v1.12.1) (2024-09-17)
+
+
+### Performance Improvements
+
+* **project:** improve performance and reduce code ([1ae848c](https://github.com/resourge/schema/commit/1ae848c043553cdb9bf1ad7117fe853cbc24ba16))
+
 # [1.12.0](https://github.com/resourge/schema/compare/v1.11.6...v1.12.0) (2024-09-04)
 
 

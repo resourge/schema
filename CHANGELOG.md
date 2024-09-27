@@ -1,3 +1,15 @@
+# [1.13.0](https://github.com/resourge/schema/compare/v1.12.1...v1.13.0) (2024-09-27)
+
+
+### Bug Fixes
+
+* **getonlyontouchsrccode:** make changedKeys accept * for when form is submitted ([f9ae726](https://github.com/resourge/schema/commit/f9ae726fe28f227706d662d39eed863ff6e487c5))
+
+
+### Features
+
+* **schema:** make validate async only if necessary ([21dd0de](https://github.com/resourge/schema/commit/21dd0dec2901db5a054ef5dd0c3c9f0c161bd076))
+
 ## [1.12.1](https://github.com/resourge/schema/compare/v1.12.0...v1.12.1) (2024-09-17)
 
 

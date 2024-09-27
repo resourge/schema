@@ -583,8 +583,8 @@ export abstract class Schema<Input = any, Final = any> {
 				this.async ? `const ${PARAMETERS.PROMISE_KEY} = [];` : '',
 				schemasSrcCode,
 				this.async ? [
-					`return Promise.all(${PARAMETERS.PROMISE_KEY})`,
-					`.then(() => ${PARAMETERS.ERRORS_KEY})`
+					`return ${PARAMETERS.PROMISE_KEY}.length > 0 ? Promise.all(${PARAMETERS.PROMISE_KEY})`,
+					`.then(() => ${PARAMETERS.ERRORS_KEY}) : ${PARAMETERS.ERRORS_KEY}`
 				] : `return ${PARAMETERS.ERRORS_KEY}`
 			]
 			.flat()

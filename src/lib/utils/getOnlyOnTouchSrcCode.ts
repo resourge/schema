@@ -5,7 +5,7 @@ export const getOnlyOnTouchSrcCode = (
 	srcCode: string[]
 ) => {
 	return [
-		`if ( ${PARAMETERS.ONLY_ON_TOUCH}.some((key) => key.includes(\`${path}\`) || \`${path}\`.includes(key)) ){`,
+		`if ( ${PARAMETERS.ONLY_ON_TOUCH}.some((key) => key === '*' || key.includes(\`${path}\`) || \`${path}\`.includes(key)) ){`,
 		...srcCode,
 		`${PARAMETERS.CONTEXT_KEY}.onlyOnTouchErrors[\`${path}\`] = ${PARAMETERS.ERRORS_KEY}.filter((error) => error.path === \`${path}\`);`,
 		'}',

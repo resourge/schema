@@ -74,7 +74,10 @@ export type RuleConfig<Value = any, T = any> = {
 } & BaseRuleConfig<'Rule', Value, T, RuleMethod<Value, T> | AsyncRuleMethod<Value, T>>;
 
 export function getRuleSrcCode<Value, T = any>(
-	config: RuleConfig<Value, T>,
+	config: Pick<
+		RuleConfig<Value, T>,
+		'method' | 'isMethodError' | 'message'
+	>,
 	{
 		context,
 		path,

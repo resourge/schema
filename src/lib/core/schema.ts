@@ -146,11 +146,9 @@ export abstract class Schema<Input = any, Final = any> {
 			srcCode: errorsSyntax
 		} = getRuleSrcCode(
 			{
-				isAsync: false,
 				isMethodError: false,
 				method: this.rule,
-				message: this.message,
-				type: 'Rule'
+				message: this.message
 			}, 
 			{
 				context,

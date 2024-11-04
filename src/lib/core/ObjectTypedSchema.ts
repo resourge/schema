@@ -54,7 +54,7 @@ export abstract class ObjectTypedSchema<
 		const l = schemas.length;
 		function oneOf(value: any, parent: any, path: string, validationContext: ValidationContext<Final>) {
 			let errors: SchemaError[] = [];
-			const _errors = [];
+			const _errors: SchemaError[] = [];
 
 			for (let i = 0; i < l; i++) {
 				schemas[i](value, parent, path, {

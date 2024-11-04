@@ -111,6 +111,7 @@ export const defineLibConfig = (
 				exclude: [
 					'**/*.test*',
 					'./src/App.tsx',
+					'./old/**/*',
 					'./src/main.tsx',
 					'./src/setupTests.ts'
 				],

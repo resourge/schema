@@ -1,4 +1,4 @@
-import { type SchemaError } from '../../types';
+import { type SchemaError } from '../../types/types';
 import { any, AnySchema } from '../AnySchema';
 import { object } from '../ObjectSchema';
 

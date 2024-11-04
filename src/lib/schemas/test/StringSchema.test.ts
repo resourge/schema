@@ -1,5 +1,5 @@
 import PostalCodes from '../../postalCodes';
-import { type SchemaError } from '../../types';
+import { type SchemaError } from '../../types/types';
 import { number } from '../NumberSchema';
 import { object } from '../ObjectSchema';
 import { string, StringSchema } from '../StringSchema';
@@ -19,6 +19,7 @@ describe('string', () => {
 		expect((schema.validate('aaa3') as SchemaError[]).length === 0)
 		.toBeFalsy();
 	});
+
 	it('should be empty email', () => {
 		const schema = new StringSchema()
 		.notRequired()

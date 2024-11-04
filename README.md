@@ -50,34 +50,28 @@ or NPM:
 npm install @resourge/schema --save
 ```
 
-## How it was done
-
-Beneath the surface, `@resourge/schema` meticulously constructs the validation framework solely through the Function constructor, entirely free from any user input. It's crucial to emphasize this distinction from the potential risks associated with Functions generated from user input, in this scenario, no user input factors into the creation process.
-
-Think of `@resourge/schema` as akin to a developer meticulously crafting the validation structure with hand-coded if-else statements and loops. Every element of the structure is meticulously crafted as if the developer manually wrote each condition and iteration.
-
 ## Benchmark
 
 Benchmarks to compare with other schemas validators (the performance can variate slightly depending on the machine).
 
 [Benchmark](./benchmark/benchmark.ts) 
 ```sh
-@resourge/schema x 18,634,802 ops/sec ±1.30%  (93 runs sampled)
-Fast Validator   x  1,632,544 ops/sec ±0.50%  (92 runs sampled)
-joi              x    182,179 ops/sec ±1.15%  (93 runs sampled)
-zod              x     52,358 ops/sec ±0.86%  (89 runs sampled)
-Yup              x      8,573 ops/sec ±4.42%  (81 runs sampled)
-Fastest is  [ '@resourge/schema' ]
+@resourge/schema old x 11,616,880 ops/sec ±3.03% (93 runs sampled)
+@resourge/schema new x  4,492,524 ops/sec ±2.66% (92 runs sampled)
+Fast Validator   	 x  1,593,352 ops/sec ±1.83% (95 runs sampled)
+joi              	 x    200,949 ops/sec ±1.30% (94 runs sampled)
+zod              	 x     53,117 ops/sec ±2.82% (91 runs sampled)
+Yup              	 x     11,939 ops/sec ±0.50% (92 runs sampled)
 ```
 
 [HeavyBenchmark](./benchmark/heavyBenchmark.ts) (done with an array with 10 000 items)
 ```sh
-@resourge/schema x 2,594    ops/sec ±0.80% (86 runs sampled)
-Fast Validator   x   227    ops/sec ±0.96% (82 runs sampled)
-joi              x    32.28 ops/sec ±2.86% (55 runs sampled)
-zod              x    21.99 ops/sec ±1.58% (40 runs sampled)
-Yup              x    15.65 ops/sec ±2.47% (43 runs sampled)
-Fastest is  [ '@resourge/schema' ]
+@resourge/schema old x 2,550 	ops/sec ±2.17% (90 runs sampled)
+@resourge/schema new x 1,363 	ops/sec ±3.31% (93 runs sampled)
+Fast Validator   	 x   211 	ops/sec ±0.78% (82 runs sampled)
+joi              	 x    28.60 ops/sec ±9.21% (52 runs sampled)
+zod              	 x    24.60 ops/sec ±4.28% (45 runs sampled)
+Yup              	 x    15.58 ops/sec ±6.81% (44 runs sampled)
 ```
 
 Would you like to try?
@@ -407,7 +401,6 @@ object().compile({
 });
 ```
 
-
 # Validate
 
 `validate` is responsible for validating input data against the compiled schema. It returns an array of errors if any validation errors are encountered.
@@ -446,48 +439,6 @@ if (errors.length > 0) {
 } else {
   console.log('Validation successful');
 }
-```
-
-## isValid
-
-`isValid` is responsible for validating input data against the compiled schema and returning a boolean indicating whether the data is valid or not.
-
-## Usage
-
-```typescript
-isValid(value: Input, onlyOnTouch?: OnlyOnTouch<Input>): Promise<boolean> | boolean
-```
-
-## Parameters
-
-- `value`: The input data to be validated against the schema.
-- `onlyOnTouch` (optional): An array of keys that inform the schema if a value was touched. Works only with the onlyOnTouch feature of the schema.
-
-#### Example
-
-```Typescript
-import { array, object, string } from '@resourge/schemas';
-
-const schema = object({
-  username: string().required(),
-  age: number().min(20).required()
-  email: string().email().required()
-}).compile();
-
-const inputData = {
-  username: 'John',
-  age: 30,
-  email: 'john@example.com'
-};
-
-schema.isValid(inputData).then((isValid) => {
-  if (isValid) {
-    console.log('Input data is valid');
-  } else {
-    console.log('Input data is not valid');
-  }
-});
-
 ```
 
 # Default messages

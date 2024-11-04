@@ -1,5 +1,5 @@
 import { type SchemaError } from '../../types/types';
-import { createDate } from '../../utils/Utils';
+import { createDate } from '../../utils/DateUtils';
 import { date, DateSchema } from '../DateSchema';
 import { object } from '../ObjectSchema';
 

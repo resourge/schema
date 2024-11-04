@@ -6,7 +6,7 @@ export class ArraySchema<
 	Final = any,
 	S extends ObjectPropertiesSchema<Input[number], Final> = ObjectPropertiesSchema<Input[number], Final>
 > extends ArrayTypedSchema<Input, Final, S> {
-	protected message: string = '{{key}} is not array';
+	protected message: string = 'Is not array';
 	protected rule = (value: any[]) => Array.isArray(value);
 
 	protected override clone() {
@@ -16,7 +16,6 @@ export class ArraySchema<
 	/**
 	 * Checks if is empty
 	 * @param message @option Overrides default message
-	 * {{key}} will be replace with current key
 	 */
 	public empty(message?: string) {
 		return this.test({
@@ -30,7 +29,6 @@ export class ArraySchema<
 	 * Checks if has a minimal number of items in array
 	 * @param minValue
 	 * @param message @option Overrides default message
-	 * {{key}} will be replace with current key
 	 */
 	public min(minValue: number, message?: string) {
 		return this.test({
@@ -44,7 +42,6 @@ export class ArraySchema<
 	 * Checks if has a maximal number of elements
 	 * @param maxValue 
 	 * @param message @option Overrides default message
-	 * {{key}} will be replace with current key
 	 */
 	public max(maxValue: number, message?: string) {
 		return this.test({
@@ -58,7 +55,6 @@ export class ArraySchema<
 	 * Checks if array has "length" number of elements
 	 * @param length
 	 * @param message @option Overrides default message
-	 * {{key}} will be replace with current key
 	 */
 	public length(length: number, message?: string) {
 		return this.test({
@@ -74,7 +70,6 @@ export class ArraySchema<
 	 * Note: This only check basic values, like numbers, string, boolean.
 	 * For object arrays and more complex values use {@link ArraySchema#uniqueBy}
 	 * @param message @option Overrides default message
-	 * {{key}} will be replace with current key
 	 */
 	public unique(message?: string) {
 		return this.test({
@@ -87,7 +82,6 @@ export class ArraySchema<
 	/**
 	 * Checks if has only unique elements by key
 	 * @param message @option Overrides default message
-	 * {{key}} will be replace with current key
 	 */
 	public uniqueBy(key: keyof Input[number] | ((val: Input[number]) => any), message?: string) {
 		const mapCb: (val: Input[number]) => any = (

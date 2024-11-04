@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
-import { number, object } from '../../schemas';
-import { type SchemaError } from '../../types';
+import { number, object } from '../..';
+import { type SchemaError } from '../../types/types';
 
 describe('Schema', () => {
 	it('when', () => {

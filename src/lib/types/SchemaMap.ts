@@ -5,10 +5,8 @@ import { type DateSchema } from '../schemas/DateSchema';
 import { type NumberSchema } from '../schemas/NumberSchema';
 import { type ObjectSchema } from '../schemas/ObjectSchema';
 import { type StringSchema } from '../schemas/StringSchema';
-
-import { type IsEnum } from './IsEnum';
-
-export type NullableType<T> = undefined | null | T;
+import { type IsEnum } from '../types/IsEnum';
+import { type NullableType } from '../types/types';
 
 export type EnumPropertiesSchema<T = any, Final = T> = [T] extends [number]
 	? NumberSchema<T, Final> 

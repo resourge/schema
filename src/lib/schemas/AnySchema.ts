@@ -4,14 +4,13 @@ export class AnySchema<
 	Input = any, 
 	Final = any
 > extends Schema<Input, Final> {
-	protected message: string = '{{key}} is not array';
+	protected message: string = 'Is not array';
 	protected rule = () => true;
 	
 	/**
 	 * Checks if is a value of enum.
 	 * @param enumObject enum
 	 * @param message @option Overrides default message
-	 * {{key}} will be replace with current key
 	 */
 	// eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
 	public enum<T extends { [name: string]: any }>(enumObject: T, message?: string) {

@@ -1,10 +1,7 @@
-import { type NamedWhenRuleParameter } from '../rules/NamedWhenRule';
 import { type OnlyOnTouchRuleConfig, type RuleConfig } from '../rules/Rule';
 import { type WhenParameter } from '../rules/WhenRule';
-import { type FormKey } from '../types/FormKey';
+import { type OnlyOnTouch } from '../types/FormKey';
 import { type SchemaError } from '../types/types';
-
-export type OnlyOnTouch<Input> = Array<Input extends any[] | Record<string, any> ? FormKey<Input> : string>;
 
 export class Definitions<Input = any, Final = any> {
 	public isOnlyOnTouch?: boolean;
@@ -18,12 +15,8 @@ export class Definitions<Input = any, Final = any> {
 	public isRequired?: boolean;
 	public messageRequired?: string;
 
-	/**
-	 * Path for current value
-	 */
-	public path: string = '';
 	public normalRules = new Map<string, RuleConfig<Input, Final> | OnlyOnTouchRuleConfig>();
-	public whenRules: Array<WhenParameter | NamedWhenRuleParameter> = [];
+	public whenRules: WhenParameter[] = [];
 
 	public _validate: ((value: any, onlyOnTouch?: OnlyOnTouch<Input>) => Promise<SchemaError[]> | SchemaError[]) | undefined;
 

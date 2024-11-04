@@ -1,8 +1,8 @@
 import { Schema } from '../core/schema';
-import { type RuleTestConfig } from '../rules/BaseRule';
+import { type ValidationContext } from '../rules/BaseRule';
 import { type DateFormat } from '../types/DateFormat';
-import { type NullableType } from '../types/SchemaMap';
-import { createDate } from '../utils/Utils';
+import { type NullableType } from '../types/types';
+import { createDate } from '../utils/DateUtils';
 
 const isToday = (someDate: Date): boolean => {
 	const today = new Date();
@@ -26,20 +26,19 @@ function isDate(input: any) {
 
 export type MinDateMethod<Form> = (
 	parent: any,
-	config: RuleTestConfig<Form>
+	config: ValidationContext<Form>
 ) => Date | undefined;
 
 export class DateSchema<
 	Input extends NullableType<Date | string> = Date | string,
 	Final = any
 > extends Schema<Input, Final> {
-	protected message: string = '{{key}} is not date';
+	protected message: string = 'Is not date';
 	protected rule = isDate;
 
 	/**
 	 * Checks if is today
 	 * @param message @option Overrides default message
-	 * {{key}} will be replace with current key
 	 */
 	public today(message?: string) {
 		return this.test({
@@ -118,7 +117,7 @@ export class DateSchema<
 				? (
 					date: MinDateMethod<Form>,
 					parent: any,
-					config: RuleTestConfig<Form>
+					config: ValidationContext<Form>
 				) => {
 					const _date = date(parent, config);
 
@@ -128,7 +127,7 @@ export class DateSchema<
 		) as (
 			date: Date | MinDateMethod<Form>,
 			parent: any,
-			config: RuleTestConfig<Form>
+			config: ValidationContext<Form>
 		) => number;
 
 		const _cb = typeof date === 'function'
@@ -140,7 +139,7 @@ export class DateSchema<
 			}
 			: compareFn;
 
-		return (value: Date | string, parent: any, config: RuleTestConfig<Form>) => {
+		return (value: Date | string, parent: any, config: ValidationContext<Form>) => {
 			return _cb(
 				getDate(typeof date === 'string' ? new Date(date) : date, parent, config), 
 				extractTime(typeof value === 'string' ? new Date(value) : value)
@@ -153,7 +152,6 @@ export class DateSchema<
 	 * @param minDate
 	 * @param format @option @default 'date' compares date using format (ex: format = 'date' it will only compare year, month and date
 	 * @param message @option Overrides default message
-	 * {{key}} will be replace with current key
 	 * * Note: If format = 'time' it will only compare hour, minutes, seconds and milliseconds, while format = 'dateTime' it will compare everything
 	 */
 	public minDate<Form = this['final']>(
@@ -181,7 +179,6 @@ export class DateSchema<
 	 * @param maxDate
 	 * @param format @option @default 'date' compares date using format (ex: format = 'date' it will only compare year, month and date
 	 * @param message @option Overrides default message
-	 * {{key}} will be replace with current key
 	 * * Note: If format = 'time' it will only compare hour, minutes, seconds and milliseconds, while format = 'dateTime' it will compare everything
 	 */
 	public maxDate<Form = this['final']>(
@@ -210,7 +207,6 @@ export class DateSchema<
 	 * @param date
 	 * @param format @option @default 'date' compares date using format (ex: format = 'date' it will only compare year, month and date
 	 * @param message @option Overrides default message
-	 * {{key}} will be replace with current key
 	 * * Note: If format = 'time' it will only compare hour, minutes, seconds and milliseconds, while format = 'dateTime' it will compare everything
 	 */
 	public equals<Form = this['final']>(

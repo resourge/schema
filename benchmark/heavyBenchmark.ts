@@ -1,9 +1,10 @@
 import Benchmark from 'benchmark';
 import Validator, { ValidationSchema } from 'fastest-validator';
-import { object, array, string } from '../src/lib/index';
+import { object, array, string } from '../old/index.eval';
 import * as yup from 'yup';
 import { z } from 'zod';
 import joi from 'joi';
+import { object as nobject, array as narray, string as nstring } from '../src/lib/index';
 
 const v = new Validator();
 
@@ -72,10 +73,23 @@ const schema = object<Test>({
 	).required()
 }).compile();
 
+
+const scheman = nobject<Test>({
+	deliveryName: nstring().min(3).required(),
+	products: narray(
+		nobject({
+			productName: nstring().min(3).required()
+		}).required()
+	).required()
+}).compile();
+
 const suite = new Benchmark.Suite();
 suite
-.add('@resourge/schema', function () {
+.add('@resourge/schema OLD', function () {
 	schema.validate(test as any);
+})
+.add('@resourge/schema NEW', function () {
+	scheman.validate(test as any);
 })
 .add('Fast Validator', function () {
 	check(test);
@@ -100,10 +114,6 @@ suite
 })
 .on('cycle', function (event: any) {
 	console.log(String(event.target));
-})
-.on('complete', function () {
-	// @ts-expect-error
-	console.log('Fastest is ', this.filter('fastest').map('name'));
 })
 // run async
 .run({ async: false });

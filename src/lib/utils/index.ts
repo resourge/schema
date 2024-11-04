@@ -1,1 +1,0 @@
-export { setupDefaultMessage } from './messages';

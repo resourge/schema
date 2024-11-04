@@ -2,7 +2,8 @@
 import { Schema } from '../core/schema';
 import type { PhoneNumberInfo } from '../phoneNumbers';
 import type { PostalCodeInfo } from '../postalCodes';
-import { type NullableType } from '../types/SchemaMap';
+import { type NullableType } from '../types/types';
+import { defaultMessages } from '../utils/messages';
 
 const NUMERIC_PATTERN = /^[-]?([1-9]\d*|0)(\.\d+)?$/;
 const ALPHA_PATTERN = /^[a-zA-Z]+$/;
@@ -20,17 +21,16 @@ export class StringSchema<
 	Input extends NullableType<string> = string,
 	Final = any
 > extends Schema<Input, Final> {
-	protected message: string = '{{key}} is not string';
+	protected message: string = 'Is not string';
 	protected rule = (value: string) => typeof value === 'string';
 
-	protected getRequiredStringCondition = (valueKey: string) => `if ( ${valueKey} === null || ${valueKey} === undefined || ${valueKey} === '' ){`;
-	protected getNotRequiredStringCondition = (valueKey: string) => `if ( ${valueKey} !== null && ${valueKey} !== undefined && ${valueKey} !== '' ){`;
+	protected getRequiredStringCondition = (value: string) => value == null || value === '';
+	protected getNotRequiredStringCondition = (value: string) => value != null && value !== '';
 
 	/**
 	 * Checks if has a size bigger than minValue
 	 * @param minValue min string length
 	 * @param message @option Overrides default message
-	 * {{key}} will be replace with current key
 	 */
 	public min(minValue: number, message?: string) {
 		return this.test({
@@ -44,7 +44,6 @@ export class StringSchema<
 	 * Checks if has a size smaller than maxValue
 	 * @param maxValue max string length
 	 * @param message @option Overrides default message
-	 * {{key}} will be replace with current key
 	 */
 	public max(maxValue: number, message?: string) {
 		return this.test({
@@ -59,7 +58,6 @@ export class StringSchema<
 	 * @param minValue min number value
 	 * @param maxValue max number value
 	 * @param message @option Overrides default message
-	 * {{key}} will be replace with current key
 	 */
 	public between(minValue: number, maxValue: number, message?: string) {
 		return this.test({
@@ -73,7 +71,6 @@ export class StringSchema<
 	 * Checks if string has `maxValue` length
 	 * @param length string length
 	 * @param message @option Overrides default message
-	 * {{key}} will be replace with current key
 	 */
 	public length(length: number, message?: string) {
 		return this.test({
@@ -87,7 +84,6 @@ export class StringSchema<
 	 * Checks if is equal to value.
 	 * @param value to equal
 	 * @param message @option Overrides default message
-	 * {{key}} will be replace with current key
 	 */
 	public equals(value: string | string[], message?: string) {
 		const is = Array.isArray(value)
@@ -105,7 +101,6 @@ export class StringSchema<
 	 * Matches regular expression
 	 * @param reg Regular expression
 	 * @param message @option Overrides default message
-	 * {{key}} will be replace with current key
 	 */
 	public pattern(reg: RegExp, message?: string) {
 		return this.test({
@@ -118,7 +113,6 @@ export class StringSchema<
 	/**
 	 * Checks if string is empty
 	 * @param message @option Overrides default message
-	 * {{key}} will be replace with current key
 	 */
 	public empty(message?: string) {
 		return this.test({
@@ -132,7 +126,6 @@ export class StringSchema<
 	 * Checks if string contains value
 	 * @param value value to check if contains
 	 * @param message @option Overrides default message
-	 * {{key}} will be replace with current key
 	 */
 	public contains(value: string, message?: string) {
 		return this.test({
@@ -145,7 +138,6 @@ export class StringSchema<
 	/**
 	 * Checks if string contains only numeric characters
 	 * @param message @option Overrides default message
-	 * {{key}} will be replace with current key
 	 */
 	public numeric(message?: string) {
 		return this.test({
@@ -158,7 +150,6 @@ export class StringSchema<
 	/**
 	 * Checks if string contains only alpha characters
 	 * @param message @option Overrides default message
-	 * {{key}} will be replace with current key
 	 */
 	public alpha(message?: string) {
 		return this.test({
@@ -171,7 +162,6 @@ export class StringSchema<
 	/**
 	 * Checks if string contains only alpha-numeric characters
 	 * @param message @option Overrides default message
-	 * {{key}} will be replace with current key
 	 */
 	public alphanum(message?: string) {
 		return this.test({
@@ -184,7 +174,6 @@ export class StringSchema<
 	/**
 	 * Checks if string contains only contains alpha-numeric characters, as well as dashes and underscores.'
 	 * @param message @option Overrides default message
-	 * {{key}} will be replace with current key
 	 */
 	public alphadash(message?: string) {
 		return this.test({
@@ -197,7 +186,6 @@ export class StringSchema<
 	/**
 	 * Checks if string is hexadecimal.
 	 * @param message @option Overrides default message
-	 * {{key}} will be replace with current key
 	 */
 	public hex(message?: string) {
 		return this.test({
@@ -210,7 +198,6 @@ export class StringSchema<
 	/**
 	 * Checks if string is base64.
 	 * @param message @option Overrides default message
-	 * {{key}} will be replace with current key
 	 */
 	public base64(message?: string) {
 		return this.test({
@@ -223,7 +210,6 @@ export class StringSchema<
 	/**
 	 * Checks if string is format uuid.
 	 * @param message @option Overrides default message
-	 * {{key}} will be replace with current key
 	 */
 	public uuid(message?: string) {
 		return this.test({
@@ -236,7 +222,6 @@ export class StringSchema<
 	/**
 	 * Checks if string is URL accepted
 	 * @param message @option Overrides default message
-	 * {{key}} will be replace with current key
 	 */
 	public url(message?: string) {
 		return this.test({
@@ -249,7 +234,6 @@ export class StringSchema<
 	/**
 	 * Checks if string is format cuid.
 	 * @param message @option Overrides default message
-	 * {{key}} will be replace with current key
 	 */
 	public cuid(message?: string) {
 		return this.test({
@@ -263,7 +247,6 @@ export class StringSchema<
 	 * Checks if is a valid email.
 	 * @param mode @option Defines if is basic or precise validation
 	 * @param message @option Overrides default message
-	 * {{key}} will be replace with current key
 	 */
 	public email(mode?: 'basic' | 'precise', message?: string) {
 		const pattern = mode === 'precise' ? PRECISE_PATTERN : BASIC_PATTERN;
@@ -279,14 +262,13 @@ export class StringSchema<
 	 * Checks if is a valid postalCode.
 	 * @param postalCode postal code to validate or a function which we can return desired postal code
 	 * @param message @option Overrides default message
-	 * {{key}} will be replace with current key
 	 */
 	public postalCode(
 		postalCode: PostalCodeInfo | ((value: NonNullable<Input>, form: any) => PostalCodeInfo), 
 		message?: string
 	) {
 		if ( typeof postalCode === 'function' ) {
-			return this.test((value, form, { context }) => {
+			return this.test((value, form) => {
 				const _postalCode = postalCode(value, form);
 				if ( _postalCode.regex.test((value )) ) {
 					return true;
@@ -295,7 +277,7 @@ export class StringSchema<
 				return [
 					{
 						path: '',
-						error: message ?? context.messages.string.postalCode(_postalCode)
+						error: message ?? defaultMessages.string.postalCode(_postalCode)
 					}
 				];
 			});
@@ -312,14 +294,13 @@ export class StringSchema<
 	 * Checks if is a valid phoneNumber.
 	 * @param phoneNumber phone number to validate or a function which we can return desired phone number
 	 * @param message @option Overrides default message
-	 * {{key}} will be replace with current key
 	 */
 	public phoneNumber(
 		phoneNumber: PhoneNumberInfo | ((value: NonNullable<Input>, form: any) => PhoneNumberInfo), 
 		message?: string
 	) {
 		if ( typeof phoneNumber === 'function' ) {
-			return this.test((value, form, { context }) => {
+			return this.test((value, form) => {
 				const _phoneNumber = phoneNumber(value, form);
 				if ( _phoneNumber.regex.test((value )) ) {
 					return true;
@@ -328,7 +309,7 @@ export class StringSchema<
 				return [
 					{
 						path: '',
-						error: message ?? context.messages.string.phoneNumber(_phoneNumber)
+						error: message ?? defaultMessages.string.phoneNumber(_phoneNumber)
 					}
 				];
 			});
@@ -345,7 +326,6 @@ export class StringSchema<
 	 * Checks if is a value of enum.
 	 * @param enumObject enum
 	 * @param message @option Overrides default message
-	 * {{key}} will be replace with current key
 	 */
 	// eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
 	public enum<T extends { [name: string]: any }>(enumObject: T, message?: string) {

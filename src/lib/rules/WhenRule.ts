@@ -1,8 +1,7 @@
 import { type Schema } from '../core/schema';
-import { type CompileSchemaConfig, type PrivateSchema } from '../types/types';
-import { PARAMETERS } from '../utils/Utils';
+import { type CompileSchemaConfig, type PrivateSchema } from '../types/SchemaTypes';
 
-import { addRuleToContextRules, type BaseRuleConfig, getFnParameters } from './BaseRule';
+import { type ValidationContext } from './BaseRule';
 import { type RuleBooleanMethod } from './Rule';
 
 export type WhenConfig<
@@ -18,37 +17,25 @@ export type WhenConfig<
 	otherwise?: (schema: T) => T
 };
 
-export type WhenParameter<Value = any, T = any, Type extends string = 'WhenRule'> = {
-	name: string
+export type WhenParameter<Value = any, T = any> = {
+	method: RuleBooleanMethod<Value, T>
 	then: Schema<any, any>
+	/**
+	 * Makes when named, so uses a key from parent
+	 */
+	namedValueKey?: string
 	otherwise?: Schema<any, any>
-} & BaseRuleConfig<Type, Value, T, RuleBooleanMethod<Value, T>>;
+};
 
-export function getWhenRule<Value = any, T = any, Type extends string = 'WhenRule'>(
-	config: WhenParameter<Value, T, Type>,
-	valueKey: string,
+export function getWhenRule<Value = any, T = any>(
+	config: WhenParameter<Value, T>,
 	{
 		context, 
-		key,
-		path,
 		srcCode
 	}: CompileSchemaConfig
-): string[] {
-	const methodName = addRuleToContextRules(
-		`${config.name}_${context.index++}`,
-		config.method,
-		context
-	);
-
-	const parameters = getFnParameters(
-		valueKey,
-		path ?? ''
-	);
-
+) {
 	const thenSrcCode = (config.then as unknown as PrivateSchema).compileSchema({
 		context,
-		key,
-		path,
 		srcCode
 	});
 
@@ -57,18 +44,21 @@ export function getWhenRule<Value = any, T = any, Type extends string = 'WhenRul
 	// Only when whenRule is a normalRule will otherwise be undefined 
 	const otherwiseSrcCode = (config.otherwise as unknown as PrivateSchema).compileSchema({
 		context,
-		srcCode,
-		key,
-		path
+		srcCode
 	});
 
-	return [
-		`const ${methodName}_isValid = ${PARAMETERS.CONTEXT_KEY}.rules.${methodName}(${parameters.join(',')});`,
-		`if ( ${methodName}_isValid ) {`,
-		...thenSrcCode,
-		'}',
-		'else {',
-		...otherwiseSrcCode,
-		'}'
-	];
+	if ( config.namedValueKey ) {
+		return (value: any, parent: any, path: string, validationContext: ValidationContext<any>) => {
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+			const isValid = config.method(parent[config.namedValueKey!], parent, validationContext);
+
+			(isValid ? thenSrcCode : otherwiseSrcCode)(value, parent, path, validationContext);
+		};
+	}
+
+	return (value: any, parent: any, path: string, validationContext: ValidationContext<any>) => {
+		const isValid = config.method(value, parent, validationContext);
+
+		(isValid ? thenSrcCode : otherwiseSrcCode)(value, parent, path, validationContext);
+	};
 }

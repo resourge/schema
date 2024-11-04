@@ -1,12 +1,13 @@
 import { ObjectTypedSchema } from '../core/ObjectTypedSchema';
 import { type OneOf, type OneOfConfigMessage } from '../types/OneOfTypes';
-import { type NullableType, type SchemaMap } from '../types/SchemaMap';
+import { type SchemaMap } from '../types/SchemaMap';
+import { type NullableType } from '../types/types';
 
 export class ObjectSchema<
 	Input extends NullableType<object> = object,
 	Final = any
 > extends ObjectTypedSchema<Input, Final> {
-	protected message: string = '{{key}} is not object';
+	protected message: string = 'Is not object';
 	protected rule = (value: any) => typeof value === 'object';
 
 	protected override clone() {
@@ -20,6 +21,8 @@ export class ObjectSchema<
 
 		return schema;
 	}
+
+	// protected getRequiredStringCondition = (value: any) => value == null && typeof value === 'object';
 
 	/**
 	 * Extends current schema object

@@ -1,7 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+import { type ValidationContext } from '../rules/BaseRule';
 import { type OneOfConfigMessage } from '../types/OneOfTypes';
 import { type SchemaMap } from '../types/SchemaMap';
-import { type CompileSchemaConfig, type PrivateSchema } from '../types/types';
-import { createOneOfFunctionName, PARAMETERS } from '../utils/Utils';
+import { type CompileSchemaConfig, type PrivateSchema } from '../types/SchemaTypes';
+import { type SchemaError } from '../types/types';
 
 import { type Definitions } from './Definitions';
 import { Schema } from './schema';
@@ -25,101 +28,138 @@ export abstract class ObjectTypedSchema<
 		this.shape = new Map(Object.entries(schemas));
 	}
 
-	protected compileOneOfRules({
-		context, 
-		key, 
-		path
-	}: CompileSchemaConfig) {
-		const srcCode: Array<string | string[]> = [];
-		const functionName = createOneOfFunctionName();
-		const functionNameErrors = `${functionName}_${PARAMETERS.ERRORS_KEY}`;
-
-		srcCode.push(
-			`function ${functionName}() {`,
-			`let ${PARAMETERS.ERRORS_KEY} = [];`,
-			`let ${functionNameErrors} = [];`
-		);
-
+	protected compileOneOfRules({ context, isFirstSchema }: CompileSchemaConfig): Function {
+		const schemas: Function[] = [];
 		this.oneOfRules.forEach((schema, childKey ) => {
-			srcCode.push(
-				schema.compileSchema({
-					context, 
-					key: `${key ? `${key}.` : ''}${childKey}`, 
-					path: `${path ? `${path}.` : ''}${childKey}`
-				}),
-				`if ( ${PARAMETERS.ERRORS_KEY}.length === 0 ) {`,
-				'return []',
-				'}'
-			);
-			srcCode.push(
-				`${functionNameErrors}.push(...${PARAMETERS.ERRORS_KEY});`,
-				`${PARAMETERS.ERRORS_KEY} = [];`
-			);
+			const fn = schema.compileSchema({
+				context 
+			});
+
+			if ( isFirstSchema ) {
+				schemas.push(
+					(value: any, parent: any, path: string, validationContext: ValidationContext<Final>) => {
+						fn(value[childKey], parent, childKey, validationContext);
+					}
+				);
+			}
+			else {
+				schemas.push(
+					(value: any, parent: any, path: string, validationContext: ValidationContext<Final>) => {
+						fn(value[childKey], parent, path + '.' + childKey, validationContext);
+					}
+				);
+			}
 		});
 
-		srcCode.push(
-			`return ${functionNameErrors};`,
-			'}'
-		);
-		
-		srcCode.push(
-			!this.oneOfConfigMessage
-				? `${functionName}().forEach((error) => { ${PARAMETERS.ERRORS_KEY}.push(error); })`
-				: (
-					typeof this.oneOfConfigMessage === 'string' 
-						? `${functionName}().forEach((error) => { error.error = '${this.oneOfConfigMessage}'; ${PARAMETERS.ERRORS_KEY}.push(error); })`
-						: (
-							[
-								`if ( ${functionName}().length ) {`,
-								(
-									Array.isArray(this.oneOfConfigMessage)
-										? `${JSON.stringify(this.oneOfConfigMessage)}.forEach((error) => { ${PARAMETERS.ERRORS_KEY}.push(error); })`
-										: `${PARAMETERS.ERRORS_KEY}.push(${JSON.stringify(this.oneOfConfigMessage)});`
-								),
-								'}'
-							]
-						)
-						
-				)
-		);
+		const l = schemas.length;
+		function oneOf(value: any, parent: any, path: string, validationContext: ValidationContext<Final>) {
+			let errors: SchemaError[] = [];
+			const _errors = [];
 
-		return srcCode.flat();
+			for (let i = 0; i < l; i++) {
+				schemas[i](value, parent, path, {
+					errors,
+					form: validationContext.form,
+					onlyOnTouch: validationContext.onlyOnTouch,
+					promises: validationContext.promises
+				});
+				if ( errors.length === 0 ) {
+					return [];
+				}
+				_errors.push(...errors);
+				errors = [];
+			}
+
+			return _errors;
+		}
+
+		if ( !this.oneOfConfigMessage ) {
+			return (value: any, parent: any, path: string, validationContext: ValidationContext<Final>) => {
+				const errors = oneOf(value, parent, path, validationContext);
+				const length = errors.length;
+				for (let i = 0; i < length; i++) {
+					validationContext.errors.push(errors[i]); 
+				}
+			};
+		}
+
+		if ( typeof this.oneOfConfigMessage === 'string' ) {
+			return (value: any, parent: any, path: string, validationContext: ValidationContext<Final>) => {
+				const errors = oneOf(value, parent, path, validationContext);
+				const length = errors.length;
+				for (let i = 0; i < length; i++) {
+					const error = errors[i];
+					error.error = this.oneOfConfigMessage as string; 
+					validationContext.errors.push(error);
+				}
+			};
+		}
+
+		if ( Array.isArray(this.oneOfConfigMessage) ) {
+			const errors = this.oneOfConfigMessage as SchemaError[];
+			const l = errors.length;
+			return (value: any, parent: any, path: string, validationContext: ValidationContext<Final>) => {
+				if ( oneOf(value, parent, path, validationContext).length ) {
+					for (let i = 0; i < l; i++) {
+						validationContext.errors.push(errors[i]); 
+					}
+				}
+			};
+		}
+
+		return (value: any, parent: any, path: string, validationContext: ValidationContext<Final>) => {
+			if ( oneOf(value, parent, path, validationContext).length ) {
+				validationContext.errors.push(this.oneOfConfigMessage as SchemaError);
+			}
+		};
 	}
 
 	protected override compileSchema({
 		context, 
-		key, 
-		path,
-		srcCode = []
+		srcCode,
+		isFirstSchema
 	}: CompileSchemaConfig) {
-		const schemaRules: string[][] = [srcCode];
+		const schemaRules: Function[] = srcCode ? [srcCode] : [];
 		
-		this.shape.forEach((schema, childKey) => {
-			schemaRules.push(
-				schema.compileSchema({
-					context, 
-					key: `${key ? `${key}.` : ''}${childKey}`, 
-					path: `${path ? `${path}.` : ''}${childKey}`
-				})
-			);
-		});
+		if ( this.shape.size ) {
+			this.shape.forEach((schema, childKey) => {
+				const fn = schema.compileSchema({
+					context 
+				});
+				if ( isFirstSchema ) {
+					schemaRules.push(
+						(value: any, parent: any, path: string, validationContext: ValidationContext<Final>) => {
+							fn(value[childKey], parent, childKey, validationContext);
+						}
+					);
+				}
+				else {
+					schemaRules.push(
+						(value: any, parent: any, path: string, validationContext: ValidationContext<Final>) => {
+							fn(value[childKey], parent, path + '.' + childKey, validationContext);
+						}
+					);
+				}
+			});
+		}
 
 		if ( this.oneOfRules.size ) {
 			schemaRules.push(
 				this.compileOneOfRules({
-					context, 
-					key, 
-					path,
-					srcCode
+					context,
+					isFirstSchema
 				})
 			);
 		}
-
+		
+		const l = schemaRules.length;
 		return super.compileSchema({
 			context, 
-			key, 
-			srcCode: schemaRules.flat(), 
-			path
+			srcCode: (value: any, parent: any, path: string, validationContext: ValidationContext<Final>) => {
+				for (let x = 0; x < l; x++) {
+					schemaRules[x](value, parent, path, validationContext);
+				}
+			}
 		});
 	}
 }

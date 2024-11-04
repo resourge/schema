@@ -1,4 +1,4 @@
-import { type CompileSchemaConfig } from '../types/types';
+import { type CompileSchemaConfig } from '../types/SchemaTypes';
 import { PARAMETERS } from '../utils/Utils';
 import { IS_DEV } from '../utils/constants';
 

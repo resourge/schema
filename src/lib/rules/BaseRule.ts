@@ -1,5 +1,5 @@
-import { type CompileSchemaConfig, type Context, type SchemaError } from '../types/types';
-import { PARAMETERS } from '../utils/Utils';
+import { type CompileSchemaConfig } from '../types/SchemaTypes';
+import { type SchemaError } from '../types/types';
 import { type MessageType } from '../utils/messages';
 
 export type RuleMethod<Value, Final = any> = (
@@ -7,17 +7,15 @@ export type RuleMethod<Value, Final = any> = (
 	form: Final
 ) => SchemaError[] | false;
 
-export type RuleTestConfig<T> = {
-	context: Context
+export type ValidationContext<T> = {
+	errors: SchemaError[]
 	form: T
-	path: string
+	onlyOnTouch: string[]
+	onlyOnTouchErrors: Record<string, SchemaError[]>
+	promises: Array<Promise<any>>
 };
 
-export type RuleSrcCodeConfig = Pick<Required<CompileSchemaConfig>, 'context' | 'path'> & {
-	onlyOnTouch: boolean
-	ruleMethodName: string
-	valueKey: string
-};
+export type RuleSrcCodeConfig = Pick<Required<CompileSchemaConfig>, 'context'>;
 
 export type BaseRuleConfig<
 	Type extends string,
@@ -30,31 +28,9 @@ export type BaseRuleConfig<
 	message?: string | ((messages: MessageType) => string)
 };
 
-export function addRuleToContextRules<Value, T = any, Method extends (...args: any[]) => any = RuleMethod<Value, T>>(
-	name: string,
-	method: Method,
-	context: Context
-) {
-	const ruleFnName = name
-	.replace(/\s+/g, '_')
-	.replace(/[^\w_]/g, '_')
-	.normalize('NFC')
-	.toLowerCase();
-	
-	context.rules[ruleFnName] = method;
-	
-	return ruleFnName;
-}
-
-export function getFnParameters(
-	valueKey: string,
-	path: string
-) {
-	const lastIndex = valueKey.lastIndexOf('.');
-
-	return [
-		valueKey, 
-		lastIndex > -1 ? valueKey.substring(0, lastIndex) : valueKey,
-		`${PARAMETERS.FN_CONTEXT}(${path ? `\`${path}\`` : '\'\''})`
-	];
+export function getError(path: string, error: string): SchemaError {
+	return {
+		error,
+		path 
+	}; 
 }

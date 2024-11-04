@@ -1,33 +1,24 @@
 /* eslint-disable no-new-func */
 /* eslint-disable @typescript-eslint/no-implied-eval */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-
-import { getNamedWhenRule } from '../rules/NamedWhenRule';
+import { getError, type ValidationContext } from '../rules/BaseRule';
 import {
 	type AsyncRuleBooleanMethod,
 	type AsyncRuleMethodSchemaError,
 	getOnlyTouchRule,
 	getRule,
-	getRuleSrcCode,
 	type RuleBooleanMethod,
-	type RuleConfig,
 	type RuleMethodSchemaError
 } from '../rules/Rule';
 import { getWhenRule, type WhenConfig } from '../rules/WhenRule';
+import { type OnlyOnTouch } from '../types/FormKey';
 import { type ObjectPropertiesSchema } from '../types/SchemaMap';
-import {
-	type CompileConfig,
-	type CompileSchemaConfig,
-	type Context,
-	type SchemaError
-} from '../types/types';
-import { PARAMETERS } from '../utils/Utils';
+import { type CompileSchemaConfig, type Context } from '../types/SchemaTypes';
+import { type SchemaError } from '../types/types';
 import { IS_DEV } from '../utils/constants';
-import { getOnlyOnTouchSrcCode } from '../utils/getOnlyOnTouchSrcCode';
 import { defaultMessages, type MessageType } from '../utils/messages';
-import { minifyJavaScript } from '../utils/minifyJavaScript';
 
-import { Definitions, type OnlyOnTouch } from './Definitions';
+import { Definitions } from './Definitions';
 
 export type OldTestMethodConfig<Method extends (...args: any[]) => any> = {
 	/**
@@ -79,40 +70,21 @@ export abstract class Schema<Input = any, Final = any> {
 		return new (this.constructor as new(...args: any[]) => any)(this.message, this.def);
 	};
 
-	protected getValueKey(key?: string) {
-		return `${PARAMETERS.VALUE}${key ? `${key.indexOf('[') === 0 ? '' : '.'}${key}` : ''}`;
-	}
-
-	protected getErrorSyntax(message: string) {
-		return `${PARAMETERS.ERRORS_KEY}.push(${PARAMETERS.FN_GET_ERROR}(\`${this.def.path}\`, \`${message.replace('{{key}}', this.def.path)}\`));`;
-	}
-
 	// #region Normal Rules
 	protected compileNormalRules(
-		context: Context, 
-		valueKey: string
-	): string[] {
-		const srcCode: string[][] = [];
-		this.def.normalRules
-		.forEach((rule, key) => {
-			const isAsync = (rule as RuleConfig<Input, Final>).isAsync ? PARAMETERS.FN_ASYNC_TEST : PARAMETERS.FN_TEST;
-			const ruleMethodName = key.startsWith('_test_') ? `${isAsync}_${context.index++}` : key;
+		{ context }: CompileSchemaConfig
+	): Function[] {
+		const srcCode: Function[] = [];
 
+		this.def.normalRules
+		.forEach((rule) => {
 			srcCode.push(
 				rule.type === 'OnlyOnTouchRule'
 					? getOnlyTouchRule(rule, {
-						context,
-						path: this.def.path,
-						onlyOnTouch: Boolean(this.def.isOnlyOnTouch ?? context.onlyOnTouch),
-						ruleMethodName,
-						valueKey 
+						context
 					})
 					: getRule(rule, {
-						context,
-						path: this.def.path,
-						onlyOnTouch: Boolean(this.def.isOnlyOnTouch ?? context.onlyOnTouch),
-						ruleMethodName,
-						valueKey 
+						context
 					})
 			);
 		});
@@ -123,148 +95,147 @@ export abstract class Schema<Input = any, Final = any> {
 
 	// #region When Rules
 	protected compileWhenSchema(config: CompileSchemaConfig) {
-		return this.def.whenRules
-		.map((rule) => (
-			rule.type === 'WhenRule'
-				? getWhenRule(rule, this.getValueKey(config.key), config)
-				: getNamedWhenRule(rule, this.getValueKey(config.key), config)
-		))
-		.flat();
+		const srcCode = this.def.whenRules.map((rule) => getWhenRule(rule, config));
+
+		const l = srcCode.length;
+		return (value: any, parent: any, path: string, validationContext: ValidationContext<any>) => {
+			let x = 0; 
+			while (x < l) {
+				const fn = srcCode[x];
+				fn(value, parent, path, validationContext);
+				x++;
+			}
+		};
 	}
 	// #endregion When Rules
 
 	protected compileNormalSchema(
-		valueKey: string,
 		{
 			context,
-			srcCode = []
+			srcCode
 		}: CompileSchemaConfig
 	) {
-		const {
-			methodName,
-			parameters,
-			srcCode: errorsSyntax
-		} = getRuleSrcCode(
-			{
-				isMethodError: false,
-				method: this.rule,
-				message: this.message
-			}, 
-			{
-				context,
-				path: this.def.path,
-				onlyOnTouch: Boolean(this.def.isOnlyOnTouch ?? context.onlyOnTouch),
-				ruleMethodName: Object.getPrototypeOf(this).constructor.name,
-				valueKey
-			}
+		const rulesSrcCode = this.compileNormalRules({
+			context,
+			srcCode
+		});
+
+		if ( srcCode ) {
+			rulesSrcCode.push(srcCode);
+		}
+
+		const l = rulesSrcCode.length;
+
+		const _message: string = (
+			typeof this.message === 'string' 
+				? this.message 
+				: (this.message as ((messages: MessageType) => string))(defaultMessages)
 		);
 
-		const rulesSrcCode = this.compileNormalRules(context, valueKey);
-		const fn = `${PARAMETERS.CONTEXT_KEY}.rules.${methodName}(${parameters.join(',')})`;
+		return this.getMandatoryRules(
+			this, 
+			(value: any, parent: any, path: string, validationContext: ValidationContext<Final>) => {
+				if (!this.rule(value, parent, validationContext)) {
+					validationContext.errors.push(getError(path, _message));
+					return;
+				}
 
-		const fnSrcCode = rulesSrcCode.length > 0 || srcCode.length > 0 ? [
-			`if (${fn}) {`,
-			...rulesSrcCode,
-			...srcCode,
-			'}',
-			'else {',
-			...errorsSyntax,
-			'}'
-		] : [
-			`if (!${fn}) {`,
-			...errorsSyntax,
-			'}'
-		];
-
-		return this.getMandatoryRules(this, context)
-		.reduce((code, rule) => rule(code, valueKey), fnSrcCode);
+				for (let x = 0; x < l; x++) {
+					const fn = rulesSrcCode[x];
+					fn(value, parent, path, validationContext);
+				}
+			}
+		);
 	}
 
-	protected getRequiredStringCondition = (valueKey: string) => `if ( ${valueKey} === null || ${valueKey} === undefined ){`;
-	protected getNotRequiredStringCondition = (valueKey: string) => `if ( ${valueKey} !== null && ${valueKey} !== undefined ){`;
+	protected getRequiredStringCondition = (value: any) => value == null;
+	protected getNotRequiredStringCondition = (value: any) => value != null;
 
-	protected getMandatoryRules(schema: Schema<any>, context: Context) {
-		const rules: Array<(fnSrcCode: string[], valueKey: string) => string[]> = [];
+	private createCondition(
+		fnSrcCode: Function, 
+		condition: (value: any) => boolean
+	) {
+		return (value: any, parent: any, path: string, validationContext: ValidationContext<Final>) => {
+			if ( condition(value) ) {
+				fnSrcCode(value, parent, path, validationContext);
+			}
+		};
+	}
+
+	private createErrorCondition(
+		fnSrcCode: Function, 
+		message: string, 
+		condition: (value: any) => boolean
+	) {
+		return (value: any, parent: any, path: string, validationContext: ValidationContext<Final>) => {
+			if (condition(value)) {
+				validationContext.errors.push(getError(path, message));
+				return;
+			}
+			fnSrcCode(value, parent, path, validationContext);
+		};
+	}
+
+	protected getMandatoryRules(schema: Schema<any>, fnSrcCode: Function) {
 		const {
 			isOptional, isNullable, isRequired, isOnlyOnTouch 
 		} = schema.def;
 
 		if ( isOptional !== undefined ) {
-			if ( isOptional ) {
-				rules.push((fnSrcCode: string[], valueKey: string) => [
-					`if ( ${valueKey} !== undefined ){`,
-					...fnSrcCode,
-					'}'
-				]);
-			}
-			else {
-				rules.push((fnSrcCode: string[], valueKey: string) => [
-					`if ( ${valueKey} === undefined ){`,
-					schema.getErrorSyntax(this.def.messageOptional ?? context.messages.notOptional),
-					'}',
-					'else {',
-					...fnSrcCode,
-					'}'
-				]);
-			}
+			return !isOptional
+				? this.createErrorCondition(
+					fnSrcCode,
+					this.def.messageOptional ?? defaultMessages.notOptional,
+					(value) => value === undefined
+				) : this.createCondition(
+					fnSrcCode,
+					(value) => value !== undefined
+				);
 		}
 
 		if ( isNullable !== undefined ) {
-			if ( isNullable ) {
-				rules.push((fnSrcCode: string[], valueKey: string) => [
-					`if ( ${valueKey} !== null ){`,
-					...fnSrcCode,
-					'}'
-				]);
-			}
-			else {
-				rules.push((fnSrcCode: string[], valueKey: string) => [
-					`if ( ${valueKey} === null ){`,
-					schema.getErrorSyntax(this.def.messageNullable ?? context.messages.notNullable),
-					'}',
-					'else {',
-					...fnSrcCode,
-					'}'
-				]);
-			}
+			return !isNullable
+				? this.createErrorCondition(
+					fnSrcCode,
+					this.def.messageNullable ?? defaultMessages.notNullable,
+					(value) => value === null
+				) : this.createCondition(
+					fnSrcCode,
+					(value) => value !== null
+				);
 		}
 
 		if ( isRequired !== undefined ) {
-			if ( isRequired ) {
-				rules.push((fnSrcCode: string[], valueKey: string) => [
-					this.getRequiredStringCondition(valueKey),
-					schema.getErrorSyntax(this.def.messageRequired ?? context.messages.required),
-					'}',
-					'else {',
-					...fnSrcCode,
-					'}'
-				]);
-			}
-			else {
-				rules.push((fnSrcCode: string[], valueKey: string) => [
-					this.getNotRequiredStringCondition(valueKey),
-					...fnSrcCode,
-					'}'
-				]);
-			}
+			return isRequired
+				? this.createErrorCondition(
+					fnSrcCode,
+					this.def.messageRequired ?? defaultMessages.required,
+					this.getRequiredStringCondition
+				) : this.createCondition(
+					fnSrcCode,
+					(value) => this.getNotRequiredStringCondition(value)
+				);
 		}
 
 		if ( isOnlyOnTouch ) { 
-			rules.push((fnSrcCode: string[]) => getOnlyOnTouchSrcCode(
-				schema.def.path,
-				fnSrcCode
-			));
+			return (value: any, parent: any, path: string, validationContext: ValidationContext<Final>) => {
+				if ( validationContext.onlyOnTouch.some((key) => key === '*' || key.includes(path) || path.includes(key)) ) {
+					fnSrcCode(value, parent, path, validationContext);
+					validationContext.onlyOnTouchErrors[path] = validationContext.errors.filter((error) => error.path === path);
+				}
+				else if ( validationContext.onlyOnTouchErrors[path] ) {
+					validationContext.onlyOnTouchErrors[path].forEach((error) => validationContext.errors.push(error));
+				}
+			};
 		}
 
-		return rules;
+		return fnSrcCode;
 	}
 
 	protected compileSchema(config: CompileSchemaConfig) {
-		this.def.path = config.path ?? config.key ?? '';
-
 		return this.def.whenRules.length
 			? this.compileWhenSchema(config)
-			: this.compileNormalSchema(this.getValueKey(config.key), config);
+			: this.compileNormalSchema(config);
 	}
 
 	private addTest<Form = this['final']>(
@@ -285,13 +256,13 @@ export abstract class Schema<Input = any, Final = any> {
 			typeof method === 'object' 
 				? {
 					isAsync,
-					isMethodError: false,
+					isCustomTestThatReturnsArray: false,
 					method: (method as TestMethodConfig<RuleBooleanMethod<Input, Form>>).is ?? ((...args) => !(method as OldTestMethodConfig<RuleBooleanMethod<Input, Form>>).test(...args)),
 					message: method.message,
 					type: 'Rule'
 				} : {
 					isAsync,
-					isMethodError: true,
+					isCustomTestThatReturnsArray: true,
 					method,
 					type: 'Rule'
 				}
@@ -338,27 +309,6 @@ export abstract class Schema<Input = any, Final = any> {
 		return this.addTest(true, method);
 	}
 
-	private _when<S extends Schema<any> = this>(
-		then: (schema: S) => S,
-		otherwise?: ((schema: S) => S)
-	) {
-		const thenThis = this.clone();
-
-		thenThis.def.whenRules = [];
-
-		let otherwiseThis = this.clone();
-		otherwiseThis.def.whenRules = [];
-		
-		if ( otherwise ) {
-			otherwiseThis = otherwise(otherwiseThis);
-		}
-
-		return {
-			thenSchema: then(thenThis),
-			otherwiseSchema: otherwiseThis
-		};
-	} 
-
 	/**
 	 * Makes schema conditional. Meaning when `is` is true 
 	 * it will validate with `then schema` otherwise will 
@@ -392,30 +342,24 @@ export abstract class Schema<Input = any, Final = any> {
 
 		const {
 			then, otherwise, is 
-		} = typeof name === 'string'
-			? {
-				then: config!.then,
-				otherwise: config!.otherwise,
-				is: config!.is
-			}
-			: name;
+		} = typeof name === 'string' ? config! : name;
 
-		const {
-			thenSchema,
-			otherwiseSchema
-		} = this._when<S>(
-			then,
-			otherwise
-		);
+		const thenThis = this.clone();
+
+		thenThis.def.whenRules = [];
+
+		let otherwiseThis = this.clone();
+		otherwiseThis.def.whenRules = [];
+		
+		if ( otherwise ) {
+			otherwiseThis = otherwise(otherwiseThis);
+		}
 
 		_this.def.whenRules.push({
 			namedValueKey: typeof name === 'string' ? name : undefined,
-			name: 'custom_when',
 			method: is,
-			onlyOnTouch: false,
-			then: thenSchema,
-			otherwise: otherwiseSchema,
-			type: typeof name === 'string' ? 'NamedWhenRule' : 'WhenRule'
+			then: then(thenThis),
+			otherwise: otherwiseThis
 		});
 
 		return _this;
@@ -551,63 +495,38 @@ export abstract class Schema<Input = any, Final = any> {
 	 * Creates validation method. 
 	 * @param config - {@link CompileConfig} 
 	 */
-	public compile({ 
-		debug, 
-		onlyOnTouch = false,
-		defaultNullable,
-		defaultOptional
-	}: CompileConfig = {}): this {
-		const context: Context = {
-			index: 0,
-			onlyOnTouch,
-			optional: defaultOptional,
-			nullable: defaultNullable,
-			messages: defaultMessages,
-			rules: {},
-			onlyOnTouchErrors: {}
-		};
+	public compile(): this {
+		const context: Context = {};
 		
 		const schemasSrcCode = this.compileSchema({
-			context
+			context,
+			isFirstSchema: true
 		});
 
 		this.async = context.async ?? false;
 
-		const code = minifyJavaScript(
-			[
-				`function ${PARAMETERS.FN_GET_ERROR}(path, error) { return { error: error, path: path } };`,
-				`function ${PARAMETERS.FN_CONTEXT}(path) { return { context: ${PARAMETERS.CONTEXT_KEY}, form: ${PARAMETERS.OBJECT_KEY}, path: path } };`,
-				`const ${PARAMETERS.ERRORS_KEY} = [];`,
-				this.async ? `const ${PARAMETERS.PROMISE_KEY} = [];` : '',
-				schemasSrcCode,
-				this.async ? [
-					`return ${PARAMETERS.PROMISE_KEY}.length > 0 ? Promise.all(${PARAMETERS.PROMISE_KEY})`,
-					`.then(() => ${PARAMETERS.ERRORS_KEY}) : ${PARAMETERS.ERRORS_KEY}`
-				] : `return ${PARAMETERS.ERRORS_KEY}`
-			]
-			.flat()
-			.join('')
-		);
+		const validate = this.async
+			? (validationContext: ValidationContext<Final>) => validationContext.promises.length > 0 
+				? Promise.all(validationContext.promises).then(() => validationContext.errors) 
+				: validationContext.errors
+			: (validationContext: ValidationContext<Final>) => validationContext.errors;
 
-		/* c8 ignore start */ // this is for better debugging no need to test coverage
-		if ( IS_DEV ) {
-			if ( debug ) {
-			/* eslint-disable no-console */
-				console.log('code', code);
-			}
-		}
+		const onlyOnTouchErrors = {};
 
-		/* c8 ignore stop */ // this is for better debugging no need to test coverage
-		const validate = new Function(
-			PARAMETERS.VALUE,
-			PARAMETERS.CONTEXT_KEY,
-			PARAMETERS.OBJECT_KEY,
-			PARAMETERS.ONLY_ON_TOUCH,
-			code
-		);
+		this.def._validate = (value: any, onlyOnTouch: OnlyOnTouch<Input> = []): typeof this.async extends true ? Promise<SchemaError[]> : SchemaError[] => {
+			const validationContext: ValidationContext<Final> = {
+				errors: [],
+				form: value,
+				onlyOnTouch,
+				promises: [],
+				onlyOnTouchErrors
+			};
+			
+			schemasSrcCode(value, value, '', validationContext);
 
-		this.def._validate = (value: any, onlyOnTouch?: OnlyOnTouch<Input>): typeof this.async extends true ? Promise<SchemaError[]> : SchemaError[] => {
-			return validate(value, context, value, onlyOnTouch);
+			return validate(
+				validationContext
+			) as typeof this.async extends true ? Promise<SchemaError[]> : SchemaError[];
 		};
 
 		return this;

@@ -31,7 +31,9 @@
 	"include": [
 		"./**/src/**/*",
 		".eslintrc.cjs",
-		"rollup.config.js"
+		"rollup.config.js",
+		"old/index.eval.ts",
+		"old"
 	],
 	"exclude": [
 		"./**/dist/**/*",

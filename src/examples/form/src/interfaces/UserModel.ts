@@ -1,8 +1,8 @@
-import { useForm, OnlyOnTouch } from '@resourge/react-form'
+import { useForm } from '@resourge/react-form'
 
 import { number, object, string, array } from '../../../../lib';
-import { PhoneNumbers } from '../../../../lib/phoneNumbers';
-import { PostalCodes } from '../../../../lib/postalCodes';
+import { PhoneNumbers } from 'src/lib/phoneNumbers';
+import { PostalCodes } from 'src/lib/postalCodes';
 
 type OptionType = {
 	value: string

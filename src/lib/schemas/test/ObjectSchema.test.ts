@@ -1,4 +1,4 @@
-import { type SchemaError } from '../../types';
+import { type SchemaError } from '../../types/types';
 import { date } from '../DateSchema';
 import { number } from '../NumberSchema';
 import { object, ObjectSchema } from '../ObjectSchema';
@@ -47,6 +47,42 @@ describe('object', () => {
 			productId: 1,
 			productName: 'Product Name'
 		}) as SchemaError[]).length === 0)
+		.toBeTruthy();
+	});
+
+	it('should test object when', () => {
+		const schema = object<{ productId: number
+			productName?: string }>({
+			productId: number().required(),
+			productName: string()
+			.notRequired()
+			.when('productId', {
+				is: (productId) => productId === 10,
+				then: (schema) => schema.required()
+			})
+		})
+		.compile();
+
+		expect(
+			(schema.validate({
+				productId: 1
+			}) as SchemaError[]).length === 0
+		)
+		.toBeTruthy();
+
+		expect(
+			(schema.validate({
+				productId: 10
+			}) as SchemaError[]).length === 0
+		)
+		.toBeFalsy();
+
+		expect(
+			(schema.validate({
+				productId: 10,
+				productName: 'Name '
+			}) as SchemaError[]).length === 0
+		)
 		.toBeTruthy();
 	});
 
@@ -187,9 +223,7 @@ describe('object', () => {
 			productCategory: string()
 			.required()
 		})
-		.compile({
-			debug: true 
-		});
+		.compile();
 
 		expect((schema.validate({
 			productId: 1,

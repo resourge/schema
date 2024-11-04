@@ -1,5 +1,6 @@
+import { type ValidationContext } from '../rules/BaseRule';
 import { type ObjectPropertiesSchema } from '../types/SchemaMap';
-import { type CompileSchemaConfig, type PrivateSchema } from '../types/types';
+import { type CompileSchemaConfig, type PrivateSchema } from '../types/SchemaTypes';
 
 import { type Definitions } from './Definitions';
 import { Schema } from './schema';
@@ -16,25 +17,20 @@ export abstract class ArrayTypedSchema<
 		this.schema = schema as unknown as PrivateSchema;
 	}
 
-	protected override compileSchema({
-		context, 
-		key, 
-		path
-	}: CompileSchemaConfig) {
+	protected override compileSchema({ context }: CompileSchemaConfig) {
+		const fns = this.schema.compileSchema({
+			context 
+		});
+
 		return super.compileSchema({
 			context, 
-			key, 
-			srcCode: [
-				`const l = ${this.getValueKey(key)}.length;`,
-				'for (let i = 0; i < l; i++) {',
-				...this.schema.compileSchema({
-					context, 
-					key: `${key ?? ''}[i]`, 
-					path: `${path ?? ''}[\${i}]`
-				}),
-				'}'
-			], 
-			path
+			srcCode: (value: any, parent: any, path: string, validationContext: ValidationContext<Final>) => {
+				const len = value.length;
+				const basePath = path + '[';
+				for (let x = 0; x < len; x++) {
+					fns(value[x], parent, basePath + x + ']', validationContext);
+				}
+			} 
 		});
 	}
 }

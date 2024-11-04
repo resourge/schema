@@ -1,3 +1,10 @@
+# [1.14.0](https://github.com/resourge/schema/compare/v1.13.0...v1.14.0) (2024-11-04)
+
+
+### Features
+
+* **system:** change the system from "new Function" to a system of functions ([f476976](https://github.com/resourge/schema/commit/f476976bd7ca20008ddf2a0a5f8006090e686ad5))
+
 # [1.13.0](https://github.com/resourge/schema/compare/v1.12.1...v1.13.0) (2024-09-27)
 
 

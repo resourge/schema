@@ -1,3 +1,11 @@
+## [1.14.1](https://github.com/resourge/schema/compare/v1.14.0...v1.14.1) (2024-11-29)
+
+
+### Bug Fixes
+
+* **oneof rule:** fix oneOf rule not working in tests ([0bade44](https://github.com/resourge/schema/commit/0bade44e80f437e92e488d71d3a087e1c279a517))
+* **when rules:** fix parent ([761aa4a](https://github.com/resourge/schema/commit/761aa4a854c6a51aeaddf44c2c80203b31d921aa))
+
 # [1.14.0](https://github.com/resourge/schema/compare/v1.13.0...v1.14.0) (2024-11-04)
 
 

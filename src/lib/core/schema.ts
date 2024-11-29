@@ -91,13 +91,13 @@ export abstract class Schema<Input = any, Final = any> {
 
 	// #region When Rules
 	protected compileWhenSchema(config: CompileSchemaConfig) {
-		const srcCode = this.def.whenRules.map((rule) => getWhenRule(rule, config));
+		const whenCode = this.def.whenRules.map((rule) => getWhenRule(rule, config));
 
-		const l = srcCode.length;
+		const l = whenCode.length;
 		return (value: any, validationContext: ValidationContext<any>) => {
 			let x = 0; 
 			while (x < l) {
-				const fn = srcCode[x];
+				const fn = whenCode[x];
 				fn(value, validationContext);
 				x++;
 			}
@@ -156,7 +156,7 @@ export abstract class Schema<Input = any, Final = any> {
 	}
 
 	private createErrorCondition(
-		fnSrcCode: Function, 
+		fnSrcCode: (value: any, validationContext: ValidationContext<Final>) => void, 
 		message: string, 
 		condition: (value: any) => boolean
 	) {
@@ -169,7 +169,7 @@ export abstract class Schema<Input = any, Final = any> {
 		};
 	}
 
-	protected getMandatoryRules(schema: Schema<any>, fnSrcCode: Function) {
+	protected getMandatoryRules(schema: Schema<any>, fnSrcCode: (value: any, validationContext: ValidationContext<Final>) => void) {
 		const {
 			isOptional, isNullable, isRequired, isOnlyOnTouch 
 		} = schema.def;

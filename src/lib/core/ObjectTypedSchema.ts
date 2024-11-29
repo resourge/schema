@@ -39,14 +39,14 @@ export abstract class ObjectTypedSchema<
 			if ( isFirstSchema ) {
 				schemas.push(
 					(value: any, validationContext: ValidationContext<Final>) => {
-						fn(value[childKey], value, getMethodContext(childKey, validationContext));
+						fn(value[childKey], getMethodContext(childKey, validationContext));
 					}
 				);
 			}
 			else {
 				schemas.push(
 					(value: any, validationContext: ValidationContext<Final>) => {
-						fn(value[childKey], value, getMethodContext(validationContext.path + '.' + childKey, validationContext, value));
+						fn(value[childKey], getMethodContext(validationContext.path + '.' + childKey, validationContext, value));
 					}
 				);
 			}
@@ -59,9 +59,13 @@ export abstract class ObjectTypedSchema<
 
 			for (let i = 0; i < l; i++) {
 				schemas[i](value, {
-					errors,
 					form: validationContext.form,
-					context: validationContext.context,
+					context: {
+						errors,
+						onlyOnTouch: validationContext.context.onlyOnTouch,
+						onlyOnTouchErrors: validationContext.context.onlyOnTouchErrors,
+						promises: validationContext.context.promises
+					},
 					path: validationContext.path,
 					parent: validationContext.parent
 				});

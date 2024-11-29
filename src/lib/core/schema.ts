@@ -72,7 +72,7 @@ export abstract class Schema<Input = any, Final = any> {
 
 	// #region Normal Rules
 	protected compileNormalRules(
-		{ context }: CompileSchemaConfig
+		context: Context
 	): Function[] {
 		const srcCode: Function[] = [];
 
@@ -80,12 +80,8 @@ export abstract class Schema<Input = any, Final = any> {
 		.forEach((rule) => {
 			srcCode.push(
 				rule.type === 'OnlyOnTouchRule'
-					? getOnlyTouchRule(rule, {
-						context
-					})
-					: getRule(rule, {
-						context
-					})
+					? getOnlyTouchRule(rule, context)
+					: getRule(rule, context)
 			);
 		});
 
@@ -98,11 +94,11 @@ export abstract class Schema<Input = any, Final = any> {
 		const srcCode = this.def.whenRules.map((rule) => getWhenRule(rule, config));
 
 		const l = srcCode.length;
-		return (value: any, parent: any, path: string, validationContext: ValidationContext<any>) => {
+		return (value: any, validationContext: ValidationContext<any>) => {
 			let x = 0; 
 			while (x < l) {
 				const fn = srcCode[x];
-				fn(value, parent, path, validationContext);
+				fn(value, validationContext);
 				x++;
 			}
 		};
@@ -115,10 +111,7 @@ export abstract class Schema<Input = any, Final = any> {
 			srcCode
 		}: CompileSchemaConfig
 	) {
-		const rulesSrcCode = this.compileNormalRules({
-			context,
-			srcCode
-		});
+		const rulesSrcCode = this.compileNormalRules(context);
 
 		if ( srcCode ) {
 			rulesSrcCode.push(srcCode);
@@ -134,15 +127,15 @@ export abstract class Schema<Input = any, Final = any> {
 
 		return this.getMandatoryRules(
 			this, 
-			(value: any, parent: any, path: string, validationContext: ValidationContext<Final>) => {
-				if (!this.rule(value, parent, validationContext)) {
-					validationContext.errors.push(getError(path, _message));
+			(value: any, validationContext: ValidationContext<Final>) => {
+				if (!this.rule(value, validationContext.parent, validationContext)) {
+					validationContext.context.errors.push(getError(validationContext.path, _message));
 					return;
 				}
 
 				for (let x = 0; x < l; x++) {
 					const fn = rulesSrcCode[x];
-					fn(value, parent, path, validationContext);
+					fn(value, validationContext);
 				}
 			}
 		);
@@ -155,9 +148,9 @@ export abstract class Schema<Input = any, Final = any> {
 		fnSrcCode: Function, 
 		condition: (value: any) => boolean
 	) {
-		return (value: any, parent: any, path: string, validationContext: ValidationContext<Final>) => {
+		return (value: any, validationContext: ValidationContext<Final>) => {
 			if ( condition(value) ) {
-				fnSrcCode(value, parent, path, validationContext);
+				fnSrcCode(value, validationContext);
 			}
 		};
 	}
@@ -167,12 +160,12 @@ export abstract class Schema<Input = any, Final = any> {
 		message: string, 
 		condition: (value: any) => boolean
 	) {
-		return (value: any, parent: any, path: string, validationContext: ValidationContext<Final>) => {
+		return (value: any, validationContext: ValidationContext<Final>) => {
 			if (condition(value)) {
-				validationContext.errors.push(getError(path, message));
+				validationContext.context.errors.push(getError(validationContext.path, message));
 				return;
 			}
-			fnSrcCode(value, parent, path, validationContext);
+			fnSrcCode(value, validationContext);
 		};
 	}
 
@@ -218,13 +211,13 @@ export abstract class Schema<Input = any, Final = any> {
 		}
 
 		if ( isOnlyOnTouch ) { 
-			return (value: any, parent: any, path: string, validationContext: ValidationContext<Final>) => {
-				if ( validationContext.onlyOnTouch.some((key) => key === '*' || key.includes(path) || path.includes(key)) ) {
-					fnSrcCode(value, parent, path, validationContext);
-					validationContext.onlyOnTouchErrors[path] = validationContext.errors.filter((error) => error.path === path);
+			return (value: any, validationContext: ValidationContext<Final>) => {
+				if ( validationContext.context.onlyOnTouch.some((key) => key === '*' || key.includes(validationContext.path) || validationContext.path.includes(key)) ) {
+					fnSrcCode(value, validationContext);
+					validationContext.context.onlyOnTouchErrors[validationContext.path] = validationContext.context.errors.filter((error) => error.path === validationContext.path);
 				}
-				else if ( validationContext.onlyOnTouchErrors[path] ) {
-					validationContext.onlyOnTouchErrors[path].forEach((error) => validationContext.errors.push(error));
+				else if ( validationContext.context.onlyOnTouchErrors[validationContext.path] ) {
+					validationContext.context.onlyOnTouchErrors[validationContext.path].forEach((error) => validationContext.context.errors.push(error));
 				}
 			};
 		}
@@ -506,23 +499,28 @@ export abstract class Schema<Input = any, Final = any> {
 		this.async = context.async ?? false;
 
 		const validate = this.async
-			? (validationContext: ValidationContext<Final>) => validationContext.promises.length > 0 
-				? Promise.all(validationContext.promises).then(() => validationContext.errors) 
-				: validationContext.errors
-			: (validationContext: ValidationContext<Final>) => validationContext.errors;
+			? (validationContext: ValidationContext<Final>) => validationContext.context.promises.length > 0 
+				? Promise.all(validationContext.context.promises).then(() => validationContext.context.errors) 
+				: validationContext.context.errors
+			: (validationContext: ValidationContext<Final>) => validationContext.context.errors;
 
 		const onlyOnTouchErrors = {};
 
 		this.def._validate = (value: any, onlyOnTouch: OnlyOnTouch<Input> = []): typeof this.async extends true ? Promise<SchemaError[]> : SchemaError[] => {
 			const validationContext: ValidationContext<Final> = {
-				errors: [],
+				context: {
+					errors: [],
+					onlyOnTouch,
+					promises: [],
+					onlyOnTouchErrors
+				},
 				form: value,
-				onlyOnTouch,
-				promises: [],
-				onlyOnTouchErrors
+				
+				path: '',
+				parent: value
 			};
 			
-			schemasSrcCode(value, value, '', validationContext);
+			schemasSrcCode(value, validationContext);
 
 			return validate(
 				validationContext

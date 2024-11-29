@@ -8,11 +8,16 @@ export type RuleMethod<Value, Final = any> = (
 ) => SchemaError[] | false;
 
 export type ValidationContext<T> = {
-	errors: SchemaError[]
+	context: {
+		errors: SchemaError[]
+		onlyOnTouch: string[]
+		onlyOnTouchErrors: Record<string, SchemaError[]>
+		promises: Array<Promise<any>>
+	}
+
 	form: T
-	onlyOnTouch: string[]
-	onlyOnTouchErrors: Record<string, SchemaError[]>
-	promises: Array<Promise<any>>
+	parent: any
+	path: string
 };
 
 export type RuleSrcCodeConfig = Pick<Required<CompileSchemaConfig>, 'context'>;

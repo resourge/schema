@@ -1,4 +1,5 @@
 import { type ValidationContext } from '../rules/BaseRule';
+import { getMethodContext } from '../rules/Rule';
 import { type ObjectPropertiesSchema } from '../types/SchemaMap';
 import { type CompileSchemaConfig, type PrivateSchema } from '../types/SchemaTypes';
 
@@ -24,11 +25,18 @@ export abstract class ArrayTypedSchema<
 
 		return super.compileSchema({
 			context, 
-			srcCode: (value: any, parent: any, path: string, validationContext: ValidationContext<Final>) => {
+			srcCode: (value: any, validationContext: ValidationContext<Final>) => {
 				const len = value.length;
-				const basePath = path + '[';
+				const basePath = validationContext.path + '[';
 				for (let x = 0; x < len; x++) {
-					fns(value[x], parent, basePath + x + ']', validationContext);
+					fns(
+						value[x], 
+						getMethodContext(
+							basePath + x + ']',
+							validationContext,
+							value 
+						)
+					);
 				}
 			} 
 		});

@@ -48,17 +48,17 @@ export function getWhenRule<Value = any, T = any>(
 	});
 
 	if ( config.namedValueKey ) {
-		return (value: any, parent: any, path: string, validationContext: ValidationContext<any>) => {
+		return (value: any, validationContext: ValidationContext<any>) => {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-			const isValid = config.method(parent[config.namedValueKey!], parent, validationContext);
+			const isValid = config.method(validationContext.parent[config.namedValueKey!], validationContext.parent, validationContext);
 
-			(isValid ? thenSrcCode : otherwiseSrcCode)(value, parent, path, validationContext);
+			(isValid ? thenSrcCode : otherwiseSrcCode)(value, validationContext);
 		};
 	}
 
-	return (value: any, parent: any, path: string, validationContext: ValidationContext<any>) => {
-		const isValid = config.method(value, parent, validationContext);
+	return (value: any, validationContext: ValidationContext<any>) => {
+		const isValid = config.method(value, validationContext.parent, validationContext);
 
-		(isValid ? thenSrcCode : otherwiseSrcCode)(value, parent, path, validationContext);
+		(isValid ? thenSrcCode : otherwiseSrcCode)(value, validationContext);
 	};
 }

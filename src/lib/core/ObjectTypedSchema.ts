@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { type ValidationContext } from '../rules/BaseRule';
+import { getMethodContext } from '../rules/Rule';
 import { type OneOfConfigMessage } from '../types/OneOfTypes';
 import { type SchemaMap } from '../types/SchemaMap';
 import { type CompileSchemaConfig, type PrivateSchema } from '../types/SchemaTypes';
@@ -37,31 +38,32 @@ export abstract class ObjectTypedSchema<
 
 			if ( isFirstSchema ) {
 				schemas.push(
-					(value: any, parent: any, path: string, validationContext: ValidationContext<Final>) => {
-						fn(value[childKey], parent, childKey, validationContext);
+					(value: any, validationContext: ValidationContext<Final>) => {
+						fn(value[childKey], value, getMethodContext(childKey, validationContext));
 					}
 				);
 			}
 			else {
 				schemas.push(
-					(value: any, parent: any, path: string, validationContext: ValidationContext<Final>) => {
-						fn(value[childKey], parent, path + '.' + childKey, validationContext);
+					(value: any, validationContext: ValidationContext<Final>) => {
+						fn(value[childKey], value, getMethodContext(validationContext.path + '.' + childKey, validationContext, value));
 					}
 				);
 			}
 		});
 
 		const l = schemas.length;
-		function oneOf(value: any, parent: any, path: string, validationContext: ValidationContext<Final>) {
+		function oneOf(value: any, validationContext: ValidationContext<Final>) {
 			let errors: SchemaError[] = [];
 			const _errors: SchemaError[] = [];
 
 			for (let i = 0; i < l; i++) {
-				schemas[i](value, parent, path, {
+				schemas[i](value, {
 					errors,
 					form: validationContext.form,
-					onlyOnTouch: validationContext.onlyOnTouch,
-					promises: validationContext.promises
+					context: validationContext.context,
+					path: validationContext.path,
+					parent: validationContext.parent
 				});
 				if ( errors.length === 0 ) {
 					return [];
@@ -74,23 +76,23 @@ export abstract class ObjectTypedSchema<
 		}
 
 		if ( !this.oneOfConfigMessage ) {
-			return (value: any, parent: any, path: string, validationContext: ValidationContext<Final>) => {
-				const errors = oneOf(value, parent, path, validationContext);
+			return (value: any, validationContext: ValidationContext<Final>) => {
+				const errors = oneOf(value, validationContext);
 				const length = errors.length;
 				for (let i = 0; i < length; i++) {
-					validationContext.errors.push(errors[i]); 
+					validationContext.context.errors.push(errors[i]); 
 				}
 			};
 		}
 
 		if ( typeof this.oneOfConfigMessage === 'string' ) {
-			return (value: any, parent: any, path: string, validationContext: ValidationContext<Final>) => {
-				const errors = oneOf(value, parent, path, validationContext);
+			return (value: any, validationContext: ValidationContext<Final>) => {
+				const errors = oneOf(value, validationContext);
 				const length = errors.length;
 				for (let i = 0; i < length; i++) {
 					const error = errors[i];
 					error.error = this.oneOfConfigMessage as string; 
-					validationContext.errors.push(error);
+					validationContext.context.errors.push(error);
 				}
 			};
 		}
@@ -98,18 +100,18 @@ export abstract class ObjectTypedSchema<
 		if ( Array.isArray(this.oneOfConfigMessage) ) {
 			const errors = this.oneOfConfigMessage as SchemaError[];
 			const l = errors.length;
-			return (value: any, parent: any, path: string, validationContext: ValidationContext<Final>) => {
-				if ( oneOf(value, parent, path, validationContext).length ) {
+			return (value: any, validationContext: ValidationContext<Final>) => {
+				if ( oneOf(value, validationContext).length ) {
 					for (let i = 0; i < l; i++) {
-						validationContext.errors.push(errors[i]); 
+						validationContext.context.errors.push(errors[i]); 
 					}
 				}
 			};
 		}
 
-		return (value: any, parent: any, path: string, validationContext: ValidationContext<Final>) => {
-			if ( oneOf(value, parent, path, validationContext).length ) {
-				validationContext.errors.push(this.oneOfConfigMessage as SchemaError);
+		return (value: any, validationContext: ValidationContext<Final>) => {
+			if ( oneOf(value, validationContext).length ) {
+				validationContext.context.errors.push(this.oneOfConfigMessage as SchemaError);
 			}
 		};
 	}
@@ -128,15 +130,15 @@ export abstract class ObjectTypedSchema<
 				});
 				if ( isFirstSchema ) {
 					schemaRules.push(
-						(value: any, parent: any, path: string, validationContext: ValidationContext<Final>) => {
-							fn(value[childKey], parent, childKey, validationContext);
+						(value: any, validationContext: ValidationContext<Final>) => {
+							fn(value[childKey], getMethodContext(childKey, validationContext));
 						}
 					);
 				}
 				else {
 					schemaRules.push(
-						(value: any, parent: any, path: string, validationContext: ValidationContext<Final>) => {
-							fn(value[childKey], parent, path + '.' + childKey, validationContext);
+						(value: any, validationContext: ValidationContext<Final>) => {
+							fn(value[childKey], getMethodContext(validationContext.path + '.' + childKey, validationContext, value));
 						}
 					);
 				}
@@ -155,9 +157,9 @@ export abstract class ObjectTypedSchema<
 		const l = schemaRules.length;
 		return super.compileSchema({
 			context, 
-			srcCode: (value: any, parent: any, path: string, validationContext: ValidationContext<Final>) => {
+			srcCode: (value: any, validationContext: ValidationContext<Final>) => {
 				for (let x = 0; x < l; x++) {
-					schemaRules[x](value, parent, path, validationContext);
+					schemaRules[x](value, validationContext);
 				}
 			}
 		});

@@ -1,14 +1,9 @@
 import { type Schema } from '../core/schema';
-import { type PrivateSchema } from '../types/SchemaTypes';
+import { type Context, type PrivateSchema } from '../types/SchemaTypes';
 import { type SchemaError } from '../types/types';
 import { defaultMessages, type MessageType } from '../utils/messages';
 
-import {
-	getError,
-	type BaseRuleConfig,
-	type RuleSrcCodeConfig,
-	type ValidationContext
-} from './BaseRule';
+import { getError, type BaseRuleConfig, type ValidationContext } from './BaseRule';
 
 /**
  * When test is "false" message appears
@@ -53,27 +48,40 @@ export type RuleConfig<Value = any, T = any> = {
 	isCustomTestThatReturnsArray: boolean
 } & BaseRuleConfig<'Rule', Value, T, RuleMethod<Value, T> | AsyncRuleMethod<Value, T>>;
 
+export function getMethodContext(
+	path: string, 
+	validationContext: ValidationContext<any>,
+	parent?: any
+): ValidationContext<any> {
+	return {
+		context: validationContext.context,
+		form: validationContext.form,
+		path,
+		parent: parent ?? validationContext.parent
+	};
+}
+
 function getRuleSrcCode<Value, T = any>(
 	config: Pick<
 		RuleConfig<Value, T>,
 		'isCustomTestThatReturnsArray' | 'message'
 	>,
-	{ context }: RuleSrcCodeConfig
+	context: Context
 ): any {
 	const isAsync = context.async;
 	
 	if ( config.isCustomTestThatReturnsArray ) {
 		if ( isAsync ) {
-			return (validationContext: ValidationContext<any>, path: string, error: SchemaError) => {
-				const _path = error.path || path;
+			return (validationContext: ValidationContext<any>, error: SchemaError) => {
+				const _path = error.path || validationContext.path;
 				const _error = getError(_path, error.error);
-				validationContext.errors.push(_error);
-				(validationContext.onlyOnTouchErrors[_path] = validationContext.onlyOnTouchErrors[_path] || []).push(_error);
+				validationContext.context.errors.push(_error);
+				(validationContext.context.onlyOnTouchErrors[_path] = validationContext.context.onlyOnTouchErrors[_path] || []).push(_error);
 			};
 		}
 
-		return (validationContext: ValidationContext<any>, path: string, error: SchemaError) => {
-			validationContext.errors.push(getError(error.path || path, error.error));
+		return (validationContext: ValidationContext<any>, error: SchemaError) => {
+			validationContext.context.errors.push(getError(error.path || validationContext.path, error.error));
 		};
 	}
 
@@ -84,47 +92,47 @@ function getRuleSrcCode<Value, T = any>(
 	);
 
 	if ( isAsync ) {
-		return (validationContext: ValidationContext<any>, path: string) => {
-			const _error = getError(path, _message);
-			validationContext.errors.push(_error);
-			(validationContext.onlyOnTouchErrors[path] = validationContext.onlyOnTouchErrors[path] || []).push(_error);
+		return (validationContext: ValidationContext<any>) => {
+			const _error = getError(validationContext.path, _message);
+			validationContext.context.errors.push(_error);
+			(validationContext.context.onlyOnTouchErrors[validationContext.path] = validationContext.context.onlyOnTouchErrors[validationContext.path] || []).push(_error);
 		};
 	}
 
-	return (validationContext: ValidationContext<any>, path: string) => {
-		validationContext.errors.push(getError(path, _message));
+	return (validationContext: ValidationContext<any>) => {
+		validationContext.context.errors.push(getError(validationContext.path, _message));
 	};
 }
 
 export function getRule<Value, T = any>(
 	config: RuleConfig<Value, T>,
-	srcCodeConfig: RuleSrcCodeConfig
+	context: Context
 ) {
-	srcCodeConfig.context.async = config.isAsync;
+	context.async = config.isAsync;
 
-	const fn = getRuleSrcCode(config, srcCodeConfig);
+	const fn = getRuleSrcCode(config, context);
 
 	if ( config.isAsync ) {
 		if ( config.isCustomTestThatReturnsArray ) {
-			return (value: any, parent: any, path: string, validationContext: ValidationContext<any>) => {
-				validationContext.promises.push(
-					(config.method(value, parent, validationContext) as Promise<SchemaError[]>)
+			return (value: any, validationContext: ValidationContext<any>) => {
+				validationContext.context.promises.push(
+					(config.method(value, validationContext.parent, validationContext) as Promise<SchemaError[]>)
 					.then((isValid) => {
 						if ( isValid.length ) {
 							isValid.forEach((error: SchemaError) => {
-								fn(validationContext, path, error);
+								fn(validationContext, error);
 							});
 						}
 					})
 				);
 			};
 		}
-		return (value: any, parent: any, path: string, validationContext: ValidationContext<any>) => {
-			validationContext.promises.push(
-				(config.method(value, parent, validationContext) as Promise<boolean>)
+		return (value: any, validationContext: ValidationContext<any>) => {
+			validationContext.context.promises.push(
+				(config.method(value, validationContext.parent, validationContext) as Promise<boolean>)
 				.then((isValid) => {
 					if ( isValid ) {
-						fn(validationContext, path);
+						fn(validationContext);
 					}
 				})
 			);
@@ -132,19 +140,19 @@ export function getRule<Value, T = any>(
 	}
 
 	if ( config.isCustomTestThatReturnsArray ) {
-		return (value: any, parent: any, path: string, validationContext: ValidationContext<any>) => {
-			const isValid = config.method(value, parent, validationContext) as SchemaError[];
+		return (value: any, validationContext: ValidationContext<any>) => {
+			const isValid = config.method(value, validationContext.parent, validationContext) as SchemaError[];
 			if ( isValid.length ) {
 				isValid.forEach((error) => {
-					fn(validationContext, path, error);
+					fn(validationContext, error);
 				});
 			}
 		};
 	}
 
-	return (value: any, parent: any, path: string, validationContext: ValidationContext<any>) => {
-		if ( config.method(value, parent, validationContext) ) {
-			fn(validationContext, path);
+	return (value: any, validationContext: ValidationContext<any>) => {
+		if ( config.method(value, validationContext.parent, validationContext) ) {
+			fn(validationContext);
 		}
 	};
 }
@@ -157,7 +165,7 @@ export type OnlyOnTouchRuleConfig = {
 
 export function getOnlyTouchRule(
 	config: OnlyOnTouchRuleConfig,
-	{ context }: RuleSrcCodeConfig
+	context: Context
 ) {
 	// @ts-expect-error // Because the camp that is changing is protected
 	config.then.def.isOnlyOnTouch = true;

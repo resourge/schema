@@ -67,7 +67,7 @@ Yup              	 x     11,939 ops/sec ±0.50% (92 runs sampled)
 [HeavyBenchmark](./benchmark/heavyBenchmark.ts) (done with an array with 10 000 items)
 ```sh
 @resourge/schema old x 2,550 	ops/sec ±2.17% (90 runs sampled)
-@resourge/schema new x 1,363 	ops/sec ±3.31% (93 runs sampled)
+@resourge/schema new x   964 	ops/sec ±3.58% (88 runs sampled)
 Fast Validator   	 x   211 	ops/sec ±0.78% (82 runs sampled)
 joi              	 x    28.60 ops/sec ±9.21% (52 runs sampled)
 zod              	 x    24.60 ops/sec ±4.28% (45 runs sampled)

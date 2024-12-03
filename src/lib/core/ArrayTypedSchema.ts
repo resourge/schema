@@ -18,6 +18,14 @@ export abstract class ArrayTypedSchema<
 		this.schema = schema as unknown as PrivateSchema;
 	}
 
+	protected whenClone(): any {
+		const clone = super.whenClone();
+		
+		clone.schema = {};
+
+		return clone;
+	};
+
 	protected override compileSchema({ context }: CompileSchemaConfig) {
 		const fns = this.schema.compileSchema({
 			context 

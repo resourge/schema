@@ -1,5 +1,5 @@
 import { type Schema } from '../core/schema';
-import { type CompileSchemaConfig, type PrivateSchema } from '../types/SchemaTypes';
+import { type Context, type PrivateSchema } from '../types/SchemaTypes';
 
 import { type ValidationContext } from './BaseRule';
 import { type RuleBooleanMethod } from './Rule';
@@ -29,22 +29,17 @@ export type WhenParameter<Value = any, T = any> = {
 
 export function getWhenRule<Value = any, T = any>(
 	config: WhenParameter<Value, T>,
-	{
-		context, 
-		srcCode
-	}: CompileSchemaConfig
+	context: Context
 ) {
 	const thenSrcCode = (config.then as unknown as PrivateSchema).compileSchema({
-		context,
-		srcCode
+		context
 	});
 
 	// This will never be undefined because when 
 	// creating whenRules otherwise is inserted by default
 	// Only when whenRule is a normalRule will otherwise be undefined 
 	const otherwiseSrcCode = (config.otherwise as unknown as PrivateSchema).compileSchema({
-		context,
-		srcCode
+		context
 	});
 
 	if ( config.namedValueKey ) {

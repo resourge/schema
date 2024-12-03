@@ -14,19 +14,30 @@ export abstract class ObjectTypedSchema<
 	Input = any,
 	Final = any
 > extends Schema<Input, Final> {
-	protected schemas: SchemaMap<Input>;
+	protected schema: SchemaMap<Input>;
 	protected shape: Map<string, PrivateSchema>;
 
 	protected oneOfRules = new Map<string, PrivateSchema>();
 	protected oneOfConfigMessage: OneOfConfigMessage | undefined;
 
-	constructor(schemas: SchemaMap<Input>, message?: string, def?: Definitions) {
+	protected whenClone(): any {
+		const clone = super.whenClone();
+		
+		clone.schema = {};
+		clone.shape = new Map();
+		clone.oneOfRules = new Map();
+		clone.oneOfConfigMessage = undefined;
+
+		return clone;
+	};
+
+	constructor(schema: SchemaMap<Input>, message?: string, def?: Definitions) {
 		super(message, def);
 
-		this.schemas = {
-			...schemas 
+		this.schema = {
+			...schema 
 		};
-		this.shape = new Map(Object.entries(schemas));
+		this.shape = new Map(Object.entries(schema));
 	}
 
 	protected compileOneOfRules({ context, isFirstSchema }: CompileSchemaConfig): Function {

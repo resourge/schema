@@ -12,7 +12,7 @@ export class ObjectSchema<
 
 	protected override clone() {
 		const schema = new ObjectSchema<Input, Final>(
-			this.schemas, 
+			this.schema, 
 			this.message, 
 			this.def
 		);
@@ -41,7 +41,7 @@ export class ObjectSchema<
 			_this.shape.set(key, _schema);
 
 			// @ts-expect-error // this will never be undefined but typescript can't comprehend that
-			_this.schemas[key] = _schema;
+			_this.schema[key] = _schema;
 		});
 
 		return _this as unknown as ObjectSchema<TInput, TFinal>;

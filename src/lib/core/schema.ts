@@ -70,6 +70,16 @@ export abstract class Schema<Input = any, Final = any> {
 		return new (this.constructor as new(...args: any[]) => any)(this.message, this.def);
 	};
 
+	protected whenClone(): any {
+		const clone = new (this.constructor as new(...args: any[]) => any)(this.message, this.def);
+		
+		clone.def.normalRules = new Map();
+		clone.def.whenRules = [];
+		clone.rule = () => true;
+
+		return clone;
+	};
+
 	// #region Normal Rules
 	protected compileNormalRules(
 		context: Context
@@ -90,8 +100,8 @@ export abstract class Schema<Input = any, Final = any> {
 	// #endregion Normal Rules
 
 	// #region When Rules
-	protected compileWhenSchema(config: CompileSchemaConfig) {
-		const whenCode = this.def.whenRules.map((rule) => getWhenRule(rule, config));
+	protected compileWhenSchema(context: Context) {
+		const whenCode = this.def.whenRules.map((rule) => getWhenRule(rule, context));
 
 		const l = whenCode.length;
 		return (value: any, validationContext: ValidationContext<any>) => {
@@ -226,9 +236,17 @@ export abstract class Schema<Input = any, Final = any> {
 	}
 
 	protected compileSchema(config: CompileSchemaConfig) {
-		return this.def.whenRules.length
-			? this.compileWhenSchema(config)
-			: this.compileNormalSchema(config);
+		const normalFunction = this.compileNormalSchema(config);
+
+		if ( this.def.whenRules.length ) {
+			const whenFunction = this.compileWhenSchema(config.context);
+			return (value: any, validationContext: ValidationContext<any>) => {
+				normalFunction(value, validationContext);
+				whenFunction(value, validationContext);
+			};
+		}
+
+		return normalFunction;
 	}
 
 	private addTest<Form = this['final']>(
@@ -330,29 +348,18 @@ export abstract class Schema<Input = any, Final = any> {
 		config?: WhenConfig<S, Value, Form>
 	): this {
 		const _this = this.clone();
-		
-		_this.def.normalRules = new Map();
 
 		const {
 			then, otherwise, is 
 		} = typeof name === 'string' ? config! : name;
 
-		const thenThis = this.clone();
-
-		thenThis.def.whenRules = [];
-
-		let otherwiseThis = this.clone();
-		otherwiseThis.def.whenRules = [];
-		
-		if ( otherwise ) {
-			otherwiseThis = otherwise(otherwiseThis);
-		}
+		const otherwiseThis = this.whenClone();
 
 		_this.def.whenRules.push({
 			namedValueKey: typeof name === 'string' ? name : undefined,
 			method: is,
-			then: then(thenThis),
-			otherwise: otherwiseThis
+			then: then(this.whenClone()),
+			otherwise: otherwise ? otherwise(otherwiseThis) : otherwiseThis
 		});
 
 		return _this;
@@ -370,19 +377,19 @@ export abstract class Schema<Input = any, Final = any> {
 			return _this;
 		}
 
-		let thenClone = this.clone() as this;
-		thenClone.def.isOnlyOnTouch = undefined;
-		thenClone.def.isOptional = undefined;
-		thenClone.def.isNullable = undefined;
-		thenClone.def.isRequired = undefined;
-		thenClone.def.whenRules = [];
-		thenClone.def.normalRules = new Map();
+		let clone = this.whenClone() as this;
+		clone.def.isOnlyOnTouch = undefined;
+		clone.def.isOptional = undefined;
+		clone.def.isNullable = undefined;
+		clone.def.isRequired = undefined;
+		clone.def.whenRules = [];
+		clone.def.normalRules = new Map();
 
-		thenClone = onlyOnTouch(thenClone);
+		clone = onlyOnTouch(clone);
 
 		/* c8 ignore start */
 		if ( IS_DEV ) {
-			thenClone.def.normalRules.forEach((_, key) => {
+			clone.def.normalRules.forEach((_, key) => {
 				if ( this.def.normalRules.has(key) ) {
 					throw new Error(`Method ${key} already exists outside of 'onlyOnTouch'. To prevent confusion decide if you want '${key}' outside or inside 'onlyOnTouch'`);
 				}
@@ -393,7 +400,7 @@ export abstract class Schema<Input = any, Final = any> {
 		_this.def.normalRules.set(
 			`_test_${this.def.normalRules.size}`,
 			{
-				then: thenClone,
+				then: clone,
 				type: 'OnlyOnTouchRule'
 			}
 		);

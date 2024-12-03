@@ -183,872 +183,9 @@ describe('Nested Schemas', () => {
 		})
 		.compile();
 
-		expect(
-			(schema.validate({
-				finalTables: [
-					{
-						index: 0,
-						finalTableId: 18314,
-						name: 'fact_',
-						sqlFrom: '',
-						displayedTable: {
-							label: 'btn.yes',
-							value: true
-						},
-						active: true,
-						sources: [
-							{
-								sourceId: 51320,
-								name: 'Acc_area1_area2',
-								// @ts-expect-error // Private value
-								sourceIndex: 0,
-								sourceType: 1,
-								isReadonly: false,
-								fields: [
-									{
-										active: true,
-										index: 0,
-										finalTableFieldId: 162242,
-										finalTableId: 18314,
-										finalField: 'Column_A',
-										description: 'Column A',
-										initialField: 'Column_A',
-										dataType: 'Text',
-										length: '1',
-										fieldType: 'SOURCE_FIELD',
-										_isAlreadyTransformed: false,
-										fieldIdentifier: false,
-										precision: 0,
-										scale: 0
-									}
-								]
-							}
-						],
-						file: {
-							path: {
-								folderPath: '',
-								fileName: ''
-							},
-							type: {
-								// @ts-expect-error // Private value
-								contentTypes: [
-									{
-										label: 'Delimited',
-										value: 'Delimited'
-									},
-									{
-										label: 'Fix',
-										value: 'Fixed'
-									}
-								],
-								separatorsOptions: [
-									{
-										label: 'Tab',
-										value: 'Tab'
-									},
-									{
-										label: 'Semicolon',
-										value: 'Semicolon'
-									},
-									{
-										label: 'Comma',
-										value: 'Comma'
-									},
-									{
-										label: 'Space',
-										value: 'Space'
-									},
-									{
-										label: 'Other',
-										value: 'Other'
-									}
-								],
-								textQualifiers: [
-									{
-										label: '"',
-										value: '"'
-									},
-									{
-										label: '\'',
-										value: '\''
-									},
-									{
-										label: 'None',
-										value: 'None'
-									}
-								],
-								fileTypes: [
-									{
-										label: 'xlsx',
-										value: 'xlsx'
-									},
-									{
-										label: 'csv',
-										value: 'csv'
-									},
-									{
-										label: 'txt',
-										value: 'txt'
-									}
-								],
-								_separators: [],
-								otherSeparator: ''
-							}
-						}
-					}
-				],
-				sourceOptions: [
-					{
-						sourceId: 51320,
-						name: 'ALL_Acc_area1_area2',
-						sourceIndex: 0,
-						sourceType: 1,
-						isReadonly: false,
-						fields: [
-							{
-								active: false,
-								index: 0,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'Column A',
-								initialField: 'Column_A',
-								dataType: 'Text',
-								length: '1',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							},
-							{
-								active: false,
-								index: 1,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'Column B',
-								initialField: 'Column_B',
-								dataType: 'Text',
-								length: '2',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							},
-							{
-								active: false,
-								index: 2,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'Column C',
-								initialField: 'Column_C',
-								dataType: 'Text',
-								length: '3',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							},
-							{
-								active: false,
-								index: 3,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'Column D',
-								initialField: 'Column_D',
-								dataType: 'Text',
-								length: '10',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							},
-							{
-								active: false,
-								index: 4,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'Column E',
-								initialField: 'Column_E',
-								dataType: 'Text',
-								length: '5',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							},
-							{
-								active: false,
-								index: 5,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'Column F',
-								initialField: 'Column_F',
-								dataType: 'Text',
-								length: '7',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							}
-						]
-					},
-					{
-						sourceId: 51321,
-						name: 'ALL_Acc_area1_area1',
-						sourceIndex: 1,
-						sourceType: 1,
-						isReadonly: true,
-						fields: [
-							{
-								active: false,
-								index: 0,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'Column A',
-								initialField: 'Column_A',
-								dataType: '',
-								length: '1',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							},
-							{
-								active: false,
-								index: 1,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'Column B',
-								initialField: 'Column_B',
-								dataType: '',
-								length: '2',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							},
-							{
-								active: false,
-								index: 2,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'Column C',
-								initialField: 'Column_C',
-								dataType: '',
-								length: '3',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							},
-							{
-								active: false,
-								index: 3,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'Column D',
-								initialField: 'Column_D',
-								dataType: '',
-								length: '10',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							},
-							{
-								active: false,
-								index: 4,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'Column E',
-								initialField: 'Column_E',
-								dataType: '',
-								length: '5',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							},
-							{
-								active: false,
-								index: 5,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'Column F',
-								initialField: 'Column_F',
-								dataType: '',
-								length: '7',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							}
-						]
-					},
-					{
-						sourceId: 51326,
-						name: 'Checko_Fix_Fix',
-						sourceIndex: 2,
-						sourceType: 1,
-						isReadonly: true,
-						fields: [
-							{
-								active: false,
-								index: 0,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'Hours',
-								initialField: 'Hours',
-								dataType: 'Date',
-								length: '5',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							},
-							{
-								active: false,
-								index: 1,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'P',
-								initialField: 'P',
-								dataType: 'Text',
-								length: '2',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							},
-							{
-								active: false,
-								index: 2,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'ric',
-								initialField: 'ric',
-								dataType: 'Date',
-								length: '3',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							},
-							{
-								active: false,
-								index: 3,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'e\tTotal\tLa',
-								initialField: 'e_Total_La',
-								dataType: 'Text',
-								length: '10',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							}
-						]
-					},
-					{
-						sourceId: 51327,
-						name: 'dheck_Fix_Fix',
-						sourceIndex: 3,
-						sourceType: 1,
-						isReadonly: true,
-						fields: [
-							{
-								active: false,
-								index: 0,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'Hours',
-								initialField: 'Hours',
-								dataType: 'Date',
-								length: '5',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							},
-							{
-								active: false,
-								index: 1,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'P',
-								initialField: 'P',
-								dataType: 'Text',
-								length: '2',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							},
-							{
-								active: false,
-								index: 2,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'ric',
-								initialField: 'ric',
-								dataType: 'Date',
-								length: '3',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							},
-							{
-								active: false,
-								index: 3,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'e\tTotal\tLa',
-								initialField: 'e_Total_La',
-								dataType: 'Text',
-								length: '10',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							}
-						]
-					},
-					{
-						sourceId: 51361,
-						name: 'dheck_Fix_Fix',
-						sourceIndex: 4,
-						sourceType: 1,
-						isReadonly: true,
-						fields: [
-							{
-								active: false,
-								index: 0,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'Hours',
-								initialField: 'Hours',
-								dataType: 'Date',
-								length: '5',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							},
-							{
-								active: false,
-								index: 1,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'P',
-								initialField: 'P',
-								dataType: 'Text',
-								length: '2',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							},
-							{
-								active: false,
-								index: 2,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'ric',
-								initialField: 'ric',
-								dataType: 'Date',
-								length: '3',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							},
-							{
-								active: false,
-								index: 3,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'e\tTotal\tLa',
-								initialField: 'e_Total_La',
-								dataType: 'Text',
-								length: '10',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							}
-						]
-					},
-					{
-						sourceId: 51486,
-						name: 'dheck_Fix_Fix',
-						sourceIndex: 5,
-						sourceType: 1,
-						isReadonly: true,
-						fields: [
-							{
-								active: false,
-								index: 0,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'Hours',
-								initialField: 'Hours',
-								dataType: 'Date',
-								length: '5',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							},
-							{
-								active: false,
-								index: 1,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'P',
-								initialField: 'P',
-								dataType: 'Text',
-								length: '2',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							},
-							{
-								active: false,
-								index: 2,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'ric',
-								initialField: 'ric',
-								dataType: 'Date',
-								length: '3',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							},
-							{
-								active: false,
-								index: 3,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'e\tTotal\tLa',
-								initialField: 'e_Total_La',
-								dataType: 'Text',
-								length: '10',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							}
-						]
-					},
-					{
-						sourceId: 51487,
-						name: 'dheck_Fix_Fix',
-						sourceIndex: 6,
-						sourceType: 1,
-						isReadonly: true,
-						fields: [
-							{
-								active: false,
-								index: 0,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'Hours',
-								initialField: 'Hours',
-								dataType: 'Date',
-								length: '5',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							},
-							{
-								active: false,
-								index: 1,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'P',
-								initialField: 'P',
-								dataType: 'Text',
-								length: '2',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							},
-							{
-								active: false,
-								index: 2,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'ric',
-								initialField: 'ric',
-								dataType: 'Date',
-								length: '3',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							},
-							{
-								active: false,
-								index: 3,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'e\tTotal\tLa',
-								initialField: 'e_Total_La',
-								dataType: 'Text',
-								length: '10',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							}
-						]
-					},
-					{
-						sourceId: 52974,
-						name: 'dheck_Fix_Fix',
-						sourceIndex: 7,
-						sourceType: 1,
-						isReadonly: true,
-						fields: [
-							{
-								active: false,
-								index: 0,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'Hours',
-								initialField: 'Hours',
-								dataType: 'Text',
-								length: '',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							},
-							{
-								active: false,
-								index: 1,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'Price',
-								initialField: 'Price',
-								dataType: 'Text',
-								length: '',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							},
-							{
-								active: false,
-								index: 2,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'Total',
-								initialField: 'Total',
-								dataType: 'Text',
-								length: '',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							},
-							{
-								active: false,
-								index: 3,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'Label',
-								initialField: 'Label',
-								dataType: 'Text',
-								length: '',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							}
-						]
-					},
-					{
-						sourceId: 53037,
-						name: '2-3',
-						sourceIndex: 8,
-						sourceType: 1,
-						isReadonly: true,
-						fields: []
-					},
-					{
-						sourceId: 53055,
-						name: 'dheck_Fix_Fix',
-						sourceIndex: 9,
-						sourceType: 1,
-						isReadonly: true,
-						fields: [
-							{
-								active: false,
-								index: 0,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'Column A',
-								initialField: 'Column_A',
-								dataType: 'Date',
-								length: '2d',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							},
-							{
-								active: false,
-								index: 1,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'Column B',
-								initialField: 'Column_B',
-								dataType: 'Datetime',
-								length: 'dd',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							},
-							{
-								active: false,
-								index: 2,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'Column C',
-								initialField: 'Column_C',
-								dataType: 'Text',
-								length: 'ddd',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							}
-						]
-					},
-					{
-						sourceId: 53061,
-						name: 'Test_Marks_Hours',
-						sourceIndex: 10,
-						sourceType: 1,
-						isReadonly: true,
-						fields: [
-							{
-								active: false,
-								index: 0,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'Hours',
-								initialField: 'Hours',
-								dataType: 'Text',
-								length: '10',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							},
-							{
-								active: false,
-								index: 1,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'Price',
-								initialField: 'Price',
-								dataType: 'Text',
-								length: '20',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							},
-							{
-								active: false,
-								index: 2,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'Total',
-								initialField: 'Total',
-								dataType: 'Text',
-								length: '',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							},
-							{
-								active: false,
-								index: 3,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								description: 'Label',
-								initialField: 'Label',
-								dataType: 'DateYYYYMMDD',
-								length: '',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							}
-						]
-					},
-					{
-						sourceId: 53075,
-						name: 'Table1-Area1',
-						sourceIndex: 11,
-						sourceType: 1,
-						isReadonly: true,
-						fields: []
-					},
-					{
-						sourceId: 18314,
-						name: 'fact_',
-						sourceIndex: 12,
-						sourceType: 2,
-						isReadonly: true,
-						fields: [
-							{
-								active: false,
-								index: 0,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								finalField: 'Column_A',
-								description: 'Column A',
-								initialField: 'Column_A',
-								dataType: 'Text',
-								length: '1',
-								fieldType: 'SOURCE_FIELD',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							},
-							{
-								active: false,
-								index: 1,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								finalField: 'Column_B',
-								description: 'Column B',
-								initialField: 'Column_B',
-								dataType: 'Text',
-								length: '2',
-								fieldType: 'SOURCE_FIELD',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							},
-							{
-								active: false,
-								index: 2,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								finalField: 'Column_C',
-								description: 'Column C',
-								initialField: 'Column_C',
-								dataType: 'Text',
-								length: '3',
-								fieldType: 'SOURCE_FIELD',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							},
-							{
-								active: false,
-								index: 3,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								finalField: 'Column_D',
-								description: 'Column D',
-								initialField: 'Column_D',
-								dataType: 'Text',
-								length: '10',
-								fieldType: 'SOURCE_FIELD',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							},
-							{
-								active: false,
-								index: 4,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								finalField: 'Column_E',
-								description: 'Column E',
-								initialField: 'Column_E',
-								dataType: 'Text',
-								length: '5',
-								fieldType: 'SOURCE_FIELD',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							},
-							{
-								active: false,
-								index: 5,
-								finalTableFieldId: 0,
-								finalTableId: 0,
-								finalField: 'Column_F',
-								description: 'Column F',
-								initialField: 'Column_F',
-								dataType: 'Text',
-								length: '7',
-								fieldType: 'SOURCE_FIELD',
-								_isAlreadyTransformed: false,
-								fieldIdentifier: false
-							}
-						]
-					}
-				],
-				dataTypesOptions: [
-					{
-						label: 'Date',
-						value: 'Date'
-					},
-					{
-						label: 'Datetime',
-						value: 'Datetime'
-					},
-					{
-						label: 'Dateyyyy/mm/dd',
-						value: 'Dateyyyy/mm/dd'
-					},
-					{
-						label: 'DateYYYYMMDD',
-						value: 'DateYYYYMMDD'
-					},
-					{
-						label: 'Decimal',
-						value: 'Decimal'
-					},
-					{
-						label: 'Float',
-						value: 'Float'
-					},
-					{
-						label: 'Int',
-						value: 'Int'
-					},
-					{
-						label: 'Text',
-						value: 'Text'
-					}
-				],
-				selectedFinalTable: {
+		const errors = schema.validate({
+			finalTables: [
+				{
 					index: 0,
 					finalTableId: 18314,
 					name: 'fact_',
@@ -1061,7 +198,8 @@ describe('Nested Schemas', () => {
 					sources: [
 						{
 							sourceId: 51320,
-							name: 'dwh_ALL_Acc_area1_area2',
+							name: 'Acc_area1_area2',
+							// @ts-expect-error // Private value
 							sourceIndex: 0,
 							sourceType: 1,
 							isReadonly: false,
@@ -1078,77 +216,9 @@ describe('Nested Schemas', () => {
 									length: '1',
 									fieldType: 'SOURCE_FIELD',
 									_isAlreadyTransformed: false,
-									fieldIdentifier: false
-								},
-								{
-									active: true,
-									index: 1,
-									finalTableFieldId: 162243,
-									finalTableId: 18314,
-									finalField: 'Column_B',
-									description: 'Column B',
-									initialField: 'Column_B',
-									dataType: 'Text',
-									length: '2',
-									fieldType: 'SOURCE_FIELD',
-									_isAlreadyTransformed: false,
-									fieldIdentifier: false
-								},
-								{
-									active: true,
-									index: 2,
-									finalTableFieldId: 162244,
-									finalTableId: 18314,
-									finalField: 'Column_C',
-									description: 'Column C',
-									initialField: 'Column_C',
-									dataType: 'Text',
-									length: '3',
-									fieldType: 'SOURCE_FIELD',
-									_isAlreadyTransformed: false,
-									fieldIdentifier: false
-								},
-								{
-									active: true,
-									index: 3,
-									finalTableFieldId: 162245,
-									finalTableId: 18314,
-									finalField: 'Column_D',
-									description: 'Column D',
-									initialField: 'Column_D',
-									dataType: 'Text',
-									length: '10',
-									fieldType: 'SOURCE_FIELD',
-									_isAlreadyTransformed: false,
-									fieldIdentifier: false
-								},
-								{
-									active: true,
-									index: 4,
-									finalTableFieldId: 162246,
-									finalTableId: 18314,
-									finalField: 'Column_E',
-									description: 'Column E',
-									initialField: 'Column_E',
-									dataType: 'Text',
-									length: '5',
-									fieldType: 'SOURCE_FIELD',
-									_isAlreadyTransformed: false,
-									fieldIdentifier: false
-								},
-								{
-									active: true,
-									index: 5,
-									finalTableFieldId: 162247,
-									finalTableId: 18314,
-									finalField: 'Column_F',
-									description: 'Column F',
-									initialField: 'Column_F',
-									dataType: 'Text',
-									length: '7',
-									fieldType: 'SOURCE_FIELD',
-									_isAlreadyTransformed: false,
-									fieldIdentifier: false
+									fieldIdentifier: false,
+									precision: 0,
+									scale: 0
 								}
 							]
 						}
@@ -1159,6 +229,7 @@ describe('Nested Schemas', () => {
 							fileName: ''
 						},
 						type: {
+							// @ts-expect-error // Private value
 							contentTypes: [
 								{
 									label: 'Delimited',
@@ -1224,7 +295,938 @@ describe('Nested Schemas', () => {
 						}
 					}
 				}
-			}) as SchemaError[]).length === 0
+			],
+			sourceOptions: [
+				{
+					sourceId: 51320,
+					name: 'ALL_Acc_area1_area2',
+					sourceIndex: 0,
+					sourceType: 1,
+					isReadonly: false,
+					fields: [
+						{
+							active: false,
+							index: 0,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'Column A',
+							initialField: 'Column_A',
+							dataType: 'Text',
+							length: '1',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						},
+						{
+							active: false,
+							index: 1,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'Column B',
+							initialField: 'Column_B',
+							dataType: 'Text',
+							length: '2',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						},
+						{
+							active: false,
+							index: 2,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'Column C',
+							initialField: 'Column_C',
+							dataType: 'Text',
+							length: '3',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						},
+						{
+							active: false,
+							index: 3,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'Column D',
+							initialField: 'Column_D',
+							dataType: 'Text',
+							length: '10',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						},
+						{
+							active: false,
+							index: 4,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'Column E',
+							initialField: 'Column_E',
+							dataType: 'Text',
+							length: '5',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						},
+						{
+							active: false,
+							index: 5,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'Column F',
+							initialField: 'Column_F',
+							dataType: 'Text',
+							length: '7',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						}
+					]
+				},
+				{
+					sourceId: 51321,
+					name: 'ALL_Acc_area1_area1',
+					sourceIndex: 1,
+					sourceType: 1,
+					isReadonly: true,
+					fields: [
+						{
+							active: false,
+							index: 0,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'Column A',
+							initialField: 'Column_A',
+							dataType: '',
+							length: '1',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						},
+						{
+							active: false,
+							index: 1,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'Column B',
+							initialField: 'Column_B',
+							dataType: '',
+							length: '2',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						},
+						{
+							active: false,
+							index: 2,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'Column C',
+							initialField: 'Column_C',
+							dataType: '',
+							length: '3',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						},
+						{
+							active: false,
+							index: 3,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'Column D',
+							initialField: 'Column_D',
+							dataType: '',
+							length: '10',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						},
+						{
+							active: false,
+							index: 4,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'Column E',
+							initialField: 'Column_E',
+							dataType: '',
+							length: '5',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						},
+						{
+							active: false,
+							index: 5,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'Column F',
+							initialField: 'Column_F',
+							dataType: '',
+							length: '7',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						}
+					]
+				},
+				{
+					sourceId: 51326,
+					name: 'Checko_Fix_Fix',
+					sourceIndex: 2,
+					sourceType: 1,
+					isReadonly: true,
+					fields: [
+						{
+							active: false,
+							index: 0,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'Hours',
+							initialField: 'Hours',
+							dataType: 'Date',
+							length: '5',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						},
+						{
+							active: false,
+							index: 1,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'P',
+							initialField: 'P',
+							dataType: 'Text',
+							length: '2',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						},
+						{
+							active: false,
+							index: 2,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'ric',
+							initialField: 'ric',
+							dataType: 'Date',
+							length: '3',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						},
+						{
+							active: false,
+							index: 3,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'e\tTotal\tLa',
+							initialField: 'e_Total_La',
+							dataType: 'Text',
+							length: '10',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						}
+					]
+				},
+				{
+					sourceId: 51327,
+					name: 'dheck_Fix_Fix',
+					sourceIndex: 3,
+					sourceType: 1,
+					isReadonly: true,
+					fields: [
+						{
+							active: false,
+							index: 0,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'Hours',
+							initialField: 'Hours',
+							dataType: 'Date',
+							length: '5',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						},
+						{
+							active: false,
+							index: 1,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'P',
+							initialField: 'P',
+							dataType: 'Text',
+							length: '2',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						},
+						{
+							active: false,
+							index: 2,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'ric',
+							initialField: 'ric',
+							dataType: 'Date',
+							length: '3',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						},
+						{
+							active: false,
+							index: 3,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'e\tTotal\tLa',
+							initialField: 'e_Total_La',
+							dataType: 'Text',
+							length: '10',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						}
+					]
+				},
+				{
+					sourceId: 51361,
+					name: 'dheck_Fix_Fix',
+					sourceIndex: 4,
+					sourceType: 1,
+					isReadonly: true,
+					fields: [
+						{
+							active: false,
+							index: 0,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'Hours',
+							initialField: 'Hours',
+							dataType: 'Date',
+							length: '5',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						},
+						{
+							active: false,
+							index: 1,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'P',
+							initialField: 'P',
+							dataType: 'Text',
+							length: '2',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						},
+						{
+							active: false,
+							index: 2,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'ric',
+							initialField: 'ric',
+							dataType: 'Date',
+							length: '3',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						},
+						{
+							active: false,
+							index: 3,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'e\tTotal\tLa',
+							initialField: 'e_Total_La',
+							dataType: 'Text',
+							length: '10',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						}
+					]
+				},
+				{
+					sourceId: 51486,
+					name: 'dheck_Fix_Fix',
+					sourceIndex: 5,
+					sourceType: 1,
+					isReadonly: true,
+					fields: [
+						{
+							active: false,
+							index: 0,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'Hours',
+							initialField: 'Hours',
+							dataType: 'Date',
+							length: '5',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						},
+						{
+							active: false,
+							index: 1,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'P',
+							initialField: 'P',
+							dataType: 'Text',
+							length: '2',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						},
+						{
+							active: false,
+							index: 2,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'ric',
+							initialField: 'ric',
+							dataType: 'Date',
+							length: '3',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						},
+						{
+							active: false,
+							index: 3,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'e\tTotal\tLa',
+							initialField: 'e_Total_La',
+							dataType: 'Text',
+							length: '10',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						}
+					]
+				},
+				{
+					sourceId: 51487,
+					name: 'dheck_Fix_Fix',
+					sourceIndex: 6,
+					sourceType: 1,
+					isReadonly: true,
+					fields: [
+						{
+							active: false,
+							index: 0,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'Hours',
+							initialField: 'Hours',
+							dataType: 'Date',
+							length: '5',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						},
+						{
+							active: false,
+							index: 1,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'P',
+							initialField: 'P',
+							dataType: 'Text',
+							length: '2',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						},
+						{
+							active: false,
+							index: 2,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'ric',
+							initialField: 'ric',
+							dataType: 'Date',
+							length: '3',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						},
+						{
+							active: false,
+							index: 3,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'e\tTotal\tLa',
+							initialField: 'e_Total_La',
+							dataType: 'Text',
+							length: '10',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						}
+					]
+				},
+				{
+					sourceId: 52974,
+					name: 'dheck_Fix_Fix',
+					sourceIndex: 7,
+					sourceType: 1,
+					isReadonly: true,
+					fields: [
+						{
+							active: false,
+							index: 0,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'Hours',
+							initialField: 'Hours',
+							dataType: 'Text',
+							length: '',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						},
+						{
+							active: false,
+							index: 1,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'Price',
+							initialField: 'Price',
+							dataType: 'Text',
+							length: '',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						},
+						{
+							active: false,
+							index: 2,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'Total',
+							initialField: 'Total',
+							dataType: 'Text',
+							length: '',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						},
+						{
+							active: false,
+							index: 3,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'Label',
+							initialField: 'Label',
+							dataType: 'Text',
+							length: '',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						}
+					]
+				},
+				{
+					sourceId: 53037,
+					name: '2-3',
+					sourceIndex: 8,
+					sourceType: 1,
+					isReadonly: true,
+					fields: []
+				},
+				{
+					sourceId: 53055,
+					name: 'dheck_Fix_Fix',
+					sourceIndex: 9,
+					sourceType: 1,
+					isReadonly: true,
+					fields: [
+						{
+							active: false,
+							index: 0,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'Column A',
+							initialField: 'Column_A',
+							dataType: 'Date',
+							length: '2d',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						},
+						{
+							active: false,
+							index: 1,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'Column B',
+							initialField: 'Column_B',
+							dataType: 'Datetime',
+							length: 'dd',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						},
+						{
+							active: false,
+							index: 2,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'Column C',
+							initialField: 'Column_C',
+							dataType: 'Text',
+							length: 'ddd',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						}
+					]
+				},
+				{
+					sourceId: 53061,
+					name: 'Test_Marks_Hours',
+					sourceIndex: 10,
+					sourceType: 1,
+					isReadonly: true,
+					fields: [
+						{
+							active: false,
+							index: 0,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'Hours',
+							initialField: 'Hours',
+							dataType: 'Text',
+							length: '10',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						},
+						{
+							active: false,
+							index: 1,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'Price',
+							initialField: 'Price',
+							dataType: 'Text',
+							length: '20',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						},
+						{
+							active: false,
+							index: 2,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'Total',
+							initialField: 'Total',
+							dataType: 'Text',
+							length: '',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						},
+						{
+							active: false,
+							index: 3,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							description: 'Label',
+							initialField: 'Label',
+							dataType: 'DateYYYYMMDD',
+							length: '',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						}
+					]
+				},
+				{
+					sourceId: 53075,
+					name: 'Table1-Area1',
+					sourceIndex: 11,
+					sourceType: 1,
+					isReadonly: true,
+					fields: []
+				},
+				{
+					sourceId: 18314,
+					name: 'fact_',
+					sourceIndex: 12,
+					sourceType: 2,
+					isReadonly: true,
+					fields: [
+						{
+							active: false,
+							index: 0,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							finalField: 'Column_A',
+							description: 'Column A',
+							initialField: 'Column_A',
+							dataType: 'Text',
+							length: '1',
+							fieldType: 'SOURCE_FIELD',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						},
+						{
+							active: false,
+							index: 1,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							finalField: 'Column_B',
+							description: 'Column B',
+							initialField: 'Column_B',
+							dataType: 'Text',
+							length: '2',
+							fieldType: 'SOURCE_FIELD',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						},
+						{
+							active: false,
+							index: 2,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							finalField: 'Column_C',
+							description: 'Column C',
+							initialField: 'Column_C',
+							dataType: 'Text',
+							length: '3',
+							fieldType: 'SOURCE_FIELD',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						},
+						{
+							active: false,
+							index: 3,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							finalField: 'Column_D',
+							description: 'Column D',
+							initialField: 'Column_D',
+							dataType: 'Text',
+							length: '10',
+							fieldType: 'SOURCE_FIELD',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						},
+						{
+							active: false,
+							index: 4,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							finalField: 'Column_E',
+							description: 'Column E',
+							initialField: 'Column_E',
+							dataType: 'Text',
+							length: '5',
+							fieldType: 'SOURCE_FIELD',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						},
+						{
+							active: false,
+							index: 5,
+							finalTableFieldId: 0,
+							finalTableId: 0,
+							finalField: 'Column_F',
+							description: 'Column F',
+							initialField: 'Column_F',
+							dataType: 'Text',
+							length: '7',
+							fieldType: 'SOURCE_FIELD',
+							_isAlreadyTransformed: false,
+							fieldIdentifier: false
+						}
+					]
+				}
+			],
+			dataTypesOptions: [
+				{
+					label: 'Date',
+					value: 'Date'
+				},
+				{
+					label: 'Datetime',
+					value: 'Datetime'
+				},
+				{
+					label: 'Dateyyyy/mm/dd',
+					value: 'Dateyyyy/mm/dd'
+				},
+				{
+					label: 'DateYYYYMMDD',
+					value: 'DateYYYYMMDD'
+				},
+				{
+					label: 'Decimal',
+					value: 'Decimal'
+				},
+				{
+					label: 'Float',
+					value: 'Float'
+				},
+				{
+					label: 'Int',
+					value: 'Int'
+				},
+				{
+					label: 'Text',
+					value: 'Text'
+				}
+			],
+			selectedFinalTable: {
+				index: 0,
+				finalTableId: 18314,
+				name: 'fact_',
+				sqlFrom: '',
+				displayedTable: {
+					label: 'btn.yes',
+					value: true
+				},
+				active: true,
+				sources: [
+					{
+						sourceId: 51320,
+						name: 'dwh_ALL_Acc_area1_area2',
+						sourceIndex: 0,
+						sourceType: 1,
+						isReadonly: false,
+						fields: [
+							{
+								active: true,
+								index: 0,
+								finalTableFieldId: 162242,
+								finalTableId: 18314,
+								finalField: 'Column_A',
+								description: 'Column A',
+								initialField: 'Column_A',
+								dataType: 'Text',
+								length: '1',
+								fieldType: 'SOURCE_FIELD',
+								_isAlreadyTransformed: false,
+								fieldIdentifier: false
+							},
+							{
+								active: true,
+								index: 1,
+								finalTableFieldId: 162243,
+								finalTableId: 18314,
+								finalField: 'Column_B',
+								description: 'Column B',
+								initialField: 'Column_B',
+								dataType: 'Text',
+								length: '2',
+								fieldType: 'SOURCE_FIELD',
+								_isAlreadyTransformed: false,
+								fieldIdentifier: false
+							},
+							{
+								active: true,
+								index: 2,
+								finalTableFieldId: 162244,
+								finalTableId: 18314,
+								finalField: 'Column_C',
+								description: 'Column C',
+								initialField: 'Column_C',
+								dataType: 'Text',
+								length: '3',
+								fieldType: 'SOURCE_FIELD',
+								_isAlreadyTransformed: false,
+								fieldIdentifier: false
+							},
+							{
+								active: true,
+								index: 3,
+								finalTableFieldId: 162245,
+								finalTableId: 18314,
+								finalField: 'Column_D',
+								description: 'Column D',
+								initialField: 'Column_D',
+								dataType: 'Text',
+								length: '10',
+								fieldType: 'SOURCE_FIELD',
+								_isAlreadyTransformed: false,
+								fieldIdentifier: false
+							},
+							{
+								active: true,
+								index: 4,
+								finalTableFieldId: 162246,
+								finalTableId: 18314,
+								finalField: 'Column_E',
+								description: 'Column E',
+								initialField: 'Column_E',
+								dataType: 'Text',
+								length: '5',
+								fieldType: 'SOURCE_FIELD',
+								_isAlreadyTransformed: false,
+								fieldIdentifier: false
+							},
+							{
+								active: true,
+								index: 5,
+								finalTableFieldId: 162247,
+								finalTableId: 18314,
+								finalField: 'Column_F',
+								description: 'Column F',
+								initialField: 'Column_F',
+								dataType: 'Text',
+								length: '7',
+								fieldType: 'SOURCE_FIELD',
+								_isAlreadyTransformed: false,
+								fieldIdentifier: false
+							}
+						]
+					}
+				],
+				file: {
+					path: {
+						folderPath: '',
+						fileName: ''
+					},
+					type: {
+						contentTypes: [
+							{
+								label: 'Delimited',
+								value: 'Delimited'
+							},
+							{
+								label: 'Fix',
+								value: 'Fixed'
+							}
+						],
+						separatorsOptions: [
+							{
+								label: 'Tab',
+								value: 'Tab'
+							},
+							{
+								label: 'Semicolon',
+								value: 'Semicolon'
+							},
+							{
+								label: 'Comma',
+								value: 'Comma'
+							},
+							{
+								label: 'Space',
+								value: 'Space'
+							},
+							{
+								label: 'Other',
+								value: 'Other'
+							}
+						],
+						textQualifiers: [
+							{
+								label: '"',
+								value: '"'
+							},
+							{
+								label: '\'',
+								value: '\''
+							},
+							{
+								label: 'None',
+								value: 'None'
+							}
+						],
+						fileTypes: [
+							{
+								label: 'xlsx',
+								value: 'xlsx'
+							},
+							{
+								label: 'csv',
+								value: 'csv'
+							},
+							{
+								label: 'txt',
+								value: 'txt'
+							}
+						],
+						_separators: [],
+						otherSeparator: ''
+					}
+				}
+			}
+		}) as SchemaError[];
+
+		expect(
+			errors.length === 0
 		)
 		.toBeTruthy();
 	});

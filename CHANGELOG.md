@@ -1,3 +1,10 @@
+## [1.14.2](https://github.com/resourge/schema/compare/v1.14.1...v1.14.2) (2024-12-03)
+
+
+### Bug Fixes
+
+* **when rule:** fix when rule calling normalRules more than once ([f5a98a4](https://github.com/resourge/schema/commit/f5a98a4d3546192496d46513ecd3b3c8b7cd61f3))
+
 ## [1.14.1](https://github.com/resourge/schema/compare/v1.14.0...v1.14.1) (2024-11-29)
 
 

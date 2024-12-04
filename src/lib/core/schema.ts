@@ -54,7 +54,7 @@ export type TestMethodConfig<Method extends (...args: any[]) => any> = {
 export abstract class Schema<Input = any, Final = any> {
 	public input!: Input;
 	public final!: Final;
-	protected async: boolean = false;
+	protected isAsync: boolean = false;
 	protected def: Definitions<Input, Final> = new Definitions<Input, Final>();
 	protected message: string = '';
 	protected abstract rule: RuleBooleanMethod<any, any>;
@@ -503,9 +503,9 @@ export abstract class Schema<Input = any, Final = any> {
 			isFirstSchema: true
 		});
 
-		this.async = context.async ?? false;
+		this.isAsync = context.isAsync ?? false;
 
-		const validate = this.async
+		const validate = this.isAsync
 			? (validationContext: ValidationContext<Final>) => validationContext.context.promises.length > 0 
 				? Promise.all(validationContext.context.promises).then(() => validationContext.context.errors) 
 				: validationContext.context.errors
@@ -513,7 +513,7 @@ export abstract class Schema<Input = any, Final = any> {
 
 		const onlyOnTouchErrors = {};
 
-		this.def._validate = (value: any, onlyOnTouch: OnlyOnTouch<Input> = []): typeof this.async extends true ? Promise<SchemaError[]> : SchemaError[] => {
+		this.def._validate = (value: any, onlyOnTouch: OnlyOnTouch<Input> = []): typeof this.isAsync extends true ? Promise<SchemaError[]> : SchemaError[] => {
 			const validationContext: ValidationContext<Final> = {
 				context: {
 					errors: [],
@@ -531,7 +531,7 @@ export abstract class Schema<Input = any, Final = any> {
 
 			return validate(
 				validationContext
-			) as typeof this.async extends true ? Promise<SchemaError[]> : SchemaError[];
+			) as typeof this.isAsync extends true ? Promise<SchemaError[]> : SchemaError[];
 		};
 
 		return this;

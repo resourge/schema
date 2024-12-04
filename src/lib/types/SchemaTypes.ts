@@ -4,7 +4,7 @@ import { type Schema } from '../core/schema';
 export type PrivateSchema = Schema<any, any> & { compileSchema: Schema<any, any>['compileSchema'] };
 
 export type Context = {
-	async?: boolean
+	isAsync?: boolean
 };
 
 export type CompileSchemaConfig = {

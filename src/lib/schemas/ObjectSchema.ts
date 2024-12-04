@@ -30,7 +30,7 @@ export class ObjectSchema<
 	public extend<
 		TInput extends Input = Input,
 		TFinal extends Final = Final
-	>(schemas: SchemaMap<TInput>): ObjectSchema<TInput, TFinal> {
+	>(schemas: SchemaMap<TInput, false, TFinal>): ObjectSchema<TInput, TFinal> {
 		const _this = this.clone();
 		
 		Object.entries(schemas)

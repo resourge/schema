@@ -68,7 +68,7 @@ function getRuleSrcCode<Value, T = any>(
 	>,
 	context: Context
 ): any {
-	const isAsync = context.async;
+	const isAsync = context.isAsync;
 	
 	if ( config.isCustomTestThatReturnsArray ) {
 		if ( isAsync ) {
@@ -108,7 +108,7 @@ export function getRule<Value, T = any>(
 	config: RuleConfig<Value, T>,
 	context: Context
 ) {
-	context.async = config.isAsync;
+	context.isAsync = config.isAsync;
 
 	const fn = getRuleSrcCode(config, context);
 

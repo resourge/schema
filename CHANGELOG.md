@@ -1,3 +1,10 @@
+## [1.14.3](https://github.com/resourge/schema/compare/v1.14.2...v1.14.3) (2024-12-04)
+
+
+### Bug Fixes
+
+* **object schema:** fix type on extend not working as intended ([0e5dabb](https://github.com/resourge/schema/commit/0e5dabba308b833361434d8b8f0732ade3803120))
+
 ## [1.14.2](https://github.com/resourge/schema/compare/v1.14.1...v1.14.2) (2024-12-03)
 
 

@@ -1,5 +1,3 @@
-/// <reference types="vitest" />
-
 import react from '@vitejs/plugin-react-swc';
 
 import { defineLibConfig } from './config/defineLibConfig';

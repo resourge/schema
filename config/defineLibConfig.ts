@@ -47,10 +47,6 @@ export const defineLibConfig = (
 ): UserConfigExport => defineConfig((originalConfig) => deepMerge(
 	typeof config === 'function' ? config(originalConfig) : config,
 	{
-		test: {
-			globals: true,
-			setupFiles: './src/setupTests.ts'
-		},
 		build: {
 			minify: false,
 			sourcemap: true,

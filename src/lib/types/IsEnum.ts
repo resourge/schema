@@ -2,6 +2,7 @@ type Primitive = string | number | bigint | boolean | null | undefined;
 
 type IsStringUnion<T> = `${T extends Primitive ? T : ''}` extends T ? true : false;
 
+/* istanbul ignore next -- @preserve */
 enum GenericEnum {}
 
 export type IsEnum<E> = E extends any[] 

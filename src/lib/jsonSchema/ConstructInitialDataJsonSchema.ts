@@ -32,6 +32,10 @@ export function ConstructInitialData<T extends JsonSchemaType>(schemaValue: T): 
 			}, {});
 		case 'array':
 			return [] as any;
+		case 'string':
+			return '' as any;
+		case 'number':
+			return 0 as any;
 		default:
 			return undefined as any;
 	}

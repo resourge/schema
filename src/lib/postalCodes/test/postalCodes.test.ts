@@ -1,3 +1,5 @@
+import { it, expect } from 'vitest';
+
 import PostalCodes from '../index';
 import * as PostalCodesRest from '../index';
 
@@ -752,7 +754,7 @@ const postalCodesExamples = {
 	}
 } as const;
 
-test('postalCodes object', () => {
+it('postalCodes object', () => {
 	Object.entries(PostalCodes)
 	.forEach(([key, data]) => {
 		const postalCode = postalCodesExamples[key as keyof typeof PostalCodes];
@@ -764,7 +766,7 @@ test('postalCodes object', () => {
 	});
 });
 
-test('postalCodes singular const\'s', () => {
+it('postalCodes singular const\'s', () => {
 	Object.entries(postalCodesExamples)
 	.forEach(([key, { valid, invalid }]) => {
 		const postalCode = PostalCodesRest[key as keyof typeof PostalCodes];

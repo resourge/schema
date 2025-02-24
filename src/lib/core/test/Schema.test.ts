@@ -1,4 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
+import { describe, it, expect } from 'vitest';
+
 import { number, object } from '../..';
 import { type SchemaError } from '../../types/types';
 

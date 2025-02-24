@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import { type SchemaError } from '../../types/types';
 import { number, NumberSchema } from '../NumberSchema';
 import { object } from '../ObjectSchema';

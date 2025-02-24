@@ -49,7 +49,6 @@ export const defineLibConfig = (
 	{
 		test: {
 			globals: true,
-			environment: 'jsdom',
 			setupFiles: './src/setupTests.ts'
 		},
 		build: {

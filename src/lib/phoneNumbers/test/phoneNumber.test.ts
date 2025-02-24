@@ -1,6 +1,8 @@
+import { it, expect } from 'vitest';
+
 import PhoneNumbers from '../index';
 
-test('phoneNumbers object', () => {
+it('phoneNumbers object', () => {
 	// pt_PT
 	expect(PhoneNumbers.pt_PT.regex.test('960000000'))
 	.toBeTruthy();

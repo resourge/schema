@@ -1,9 +1,11 @@
+import { describe, expect, it } from 'vitest';
+
 import { type SchemaError } from '../../types/types';
 import { any, AnySchema } from '../AnySchema';
 import { object } from '../ObjectSchema'; 
 
 describe('any', () => {
-	test('should validate', () => {
+	it('should validate', () => {
 		const schema = any()
 		.optional()
 		.compile();

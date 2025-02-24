@@ -12,6 +12,7 @@
 	"include": [
 		"**/vite.config.ts",
 		"./config/**/*",
-		"package.json"
+		"package.json",
+		"./config/**/*"
 	]
 }

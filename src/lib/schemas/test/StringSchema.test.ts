@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import PostalCodes from '../../postalCodes';
 import { type SchemaError } from '../../types/types';
 import { number } from '../NumberSchema';

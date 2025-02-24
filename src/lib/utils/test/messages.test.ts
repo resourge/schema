@@ -1,7 +1,9 @@
+import { expect, it } from 'vitest';
+
 import { string } from '../../schemas';
 import { setupDefaultMessage } from '../messages';
 
-test('beautifyFunction', () => {
+it('beautifyFunction', () => {
 	const customMinMessage = 'Custom min message';
 
 	setupDefaultMessage({

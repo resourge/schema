@@ -1,3 +1,10 @@
+## [1.14.4](https://github.com/resourge/schema/compare/v1.14.3...v1.14.4) (2025-03-17)
+
+
+### Bug Fixes
+
+* **arrayschema:** fix whenClone crashing ([cd87d98](https://github.com/resourge/schema/commit/cd87d985458167d96d829858678226a341a6455a))
+
 ## [1.14.3](https://github.com/resourge/schema/compare/v1.14.2...v1.14.3) (2024-12-04)
 
 

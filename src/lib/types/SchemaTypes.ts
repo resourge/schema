@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/consistent-indexed-object-style */
 import { type Schema } from '../core/schema';
 
-export type PrivateSchema = Schema<any, any> & { compileSchema: Schema<any, any>['compileSchema'] };
+export type PrivateSchema = Schema<any, any> & { 
+	clone: Schema<any, any>['clone']
+	compileSchema: Schema<any, any>['compileSchema'] 
+};
 
 export type Context = {
 	isAsync?: boolean

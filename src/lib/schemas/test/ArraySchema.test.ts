@@ -272,4 +272,15 @@ describe('array', () => {
 		// @ts-expect-error // To check protected values
 		expect(schema.def.normalRules.size).not.toBe(schema1.def.normalRules.size);
 	});
+
+	it('should array when work', () => {
+		const schema = array(number())
+		.notRequired()
+		.when({
+			is: () => true,
+			then: (schema) => schema.min(10)
+		});
+	
+		expect(schema.validate([])).toHaveLength(1);
+	});
 });

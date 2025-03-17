@@ -21,7 +21,7 @@ export abstract class ArrayTypedSchema<
 	protected whenClone(): any {
 		const clone = super.whenClone();
 		
-		clone.schema = {};
+		clone.schema = this.schema.clone();
 
 		return clone;
 	};

@@ -31,7 +31,8 @@ export function getWhenRule<Value = any, T = any>(
 	config: WhenParameter<Value, T>,
 	context: Context
 ) {
-	const thenSrcCode = (config.then as unknown as PrivateSchema).compileSchema({
+	const thenSrcCode = (config.then as unknown as PrivateSchema)
+	.compileSchema({
 		context
 	});
 

@@ -1,5 +1,4 @@
 import { defineConfig } from 'vitest/config';
-import { GithubReporter } from 'vitest-github-action';
 
 export default defineConfig({
 	test: {
@@ -24,8 +23,5 @@ export default defineConfig({
 		typecheck: {
 			enabled: true,
 		},
-		reporters: process.env.GITHUB_ACTIONS
-			? ['default', new GithubReporter()]
-			: 'default'
 	}	
 })

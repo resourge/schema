@@ -1,3 +1,10 @@
+# [1.15.0](https://github.com/resourge/schema/compare/v1.14.4...v1.15.0) (2026-04-16)
+
+
+### Features
+
+* **schemamap:** add SchemaMap, ObjectPropertiesSchema, EnumPropertiesSchema to import ([c30f7c0](https://github.com/resourge/schema/commit/c30f7c08e8a942bd4f7ad11bc5c3979848787c0b))
+
 ## [1.14.4](https://github.com/resourge/schema/compare/v1.14.3...v1.14.4) (2025-03-17)
 
 

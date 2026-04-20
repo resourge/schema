@@ -1,15 +1,12 @@
-import deepmerge from '@fastify/deepmerge'
-import { resolve } from 'path'
-import { defineConfig, type UserConfigExport } from 'vite'
-import banner from 'vite-plugin-banner'
-import { checker } from 'vite-plugin-checker'
-import dts from 'vite-plugin-dts'
-import viteTsconfigPaths from 'vite-tsconfig-paths'
+import deepmerge from '@fastify/deepmerge';
+import { defineConfig, type UserConfigExport } from 'vite';
+import banner from 'vite-plugin-banner';
+import dts from 'vite-plugin-dts';
 
-import PackageJson from '../package.json'
+import PackageJson from '../package.json';
 
-import { createBanner } from './createBanner'
-import { packages } from './getPackages'
+import { createBanner } from './createBanner';
+import { packages } from './getPackages';
 
 const {
 	dependencies = {}, devDependencies = {}, peerDependencies = {}
@@ -21,7 +18,7 @@ const globals: Record<string, string> = {
 	react: 'React',
 	'react-dom': 'ReactDOM',
 	'@resourge/shallow-clone': 'ResourceShallowClone'
-}
+};
 
 const globalsKeys = Object.keys(globals);
 
@@ -30,14 +27,14 @@ const external = [
 	...Object.keys(peerDependencies),
 	...Object.keys(dependencies),
 	...Object.keys(devDependencies)
-].filter((key) => key !== 'on-change')
+].filter((key) => key !== 'on-change');
 
 const packagesNames = packages.map((pack) => pack.name);
 
 const entryLib = './src/lib/index.ts';
-const POSTAL_CODE_INDEX = './src/lib/postalCodes/index.ts'
+const POSTAL_CODE_INDEX = './src/lib/postalCodes/index.ts';
 
-const PHONE_NUMBER_INDEX = './src/lib/phoneNumbers/index.ts'
+const PHONE_NUMBER_INDEX = './src/lib/phoneNumbers/index.ts';
 
 const deepMerge = deepmerge();
 
@@ -69,32 +66,18 @@ export const defineLibConfig = (
 					globals: external.filter((key) => globalsKeys.includes(key))
 					.reduce<Record<string, string>>((obj, key) => {
 						obj[key] = globals[key];
-						return obj
-					}, {}),
+						return obj;
+					}, {})
 				},
 				external
 			}
 		},
 		resolve: {
 			preserveSymlinks: true,
-			alias: originalConfig.mode === 'development' ? packages.reduce((obj, { name, path }) => {
-				obj[name] = resolve(path, `../${entryLib}`)
-				return obj;
-			}, {}) : {}
+			tsconfigPaths: true
 		},
 		plugins: [
 			banner(createBanner()),
-			viteTsconfigPaths(),
-			checker({ 
-				typescript: true,
-				enableBuild: true,
-				overlay: {
-					initialIsOpen: false
-				},
-				eslint: {
-					lintCommand: 'eslint "./src/**/*.{ts,tsx}"'
-				}
-			}),
 			dts({
 				insertTypesEntry: true,
 

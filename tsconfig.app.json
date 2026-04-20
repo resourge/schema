@@ -3,23 +3,31 @@
 		"target": "ESNext",
 		"useDefineForClassFields": true,
 		"lib": [
+			"ES2020",
 			"DOM",
-			"DOM.Iterable",
-			"ESNext"
+			"DOM.Iterable"
 		],
 		"experimentalDecorators": true,
 		"allowJs": false,
-		"skipLibCheck": true,
+		"skipLibCheck": false,
+		"esModuleInterop": false,
 		"allowSyntheticDefaultImports": true,
 		"strict": true,
 		"forceConsistentCasingInFileNames": true,
 		"module": "ESNext",
+		/* Bundler mode */
 		"moduleResolution": "bundler",
 		"resolveJsonModule": true,
 		"isolatedModules": true,
 		"noEmit": true,
-		"jsx": "react-jsx",
 		"removeComments": false,
+		"allowImportingTsExtensions": true,
+		"moduleDetection": "force",
+		"jsx": "react-jsx",
+		/* Linting */
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noFallthroughCasesInSwitch": true,
 		"baseUrl": ".",
 		"paths": {
 			"src": [
@@ -30,17 +38,11 @@
 	"include": [
 		"./**/src/**/*",
 		".eslintrc.cjs",
-		"rollup.config.js"
+		"./config/*"
 	],
 	"exclude": [
 		"./**/dist/**/*",
 		"dist_old",
-		"./src/examples/**/*",
-		"./node_modules/**/*"
+		"./src/examples",
 	],
-	"references": [
-		{
-			"path": "./tsconfig.node.json"
-		}
-	]
 }

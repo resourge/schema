@@ -1,7 +1,7 @@
 import PackageJson from '../package.json';
 
 const {
-	name, version, license, author 
+	name, version, license, author
 } = PackageJson;
 
 function getBanner(version: string) {

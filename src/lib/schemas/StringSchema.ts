@@ -22,34 +22,51 @@ export class StringSchema<
 	Final = any
 > extends Schema<Input, Final> {
 	protected message: string = 'Is not string';
-	protected rule = (value: string) => typeof value === 'string';
-
-	protected getRequiredStringCondition = (value: string) => value == null || value === '';
-	protected getNotRequiredStringCondition = (value: string) => value != null && value !== '';
-
 	/**
-	 * Checks if has a size bigger than minValue
-	 * @param minValue min string length
+	 * Checks if string contains only alpha characters
 	 * @param message @option Overrides default message
 	 */
-	public min(minValue: number, message?: string) {
+	public alpha(message?: string) {
 		return this.test({
-			is: (value) => value.length < minValue,
-			message: message ?? ((messages) => messages.string.min(minValue)),
-			name: `minLength_${minValue}_${message}`
+			is: (value) => !ALPHA_PATTERN.test(value),
+			message: message ?? ((messages) => messages.string.alpha),
+			name: `alpha_${message}`
 		});
 	}
 
 	/**
-	 * Checks if has a size smaller than maxValue
-	 * @param maxValue max string length
+	 * Checks if string contains only contains alpha-numeric characters, as well as dashes and underscores.'
 	 * @param message @option Overrides default message
 	 */
-	public max(maxValue: number, message?: string) {
+	public alphadash(message?: string) {
 		return this.test({
-			is: (value) => value.length > maxValue,
-			message: message ?? ((messages) => messages.string.max(maxValue)),
-			name: `maxLength_${maxValue}_${message}`
+			is: (value) => !ALPHADASH_PATTERN.test(value),
+			message: message ?? ((messages) => messages.string.alphadash),
+			name: `alphadash_${message}`
+		});
+	}
+
+	/**
+	 * Checks if string contains only alpha-numeric characters
+	 * @param message @option Overrides default message
+	 */
+	public alphanum(message?: string) {
+		return this.test({
+			is: (value) => !ALPHANUM_PATTERN.test(value),
+			message: message ?? ((messages) => messages.string.alphanum),
+			name: `alphanum_${message}`
+		});
+	}
+
+	/**
+	 * Checks if string is base64.
+	 * @param message @option Overrides default message
+	 */
+	public base64(message?: string) {
+		return this.test({
+			is: (value) => !BASE64_PATTERN.test(value),
+			message: message ?? ((messages) => messages.string.base64),
+			name: `base64_${message}`
 		});
 	}
 
@@ -68,61 +85,6 @@ export class StringSchema<
 	}
 
 	/**
-	 * Checks if string has `maxValue` length
-	 * @param length string length
-	 * @param message @option Overrides default message
-	 */
-	public length(length: number, message?: string) {
-		return this.test({
-			is: (value) => value.length !== length,
-			message: message ?? ((messages) => messages.string.length(length)),
-			name: `length_${length}_${message}`
-		});
-	}
-
-	/**
-	 * Checks if is equal to value.
-	 * @param value to equal
-	 * @param message @option Overrides default message
-	 */
-	public equals(value: string | string[], message?: string) {
-		const is = Array.isArray(value)
-			? (val: string) => !value.includes(val)
-			: (val: string) => val !== value;
-		
-		return this.test({
-			is: is as any,
-			message: message ?? ((messages) => messages.string.equals(value)),
-			name: `equalsString_${Array.isArray(value) ? value.join('_') : value}_${message}`
-		});
-	}
-
-	/**
-	 * Matches regular expression
-	 * @param reg Regular expression
-	 * @param message @option Overrides default message
-	 */
-	public pattern(reg: RegExp, message?: string) {
-		return this.test({
-			is: (value) => !reg.test(value),
-			message: message ?? ((messages) => messages.string.pattern(reg)),
-			name: `pattern_${reg.source.replace(/(\W|\W|-)/g, '_')}`
-		});
-	}
-
-	/**
-	 * Checks if string is empty
-	 * @param message @option Overrides default message
-	 */
-	public empty(message?: string) {
-		return this.test({
-			is: (value) => value.length !== 0,
-			message: message ?? ((messages) => messages.string.empty),
-			name: `empty_${message}`
-		});
-	}
-
-	/**
 	 * Checks if string contains value
 	 * @param value value to check if contains
 	 * @param message @option Overrides default message
@@ -132,102 +94,6 @@ export class StringSchema<
 			is: (val: any) => !val.includes(value),
 			message: message ?? ((messages) => messages.string.contains(value)),
 			name: `contains_${value}_${message}`
-		});
-	}
-
-	/**
-	 * Checks if string contains only numeric characters
-	 * @param message @option Overrides default message
-	 */
-	public numeric(message?: string) {
-		return this.test({
-			is: (value) => value && !NUMERIC_PATTERN.test(value),
-			message: message ?? ((messages) => messages.string.numeric),
-			name: `numeric_${message}`
-		});
-	}
-
-	/**
-	 * Checks if string contains only alpha characters
-	 * @param message @option Overrides default message
-	 */
-	public alpha(message?: string) {
-		return this.test({
-			is: (value) => !ALPHA_PATTERN.test(value),
-			message: message ?? ((messages) => messages.string.alpha),
-			name: `alpha_${message}`
-		});
-	}
-
-	/**
-	 * Checks if string contains only alpha-numeric characters
-	 * @param message @option Overrides default message
-	 */
-	public alphanum(message?: string) {
-		return this.test({
-			is: (value) => !ALPHANUM_PATTERN.test(value),
-			message: message ?? ((messages) => messages.string.alphanum),
-			name: `alphanum_${message}`
-		});
-	}
-
-	/**
-	 * Checks if string contains only contains alpha-numeric characters, as well as dashes and underscores.'
-	 * @param message @option Overrides default message
-	 */
-	public alphadash(message?: string) {
-		return this.test({
-			is: (value) => !ALPHADASH_PATTERN.test(value),
-			message: message ?? ((messages) => messages.string.alphadash),
-			name: `alphadash_${message}`
-		});
-	}
-
-	/**
-	 * Checks if string is hexadecimal.
-	 * @param message @option Overrides default message
-	 */
-	public hex(message?: string) {
-		return this.test({
-			is: (value) => value.length % 2 !== 0 || !HEX_PATTERN.test(value),
-			message: message ?? ((messages) => messages.string.hex),
-			name: `hex_${message}`
-		});
-	}
-
-	/**
-	 * Checks if string is base64.
-	 * @param message @option Overrides default message
-	 */
-	public base64(message?: string) {
-		return this.test({
-			is: (value) => !BASE64_PATTERN.test(value),
-			message: message ?? ((messages) => messages.string.base64),
-			name: `base64_${message}`
-		});
-	}
-
-	/**
-	 * Checks if string is format uuid.
-	 * @param message @option Overrides default message
-	 */
-	public uuid(message?: string) {
-		return this.test({
-			is: (value) => !UUID_PATTERN.test(value),
-			message: message ?? ((messages) => messages.string.uuid),
-			name: `uuid_${message}`
-		});
-	}
-
-	/**
-	 * Checks if string is URL accepted
-	 * @param message @option Overrides default message
-	 */
-	public url(message?: string) {
-		return this.test({
-			is: (value) => !URL_PATTERN.test(value),
-			message: message ?? ((messages) => messages.string.url),
-			name: `url_${message}`
 		});
 	}
 
@@ -249,7 +115,9 @@ export class StringSchema<
 	 * @param message @option Overrides default message
 	 */
 	public email(mode?: 'basic' | 'precise', message?: string) {
-		const pattern = mode === 'precise' ? PRECISE_PATTERN : BASIC_PATTERN;
+		const pattern = mode === 'precise'
+			? PRECISE_PATTERN
+			: BASIC_PATTERN;
 
 		return this.test({
 			is: (value) => !pattern.test(value),
@@ -259,34 +127,123 @@ export class StringSchema<
 	}
 
 	/**
-	 * Checks if is a valid postalCode.
-	 * @param postalCode postal code to validate or a function which we can return desired postal code
+	 * Checks if string is empty
 	 * @param message @option Overrides default message
 	 */
-	public postalCode(
-		postalCode: PostalCodeInfo | ((value: NonNullable<Input>, form: any) => PostalCodeInfo), 
-		message?: string
-	) {
-		if ( typeof postalCode === 'function' ) {
-			return this.test((value, form) => {
-				const _postalCode = postalCode(value, form);
-				if ( _postalCode.regex.test((value )) ) {
-					return true;
-				}
+	public empty(message?: string) {
+		return this.test({
+			is: (value) => value.length > 0,
+			message: message ?? ((messages) => messages.string.empty),
+			name: `empty_${message}`
+		});
+	}
 
-				return [
-					{
-						path: '',
-						error: message ?? defaultMessages.string.postalCode(_postalCode)
-					}
-				];
-			});
-		}
+	/**
+	 * Checks if is a value of enum.
+	 * @param enumObject enum
+	 * @param message @option Overrides default message
+	 */
+	public enum<T extends { [name: string]: any }>(enumObject: T, message?: string) {
+		const enumValues = Object.values(enumObject);
 
 		return this.test({
-			is: (value) => !postalCode.regex.test(value),
-			message: message ?? ((messages) => messages.string.postalCode(postalCode)),
-			name: `postalCode_${postalCode.country}_${message}`
+			is: (value) => !enumValues.includes(value),
+			message: message ?? ((messages) => messages.string.enum)
+		}) as unknown as StringSchema<T[keyof T], Final>;
+	}
+
+	/**
+	 * Checks if is equal to value.
+	 * @param value to equal
+	 * @param message @option Overrides default message
+	 */
+	public equals(value: string | string[], message?: string) {
+		const is = Array.isArray(value)
+			? (val: string) => !value.includes(val)
+			: (val: string) => val !== value;
+		
+		return this.test({
+			is: is as any,
+			message: message ?? ((messages) => messages.string.equals(value)),
+			name: `equalsString_${Array.isArray(value)
+				? value.join('_')
+				: value}_${message}`
+		});
+	}
+
+	/**
+	 * Checks if string is hexadecimal.
+	 * @param message @option Overrides default message
+	 */
+	public hex(message?: string) {
+		return this.test({
+			is: (value) => value.length % 2 !== 0 || !HEX_PATTERN.test(value),
+			message: message ?? ((messages) => messages.string.hex),
+			name: `hex_${message}`
+		});
+	}
+
+	/**
+	 * Checks if string has `maxValue` length
+	 * @param length string length
+	 * @param message @option Overrides default message
+	 */
+	public length(length: number, message?: string) {
+		return this.test({
+			is: (value) => value.length !== length,
+			message: message ?? ((messages) => messages.string.length(length)),
+			name: `length_${length}_${message}`
+		});
+	}
+
+	/**
+	 * Checks if has a size smaller than maxValue
+	 * @param maxValue max string length
+	 * @param message @option Overrides default message
+	 */
+	public max(maxValue: number, message?: string) {
+		return this.test({
+			is: (value) => value.length > maxValue,
+			message: message ?? ((messages) => messages.string.max(maxValue)),
+			name: `maxLength_${maxValue}_${message}`
+		});
+	}
+
+	/**
+	 * Checks if has a size bigger than minValue
+	 * @param minValue min string length
+	 * @param message @option Overrides default message
+	 */
+	public min(minValue: number, message?: string) {
+		return this.test({
+			is: (value) => value.length < minValue,
+			message: message ?? ((messages) => messages.string.min(minValue)),
+			name: `minLength_${minValue}_${message}`
+		});
+	}
+
+	/**
+	 * Checks if string contains only numeric characters
+	 * @param message @option Overrides default message
+	 */
+	public numeric(message?: string) {
+		return this.test({
+			is: (value) => value && !NUMERIC_PATTERN.test(value),
+			message: message ?? ((messages) => messages.string.numeric),
+			name: `numeric_${message}`
+		});
+	}
+
+	/**
+	 * Matches regular expression
+	 * @param reg Regular expression
+	 * @param message @option Overrides default message
+	 */
+	public pattern(reg: RegExp, message?: string) {
+		return this.test({
+			is: (value) => !reg.test(value),
+			message: message ?? ((messages) => messages.string.pattern(reg)),
+			name: `pattern_${reg.source.replaceAll(/(\W|\W|-)/g, '_')}`
 		});
 	}
 
@@ -296,7 +253,7 @@ export class StringSchema<
 	 * @param message @option Overrides default message
 	 */
 	public phoneNumber(
-		phoneNumber: PhoneNumberInfo | ((value: NonNullable<Input>, form: any) => PhoneNumberInfo), 
+		phoneNumber: ((value: NonNullable<Input>, form: any) => PhoneNumberInfo) | PhoneNumberInfo, 
 		message?: string
 	) {
 		if ( typeof phoneNumber === 'function' ) {
@@ -308,8 +265,8 @@ export class StringSchema<
 
 				return [
 					{
-						path: '',
-						error: message ?? defaultMessages.string.phoneNumber(_phoneNumber)
+						error: message ?? defaultMessages.string.phoneNumber(_phoneNumber),
+						path: ''
 					}
 				];
 			});
@@ -323,19 +280,66 @@ export class StringSchema<
 	}
 
 	/**
-	 * Checks if is a value of enum.
-	 * @param enumObject enum
+	 * Checks if is a valid postalCode.
+	 * @param postalCode postal code to validate or a function which we can return desired postal code
 	 * @param message @option Overrides default message
 	 */
-	// eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
-	public enum<T extends { [name: string]: any }>(enumObject: T, message?: string) {
-		const enumValues = Object.values(enumObject);
+	public postalCode(
+		postalCode: ((value: NonNullable<Input>, form: any) => PostalCodeInfo) | PostalCodeInfo, 
+		message?: string
+	) {
+		if ( typeof postalCode === 'function' ) {
+			return this.test((value, form) => {
+				const _postalCode = postalCode(value, form);
+				if ( _postalCode.regex.test((value )) ) {
+					return true;
+				}
+
+				return [
+					{
+						error: message ?? defaultMessages.string.postalCode(_postalCode),
+						path: ''
+					}
+				];
+			});
+		}
 
 		return this.test({
-			is: (value) => !enumValues.includes(value),
-			message: message ?? ((messages) => messages.string.enum)
-		}) as unknown as StringSchema<T[keyof T], Final>;
+			is: (value) => !postalCode.regex.test(value),
+			message: message ?? ((messages) => messages.string.postalCode(postalCode)),
+			name: `postalCode_${postalCode.country}_${message}`
+		});
 	}
+
+	/**
+	 * Checks if string is URL accepted
+	 * @param message @option Overrides default message
+	 */
+	public url(message?: string) {
+		return this.test({
+			is: (value) => !URL_PATTERN.test(value),
+			message: message ?? ((messages) => messages.string.url),
+			name: `url_${message}`
+		});
+	}
+
+	/**
+	 * Checks if string is format uuid.
+	 * @param message @option Overrides default message
+	 */
+	public uuid(message?: string) {
+		return this.test({
+			is: (value) => !UUID_PATTERN.test(value),
+			message: message ?? ((messages) => messages.string.uuid),
+			name: `uuid_${message}`
+		});
+	}
+
+	protected getNotRequiredStringCondition = (value: string) => value != null && value !== '';
+
+	protected getRequiredStringCondition = (value: string) => value == null || value === '';
+
+	protected rule = (value: string) => typeof value === 'string';
 }
 
 export const string = <

@@ -6,8 +6,6 @@ export class BooleanSchema<
 	Final = Input
 > extends Schema<Input, Final> {
 	protected message: string = 'Is not boolean';
-	protected rule = (value: Input) => typeof value === 'boolean';
-
 	/**
 	 * Checks if is true or false
 	 * @param mustBeValue
@@ -21,6 +19,8 @@ export class BooleanSchema<
 			name: `mustBe_${mustBeValue}_${message}`
 		});
 	}
+
+	protected rule = (value: Input) => typeof value === 'boolean';
 }
 
 export const boolean = <

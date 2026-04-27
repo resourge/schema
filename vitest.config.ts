@@ -1,11 +1,9 @@
+/* eslint-disable no-useless-escape */
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
 	test: {
-		include: ['**\/src/lib/**/*.{test,spec}?(-d).?(c|m)[jt]s?(x)'],
 		coverage: {
-			provider: 'istanbul',
-
 			exclude: [
 				'**\/node_modules/**', '**\/dist/**', '**\/cypress/**', 
 				'**\/.{idea,git,cache,output,temp}/**', 
@@ -17,11 +15,14 @@ export default defineConfig({
 				'**\/.*',
 				'**\/src/App.tsx',
 				'**\/src/main.tsx',
-				'**\/src/examples/*',
-			]
+				'**\/src/examples/*'
+			],
+
+			provider: 'istanbul'
 		},
+		include: ['**\/src/lib/**/*.{test,spec}?(-d).?(c|m)[jt]s?(x)'],
 		typecheck: {
-			enabled: true,
-		},
+			enabled: true
+		}
 	}	
-})
+});

@@ -7,21 +7,41 @@ export class ArraySchema<
 	S extends ObjectPropertiesSchema<Input[number], Final> = ObjectPropertiesSchema<Input[number], Final>
 > extends ArrayTypedSchema<Input, Final, S> {
 	protected message: string = 'Is not array';
-	protected rule = (value: any[]) => Array.isArray(value);
-
-	protected override clone() {
-		return new ArraySchema<Input, Final, S>(this.schema as unknown as S, this.message, this.def);
-	}
-
 	/**
 	 * Checks if is empty
 	 * @param message @option Overrides default message
 	 */
 	public empty(message?: string) {
 		return this.test({
-			is: (value: any) => value.length !== 0,
+			is: (value: any) => value.length > 0,
 			message: message ?? ((messages) => messages.array.empty),
 			name: `emptyArray_${message}`
+		});
+	}
+
+	/**
+	 * Checks if array has "length" number of elements
+	 * @param length
+	 * @param message @option Overrides default message
+	 */
+	public length(length: number, message?: string) {
+		return this.test({
+			is: (value: any) => value.length !== length,
+			message: message ?? ((messages) => messages.array.length(length)),
+			name: `lengthArray_${length}_${message}`
+		});
+	}
+
+	/**
+	 * Checks if has a maximal number of elements
+	 * @param maxValue 
+	 * @param message @option Overrides default message
+	 */
+	public max(maxValue: number, message?: string) {
+		return this.test({
+			is: (value: any) => value.length > maxValue,
+			message: message ?? ((messages) => messages.array.max(maxValue)),
+			name: `maxArray_${maxValue}_${message}`
 		});
 	}
 
@@ -39,32 +59,6 @@ export class ArraySchema<
 	}
 
 	/**
-	 * Checks if has a maximal number of elements
-	 * @param maxValue 
-	 * @param message @option Overrides default message
-	 */
-	public max(maxValue: number, message?: string) {
-		return this.test({
-			is: (value: any) => value.length > maxValue,
-			message: message ?? ((messages) => messages.array.max(maxValue)),
-			name: `maxArray_${maxValue}_${message}`
-		});
-	}
-	
-	/**
-	 * Checks if array has "length" number of elements
-	 * @param length
-	 * @param message @option Overrides default message
-	 */
-	public length(length: number, message?: string) {
-		return this.test({
-			is: (value: any) => value.length !== length,
-			message: message ?? ((messages) => messages.array.length(length)),
-			name: `lengthArray_${length}_${message}`
-		});
-	}
-
-	/**
 	 * Checks if has only unique elements
 	 * 
 	 * Note: This only check basic values, like numbers, string, boolean.
@@ -78,22 +72,32 @@ export class ArraySchema<
 			name: `uniqueArray_${message}`
 		});
 	}
-
+	
 	/**
 	 * Checks if has only unique elements by key
 	 * @param message @option Overrides default message
 	 */
-	public uniqueBy(key: keyof Input[number] | ((val: Input[number]) => any), message?: string) {
+	public uniqueBy(key: ((val: Input[number]) => any) | keyof Input[number], message?: string) {
 		const mapCb: (val: Input[number]) => any = (
-			typeof key === 'string' ? (val: any) => val[key] : key as (val: Input[number]) => any
+			typeof key === 'string'
+				? (val: any) => val[key]
+				: key as (val: Input[number]) => any
 		);
 
 		return this.test({
-			is: (value: any) => value.length !== (new Set(value.map(mapCb))).size,
+			is: (value: any) => value.length !== (new Set(value.map((item: Input[number]) => mapCb(item)))).size,
 			message: message ?? ((messages) => messages.array.uniqueBy),
-			name: typeof key !== 'function' ? `uniqueByArray_${key.toString()}_${message}` : undefined
+			name: typeof key === 'function'
+				? undefined
+				: `uniqueByArray_${key.toString()}_${message}`
 		});
 	}
+
+	protected override clone() {
+		return new ArraySchema<Input, Final, S>(this.schema as unknown as S, this.message, this.def);
+	}
+
+	protected rule = (value: any[]) => Array.isArray(value);
 }
 
 export const array = <

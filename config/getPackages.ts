@@ -1,18 +1,17 @@
-
 import appRootPath from 'app-root-path';
-import { readFileSync, readdirSync } from 'fs';
 import { globSync } from 'glob';
-import { join } from 'path';
+import { readdirSync, readFileSync } from 'node:fs';
+import path from 'node:path';
 
 import PackageJson from '../package.json';
 
-const workspaces = (PackageJson as unknown as { workspaces: string[] }).workspaces ?? []
+const workspaces = (PackageJson as unknown as { workspaces: string[] }).workspaces ?? [];
 
 export const getWorkspaces = () => {
 	return workspaces
 	.filter((workspace) => !workspace.startsWith('!'))
-	.map((workspace) => {
-		const root = join(appRootPath.path, workspace.substring(1).replace(/\*/g, ''));
+	.flatMap((workspace) => {
+		const root = path.join(appRootPath.path, workspace.slice(1).replaceAll('*', ''));
 
 		return readdirSync(
 			root, 
@@ -20,21 +19,20 @@ export const getWorkspaces = () => {
 				withFileTypes: true 
 			}
 		)
-		.filter(dirent => dirent.isDirectory())
-		.map(dirent => join(root, dirent.name))
-	}).flat();
-}
+		.filter((dirent) => dirent.isDirectory())
+		.map((dirent) => path.join(root, dirent.name));
+	});
+};
 
-export const packages = getWorkspaces().map((workspace) => 
+export const packages = getWorkspaces().flatMap((workspace) => 
 	globSync(
 		`${workspace}/**`
 	)
-	.filter((path) => path.includes('package.json'))
+	.filter((filePath) => filePath.includes('package.json'))
 	.map((path) => ({
 		...JSON.parse(
-			readFileSync(path, 'utf-8')
+			readFileSync(path, 'utf8')
 		),
 		path
 	}) as const)
-)
-.flat();
+);

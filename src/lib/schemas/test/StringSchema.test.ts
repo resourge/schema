@@ -361,10 +361,10 @@ describe('string', () => {
 
 	it('should test enum types', () => {
 		enum FieldTypeEnum {
-			FREE_TEXT = 'FREE_TEXT',
 			EXISTING_FIELD = 'EXISTING_FIELD',
-			SQL_EXPRESSION = 'SQL_EXPRESSION',
-			SOURCE_FIELD = 'SOURCE_FIELD'
+			FREE_TEXT = 'FREE_TEXT',
+			SOURCE_FIELD = 'SOURCE_FIELD',
+			SQL_EXPRESSION = 'SQL_EXPRESSION'
 		}
 
 		const schema = object<{ productName: FieldTypeEnum }>({

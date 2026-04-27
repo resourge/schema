@@ -24,8 +24,8 @@ describe('getRule', () => {
 			promises: []
 		},
 		form: {},
-		path: 'some/path',
-		parent: {}
+		parent: {},
+		path: 'some/path'
 	};
 
 	beforeEach(() => {
@@ -37,8 +37,8 @@ describe('getRule', () => {
 		const config: RuleConfig = {
 			isAsync: false,
 			isCustomTestThatReturnsArray: false,
-			method: (value) => value === 'invalid', // custom synchronous rule method
 			message: 'Invalid value',
+			method: (value) => value === 'invalid', // custom synchronous rule method
 			type: 'Rule'
 		};
 
@@ -56,8 +56,8 @@ describe('getRule', () => {
 		const config: RuleConfig = {
 			isAsync: true,
 			isCustomTestThatReturnsArray: false,
-			method: () => Promise.resolve(false), // async rule method returning true
 			message: 'Async validation failed',
+			method: () => Promise.resolve(false), // async rule method returning true
 			type: 'Rule'
 		};
 
@@ -84,8 +84,8 @@ describe('getRule', () => {
 
 	it('should handle custom test that returns array of errors', () => {
 		const customErrors: SchemaError[] = [{
-			path: 'some/path',
-			error: 'Custom error' 
+			error: 'Custom error',
+			path: 'some/path' 
 		}];
     
 		const config: RuleConfig = {
@@ -104,8 +104,8 @@ describe('getRule', () => {
 
 	it('should handle async custom test that returns array of errors', async () => {
 		const customErrors: SchemaError[] = [{
-			path: 'some/path',
-			error: 'Async custom error' 
+			error: 'Async custom error',
+			path: 'some/path' 
 		}];
     
 		const config: RuleConfig = {

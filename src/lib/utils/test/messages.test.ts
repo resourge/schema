@@ -21,8 +21,8 @@ it('beautifyFunction', () => {
 	)
 	.toMatchObject([
 		{
-			path: '',
-			error: customMinMessage
+			error: customMinMessage,
+			path: ''
 		}
 	]);
 });

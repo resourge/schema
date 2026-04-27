@@ -8,22 +8,6 @@ export class ObjectSchema<
 	Final = any
 > extends ObjectTypedSchema<Input, Final> {
 	protected message: string = 'Is not object';
-	protected rule = (value: any) => typeof value === 'object';
-
-	protected override clone() {
-		const schema = new ObjectSchema<Input, Final>(
-			this.schema, 
-			this.message, 
-			this.def
-		);
-
-		schema.oneOfRules = new Map(this.oneOfRules.entries());
-
-		return schema;
-	}
-
-	// protected getRequiredStringCondition = (value: any) => value == null && typeof value === 'object';
-
 	/**
 	 * Extends current schema object
 	 */
@@ -55,19 +39,22 @@ export class ObjectSchema<
 		oneOfKey: OneOf<Input>,
 		oneOfConfig?: OneOfConfigMessage
 	): this;
+	// protected getRequiredStringCondition = (value: any) => value == null && typeof value === 'object';
 	public oneOf<Key extends keyof Input>(
 		oneOfKey: Key[],
 		schema: SchemaMap<Input>[Key],
 		oneOfConfig?: OneOfConfigMessage
 	): this;
 	public oneOf<Key extends keyof Input>(
-		oneOfKey: OneOf<Input> | Key[],
-		schema?: SchemaMap<Input>[Key] | OneOfConfigMessage,
+		oneOfKey: Key[] | OneOf<Input>,
+		schema?: OneOfConfigMessage | SchemaMap<Input>[Key],
 		oneOfConfigMessage?: OneOfConfigMessage
 	): this {
 		const _this = this.clone();
 
-		_this.oneOfConfigMessage = Array.isArray(oneOfKey) ? oneOfConfigMessage : (schema as OneOfConfigMessage);
+		_this.oneOfConfigMessage = Array.isArray(oneOfKey)
+			? oneOfConfigMessage
+			: (schema as OneOfConfigMessage);
 
 		((
 			Array.isArray(oneOfKey) 
@@ -81,6 +68,20 @@ export class ObjectSchema<
 
 		return _this as this;
 	}
+
+	protected override clone() {
+		const schema = new ObjectSchema<Input, Final>(
+			this.schema, 
+			this.message, 
+			this.def
+		);
+
+		schema.oneOfRules = new Map(this.oneOfRules.entries());
+
+		return schema;
+	}
+
+	protected rule = (value: any) => typeof value === 'object';
 }
 export const object = <
 	Input extends object = object

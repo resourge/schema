@@ -9,7 +9,7 @@ describe('any', () => {
 		const schema = any()
 		.optional()
 		.compile();
-	
+		
 		expect((schema.validate(undefined) as SchemaError[]).length === 0)
 		.toBeTruthy();
 		expect((schema.validate(true) as SchemaError[]).length === 0)
@@ -45,10 +45,10 @@ describe('any', () => {
 
 	it('should test enum types', () => {
 		enum FieldTypeEnum {
-			FREE_TEXT = 1,
 			EXISTING_FIELD = 2,
-			SQL_EXPRESSION = 3,
-			SOURCE_FIELD = '4'
+			FREE_TEXT = 1,
+			SOURCE_FIELD = '4',
+			SQL_EXPRESSION = 3
 		}
 
 		const schema = object<{ productName: FieldTypeEnum }>({

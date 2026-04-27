@@ -216,13 +216,13 @@ describe('object', () => {
 		.toBeTruthy();
 
 		const schema2 = schema.extend<{ 
+			productCategory?: string
 			productId: number
-			productName: string
-			productCategory?: string 
+			productName: string 
 		}>({
-			productId: number()
-			.required(),
 			productCategory: string()
+			.required(),
+			productId: number()
 			.required()
 		})
 		.compile();
@@ -242,9 +242,9 @@ describe('object', () => {
 		.toBeFalsy();
 
 		expect((schema2.validate({
+			productCategory: 'Product Category',
 			productId: 1,
-			productName: 'Product Name',
-			productCategory: 'Product Category'
+			productName: 'Product Name'
 		}) as SchemaError[]
 		).length === 0)
 		.toBeTruthy();
@@ -456,12 +456,12 @@ describe('object', () => {
 				expect(schema.validate({}))
 				.toEqual([
 					{
-						path: 'productName',
-						error: customMessage
+						error: customMessage,
+						path: 'productName'
 					},
 					{
-						path: 'productType',
-						error: customMessage
+						error: customMessage,
+						path: 'productType'
 					}
 				]);
 
@@ -484,16 +484,16 @@ describe('object', () => {
 					productName: string().required(),
 					productType: string().required()
 				}, {
-					path: 'productName',
-					error: customMessage
+					error: customMessage,
+					path: 'productName'
 				})
 				.compile();
 
 				expect(schema.validate({}))
 				.toEqual([
 					{
-						path: 'productName',
-						error: customMessage
+						error: customMessage,
+						path: 'productName'
 					}
 				]);
 
@@ -524,16 +524,16 @@ describe('object', () => {
 					productType: string().required()
 				}, [
 					{
-						path: 'productId',
-						error: customMessage
+						error: customMessage,
+						path: 'productId'
 					},
 					{
-						path: 'productName',
-						error: customMessage
+						error: customMessage,
+						path: 'productName'
 					},
 					{
-						path: 'productType',
-						error: customMessage
+						error: customMessage,
+						path: 'productType'
 					}
 				])
 				.compile();
@@ -541,16 +541,16 @@ describe('object', () => {
 				expect(schema.validate({}))
 				.toEqual([
 					{
-						path: 'productId',
-						error: customMessage
+						error: customMessage,
+						path: 'productId'
 					},
 					{
-						path: 'productName',
-						error: customMessage
+						error: customMessage,
+						path: 'productName'
 					},
 					{
-						path: 'productType',
-						error: customMessage
+						error: customMessage,
+						path: 'productType'
 					}
 				]);
 

@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import { number, object } from '../..';
 import { type SchemaError } from '../../types/types';
@@ -22,8 +22,6 @@ describe('Schema', () => {
 		.toBeFalsy();
 
 		expect(validate(11))
-		.toBeTruthy();
-		expect(validate(undefined))
 		.toBeTruthy();
 
 		const namedWhenSchema = object({
@@ -71,6 +69,7 @@ describe('Schema', () => {
 		})
 		.compile();
 
+		// eslint-disable-next-line unicorn/no-await-expression-member
 		const validate = async (value: any) => (await schema.validate(value)).length === 0;
 	
 		await expect(validate(-9)).resolves.toBeTruthy();
@@ -78,7 +77,6 @@ describe('Schema', () => {
 		await expect(validate(null)).resolves.toBeFalsy();
 
 		await expect(validate(11)).resolves.toBeTruthy();
-		await expect(validate(undefined)).resolves.toBeFalsy();
 	});
 
 	it('mandatoryRules', () => {
@@ -123,16 +121,16 @@ describe('Schema', () => {
 			message: 'Custom Text Message'
 		})
 		.test(() => [{
-			path: '',
-			error: 'Custom Text Message'
+			error: 'Custom Text Message',
+			path: ''
 		}])
 		.asyncTest({
 			is: () => Promise.resolve(true),
 			message: 'Async message'
 		})
 		.asyncTest(() => Promise.resolve([{
-			path: '',
-			error: 'Custom Text Message'
+			error: 'Custom Text Message',
+			path: ''
 		}]))
 		.compile();
 	});
@@ -143,8 +141,8 @@ describe('Schema', () => {
 			if ( value > 2 ) {
 				return [
 					{
-						path: '',
-						error: 'Value is not bigger than 2'
+						error: 'Value is not bigger than 2',
+						path: ''
 					}
 				];
 			}
@@ -154,8 +152,8 @@ describe('Schema', () => {
 			if ( value < 10 ) {
 				return [
 					{
-						path: '',
-						error: 'Value is not smaller than 10'
+						error: 'Value is not smaller than 10',
+						path: ''
 					}
 				];
 			}

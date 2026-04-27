@@ -1,21 +1,21 @@
 export type { JsonSchemaToDataType } from './ConstructInitialDataJsonSchema';
 export { ConstructInitialData } from './ConstructInitialDataJsonSchema';
 export type {
-	JsonSchemaObjectType,
-	JsonSchemaStringType,
-	JsonSchemaNumberType,
+	JsonSchemaArrayType,
 	JsonSchemaBooleanType,
 	JsonSchemaDateType,
-	JsonSchemaArrayType,
+	JsonSchemaNumberType,
+	JsonSchemaObjectType,
+	JsonSchemaStringType,
 	JsonSchemaType
 } from './ConstructJsonSchema';
 export { JsonSchema } from './JsonSchema';
 export type {
-	JsonSchemaObjectValidationType,
-	JsonSchemaStringValidationType,
-	JsonSchemaNumberValidationType,
+	JsonSchemaArrayValidationType,
 	JsonSchemaBooleanValidationType,
 	JsonSchemaDateValidationType,
-	JsonSchemaArrayValidationType,
+	JsonSchemaNumberValidationType,
+	JsonSchemaObjectValidationType,
+	JsonSchemaStringValidationType,
 	JsonSchemaValidationType
 } from './JsonSchemaValidationType';

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { type ValidationContext } from '../rules/BaseRule';
 import { getMethodContext } from '../rules/Rule';
 import { type OneOfConfigMessage } from '../types/OneOfTypes';
@@ -14,22 +12,11 @@ export abstract class ObjectTypedSchema<
 	Input = any,
 	Final = any
 > extends Schema<Input, Final> {
+	protected oneOfConfigMessage: OneOfConfigMessage | undefined;
+	protected oneOfRules = new Map<string, PrivateSchema>();
+
 	protected schema: SchemaMap<Input>;
 	protected shape: Map<string, PrivateSchema>;
-
-	protected oneOfRules = new Map<string, PrivateSchema>();
-	protected oneOfConfigMessage: OneOfConfigMessage | undefined;
-
-	protected whenClone(): any {
-		const clone = super.whenClone();
-		
-		clone.schema = {};
-		clone.shape = new Map();
-		clone.oneOfRules = new Map();
-		clone.oneOfConfigMessage = undefined;
-
-		return clone;
-	};
 
 	constructor(schema: SchemaMap<Input>, message?: string, def?: Definitions) {
 		super(message, def);
@@ -38,9 +25,11 @@ export abstract class ObjectTypedSchema<
 			...schema 
 		};
 		this.shape = new Map(Object.entries(schema));
-	}
+	};
 
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 	protected compileOneOfRules({ context, isFirstSchema }: CompileSchemaConfig): Function {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 		const schemas: Function[] = [];
 		this.oneOfRules.forEach((schema, childKey ) => {
 			const fn = schema.compileSchema({
@@ -70,15 +59,15 @@ export abstract class ObjectTypedSchema<
 
 			for (let i = 0; i < l; i++) {
 				schemas[i](value, {
-					form: validationContext.form,
 					context: {
 						errors,
 						onlyOnTouch: validationContext.context.onlyOnTouch,
 						onlyOnTouchErrors: validationContext.context.onlyOnTouchErrors,
 						promises: validationContext.context.promises
 					},
-					path: validationContext.path,
-					parent: validationContext.parent
+					form: validationContext.form,
+					parent: validationContext.parent,
+					path: validationContext.path
 				});
 				if ( errors.length === 0 ) {
 					return [];
@@ -113,10 +102,10 @@ export abstract class ObjectTypedSchema<
 		}
 
 		if ( Array.isArray(this.oneOfConfigMessage) ) {
-			const errors = this.oneOfConfigMessage as SchemaError[];
+			const errors = this.oneOfConfigMessage;
 			const l = errors.length;
 			return (value: any, validationContext: ValidationContext<Final>) => {
-				if ( oneOf(value, validationContext).length ) {
+				if ( oneOf(value, validationContext).length > 0 ) {
 					for (let i = 0; i < l; i++) {
 						validationContext.context.errors.push(errors[i]); 
 					}
@@ -125,7 +114,7 @@ export abstract class ObjectTypedSchema<
 		}
 
 		return (value: any, validationContext: ValidationContext<Final>) => {
-			if ( oneOf(value, validationContext).length ) {
+			if ( oneOf(value, validationContext).length > 0 ) {
 				validationContext.context.errors.push(this.oneOfConfigMessage as SchemaError);
 			}
 		};
@@ -133,12 +122,15 @@ export abstract class ObjectTypedSchema<
 
 	protected override compileSchema({
 		context, 
-		srcCode,
-		isFirstSchema
+		isFirstSchema,
+		srcCode
 	}: CompileSchemaConfig) {
-		const schemaRules: Function[] = srcCode ? [srcCode] : [];
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+		const schemaRules: Function[] = srcCode
+			? [srcCode]
+			: [];
 		
-		if ( this.shape.size ) {
+		if ( this.shape.size > 0 ) {
 			this.shape.forEach((schema, childKey) => {
 				const fn = schema.compileSchema({
 					context 
@@ -160,7 +152,7 @@ export abstract class ObjectTypedSchema<
 			});
 		}
 
-		if ( this.oneOfRules.size ) {
+		if ( this.oneOfRules.size > 0 ) {
 			schemaRules.push(
 				this.compileOneOfRules({
 					context,
@@ -178,5 +170,16 @@ export abstract class ObjectTypedSchema<
 				}
 			}
 		});
+	}
+
+	protected whenClone(): any {
+		const clone = super.whenClone();
+		
+		clone.schema = {};
+		clone.shape = new Map();
+		clone.oneOfRules = new Map();
+		clone.oneOfConfigMessage = undefined;
+
+		return clone;
 	}
 }

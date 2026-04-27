@@ -13,11 +13,11 @@ const {
 } = PackageJson as any;
 
 const globals: Record<string, string> = {
-	vue: 'Vue',
-	'react/jsx-runtime': 'ReactJsxRuntime',
-	react: 'React',
+	'@resourge/shallow-clone': 'ResourceShallowClone',
+	'react': 'React',
 	'react-dom': 'ReactDOM',
-	'@resourge/shallow-clone': 'ResourceShallowClone'
+	'react/jsx-runtime': 'ReactJsxRuntime',
+	'vue': 'Vue'
 };
 
 const globalsKeys = Object.keys(globals);
@@ -31,7 +31,7 @@ const external = [
 
 const packagesNames = packages.map((pack) => pack.name);
 
-const entryLib = './src/lib/index.ts';
+const entryLibrary = './src/lib/index.ts';
 const POSTAL_CODE_INDEX = './src/lib/postalCodes/index.ts';
 
 const PHONE_NUMBER_INDEX = './src/lib/phoneNumbers/index.ts';
@@ -40,51 +40,52 @@ const deepMerge = deepmerge();
 
 export const defineLibConfig = (
 	config: UserConfigExport,
-	afterBuild?: (() => void | Promise<void>)
+	afterBuild?: (() => Promise<void> | void)
 ): UserConfigExport => defineConfig((originalConfig) => deepMerge(
-	typeof config === 'function' ? config(originalConfig) : config,
+	typeof config === 'function'
+		? config(originalConfig)
+		: config,
 	{
 		build: {
-			minify: false,
-			sourcemap: true,
 			lib: {
 				entry: {
-					index: entryLib,
-					'postalCodes/index': POSTAL_CODE_INDEX,
-					'phoneNumbers/index': PHONE_NUMBER_INDEX
+					'index': entryLibrary,
+					'phoneNumbers/index': PHONE_NUMBER_INDEX,
+					'postalCodes/index': POSTAL_CODE_INDEX
 				},
-				name: 'index',
 				fileName: (module, fileName) => (
-					`${fileName}.${module === 'cjs' ? 'cjs' : 'js'}`
+					`${fileName}.${module === 'cjs'
+						? 'cjs'
+						: 'js'}`
 				),
-				formats: ['cjs', 'es']
+				formats: ['cjs', 'es'],
+				name: 'index'
 			},
+			minify: false,
 			outDir: './dist',
 			rollupOptions: {
+				external,
 				output: {
 					dir: './dist',
 					globals: external.filter((key) => globalsKeys.includes(key))
-					.reduce<Record<string, string>>((obj, key) => {
-						obj[key] = globals[key];
-						return obj;
+					.reduce<Record<string, string>>((object, key) => {
+						object[key] = globals[key];
+						return object;
 					}, {})
-				},
-				external
-			}
-		},
-		resolve: {
-			preserveSymlinks: true,
-			tsconfigPaths: true
+				}
+			},
+			sourcemap: true
 		},
 		plugins: [
 			banner(createBanner()),
 			dts({
-				insertTypesEntry: true,
+				afterBuild,
 
 				bundledPackages: packagesNames,
 				compilerOptions: {
-					preserveSymlinks: true,
-					paths: {}
+					baseUrl: '.',
+					paths: {},
+					preserveSymlinks: true
 				},
 				exclude: [
 					'**/*.test*',
@@ -93,8 +94,12 @@ export const defineLibConfig = (
 					'./src/main.tsx',
 					'./src/setupTests.ts'
 				],
-				afterBuild
+				insertTypesEntry: true
 			})
-		]
+		],
+		resolve: {
+			preserveSymlinks: true,
+			tsconfigPaths: true
+		}
 	}
 ));

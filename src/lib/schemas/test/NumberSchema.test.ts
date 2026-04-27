@@ -279,9 +279,9 @@ describe('number', () => {
 		.optional()
 		.when({
 			is: (value) => value < 10 || value === null,
+			otherwise: (schema) => schema.notOptional(),
 			then: (schema) => schema.negative()
-			.required(),
-			otherwise: (schema) => schema.notOptional()
+			.required()
 		})
 		.compile();
 	

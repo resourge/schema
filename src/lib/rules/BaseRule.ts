@@ -2,10 +2,23 @@ import { type CompileSchemaConfig } from '../types/SchemaTypes';
 import { type SchemaError } from '../types/types';
 import { type MessageType } from '../utils/messages';
 
+export type BaseRuleConfig<
+	Type extends string,
+	Value, 
+	T = any, 
+	Method extends (...args: any[]) => any = RuleMethod<Value, T>
+> = {
+	message?: ((messages: MessageType) => string) | string
+	method: Method
+	type: Type
+};
+
 export type RuleMethod<Value, Final = any> = (
 	value: Value, 
 	form: Final
-) => SchemaError[] | false;
+) => false | SchemaError[];
+
+export type RuleSrcCodeConfig = Pick<Required<CompileSchemaConfig>, 'context'>;
 
 export type ValidationContext<T> = {
 	context: {
@@ -18,19 +31,6 @@ export type ValidationContext<T> = {
 	form: T
 	parent: any
 	path: string
-};
-
-export type RuleSrcCodeConfig = Pick<Required<CompileSchemaConfig>, 'context'>;
-
-export type BaseRuleConfig<
-	Type extends string,
-	Value, 
-	T = any, 
-	Method extends (...args: any[]) => any = RuleMethod<Value, T>
-> = {
-	method: Method
-	type: Type
-	message?: string | ((messages: MessageType) => string)
 };
 
 export function getError(path: string, error: string): SchemaError {

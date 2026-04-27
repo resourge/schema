@@ -13,18 +13,18 @@ export type WhenConfig<
 	 * When "is" returns true "then", when false "otherwise"
 	 */
 	is: RuleBooleanMethod<Input, Final>
-	then: (schema: T) => T
 	otherwise?: (schema: T) => T
+	then: (schema: T) => T
 };
 
 export type WhenParameter<Value = any, T = any> = {
 	method: RuleBooleanMethod<Value, T>
-	then: Schema<any, any>
 	/**
 	 * Makes when named, so uses a key from parent
 	 */
 	namedValueKey?: string
 	otherwise?: Schema<any, any>
+	then: Schema<any, any>
 };
 
 export function getWhenRule<Value = any, T = any>(
@@ -45,16 +45,19 @@ export function getWhenRule<Value = any, T = any>(
 
 	if ( config.namedValueKey ) {
 		return (value: any, validationContext: ValidationContext<any>) => {
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			const isValid = config.method(validationContext.parent[config.namedValueKey!], validationContext.parent, validationContext);
 
-			(isValid ? thenSrcCode : otherwiseSrcCode)(value, validationContext);
+			(isValid
+				? thenSrcCode
+				: otherwiseSrcCode)(value, validationContext);
 		};
 	}
 
 	return (value: any, validationContext: ValidationContext<any>) => {
 		const isValid = config.method(value, validationContext.parent, validationContext);
 
-		(isValid ? thenSrcCode : otherwiseSrcCode)(value, validationContext);
+		(isValid
+			? thenSrcCode
+			: otherwiseSrcCode)(value, validationContext);
 	};
 }

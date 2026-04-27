@@ -20,17 +20,16 @@
 		"noEmit": true,
 		"jsx": "react-jsx",
 		"removeComments": false,
-		"baseUrl": ".",
+		"types": ["node"],
 		"paths": {
 			"src": [
 				"./src"
-			]
+			],
+			"*": ["./*"]
 		}
 	},
 	"include": [
 		"./**/src/**/*",
-		".eslintrc.cjs",
-		"rollup.config.js"
 	],
 	"exclude": [
 		"./**/dist/**/*",

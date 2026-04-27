@@ -12,17 +12,17 @@ describe('should isEnum be true', () => {
 	}
 
 	enum FieldTypeEnumS {
-		FREE_TEXT = 'FREE_TEXT',
 		EXISTING_FIELD = 'EXISTING_FIELD',
-		SQL_EXPRESSION = 'SQL_EXPRESSION',
-		SOURCE_FIELD = 'SOURCE_FIELD'
+		FREE_TEXT = 'FREE_TEXT',
+		SOURCE_FIELD = 'SOURCE_FIELD',
+		SQL_EXPRESSION = 'SQL_EXPRESSION'
 	}
 
 	enum FieldTypeEnumF {
-		FREE_TEXT = 1,
 		EXISTING_FIELD = 2,
-		SQL_EXPRESSION = 'SQL_EXPRESSION',
-		SOURCE_FIELD = 'SOURCE_FIELD'
+		FREE_TEXT = 1,
+		SOURCE_FIELD = 'SOURCE_FIELD',
+		SQL_EXPRESSION = 'SQL_EXPRESSION'
 	}
 
 	class Teste {
@@ -40,10 +40,10 @@ describe('should isEnum be true', () => {
 
 	it('should be false', () => {
 		type Test1 = ExpectFalse<IsEnum<Teste>>;
-		type Test2 = ExpectFalse<IsEnum<Teste | 1>>;
-		type Test3 = ExpectFalse<IsEnum<Teste | 1 | 'asdas'> >;
-		type Test4 = ExpectFalse<IsEnum<Set<Teste>> >;
-		type Test5 = ExpectFalse<IsEnum<Map<string, Teste>> >;
+		type Test2 = ExpectFalse<IsEnum<1 | Teste>>;
+		type Test3 = ExpectFalse<IsEnum<1 | 'asdas' | Teste>>;
+		type Test4 = ExpectFalse<IsEnum<Set<Teste>>>;
+		type Test5 = ExpectFalse<IsEnum<Map<string, Teste>>>;
 		type Test6 = ExpectFalse<IsEnum<''>>;
 		type Test7 = ExpectFalse<IsEnum<1>>;
 		type Test8 = ExpectFalse<IsEnum<object>>;
@@ -61,6 +61,6 @@ describe('should isEnum be true', () => {
 		type Test20 = ExpectFalse<IsEnum<1 | ''>>;
 		type Test21 = ExpectFalse<IsEnum<1 | '3'>>;
 		type Test22 = ExpectFalse<IsEnum<'1' | '5'>>;
-		type Test23 = ExpectFalse<IsEnum<'1' | boolean> >;
+		type Test23 = ExpectFalse<IsEnum<'1' | boolean>>;
 	});
 });

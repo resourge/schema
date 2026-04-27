@@ -5,14 +5,11 @@ export class AnySchema<
 	Final = any
 > extends Schema<Input, Final> {
 	protected message: string = 'Is not array';
-	protected rule = () => true;
-	
 	/**
 	 * Checks if is a value of enum.
 	 * @param enumObject enum
 	 * @param message @option Overrides default message
 	 */
-	// eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
 	public enum<T extends { [name: string]: any }>(enumObject: T, message?: string) {
 		const enumValues = Object.values(enumObject);
 
@@ -21,6 +18,8 @@ export class AnySchema<
 			message: message ?? ((messages) => messages.any.enum)
 		}) as unknown as AnySchema<T[keyof T], Final>;
 	}
+	
+	protected rule = () => true;
 }
 
-export const any = < Input = any, Final = any>(message?: string) => new AnySchema<Input, Final>(message);
+export const any = <Input = any, Final = any>(message?: string) => new AnySchema<Input, Final>(message);

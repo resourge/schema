@@ -18,14 +18,6 @@ export abstract class ArrayTypedSchema<
 		this.schema = schema as unknown as PrivateSchema;
 	}
 
-	protected whenClone(): any {
-		const clone = super.whenClone();
-		
-		clone.schema = this.schema.clone();
-
-		return clone;
-	};
-
 	protected override compileSchema({ context }: CompileSchemaConfig) {
 		const fns = this.schema.compileSchema({
 			context 
@@ -48,5 +40,13 @@ export abstract class ArrayTypedSchema<
 				}
 			} 
 		});
+	};
+
+	protected whenClone(): any {
+		const clone = super.whenClone();
+		
+		clone.schema = this.schema.clone();
+
+		return clone;
 	}
 }

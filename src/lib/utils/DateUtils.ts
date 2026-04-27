@@ -1,6 +1,6 @@
 export function createDate({
-	year = 0, month = 1, day = 1,
-	hour = 0, minute = 0, second = 0, millisecond = 0
+	day = 1, hour = 0, millisecond = 0,
+	minute = 0, month = 1, second = 0, year = 0
 }: {
 	day?: number
 	hour?: number

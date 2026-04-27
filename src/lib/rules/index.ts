@@ -1,4 +1,4 @@
 export type {
-	RuleBooleanMethod, RuleMethodSchemaError, RuleMethod, AsyncRuleMethodSchemaError, AsyncRuleMethod, AsyncRuleBooleanMethod
+	AsyncRuleBooleanMethod, AsyncRuleMethod, AsyncRuleMethodSchemaError, RuleBooleanMethod, RuleMethod, RuleMethodSchemaError
 } from './Rule';
 export { type WhenConfig } from './WhenRule';

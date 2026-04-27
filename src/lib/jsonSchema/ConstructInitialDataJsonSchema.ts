@@ -24,19 +24,24 @@ export type JsonSchemaToDataType<T extends JsonSchemaType> = T extends JsonSchem
 
 export function ConstructInitialData<T extends JsonSchemaType>(schemaValue: T): JsonSchemaToDataType<T> {
 	switch ( schemaValue.type ) {
-		case 'object':
+		case 'array': {
+			return [] as any;
+		}
+		case 'number': {
+			return 0 as any;
+		}
+		case 'object': {
 			return Object.keys(schemaValue.properties)
 			.reduce<any>((obj, key) => {
 				obj[key] = ConstructInitialData(schemaValue.properties[key]);
 				return obj;
 			}, {});
-		case 'array':
-			return [] as any;
-		case 'string':
+		}
+		case 'string': {
 			return '' as any;
-		case 'number':
-			return 0 as any;
-		default:
+		}
+		default: {
 			return undefined as any;
+		}
 	}
 }

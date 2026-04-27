@@ -1,9 +1,9 @@
-type Primitive = string | number | bigint | boolean | null | undefined;
+/* istanbul ignore next -- @preserve */
+enum GenericEnum {}
 
 type IsStringUnion<T> = `${T extends Primitive ? T : ''}` extends T ? true : false;
 
-/* istanbul ignore next -- @preserve */
-enum GenericEnum {}
+type Primitive = bigint | boolean | null | number | string | undefined;
 
 export type IsEnum<E> = E extends any[] 
 	? false
@@ -15,6 +15,6 @@ export type IsEnum<E> = E extends any[]
 			? false 
 			: E extends GenericEnum 
 				? false
-				: keyof E extends 'toString' | 'valueOf' | 'toFixed' | 'toExponential' | 'toPrecision' | 'toLocaleString'
+				: keyof E extends 'toExponential' | 'toFixed' | 'toLocaleString' | 'toPrecision' | 'toString' | 'valueOf'
 					? true
 					: false;

@@ -1,26 +1,26 @@
 export type { OldTestMethodConfig, TestMethodConfig } from './core';
 export {
-	JsonSchema, type JsonSchemaArrayType, type JsonSchemaArrayValidationType,
-	type JsonSchemaBooleanType, type JsonSchemaBooleanValidationType,
-	type JsonSchemaDateType, type JsonSchemaDateValidationType,
-	type JsonSchemaNumberType, type JsonSchemaNumberValidationType,
-	type JsonSchemaObjectType, type JsonSchemaObjectValidationType,
-	type JsonSchemaStringType, type JsonSchemaStringValidationType,
-	type JsonSchemaType, type JsonSchemaValidationType, type JsonSchemaToDataType,
-	ConstructInitialData
+	ConstructInitialData, JsonSchema, type JsonSchemaArrayType,
+	type JsonSchemaArrayValidationType, type JsonSchemaBooleanType,
+	type JsonSchemaBooleanValidationType, type JsonSchemaDateType,
+	type JsonSchemaDateValidationType, type JsonSchemaNumberType,
+	type JsonSchemaNumberValidationType, type JsonSchemaObjectType,
+	type JsonSchemaObjectValidationType, type JsonSchemaStringType,
+	type JsonSchemaStringValidationType, type JsonSchemaToDataType, type JsonSchemaType,
+	type JsonSchemaValidationType
 } from './jsonSchema';
-export {
-	AnySchema, ArraySchema, BooleanSchema, DateSchema, NumberSchema,
-	ObjectSchema, StringSchema,
-	any, array, boolean, date, number, object, string
-} from './schemas';
-export { setupDefaultMessage } from './utils/messages';
-export type { SchemaError } from './types/types';
-export type {
-	SchemaMap, ObjectPropertiesSchema, EnumPropertiesSchema
-} from './types/SchemaMap';
-export type { OnlyOnTouch } from './types/FormKey';
 export type {
 	AsyncRuleBooleanMethod, AsyncRuleMethod, AsyncRuleMethodSchemaError,
 	RuleBooleanMethod, RuleMethod, RuleMethodSchemaError, WhenConfig
 } from './rules';
+export {
+	any, AnySchema, array, ArraySchema, boolean,
+	BooleanSchema, date,
+	DateSchema, number, NumberSchema, object, ObjectSchema, string, StringSchema
+} from './schemas';
+export type { OnlyOnTouch } from './types/FormKey';
+export type {
+	EnumPropertiesSchema, ObjectPropertiesSchema, SchemaMap
+} from './types/SchemaMap';
+export type { SchemaError } from './types/types';
+export { setupDefaultMessage } from './utils/messages';
